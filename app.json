@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "jw-toolkit",
+    "name": "JW Toolkit",
     "slug": "jw-toolkit",
+    "scheme": "jw-toolkit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#D08129"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,11 +21,17 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#D08129"
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "tsconfigPaths": true
     }
   }
 }
