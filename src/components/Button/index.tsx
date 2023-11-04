@@ -1,10 +1,15 @@
 import { TouchableOpacityProps } from 'react-native'
 import * as S from './styles'
 
-const Button = (props: TouchableOpacityProps) => {
+interface ButtonProps {
+	loading?: boolean
+}
+
+const Button = (props: TouchableOpacityProps & ButtonProps) => {
 	return (
 		<S.Button {...props}>
-			<S.ButtonTitle>{props.children}</S.ButtonTitle>
+			{props.loading && <S.Loading />}
+			<S.ButtonTitle disabled={props.loading || props.disabled}>{props.children}</S.ButtonTitle>
 		</S.Button>
 	)
 }

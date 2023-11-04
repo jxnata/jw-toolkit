@@ -20,11 +20,11 @@ export const Mask = styled.View`
     background-color: ${({ theme }) => theme.background};
     opacity: 0.9;
 `
-export const Accent = styled.Text`
-    text-align: center;
+
+export const Paragraph = styled.Text`
     font-size: 15px;
-    font-weight: bold;
-    color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.text};
+    padding: 20px 10px;
 `
 
 export const Background = styled.ImageBackground.attrs(({ theme }) => ({
