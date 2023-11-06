@@ -10,10 +10,10 @@ export const Input = styled.TextInput.attrs(({ theme }) => ({
     color: ${({ theme }) => theme.text};
     font-size: 15px;
     margin-bottom: 10px;
+    font-family: 'urbanist-medium';
 `
-
-export const Container = styled.View``
-
+export const Container = styled.View`
+`
 export const Icon = styled.TouchableOpacity`
     position: absolute;
     right: 15px;

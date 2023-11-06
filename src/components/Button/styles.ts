@@ -13,13 +13,11 @@ export const Button = styled.TouchableOpacity`
     font-size: 15px;
     margin-bottom: 15px;
 `
-
 export const ButtonTitle = styled.Text`
     color: ${({ theme }) => theme.primary};
     font-size: 15px;
-    font-weight: bold;
+    font-family: 'urbanist-bold';
 `
-
 export const Loading = styled.ActivityIndicator.attrs(({ theme }) => ({
     color: theme.primary,
     size: 'small'

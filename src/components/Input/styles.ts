@@ -10,4 +10,5 @@ export const Input = styled.TextInput.attrs(({ theme }) => ({
     color: ${({ theme }) => theme.text};
     font-size: 15px;
     margin-bottom: 10px;
+    font-family: 'urbanist-medium';
 `
