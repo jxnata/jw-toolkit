@@ -20,6 +20,8 @@ export const HeaderContainer = styled.View`
 `
 export const IconButton = styled.TouchableOpacity`
 `
+export const RefreshControl = styled.RefreshControl`
+`
 export const Icon = styled(Ionicons).attrs(({ theme }) => ({
     size: 24,
 }))`

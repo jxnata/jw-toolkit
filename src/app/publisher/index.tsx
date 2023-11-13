@@ -1,10 +1,13 @@
 import AssignmentCard from 'components/AssignmentCard'
 import { Stack, useRouter } from 'expo-router'
+import useMyAssignments from 'hooks/publisher/useMyAssignments'
 import { useCallback } from 'react'
 import * as S from './styles'
 
 const PublisherHome = () => {
 	const router = useRouter()
+
+	const { assigments, loading, mutate } = useMyAssignments()
 
 	const HeaderRight = useCallback(
 		() => (
@@ -24,7 +27,10 @@ const PublisherHome = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Designações', headerRight: HeaderRight }} />
 			<S.Content>
-				<AssignmentCard assignment={null} />
+				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
+				{assigments.map((assigment) => (
+					<AssignmentCard key={assigment._id} assignment={assigment} />
+				))}
 			</S.Content>
 		</S.Container>
 	)

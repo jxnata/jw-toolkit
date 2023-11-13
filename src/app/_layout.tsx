@@ -6,8 +6,11 @@ import { StatusBar } from 'expo-status-bar'
 import { useCallback } from 'react'
 import { useColorScheme } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import Reactotron from 'reactotron-react-native'
 import { ThemeProvider } from 'styled-components/native'
 import { dark, light } from 'themes'
+
+console.tron = Reactotron.configure({ host: '192.168.0.104' }).useReactNative().connect()
 
 SplashScreen.preventAutoHideAsync()
 

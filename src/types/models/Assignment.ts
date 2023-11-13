@@ -5,7 +5,7 @@ import { IPublisher } from "./Publisher"
 export type IAssignment = {
     _id: string
     publisher: IPublisher | string
-    map: IMap | string
+    map: IMap
     congregation: ICongregation | string
     details?: string
     found: boolean

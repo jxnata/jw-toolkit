@@ -1,25 +1,27 @@
-import { IAssignment } from 'types/Assignment'
+import { IAssignment } from 'types/models/Assignment'
+import { formatDate } from 'utils/date-format'
+import { mapImage } from 'utils/map-image'
 import * as S from './styles'
 
 interface AssignmentProps {
 	assignment: IAssignment
 }
 
-const AssignmentCard = (props: AssignmentProps) => {
+const AssignmentCard = ({ assignment }: AssignmentProps) => {
 	return (
 		<S.Container>
-			<S.Card>
-				<S.Small>12/11/2023</S.Small>
-				<S.Column>
-					<S.Image source={{ uri: 'https://i.stack.imgur.com/daU8B.jpg' }} />
-				</S.Column>
-				<S.Column>
-					<S.Paragraph>Mapa Nº 102</S.Paragraph>
-					<S.Paragraph>Rua Antonio Banderas, 46</S.Paragraph>
-					<S.Paragraph>Centro</S.Paragraph>
-					<S.Paragraph>Irecê, BA</S.Paragraph>
-				</S.Column>
-			</S.Card>
+			<S.Small>{formatDate(assignment.created_at)}</S.Small>
+			<S.Column>
+				<S.Image source={{ uri: mapImage(assignment.map.coordinates) }} />
+			</S.Column>
+			<S.Column>
+				<S.Paragraph>{assignment.map.name}</S.Paragraph>
+				<S.Paragraph>
+					{assignment.map.address.street}, {assignment.map.address.number}
+				</S.Paragraph>
+				<S.Paragraph>{assignment.map.address.district}</S.Paragraph>
+				<S.Paragraph>{assignment.map.address.city}</S.Paragraph>
+			</S.Column>
 		</S.Container>
 	)
 }

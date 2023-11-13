@@ -3,18 +3,10 @@ import styled from "styled-components/native";
 export const Container = styled.TouchableOpacity`
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
     margin-bottom: 5px;
     width: 100%;
-    gap: 5px;
-`
-export const Card = styled.View`
-    display: flex;
-    flex-direction: row;
     border-radius: 10px;
     background-color: ${({ theme }) => theme.backgroundAlt};
-    width: 100%;
     padding: 10px;
     gap: 10px;
 `
