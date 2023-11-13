@@ -16,13 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.jxnata.jwtoolkit"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#D08129"
-      }
+      },
+      "package": "dev.jxnata.jwtoolkit"
     },
     "web": {
       "favicon": "./assets/favicon.png"
