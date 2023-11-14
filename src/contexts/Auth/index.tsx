@@ -5,6 +5,15 @@ import { IAuthContext, ISession } from './types'
 
 const AuthContext = createContext<IAuthContext | null>(null)
 
+const initialData = () => {
+	try {
+		const { data, token, type } = authStorage.getAuth()
+		return { data: JSON.parse(data), token, type } as ISession
+	} catch (error) {
+		authStorage.clear()
+	}
+}
+
 export function useSession() {
 	const value = useContext(AuthContext)
 
@@ -18,7 +27,7 @@ export function useSession() {
 }
 
 export function SessionProvider(props: React.PropsWithChildren) {
-	const [session, setSession] = useState<ISession>(null)
+	const [session, setSession] = useState<ISession>(initialData())
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const signIn = useCallback(async (data: AuthRequest) => {
@@ -28,7 +37,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
 
 		if (!authorized) return false
 
-		authStorage.setAuth({ type: 'publisher', token: authorized.token })
+		authStorage.setAuth({ type: 'publisher', token: authorized.token, data: JSON.stringify(authorized.publisher) })
 
 		setSession({
 			data: authorized.publisher,

@@ -12,7 +12,7 @@ const AssignmentCard = ({ assignment }: AssignmentProps) => {
 		<S.Container>
 			<S.Small>{formatDate(assignment.created_at)}</S.Small>
 			<S.Column>
-				<S.Image source={{ uri: mapImage(assignment.map.coordinates) }} />
+				<S.Image resizeMode='contain' source={{ uri: mapImage(assignment.map.coordinates) }} />
 			</S.Column>
 			<S.Column>
 				<S.Paragraph>{assignment.map.name}</S.Paragraph>
