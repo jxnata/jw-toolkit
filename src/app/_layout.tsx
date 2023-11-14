@@ -1,6 +1,7 @@
 import { fonts } from 'constants/fonts'
+import { SessionProvider } from 'contexts/Auth'
 import { useFonts } from 'expo-font'
-import { Stack } from 'expo-router/stack'
+import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useCallback } from 'react'
@@ -26,21 +27,12 @@ export default function Layout() {
 
 	return (
 		<SafeAreaProvider onLayout={handleOnLayout}>
-			<ThemeProvider theme={scheme === 'dark' ? dark : light}>
-				<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-				<Stack
-					screenOptions={{
-						headerStyle: {
-							backgroundColor: { dark, light }[scheme].background,
-						},
-						headerShadowVisible: false,
-						headerTintColor: { dark, light }[scheme].text,
-						headerTitleStyle: { fontFamily: 'urbanist-bold' },
-						headerBackTitleVisible: false,
-						headerTitleAlign: 'center',
-					}}
-				/>
-			</ThemeProvider>
+			<SessionProvider>
+				<ThemeProvider theme={scheme === 'dark' ? dark : light}>
+					<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+					<Slot />
+				</ThemeProvider>
+			</SessionProvider>
 		</SafeAreaProvider>
 	)
 }

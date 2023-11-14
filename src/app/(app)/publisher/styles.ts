@@ -18,6 +18,12 @@ export const HeaderContainer = styled.View`
     align-items: center;
     gap: 10px;
 `
+export const Paragraph = styled.Text`
+    font-size: 15px;
+    color: ${({ theme }) => theme.text};
+    padding: 20px 10px;
+    font-family: 'urbanist-medium';
+`
 export const IconButton = styled.TouchableOpacity`
 `
 export const RefreshControl = styled.RefreshControl`

@@ -11,5 +11,9 @@ export const authStorage = {
     setAuth: (auth: AuthStorage) => {
         storage.set('auth.token', auth.token)
         storage.set('auth.type', auth.type)
-    }
+    },
+    clear: () => {
+        storage.delete('auth.token')
+        storage.delete('auth.type')
+    },
 }

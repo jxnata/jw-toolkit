@@ -1,33 +1,24 @@
 import Button from 'components/Button'
 import Input from 'components/Input'
 import PasswordInput from 'components/PasswordInput'
-import { authStorage } from 'database/authentication'
+import { useSession } from 'contexts/Auth'
 import { Link, useRouter } from 'expo-router'
 import { Stack } from 'expo-router/stack'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { AuthRequest, publisherAuth } from 'utils/publisher-auth'
+import { AuthRequest } from 'utils/publisher-auth'
 import * as S from './styles'
 
 const Login = () => {
-	const {
-		control,
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<AuthRequest>()
+	const { control, formState, handleSubmit } = useForm<AuthRequest>()
 
 	const router = useRouter()
+	const { signIn } = useSession()
 
 	const auth: SubmitHandler<AuthRequest> = async (data) => {
-		console.tron.log(data)
-		const authorized = await publisherAuth(data)
+		const authorized = await signIn(data)
 
-		if (!authorized) {
-			return alert('Usuário ou senha inválidos')
-		}
-
-		authStorage.setAuth({ type: 'publisher', token: authorized.token })
+		if (!authorized) return alert('Usuário ou senha inválidos')
 
 		router.replace('/publisher')
 	}
@@ -35,7 +26,7 @@ const Login = () => {
 	return (
 		<S.Container>
 			<Stack.Screen options={{ headerShown: false }} />
-			<S.Background source={require('../images/login-bg.jpg')}>
+			<S.Background source={require('../../images/login-bg.jpg')}>
 				<S.Mask />
 				<SafeAreaView>
 					<S.Content>
@@ -61,7 +52,9 @@ const Login = () => {
 								/>
 							)}
 						/>
-						<Button onPress={handleSubmit(auth)}>Entrar</Button>
+						<Button loading={formState.isSubmitting} onPress={handleSubmit(auth)}>
+							Entrar
+						</Button>
 						<Link href='/admin'>
 							<S.Accent>Entrar como admininstrador</S.Accent>
 						</Link>

@@ -4,7 +4,6 @@ export type IUser = {
     _id: string
     name: string
     username: string
-    password: string
-    congregation: ICongregation | string
+    congregation: ICongregation
     created_at: string
 }
