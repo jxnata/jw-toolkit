@@ -1,5 +1,4 @@
 import AssignmentCard from 'components/AssignmentCard'
-import { useSession } from 'contexts/Auth'
 import { Stack, useRouter } from 'expo-router'
 import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
 import { useCallback } from 'react'
@@ -9,7 +8,6 @@ const PublisherHome = () => {
 	const router = useRouter()
 
 	const { assigments, loading, mutate } = useMyAssignments()
-	const { signOut } = useSession()
 
 	const HeaderRight = useCallback(
 		() => (
@@ -17,7 +15,7 @@ const PublisherHome = () => {
 				<S.IconButton>
 					<S.Icon name='file-tray-full-outline' />
 				</S.IconButton>
-				<S.IconButton onPress={signOut}>
+				<S.IconButton onPress={() => router.push('/publisher/me')}>
 					<S.Icon name='person-circle-outline' />
 				</S.IconButton>
 			</S.HeaderContainer>

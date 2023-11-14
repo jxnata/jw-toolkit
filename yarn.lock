@@ -5753,6 +5753,11 @@ reactotron-core-client@2.8.10:
   resolved "https://registry.yarnpkg.com/reactotron-core-client/-/reactotron-core-client-2.8.10.tgz#798f2a7aa9fd7e18e7a510531a613e8ae3008eb0"
   integrity sha512-SYRO4OCutJzfWMnaULUGVyETZnMDCU5ECNflXyM3Z5Gnfxp/wV6d7jYonhfxHdpU/aGb4Eg15C22myOCXSu6HQ==
 
+reactotron-react-native-mmkv@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/reactotron-react-native-mmkv/-/reactotron-react-native-mmkv-0.1.5.tgz#ce74786f3d5bde97b019d04a6c215357f6995a46"
+  integrity sha512-p9nu4jgN1fGDIej1epEm6T0pd9uE8gLSCKn9bRKq4cEiqep033Qs2f11X9AxT3+FsOGVeiWlT+IHKe+ucowl0A==
+
 reactotron-react-native@^5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/reactotron-react-native/-/reactotron-react-native-5.0.3.tgz#5ab884f33e6ffa0437b8b0f4d93cabb5acb7da24"

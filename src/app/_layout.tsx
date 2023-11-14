@@ -8,10 +8,12 @@ import { useCallback } from 'react'
 import { useColorScheme } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Reactotron from 'reactotron-react-native'
+import mmkvPlugin from 'reactotron-react-native-mmkv'
 import { ThemeProvider } from 'styled-components/native'
 import { dark, light } from 'themes'
+import { storage } from '../database'
 
-console.tron = Reactotron.configure({ host: '192.168.0.104' }).useReactNative().connect()
+console.tron = Reactotron.configure({ host: '192.168.0.104' }).useReactNative().use(mmkvPlugin({ storage })).connect()
 
 SplashScreen.preventAutoHideAsync()
 

@@ -23,6 +23,8 @@ export default function Layout() {
 				headerBackTitleVisible: false,
 				headerTitleAlign: 'center',
 			}}
-		/>
+		>
+			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
+		</Stack>
 	)
 }
