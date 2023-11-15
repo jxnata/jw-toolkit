@@ -23,6 +23,12 @@ export const Paragraph = styled.Text`
     padding: 0 0 20px 0;
     font-family: 'urbanist-medium';
 `
+export const Label = styled.Text`
+    font-size: 12px;
+    color: ${({ theme }) => theme.text};
+    padding: 10px 0;
+    font-family: 'urbanist-medium';
+`
 export const Button = styled.TouchableOpacity`
     gap: 5px;
     display: flex;

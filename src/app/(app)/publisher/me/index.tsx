@@ -10,6 +10,7 @@ const PublisherHome = () => {
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal' }} />
 			<S.Content>
 				<S.Title>{session.data.name}</S.Title>
+				<S.Label>Congregação</S.Label>
 				<S.Paragraph>{session.data.congregation.name}</S.Paragraph>
 				<S.Button onPress={signOut}>
 					<S.ButtonTitle>Sair</S.ButtonTitle>
