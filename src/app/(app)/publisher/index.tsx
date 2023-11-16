@@ -12,7 +12,7 @@ const PublisherHome = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
-				<S.IconButton>
+				<S.IconButton onPress={() => router.push('/publisher/history')}>
 					<S.Icon name='file-tray-full-outline' />
 				</S.IconButton>
 				<S.IconButton onPress={() => router.push('/publisher/me')}>
@@ -28,10 +28,10 @@ const PublisherHome = () => {
 			<Stack.Screen options={{ title: 'Designações', headerRight: HeaderRight }} />
 			<S.Content>
 				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
-				{assigments.map((assigment) => (
+				{assigments.map(assigment => (
 					<AssignmentCard key={assigment._id} assignment={assigment} />
 				))}
-				{!assigments.length && <S.Paragraph>Nenhuma designação</S.Paragraph>}
+				{!assigments.length && !loading && <S.Paragraph>Nenhuma designação</S.Paragraph>}
 			</S.Content>
 		</S.Container>
 	)
