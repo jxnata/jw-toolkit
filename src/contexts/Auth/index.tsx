@@ -1,9 +1,16 @@
 import { authStorage } from 'database/auth'
-import React, { createContext, useCallback, useContext, useState } from 'react'
-import { AuthRequest, publisherAuth } from 'utils/publisher-auth'
+import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
+import { adminAuth } from 'utils/admin-auth'
+import { publisherAuth } from 'utils/publisher-auth'
 import { IAuthContext, ISession } from './types'
 
 const AuthContext = createContext<IAuthContext | null>(null)
+
+export type AuthRequest = {
+	user: string
+	pass: string
+	type: 'publisher' | 'admin'
+}
 
 const initialData = () => {
 	try {
@@ -26,24 +33,47 @@ export function useSession() {
 	return value
 }
 
-export function SessionProvider(props: React.PropsWithChildren) {
+export function SessionProvider(props: PropsWithChildren) {
 	const [session, setSession] = useState<ISession>(initialData())
 	const [loading, setLoading] = useState<boolean>(false)
 
-	const signIn = useCallback(async (data: AuthRequest) => {
-		setLoading(true)
-
-		const authorized = await publisherAuth(data)
+	const authHandlerPublisher = useCallback(async ({ user, pass, type }: AuthRequest) => {
+		const authorized = await publisherAuth({ username: user, passcode: pass })
 
 		if (!authorized) return false
 
-		authStorage.setAuth({ type: 'publisher', token: authorized.token, data: JSON.stringify(authorized.publisher) })
+		authStorage.setAuth({ type, token: authorized.token, data: JSON.stringify(authorized.publisher) })
 
 		setSession({
 			data: authorized.publisher,
 			token: authorized.token,
-			type: 'publisher',
+			type,
 		})
+	}, [])
+
+	const authHandlerAdmin = useCallback(async ({ user, pass, type }: AuthRequest) => {
+		const authorized = await adminAuth({ username: user, password: pass })
+
+		if (!authorized) return false
+
+		authStorage.setAuth({ type, token: authorized.token, data: JSON.stringify(authorized.user) })
+
+		setSession({
+			data: authorized.user,
+			token: authorized.token,
+			type,
+		})
+	}, [])
+
+	const signIn = useCallback(async ({ user, pass, type }: AuthRequest) => {
+		setLoading(true)
+
+		if (type === 'publisher') {
+			await authHandlerPublisher({ user, pass, type })
+		}
+		if (type === 'admin') {
+			await authHandlerAdmin({ user, pass, type })
+		}
 
 		setLoading(false)
 

@@ -2,7 +2,7 @@ import { useSession } from 'contexts/Auth'
 import { Stack } from 'expo-router'
 import * as S from './styles'
 
-const PublisherHome = () => {
+const PublisherDetails = () => {
 	const { session, signOut } = useSession()
 
 	return (
@@ -20,4 +20,4 @@ const PublisherHome = () => {
 	)
 }
 
-export default PublisherHome
+export default PublisherDetails

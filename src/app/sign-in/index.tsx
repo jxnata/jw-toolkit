@@ -1,27 +1,35 @@
 import Button from 'components/Button'
 import Input from 'components/Input'
 import PasswordInput from 'components/PasswordInput'
-import { useSession } from 'contexts/Auth'
-import { Link, useRouter } from 'expo-router'
+import { AuthRequest, useSession } from 'contexts/Auth'
+import { useRouter } from 'expo-router'
 import { Stack } from 'expo-router/stack'
+import { useCallback, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { AuthRequest } from 'utils/publisher-auth'
 import * as S from './styles'
 
 const Login = () => {
 	const { control, formState, handleSubmit } = useForm<AuthRequest>()
+	const [type, setType] = useState<'publisher' | 'admin'>('publisher')
 
 	const router = useRouter()
 	const { signIn } = useSession()
 
-	const auth: SubmitHandler<AuthRequest> = async (data) => {
-		const authorized = await signIn(data)
+	const switchType = useCallback(() => {
+		setType(old => (old === 'publisher' ? 'admin' : 'publisher'))
+	}, [])
 
-		if (!authorized) return alert('Usuário ou senha inválidos')
+	const auth: SubmitHandler<AuthRequest> = useCallback(
+		async data => {
+			const authorized = await signIn({ ...data, type })
 
-		router.replace('/publisher')
-	}
+			if (!authorized) return alert('Usuário ou senha inválidos')
+
+			router.replace(`/${type}`)
+		},
+		[type]
+	)
 
 	return (
 		<S.Container>
@@ -30,21 +38,34 @@ const Login = () => {
 				<S.Mask />
 				<SafeAreaView>
 					<S.Content>
-						<S.Title>Publicador</S.Title>
+						<S.TitleContainer>
+							<S.Small>Login</S.Small>
+							<S.Title>{type === 'publisher' ? 'Publicador' : 'Admin'}</S.Title>
+							<S.IconButton onPress={switchType}>
+								<S.Icon name='swap-horizontal-outline' />
+							</S.IconButton>
+						</S.TitleContainer>
 						<Controller
 							control={control}
 							rules={{ required: true }}
-							name='username'
+							name='user'
 							render={({ field: { onChange, onBlur, value } }) => (
-								<Input placeholder='Seu nome' onBlur={onBlur} onChangeText={onChange} value={value} />
+								<Input
+									autoCorrect={false}
+									placeholder='Seu nome'
+									onBlur={onBlur}
+									onChangeText={onChange}
+									value={value}
+								/>
 							)}
 						/>
 						<Controller
 							control={control}
 							rules={{ required: true }}
-							name='passcode'
+							name='pass'
 							render={({ field: { onChange, onBlur, value } }) => (
 								<PasswordInput
+									autoCapitalize={type === 'publisher' ? 'characters' : 'none'}
 									placeholder='Sua senha'
 									onBlur={onBlur}
 									onChangeText={onChange}
@@ -53,11 +74,8 @@ const Login = () => {
 							)}
 						/>
 						<Button loading={formState.isSubmitting} onPress={handleSubmit(auth)}>
-							Entrar
+							Entrar {type === 'publisher' ? '' : 'como admininstrador'}
 						</Button>
-						<Link href='/admin'>
-							<S.Accent>Entrar como admininstrador</S.Accent>
-						</Link>
 					</S.Content>
 				</SafeAreaView>
 			</S.Background>
