@@ -18,11 +18,8 @@ const AssignmentCard = ({ assignment }: AssignmentProps) => {
 				</S.Column>
 				<S.Column>
 					<S.Paragraph>{assignment.map.name}</S.Paragraph>
-					<S.Paragraph>
-						{assignment.map.address.street}, {assignment.map.address.number}
-					</S.Paragraph>
-					<S.Paragraph>{assignment.map.address.district}</S.Paragraph>
-					<S.Paragraph>{assignment.map.address.city}</S.Paragraph>
+					<S.Paragraph>{assignment.map.address}</S.Paragraph>
+					<S.Paragraph>{assignment.map.city.name}</S.Paragraph>
 				</S.Column>
 			</S.Container>
 		</Link>

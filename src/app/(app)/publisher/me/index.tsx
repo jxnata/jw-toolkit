@@ -9,6 +9,7 @@ const PublisherDetails = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal' }} />
 			<S.Content>
+				<S.Icon></S.Icon>
 				<S.Title>{session.data.name}</S.Title>
 				<S.Label>Congregação</S.Label>
 				<S.Paragraph>{session.data.congregation.name}</S.Paragraph>

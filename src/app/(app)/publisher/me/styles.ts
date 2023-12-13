@@ -11,6 +11,12 @@ export const Content = styled.View`
     align-items: center;
     background-color: ${({ theme }) => theme.background};
 `
+export const Icon = styled.Text`
+    font-size: 42px;
+    color: ${({ theme }) => theme.text};
+    padding: 10px 0;
+    font-family: 'jw-icons';
+`
 export const Title = styled.Text`
     font-size: 17px;
     color: ${({ theme }) => theme.text};

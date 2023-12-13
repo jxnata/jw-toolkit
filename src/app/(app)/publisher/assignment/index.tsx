@@ -3,7 +3,6 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef } from 'react'
 import { MapMarker, Marker } from 'react-native-maps'
 import { IAssignment } from 'types/models/Assignment'
-import { getAddressString } from 'utils/get-address-string'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
 import * as S from './styles'
@@ -16,7 +15,6 @@ const AssigmentDetails = () => {
 	const assignment: IAssignment = JSON.parse(data)
 	const region = getMapRegion(assignment.map.coordinates)
 	const marker = getMarkerCoordinate(assignment.map.coordinates)
-	const address = getAddressString(assignment.map.address)
 
 	const onMapReady = () => {
 		if (markerRef && markerRef.current && markerRef.current.showCallout) {
@@ -37,7 +35,7 @@ const AssigmentDetails = () => {
 						key={assignment.map._id}
 						coordinate={marker}
 						title={assignment.map.name}
-						description={address}
+						description={assignment.map.address}
 					/>
 				</S.Map>
 				{!assignment.finished && <AssignmentMapCard assignment={assignment} />}
