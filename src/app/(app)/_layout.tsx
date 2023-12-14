@@ -33,6 +33,7 @@ export default function Layout() {
 				headerTitleAlign: 'center',
 			}}
 		>
+			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/history/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/assignment/index' options={{ presentation: 'modal', headerShown: false }} />
