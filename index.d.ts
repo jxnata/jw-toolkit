@@ -1,7 +1,7 @@
-import Reactotron, { ReactotronReactNative } from 'reactotron-react-native';
+import Reactotron, { ReactotronReactNative } from 'reactotron-react-native'
 
 declare global {
-    interface Console {
-        tron: typeof Reactotron<ReactotronReactNative>;
-    }
+	interface Console {
+		tron: typeof Reactotron<ReactotronReactNative>
+	}
 }
