@@ -4,7 +4,7 @@ import styled from 'styled-components/native'
 export const Container = styled.View`
 	display: flex;
 `
-export const Content = styled.ScrollView`
+export const Content = styled.View`
 	display: flex;
 	padding: 10px;
 	width: 100%;
@@ -54,7 +54,7 @@ export const IconContainer = styled.View`
 export const IconButton = styled.TouchableOpacity``
 export const RefreshControl = styled.RefreshControl``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
-	size: 24,
+    size: 24,
 }))`
 	color: ${({ theme }) => theme.text};
 `

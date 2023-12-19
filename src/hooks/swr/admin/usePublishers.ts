@@ -5,8 +5,15 @@ import { IPublisher } from 'types/models/Publisher'
 
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 
-const usePublishers = () => {
-	const { data, error, mutate } = useSWR('/publishers', fetcher)
+type Props = {
+	all?: boolean,
+	search?: string
+}
+
+const usePublishers = (props?: Props) => {
+	const { all, search } = props || { all: false, search: '' }
+
+	const { data, error, mutate } = useSWR(`/publishers${all ? '/all' : ''}?search=${search}`, fetcher)
 
 	const publishers: IPublisher[] = get(data, 'publishers', [])
 

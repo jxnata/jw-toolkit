@@ -14,7 +14,7 @@ import { ThemeProvider } from 'styled-components/native'
 import { dark, light } from 'themes'
 import { storage } from '../database'
 
-console.tron = Reactotron.configure({ host: '192.168.0.105' }).useReactNative().use(mmkvPlugin({ storage })).connect()
+console.tron = Reactotron.configure({ host: '192.168.0.102' }).useReactNative().use(mmkvPlugin({ storage })).connect()
 
 SplashScreen.preventAutoHideAsync()
 
