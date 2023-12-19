@@ -54,7 +54,7 @@ export const IconContainer = styled.View`
 export const IconButton = styled.TouchableOpacity``
 export const RefreshControl = styled.RefreshControl``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
-    size: 24,
+	size: 24,
 }))`
 	color: ${({ theme }) => theme.text};
 `

@@ -44,7 +44,12 @@ const Publishers = () => {
 					keyExtractor={item => item._id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
-						<S.MenuItem key={item._id}>
+						<S.MenuItem
+							key={item._id}
+							onPress={() =>
+								router.push({ pathname: `/admin/publishers/edit/${item._id}`, params: item })
+							}
+						>
 							<S.IconContainer>
 								<S.Icon>{firstLetter(item.name)}</S.Icon>
 							</S.IconContainer>

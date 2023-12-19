@@ -11,7 +11,7 @@ import { AddPublisherReq, AddPublisherRes } from 'types/api/publishers'
 import * as S from './styles'
 
 const AddPublisher = () => {
-	const { mutate } = usePublishers()
+	const { mutate } = usePublishers({ all: true, search: '' })
 	const [publisherData, setPublisherData] = useState<AddPublisherRes>()
 	const { control, formState, handleSubmit } = useForm<AddPublisherReq>()
 
@@ -59,7 +59,6 @@ const AddPublisher = () => {
 							name='name'
 							render={({ field: { onChange, onBlur, value } }) => (
 								<Input
-									autoCorrect={false}
 									placeholder='Nome do publicador'
 									onBlur={onBlur}
 									onChangeText={onChange}

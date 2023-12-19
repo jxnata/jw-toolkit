@@ -1,24 +1,25 @@
+import Ionicons from '@expo/vector-icons/Ionicons'
 import styled from 'styled-components/native'
 
 export const Button = styled.TouchableOpacity`
-	gap: 5px;
+	width: 60px;
+	height: 60px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	flex: 1;
-	padding: 20px;
 	border-radius: 12px;
-	background: ${({ theme }) => theme.secondary};
+	background: ${({ theme }) => theme.backgroundAlt};
 	font-size: 15px;
 	margin-bottom: 15px;
-`
-export const ButtonTitle = styled.Text`
-	color: ${({ theme }) => theme.primary};
-	font-size: 15px;
-	font-family: 'urbanist-bold';
 `
 export const Loading = styled.ActivityIndicator.attrs(({ theme }) => ({
 	color: theme.primary,
 	size: 'small',
 }))``
+
+export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
+	size: 24,
+}))`
+	color: ${({ theme, color }) => color || theme.text};
+`

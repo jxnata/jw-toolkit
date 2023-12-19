@@ -5,7 +5,7 @@ export const success = (model: string) => {
 	Toast.show({
 		type: 'success',
 		text1: 'Sucesso',
-		text2: `${firstUpper(model)} adicionado com sucesso`,
+		text2: `${firstUpper(model)} removido com sucesso`,
 	})
 }
 
@@ -13,6 +13,6 @@ export const error = (model: string) => {
 	Toast.show({
 		type: 'error',
 		text1: 'Erro',
-		text2: `Erro ao adicionar ${model}`,
+		text2: `Erro ao remover ${model}`,
 	})
 }

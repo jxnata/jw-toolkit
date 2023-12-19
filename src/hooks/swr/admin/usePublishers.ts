@@ -6,7 +6,7 @@ import { IPublisher } from 'types/models/Publisher'
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 
 type Props = {
-	all?: boolean,
+	all?: boolean
 	search?: string
 }
 

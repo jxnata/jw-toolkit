@@ -1,3 +1,9 @@
+export const colors = {
+	success: '#8EFF99',
+	warning: '#FFFF99',
+	error: '#FF9999',
+}
+
 export const light = {
 	background: '#f2efe6',
 	border: '#afab9a',

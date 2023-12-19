@@ -1,16 +1,19 @@
 import { fonts } from 'constants/fonts'
+import { configToast } from 'constants/toast'
 import { SessionProvider } from 'contexts/Auth'
+import { cacheProvider, populateCache } from 'database/cache/provider'
 import { useFonts } from 'expo-font'
-import { Slot } from 'expo-router'
+import { Slot, usePathname } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useColorScheme } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import Reactotron from 'reactotron-react-native'
 import mmkvPlugin from 'reactotron-react-native-mmkv'
 import { ThemeProvider } from 'styled-components/native'
+import { SWRConfig } from 'swr'
 import { dark, light } from 'themes'
 import { storage } from '../database'
 
@@ -21,6 +24,10 @@ SplashScreen.preventAutoHideAsync()
 export default function Layout() {
 	const scheme = useColorScheme()
 	const [isLoaded] = useFonts(fonts)
+	const config = configToast(scheme)
+	const path = usePathname()
+
+	useEffect(populateCache, [path])
 
 	const handleOnLayout = useCallback(async () => {
 		if (isLoaded) await SplashScreen.hideAsync()
@@ -33,10 +40,12 @@ export default function Layout() {
 			<SessionProvider>
 				<ThemeProvider theme={scheme === 'dark' ? dark : light}>
 					<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-					<Slot />
+					<SWRConfig value={{ provider: cacheProvider }}>
+						<Slot />
+					</SWRConfig>
 				</ThemeProvider>
 			</SessionProvider>
-			<Toast position='bottom' />
+			<Toast position='bottom' config={config} />
 		</SafeAreaProvider>
 	)
 }
