@@ -1,8 +1,8 @@
 import get from 'lodash/get'
-import { publisherApi } from 'services/api/publisher'
+import { api } from 'services/api/main'
 import useSWR from 'swr'
 
-const fetcher = (url: string) => publisherApi.get(url).then((res) => res.data)
+const fetcher = (url: string) => api.get(url).then((res) => res.data)
 
 type IResume = {
     publishers: number

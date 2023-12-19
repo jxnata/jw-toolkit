@@ -1,5 +1,5 @@
 import { useSession } from 'contexts/Auth'
-import { Stack, useRouter } from 'expo-router'
+import { Link, Stack, useRouter } from 'expo-router'
 import useResume from 'hooks/swr/admin/useResume'
 import { useCallback } from 'react'
 import * as S from './styles'
@@ -27,15 +27,17 @@ const Admin = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: session.data.congregation.name, headerRight: HeaderRight }} />
 			<S.Content>
-				<S.MenuItem>
-					<S.Column>
-						<S.Icon></S.Icon>
-						<S.MenuTitle>Publicadores</S.MenuTitle>
-					</S.Column>
-					<S.Column>
-						<S.MenuNumber>{resume.publishers || ''}</S.MenuNumber>
-					</S.Column>
-				</S.MenuItem>
+				<Link href='/admin/publishers' asChild>
+					<S.MenuItem>
+						<S.Column>
+							<S.Icon></S.Icon>
+							<S.MenuTitle>Publicadores</S.MenuTitle>
+						</S.Column>
+						<S.Column>
+							<S.MenuNumber>{resume.publishers || ''}</S.MenuNumber>
+						</S.Column>
+					</S.MenuItem>
+				</Link>
 				<S.MenuItem>
 					<S.Column>
 						<S.Icon></S.Icon>

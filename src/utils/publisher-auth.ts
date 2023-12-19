@@ -1,5 +1,5 @@
 import { get } from "lodash"
-import { publisherApi } from "services/api/publisher"
+import { api } from "services/api/main"
 import { PublisherAuthRequest } from "types/auth/publisher"
 import { IPublisher } from "types/models/Publisher"
 import { normalizeUsername } from "./normalize-username"
@@ -7,7 +7,7 @@ import { normalizeUsername } from "./normalize-username"
 export const publisherAuth = async ({ username, passcode }: PublisherAuthRequest) => {
     try {
 
-        const authResult = await publisherApi.post('/auth/publishers', { username: normalizeUsername(username), passcode })
+        const authResult = await api.post('/auth/publishers', { username: normalizeUsername(username), passcode })
 
         const publisher: IPublisher = get(authResult, 'data.publisher', undefined)
         const token: string = get(authResult, 'data.token', undefined)
