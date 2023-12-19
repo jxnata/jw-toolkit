@@ -7,7 +7,7 @@ const PasswordInput = (props: TextInputProps) => {
 	const [show, setShow] = useState(false)
 
 	const toggleShow = useCallback(() => {
-		setShow((old) => !old)
+		setShow(old => !old)
 	}, [])
 
 	return (

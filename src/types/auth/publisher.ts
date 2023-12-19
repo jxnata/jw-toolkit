@@ -1,4 +1,4 @@
 export type PublisherAuthRequest = {
-    username: string,
-    passcode: string
+	username: string
+	passcode: string
 }

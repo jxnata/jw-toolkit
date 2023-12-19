@@ -1,6 +1,5 @@
-
 export type AuthStorage = {
-    token: string,
-    type: 'publisher' | 'admin',
-    data: string
+	token: string
+	type: 'publisher' | 'admin'
+	data: string
 }

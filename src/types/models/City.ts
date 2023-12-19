@@ -1,5 +1,5 @@
 export type ICity = {
-    _id: string
-    name: string
-    created_at: string
+	_id: string
+	name: string
+	created_at: string
 }

@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useCallback } from 'react'
 import { useColorScheme } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import Toast from 'react-native-toast-message'
 import Reactotron from 'reactotron-react-native'
 import mmkvPlugin from 'reactotron-react-native-mmkv'
 import { ThemeProvider } from 'styled-components/native'
@@ -35,6 +36,7 @@ export default function Layout() {
 					<Slot />
 				</ThemeProvider>
 			</SessionProvider>
+			<Toast position='bottom' />
 		</SafeAreaProvider>
 	)
 }
