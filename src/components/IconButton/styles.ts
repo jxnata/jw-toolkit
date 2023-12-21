@@ -2,8 +2,8 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import styled from 'styled-components/native'
 
 export const Button = styled.TouchableOpacity`
-	width: 60px;
-	height: 60px;
+	width: 50px;
+	height: 50px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;

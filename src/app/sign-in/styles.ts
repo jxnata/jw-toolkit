@@ -44,6 +44,11 @@ export const TitleContainer = styled.View`
 	justify-content: space-between;
 	margin-bottom: 15px;
 `
+export const Row = styled.View`
+	gap: 5px;
+	flex-direction: row;
+	justify-content: center;
+`
 export const IconButton = styled.TouchableOpacity``
 export const Icon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,

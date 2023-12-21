@@ -73,9 +73,11 @@ const Login = () => {
 								/>
 							)}
 						/>
-						<Button loading={formState.isSubmitting} onPress={handleSubmit(auth)}>
-							Entrar {type === 'publisher' ? '' : 'como admininstrador'}
-						</Button>
+						<S.Row>
+							<Button loading={formState.isSubmitting} onPress={handleSubmit(auth)}>
+								Entrar {type === 'publisher' ? '' : 'como admininstrador'}
+							</Button>
+						</S.Row>
 					</S.Content>
 				</SafeAreaView>
 			</S.Background>
