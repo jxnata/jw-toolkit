@@ -38,15 +38,17 @@ const Admin = () => {
 						</S.Column>
 					</S.MenuItem>
 				</Link>
-				<S.MenuItem>
-					<S.Column>
-						<S.Icon></S.Icon>
-						<S.MenuTitle>Mapas</S.MenuTitle>
-					</S.Column>
-					<S.Column>
-						<S.MenuNumber>{resume.maps || ''}</S.MenuNumber>
-					</S.Column>
-				</S.MenuItem>
+				<Link href='/admin/maps' asChild>
+					<S.MenuItem>
+						<S.Column>
+							<S.Icon></S.Icon>
+							<S.MenuTitle>Mapas</S.MenuTitle>
+						</S.Column>
+						<S.Column>
+							<S.MenuNumber>{resume.maps || ''}</S.MenuNumber>
+						</S.Column>
+					</S.MenuItem>
+				</Link>
 				<S.MenuItem>
 					<S.Column>
 						<S.Icon></S.Icon>

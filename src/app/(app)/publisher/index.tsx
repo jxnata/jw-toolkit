@@ -1,4 +1,4 @@
-import AssignmentCard from 'components/AssignmentCard'
+import AssignmentCard from 'components/AssignmentItem'
 import { Stack, useRouter } from 'expo-router'
 import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
 import { useCallback } from 'react'
