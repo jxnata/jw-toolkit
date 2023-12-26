@@ -86,10 +86,8 @@ const EditMap = () => {
 						<Input
 							defaultValue={getCoordinates(value)}
 							placeholder='Coordenadas'
-							onBlur={e => {
-								onBlur()
-								onChange(setCoordinates(e.nativeEvent.text))
-							}}
+							onBlur={onBlur}
+							onChangeText={text => onChange(setCoordinates(text))}
 							editable={!formState.isSubmitting}
 						/>
 					)}

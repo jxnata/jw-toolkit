@@ -1,5 +1,5 @@
 export const setCoordinates = (text: string) => {
-	const cleaned = text.replace(/[^\d,\-]/g, '')
+	const cleaned = text.replace(/[^\d,\-.]/g, '')
 
 	const [latitudeStr = '', longitudeStr = ''] = cleaned.split(',');
 

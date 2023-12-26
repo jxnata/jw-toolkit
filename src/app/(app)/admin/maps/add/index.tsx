@@ -71,10 +71,8 @@ const AddMap = () => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
 							placeholder='Coordenadas'
-							onBlur={e => {
-								onBlur()
-								onChange(setCoordinates(e.nativeEvent.text))
-							}}
+							onBlur={onBlur}
+							onChangeText={text => onChange(setCoordinates(text))}
 							editable={!formState.isSubmitting}
 						/>
 					)}
