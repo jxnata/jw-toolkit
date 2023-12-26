@@ -1,16 +1,18 @@
 import Button from 'components/Button'
 import Dropdown from 'components/Dropdown'
-import { Stack, useLocalSearchParams } from 'expo-router'
+import { Stack, router, useLocalSearchParams } from 'expo-router'
 import useAssignments from 'hooks/swr/admin/useAssignments'
 import useMap from 'hooks/swr/admin/useMap'
 import usePublishers from 'hooks/swr/admin/usePublishers'
 import { error, success } from 'messages/add'
-import { useMemo } from 'react'
+import { error as removeError, success as removeSuccess } from 'messages/delete'
+import { useCallback, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Dimensions } from 'react-native'
+import { Alert, Dimensions } from 'react-native'
 import { Marker } from 'react-native-maps'
 import QRCode from 'react-native-qrcode-svg'
 import { add } from 'services/assignments/add'
+import { remove } from 'services/maps/remove'
 import { AddAssignmentReq } from 'types/api/assignments'
 import { IMap } from 'types/models/Map'
 import { formatDate } from 'utils/date-format'
@@ -44,9 +46,53 @@ const ViewMap = () => {
 		error('designação')
 	}
 
+	const deleteMap = async () => {
+		const result = await remove(params._id)
+
+		if (result) {
+			removeSuccess('mapa')
+			mutate()
+			router.back()
+			return
+		}
+
+		removeError('mapa')
+	}
+
+	const showDeleteAlert = () =>
+		Alert.alert(
+			'Excluir',
+			'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.',
+			[
+				{
+					text: 'Cancelar',
+					style: 'cancel',
+				},
+				{
+					text: 'Sim, excluir',
+					onPress: () => deleteMap(),
+					style: 'default',
+				},
+			]
+		)
+
+	const HeaderRight = useCallback(
+		() => (
+			<S.HeaderContainer>
+				<S.IconButton onPress={() => router.replace(`/admin/maps/${params._id}/edit`)}>
+					<S.Ionicon name='create-outline' />
+				</S.IconButton>
+				<S.IconButton onPress={showDeleteAlert}>
+					<S.Ionicon name='trash-outline' />
+				</S.IconButton>
+			</S.HeaderContainer>
+		),
+		[]
+	)
+
 	return (
 		<S.Container>
-			<Stack.Screen options={{ title: params.name }} />
+			<Stack.Screen options={{ title: params.name, headerRight: HeaderRight }} />
 			<S.Content>
 				<S.DetailsContainer>
 					{!!map && (
@@ -104,7 +150,7 @@ const ViewMap = () => {
 									</S.Columm>
 									<S.Columm>
 										{typeof assignments[0].publisher === 'object' && (
-											<S.Paragraph>{assignments[0].publisher?.name}</S.Paragraph>
+											<S.ParagraphSpace>{assignments[0].publisher?.name}</S.ParagraphSpace>
 										)}
 									</S.Columm>
 								</S.Row>

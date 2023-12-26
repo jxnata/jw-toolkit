@@ -77,7 +77,6 @@ const EditPublisher = () => {
 			[
 				{
 					text: 'Cancelar',
-					// onPress: () => {},
 					style: 'cancel',
 				},
 				{
@@ -95,7 +94,6 @@ const EditPublisher = () => {
 			[
 				{
 					text: 'Cancelar',
-					// onPress: () => {},
 					style: 'cancel',
 				},
 				{

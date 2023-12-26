@@ -47,7 +47,7 @@ const Maps = () => {
 						<MapItem
 							key={item._id}
 							map={item}
-							onPress={() => router.push({ pathname: `/admin/maps/view/${item._id}`, params: item })}
+							onPress={() => router.push({ pathname: `/admin/maps/${item._id}`, params: item })}
 						/>
 					)}
 				/>

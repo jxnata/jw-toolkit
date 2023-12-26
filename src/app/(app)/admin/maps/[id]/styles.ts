@@ -34,11 +34,9 @@ export const Row = styled.View`
 	flex-direction: row;
 `
 export const DetailsContainer = styled.View`
-	flex: 1;
 	gap: 15px;
 `
 export const MapContainer = styled.View`
-	flex: 1;
 	border-radius: 12px;
 	overflow: hidden;
 `
@@ -47,6 +45,9 @@ export const Paragraph = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-family: 'urbanist-medium';
 	flex-wrap: wrap;
+`
+export const ParagraphSpace = styled(Paragraph)`
+	padding-bottom: 10px;
 `
 export const ParagraphWrap = styled.Text`
 	font-size: 15px;
@@ -70,6 +71,14 @@ export const Map = styled(MapView)`
 	width: 100%;
 	height: 100%;
 `
+export const HeaderContainer = styled.View`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+`
+export const IconButton = styled.TouchableOpacity``
 export const ShareIcon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`
@@ -77,4 +86,9 @@ export const ShareIcon = styled(Ionicons).attrs(({ theme }) => ({
 	top: 10px;
 	right: 10px;
 	color: ${({ theme }) => theme.textAlt};
+`
+export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
+	size: 24,
+}))`
+	color: ${({ theme }) => theme.text};
 `
