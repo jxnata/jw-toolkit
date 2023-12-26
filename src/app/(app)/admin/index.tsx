@@ -58,15 +58,17 @@ const Admin = () => {
 						<S.MenuNumber>{resume.assignments || ''}</S.MenuNumber>
 					</S.Column>
 				</S.MenuItem>
-				<S.MenuItem>
-					<S.Column>
-						<S.Icon></S.Icon>
-						<S.MenuTitle>Cidades</S.MenuTitle>
-					</S.Column>
-					<S.Column>
-						<S.MenuNumber>{resume.cities || ''}</S.MenuNumber>
-					</S.Column>
-				</S.MenuItem>
+				<Link href='/admin/cities' asChild>
+					<S.MenuItem>
+						<S.Column>
+							<S.Icon></S.Icon>
+							<S.MenuTitle>Cidades</S.MenuTitle>
+						</S.Column>
+						<S.Column>
+							<S.MenuNumber>{resume.cities || ''}</S.MenuNumber>
+						</S.Column>
+					</S.MenuItem>
+				</Link>
 			</S.Content>
 		</S.Container>
 	)
