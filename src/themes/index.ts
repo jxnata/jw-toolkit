@@ -3,8 +3,8 @@ export const colors = {
 	warning: '#FFFF99',
 	error: '#FF9999',
 	successAlt: '#3b663f',
-	warningAlt: '#8e8e57',
-	errorAlt: '#724545'
+	warningAlt: '#7c6f15',
+	errorAlt: '#822a2a'
 }
 
 export const light = {
@@ -16,7 +16,12 @@ export const light = {
 	primary: '#BB7424',
 	secondary: '#F0D9BE',
 	tertiary: '#A66720',
-	...colors
+	success: colors.successAlt,
+	warning: colors.warningAlt,
+	error: colors.errorAlt,
+	successAlt: colors.success,
+	warningAlt: colors.warning,
+	errorAlt: colors.error
 }
 
 export const dark = {
@@ -28,5 +33,12 @@ export const dark = {
 	primary: '#BB7424',
 	secondary: '#F0D9BE',
 	tertiary: '#A66720',
-	...colors
+	success: colors.success,
+	warning: colors.warning,
+	error: colors.error,
+	successAlt: colors.successAlt,
+	warningAlt: colors.warningAlt,
+	errorAlt: colors.errorAlt
 }
+
+export default { dark, light }

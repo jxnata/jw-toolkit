@@ -89,5 +89,5 @@ export const EditIcon = styled(Ionicons).attrs(({ theme }) => ({
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 40,
 }))`
-	/* color: ${({ theme }) => theme.text}; */
+	color: ${(props) => props["aria-valuetext"] === 'permanent' ? props.theme.warning : props["aria-valuetext"] === 'assigned' ? props.theme.error : props.theme.success};
 `

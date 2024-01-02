@@ -3,7 +3,7 @@ import { useSession } from 'contexts/Auth'
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect, Stack } from 'expo-router'
 import { useColorScheme } from 'react-native'
-import { dark, light } from 'themes'
+import theme from 'themes'
 
 export default function Layout() {
 	const scheme = useColorScheme()
@@ -24,13 +24,14 @@ export default function Layout() {
 		<Stack
 			screenOptions={{
 				headerStyle: {
-					backgroundColor: { dark, light }[scheme].background,
+					backgroundColor: theme[scheme].background,
 				},
 				headerShadowVisible: false,
-				headerTintColor: { dark, light }[scheme].text,
+				headerTintColor: theme[scheme].text,
 				headerTitleStyle: { fontFamily: 'urbanist-bold' },
 				headerBackTitleVisible: false,
 				headerTitleAlign: 'center',
+				contentStyle: { backgroundColor: theme[scheme].background },
 			}}
 		>
 			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />

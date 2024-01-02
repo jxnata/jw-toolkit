@@ -53,7 +53,16 @@ const Publishers = () => {
 							<S.IconContainer>
 								<S.Icon>{firstLetter(item.name)}</S.Icon>
 							</S.IconContainer>
-							<S.MenuTitle>{item.name}</S.MenuTitle>
+							<S.MenuContent>
+								<S.MenuTitle>{item.name}</S.MenuTitle>
+								<S.BadgeContainer>
+									{item.privileges.map(p => (
+										<S.Badge key={p}>
+											<S.BadgeText>{p.toUpperCase()}</S.BadgeText>
+										</S.Badge>
+									))}
+								</S.BadgeContainer>
+							</S.MenuContent>
 						</S.MenuItem>
 					)}
 				/>

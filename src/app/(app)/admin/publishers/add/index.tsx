@@ -1,7 +1,9 @@
 import Button from 'components/Button'
 import Input from 'components/Input'
+import { DEFAULT_PRIVILEGES } from 'constants/content'
 import { Stack } from 'expo-router'
 import usePublishers from 'hooks/swr/admin/usePublishers'
+import useCheckbox from 'hooks/useCheckbox'
 import { error, success } from 'messages/add'
 import { useCallback, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
@@ -14,6 +16,7 @@ const AddPublisher = () => {
 	const { mutate } = usePublishers({ all: true, search: '' })
 	const [publisherData, setPublisherData] = useState<AddPublisherRes>()
 	const { control, formState, handleSubmit } = useForm<AddPublisherReq>()
+	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES)
 
 	const save: SubmitHandler<AddPublisherReq> = async data => {
 		const result = await add(data)
@@ -65,6 +68,14 @@ const AddPublisher = () => {
 									value={value}
 									editable={!publisherData}
 								/>
+							)}
+						/>
+						<Controller
+							control={control}
+							rules={{ required: true }}
+							name='privileges'
+							render={({ field: { onChange, onBlur, value } }) => (
+								<CheckboxComponent onChange={onChange} />
 							)}
 						/>
 						<Button

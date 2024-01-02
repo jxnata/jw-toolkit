@@ -30,12 +30,33 @@ export const MenuItem = styled.TouchableOpacity`
 	padding: 10px;
 	gap: 5px;
 `
-
+export const MenuContent = styled.View`
+	flex-direction: column;
+	padding-left: 10px;
+	align-items: flex-start;
+	gap: 2px;
+`
+export const BadgeContainer = styled.View`
+	flex-direction: row;
+	align-items: center;
+	gap: 2px;
+`
 export const MenuTitle = styled.Text`
 	font-size: 15px;
 	color: ${({ theme }) => theme.text};
-	padding-left: 10px;
 	font-family: 'urbanist-semibold';
+`
+export const BadgeText = styled.Text`
+	font-size: 10px;
+	color: ${({ theme }) => theme.text};
+	font-family: 'urbanist-bold';
+`
+export const Badge = styled.View`
+	flex-direction: row;
+	background: ${({ theme }) => theme.background}50;
+	padding: 2px 5px 2px 5px;
+	border-radius: 3px;
+	gap: 5px;
 `
 export const Icon = styled.Text`
 	font-size: 24px;

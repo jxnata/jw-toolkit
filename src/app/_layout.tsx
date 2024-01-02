@@ -14,7 +14,7 @@ import Reactotron from 'reactotron-react-native'
 import mmkvPlugin from 'reactotron-react-native-mmkv'
 import { ThemeProvider } from 'styled-components/native'
 import { SWRConfig } from 'swr'
-import { dark, light } from 'themes'
+import theme from 'themes'
 import { storage } from '../database'
 
 console.tron = Reactotron.configure({ host: '192.168.0.102' }).useReactNative().use(mmkvPlugin({ storage })).connect()
@@ -38,7 +38,7 @@ export default function Layout() {
 	return (
 		<SafeAreaProvider onLayout={handleOnLayout}>
 			<SessionProvider>
-				<ThemeProvider theme={scheme === 'dark' ? dark : light}>
+				<ThemeProvider theme={theme[scheme]}>
 					<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
 					<SWRConfig value={{ provider: cacheProvider }}>
 						<Slot />

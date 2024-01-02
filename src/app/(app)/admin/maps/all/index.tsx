@@ -3,7 +3,6 @@ import { Link, Stack } from 'expo-router'
 import useMaps from 'hooks/swr/admin/useMaps'
 import { useCallback, useEffect, useState } from 'react'
 import { Marker } from 'react-native-maps'
-import { colors } from 'themes'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
 import * as S from './styles'
@@ -28,25 +27,6 @@ const AllMaps = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Mapas da congregação' }} />
 			<S.Content>
-				{/* <S.DetailsContainer>
-					{!!map && (
-						<S.Row>
-							<S.Columm>
-								<S.Paragraph>{map.name}</S.Paragraph>
-								<S.ParagraphWrap numberOfLines={3} ellipsizeMode='tail'>
-									{map.address}, {map.city.name}
-								</S.ParagraphWrap>
-								{typeof map.last_visited_by === 'object' ? (
-									<S.Small>
-										Visitado por {map.last_visited_by.name} em {formatDate(map.last_visited)}
-									</S.Small>
-								) : (
-									<S.Small>Ainda não visitado</S.Small>
-								)}
-							</S.Columm>
-						</S.Row>
-					)}
-				</S.DetailsContainer> */}
 				<S.MapContainer>
 					<S.Map showsUserLocation region={location}>
 						{maps.map(map => (
@@ -58,12 +38,12 @@ const AllMaps = () => {
 							>
 								<S.Ionicon
 									name='location'
-									color={
+									aria-valuetext={
 										map.assigned
 											? map.assigned.permanent
-												? colors.warning
-												: colors.error
-											: colors.success
+												? 'permanent'
+												: 'assigned'
+											: 'unassigned'
 									}
 								/>
 								<S.MarkerCallout tooltip>

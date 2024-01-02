@@ -1,9 +1,11 @@
 import Button from 'components/Button'
 import IconButton from 'components/IconButton'
 import Input from 'components/Input'
+import { DEFAULT_PRIVILEGES } from 'constants/content'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import usePublisher from 'hooks/swr/admin/usePublisher'
 import usePublishers from 'hooks/swr/admin/usePublishers'
+import useCheckbox from 'hooks/useCheckbox'
 import { error as removeError, success as removeSuccess } from 'messages/delete'
 import { error, success } from 'messages/edit'
 import { error as resetError, success as resetSuccess } from 'messages/reset'
@@ -24,6 +26,7 @@ const EditPublisher = () => {
 	const { mutate } = usePublishers({ all: true, search: '' })
 	const [publisherData, setPublisherData] = useState<ResetPublisherRes>()
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({ defaultValues: { name: params.name } })
+	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES)
 
 	const save: SubmitHandler<EditPublisherReq> = async data => {
 		const result = await edit(publisher._id, data)
@@ -135,6 +138,14 @@ const EditPublisher = () => {
 									value={value}
 									editable={!publisherData}
 								/>
+							)}
+						/>
+						<Controller
+							control={control}
+							rules={{ required: true }}
+							name='privileges'
+							render={({ field: { onChange, onBlur, value } }) => (
+								<CheckboxComponent onChange={onChange} />
 							)}
 						/>
 						<S.Row>
