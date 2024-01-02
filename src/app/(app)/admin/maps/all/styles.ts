@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions } from 'react-native'
-import MapView from 'react-native-maps'
+import MapView, { Callout } from 'react-native-maps'
 import styled from 'styled-components/native'
 
 const screenWidth = Dimensions.get('screen').width
@@ -9,20 +9,18 @@ export const Container = styled.View`
 	display: flex;
 `
 export const Content = styled.View`
-	padding: 10px;
 	width: 100%;
 	height: 100%;
 	background-color: ${({ theme }) => theme.background};
 `
-export const DataContainer = styled.TouchableOpacity`
-	padding: 15px;
-	width: 100%;
-	gap: 10px;
-	border-radius: 10px;
-	margin-bottom: 10px;
-	flex-direction: column;
-	align-items: flex-start;
-	background-color: ${({ theme }) => theme.backgroundAlt};
+export const AssignLink = styled.Text`
+	font-size: 15px;
+	color: ${({ theme }) => theme.primary};
+	font-family: 'urbanist-bold';
+	flex-wrap: wrap;
+	align-self: center;
+	text-align: center;
+	padding: 5px 0 ;
 `
 export const Columm = styled.View`
 	gap: 5px;
@@ -32,11 +30,13 @@ export const Row = styled.View`
 	gap: 10px;
 	flex-direction: row;
 `
-export const DetailsContainer = styled.View`
-	gap: 15px;
+export const MarkerCallout = styled(Callout)`
+	padding: 10px;
+	border-radius: 10px;
+	background: ${({ theme }) => theme.background};
+	width: ${screenWidth / 2}px;
 `
 export const MapContainer = styled.View`
-	border-radius: 12px;
 	overflow: hidden;
 `
 export const Paragraph = styled.Text`
@@ -64,7 +64,6 @@ export const Small = styled.Text`
 	color: ${({ theme }) => theme.textAlt};
 	font-size: 12px;
 	font-family: 'urbanist-regular';
-	padding-top: 5px;
 `
 export const Map = styled(MapView)`
 	width: 100%;
@@ -77,9 +76,18 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 10px;
 `
-export const IconButton = styled.TouchableOpacity``
-export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
-	size: 24,
+export const IconButton = styled.TouchableOpacity`
+	position: absolute;
+	top: 5px;
+	right: 7px;
+`
+export const EditIcon = styled(Ionicons).attrs(({ theme }) => ({
+	size: 18,
 }))`
-	color: ${({ theme }) => theme.text};
+	color: ${({ theme }) => theme.textAlt};
+`
+export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
+	size: 40,
+}))`
+	/* color: ${({ theme }) => theme.text}; */
 `

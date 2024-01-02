@@ -5,17 +5,18 @@ import { IMap } from 'types/models/Map'
 
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 
-const useMap = (id: string) => {
-	const { data, error, mutate } = useSWR(`/maps/view/${id}`, fetcher)
+const useUnassignedMaps = () => {
 
-	const map: IMap = get(data, 'map', undefined)
+	const { data, error, mutate } = useSWR(`/maps/unassigned`, fetcher)
+
+	const maps: IMap[] = get(data, 'maps', [])
 
 	return {
-		map,
+		maps,
 		loading: !error && !data,
 		error: error,
 		mutate,
 	}
 }
 
-export default useMap
+export default useUnassignedMaps

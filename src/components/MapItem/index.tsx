@@ -11,6 +11,15 @@ interface MapProps {
 const MapItem = ({ map, onPress }: MapProps) => {
 	return (
 		<S.Container onPress={onPress}>
+			{!!map.assigned ? (
+				<S.StatusAssigned>
+					<S.AssignedText>DESIGNADO</S.AssignedText>
+				</S.StatusAssigned>
+			) : (
+				<S.StatusUnassigned>
+					<S.UnassignedText>LIVRE</S.UnassignedText>
+				</S.StatusUnassigned>
+			)}
 			<S.Column>
 				<S.Image resizeMode='contain' source={{ uri: mapImage(map.coordinates) }} />
 			</S.Column>

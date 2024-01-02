@@ -1,6 +1,7 @@
 export type AddAssignmentReq = {
 	publisher: string
 	map: string
+	permanent: boolean
 }
 
 export type AddAssignmentRes = {
@@ -10,6 +11,8 @@ export type AddAssignmentRes = {
 export type EditAssignmentReq = {
 	publisher: string
 	map: string
+	details: string
+	permanent: boolean
 }
 
 export type EditAssignmentRes = {

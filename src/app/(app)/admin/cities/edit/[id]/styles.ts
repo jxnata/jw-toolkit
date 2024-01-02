@@ -1,4 +1,3 @@
-import Ionicons from '@expo/vector-icons/Ionicons'
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
@@ -34,12 +33,4 @@ export const Label = styled.Text`
 	font-size: 15px;
 	color: ${({ theme }) => theme.text};
 	font-family: 'urbanist-bold';
-`
-export const ShareIcon = styled(Ionicons).attrs(({ theme }) => ({
-	size: 24,
-}))`
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	color: ${({ theme }) => theme.textAlt};
 `

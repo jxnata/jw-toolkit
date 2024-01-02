@@ -49,15 +49,17 @@ const Admin = () => {
 						</S.Column>
 					</S.MenuItem>
 				</Link>
-				<S.MenuItem>
-					<S.Column>
-						<S.Icon></S.Icon>
-						<S.MenuTitle>Designações</S.MenuTitle>
-					</S.Column>
-					<S.Column>
-						<S.MenuNumber>{resume.assignments || ''}</S.MenuNumber>
-					</S.Column>
-				</S.MenuItem>
+				<Link href='/admin/assignments' asChild>
+					<S.MenuItem>
+						<S.Column>
+							<S.Icon></S.Icon>
+							<S.MenuTitle>Designações</S.MenuTitle>
+						</S.Column>
+						<S.Column>
+							<S.MenuNumber>{resume.assignments || ''}</S.MenuNumber>
+						</S.Column>
+					</S.MenuItem>
+				</Link>
 				<Link href='/admin/cities' asChild>
 					<S.MenuItem>
 						<S.Column>

@@ -28,8 +28,17 @@ const PublisherHome = () => {
 			<Stack.Screen options={{ title: 'Designações', headerRight: HeaderRight }} />
 			<S.Content>
 				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
-				{assigments.map(assigment => (
-					<AssignmentCard key={assigment._id} assignment={assigment} />
+				{assigments.map(assignment => (
+					<AssignmentCard
+						key={assignment._id}
+						assignment={assignment}
+						onPress={() =>
+							router.push({
+								pathname: '/publisher/assignment',
+								params: { data: JSON.stringify(assignment) },
+							})
+						}
+					/>
 				))}
 				{!assigments.length && !loading && <S.Paragraph>Nenhuma designação</S.Paragraph>}
 			</S.Content>

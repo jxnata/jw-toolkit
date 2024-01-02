@@ -1,4 +1,7 @@
+import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
+
+const screenWidth = Dimensions.get('screen').width
 
 export const Container = styled.TouchableOpacity`
 	display: flex;
@@ -22,6 +25,12 @@ export const Paragraph = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-size: 15px;
 	font-family: 'urbanist-medium';
+`
+export const ParagraphAlt = styled(Paragraph)`
+	color: ${({ theme }) => theme.textAlt};
+`
+export const ParagraphAddress = styled(Paragraph)`
+	width: ${screenWidth - 10 - 10 - 10 - 80 - 20}px;
 `
 export const Small = styled.Text`
 	position: absolute;

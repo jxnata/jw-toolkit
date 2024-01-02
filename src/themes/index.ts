@@ -2,6 +2,9 @@ export const colors = {
 	success: '#8EFF99',
 	warning: '#FFFF99',
 	error: '#FF9999',
+	successAlt: '#3b663f',
+	warningAlt: '#8e8e57',
+	errorAlt: '#724545'
 }
 
 export const light = {
@@ -13,6 +16,7 @@ export const light = {
 	primary: '#BB7424',
 	secondary: '#F0D9BE',
 	tertiary: '#A66720',
+	...colors
 }
 
 export const dark = {
@@ -24,4 +28,5 @@ export const dark = {
 	primary: '#BB7424',
 	secondary: '#F0D9BE',
 	tertiary: '#A66720',
+	...colors
 }
