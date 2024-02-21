@@ -13,6 +13,9 @@ const AssigmentDetails = () => {
 	const markerRef = useRef<MapMarker>(null)
 
 	const assignment: IAssignment = JSON.parse(data)
+
+	if (typeof assignment.map === 'string') return <></>
+
 	const region = getMapRegion(assignment.map.coordinates)
 	const marker = getMarkerCoordinate(assignment.map.coordinates)
 
