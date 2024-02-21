@@ -3,6 +3,7 @@ import Dropdown from 'components/Dropdown'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import useAssignments from 'hooks/swr/admin/useAssignments'
 import useMap from 'hooks/swr/admin/useMap'
+import useMaps from 'hooks/swr/admin/useMaps'
 import usePublishers from 'hooks/swr/admin/usePublishers'
 import { error, success } from 'messages/add'
 import { error as removeError, success as removeSuccess } from 'messages/delete'
@@ -26,6 +27,7 @@ const ViewMap = () => {
 	const params: Partial<IMap> = useLocalSearchParams()
 	const { map, mutate } = useMap(params._id)
 	const { assignments, mutate: mutateAssignments } = useAssignments({ map: params._id })
+	const { mutate: mutateMaps } = useMaps({ search: '' })
 	const { publishers } = usePublishers({ all: true })
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: params._id } })
 
@@ -39,6 +41,7 @@ const ViewMap = () => {
 		if (result) {
 			success('designação')
 			mutate()
+			mutateMaps()
 			mutateAssignments()
 			return
 		}
@@ -106,7 +109,7 @@ const ViewMap = () => {
 									<S.ParagraphWrap numberOfLines={3} ellipsizeMode='tail'>
 										{map.address}, {map.city.name}
 									</S.ParagraphWrap>
-									{typeof map.last_visited_by === 'object' ? (
+									{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
 										<S.Small>
 											Visitado por {map.last_visited_by.name} em {formatDate(map.last_visited)}
 										</S.Small>

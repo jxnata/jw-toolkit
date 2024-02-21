@@ -47,13 +47,18 @@ export const Button = styled.TouchableOpacity`
 	margin-bottom: 15px;
 `
 export const ButtonPositive = styled(Button)`
-	background: #4caf50;
+	background: ${({ theme }) => theme.success};
 `
 export const ButtonNegative = styled(Button)`
-	background: #ff5252;
+	background:${({ theme }) => theme.error};
 `
-export const ButtonTitle = styled.Text`
-	color: ${({ theme }) => theme.text};
+export const ButtonTitlePositive = styled.Text`
+	color: ${({ theme }) => theme.successAlt};
+	font-size: 15px;
+	font-family: 'urbanist-bold';
+`
+export const ButtonTitleNegative = styled.Text`
+	color: ${({ theme }) => theme.errorAlt};
 	font-size: 15px;
 	font-family: 'urbanist-bold';
 `

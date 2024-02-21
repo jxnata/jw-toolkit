@@ -6,7 +6,7 @@ import { IAssignment } from 'types/models/Assignment'
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 
 const useHistoryAssignments = () => {
-	const { data, error, mutate } = useSWR('/assignments/my/history', fetcher)
+	const { data, error, mutate } = useSWR('/assignments/history', fetcher)
 
 	const assigments: IAssignment[] = get(data, 'assignments', [])
 

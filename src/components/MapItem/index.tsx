@@ -28,7 +28,7 @@ const MapItem = ({ map, onPress }: MapProps) => {
 				<S.Paragraph numberOfLines={2} ellipsizeMode='tail'>
 					{map.address}, {map.city.name}
 				</S.Paragraph>
-				{typeof map.last_visited_by === 'object' ? (
+				{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
 					<S.Small>
 						Visitado por {map.last_visited_by.name} em {formatDate(map.last_visited)}
 					</S.Small>

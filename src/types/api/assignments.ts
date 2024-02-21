@@ -19,6 +19,15 @@ export type EditAssignmentRes = {
 	assignment: string
 }
 
+export type FinishAssignmentReq = {
+	found: boolean
+	details?: string
+}
+
+export type FinishAssignmentRes = {
+	assignment: string
+}
+
 export type RemoveAssignmentReq = string
 
 export type RemoveAssignmentRes = {

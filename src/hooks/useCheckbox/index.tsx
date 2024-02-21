@@ -5,8 +5,8 @@ type CheckboxComponentProps = {
 	onChange: () => void
 }
 
-const useCheckbox = (options: string[]) => {
-	const [selectedValues, setSelectedValues] = useState([])
+const useCheckbox = (options: string[], initialSelected?: string[]) => {
+	const [selectedValues, setSelectedValues] = useState(initialSelected || [])
 
 	const isSelected = (option: string) => {
 		return selectedValues.includes(option)

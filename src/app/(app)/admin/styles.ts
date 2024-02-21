@@ -49,7 +49,7 @@ export const MenuNumber = styled.Text`
 `
 export const Icon = styled.Text`
 	font-size: 32px;
-	color: ${({ theme }) => theme.text};
+	color: ${({ theme }) => theme.primary};
 	font-family: 'jw-icons';
 `
 export const IconButton = styled.TouchableOpacity``

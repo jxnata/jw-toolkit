@@ -26,7 +26,8 @@ const EditPublisher = () => {
 	const { mutate } = usePublishers({ all: true, search: '' })
 	const [publisherData, setPublisherData] = useState<ResetPublisherRes>()
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({ defaultValues: { name: params.name } })
-	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES)
+
+	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES, publisher && publisher.privileges)
 
 	const save: SubmitHandler<EditPublisherReq> = async data => {
 		const result = await edit(publisher._id, data)

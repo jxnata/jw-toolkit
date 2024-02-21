@@ -25,9 +25,9 @@ export const light = {
 }
 
 export const dark = {
-	background: '#484745',
-	border: '#878376',
-	backgroundAlt: '#605F5C',
+	background: '#1e1e1d',
+	border: '#2b2a2a',
+	backgroundAlt: '#302f2e',
 	textAlt: '#afab9a',
 	text: '#eae6da',
 	primary: '#BB7424',

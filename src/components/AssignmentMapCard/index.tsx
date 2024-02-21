@@ -1,3 +1,7 @@
+import { useRouter } from 'expo-router/src/hooks'
+import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
+import { error, success } from 'messages/edit'
+import { finish } from 'services/assignments/finish'
 import { IAssignment } from 'types/models/Assignment'
 import * as S from './styles'
 
@@ -6,17 +10,36 @@ interface AssignmentProps {
 }
 
 const AssignmentMapCard = ({ assignment }: AssignmentProps) => {
+	const router = useRouter()
+	const { mutate } = useMyAssignments()
+
+	const save = async (found: boolean) => {
+		const result = await finish(assignment._id, { found })
+
+		if (result) {
+			success('designação')
+			mutate()
+			router.back()
+			return
+		}
+
+		error('designação')
+	}
+
+	const saveFound = () => save(true)
+	const saveNotFound = () => save(true)
+
 	return (
 		<S.Container>
 			<S.Content>
 				<S.Paragraph>Quando terminar a visita, finalize escolhendo uma das opções abaixo.</S.Paragraph>
 				<S.Title>Encontrou alguém?</S.Title>
 				<S.ButtonGroup>
-					<S.ButtonPositive>
-						<S.ButtonTitle>Sim</S.ButtonTitle>
+					<S.ButtonPositive onPress={saveFound}>
+						<S.ButtonTitlePositive>Sim</S.ButtonTitlePositive>
 					</S.ButtonPositive>
-					<S.ButtonNegative>
-						<S.ButtonTitle>Não</S.ButtonTitle>
+					<S.ButtonNegative onPress={saveNotFound}>
+						<S.ButtonTitleNegative>Não</S.ButtonTitleNegative>
 					</S.ButtonNegative>
 				</S.ButtonGroup>
 			</S.Content>
