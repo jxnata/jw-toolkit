@@ -1,8 +1,9 @@
 export type AddMapReq = {
 	name: string
 	address: string
+	details?: string
 	city: string
-	coordinates: [number, number]
+	coordinates: string
 }
 
 export type AddMapRes = {
@@ -12,8 +13,9 @@ export type AddMapRes = {
 export type EditMapReq = {
 	name: string
 	address: string
+	details?: string
 	city: string
-	coordinates: [number, number]
+	coordinates: string
 }
 
 export type EditMapRes = {

@@ -55,6 +55,7 @@ const ViewMap = () => {
 		if (result) {
 			removeSuccess('mapa')
 			mutate()
+			mutateMaps()
 			router.back()
 			return
 		}

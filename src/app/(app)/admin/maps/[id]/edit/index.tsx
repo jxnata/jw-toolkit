@@ -24,8 +24,9 @@ const EditMap = () => {
 		() => ({
 			name: map.name,
 			address: map.address,
+			details: map.details,
 			city: map.city._id,
-			coordinates: map.coordinates,
+			coordinates: getCoordinates(map.coordinates),
 		}),
 		[]
 	)
@@ -33,6 +34,13 @@ const EditMap = () => {
 	const { control, formState, handleSubmit } = useForm<EditMapReq>({ defaultValues })
 
 	const save: SubmitHandler<EditMapReq> = async data => {
+		const [lat, lng] = setCoordinates(data.coordinates)
+
+		if (lat === 0 && lng === 0) {
+			error('mapa, coordenadas inválidas')
+			return
+		}
+
 		const result = await edit(params.id, data)
 
 		if (result) {
@@ -80,14 +88,29 @@ const EditMap = () => {
 				/>
 				<Controller
 					control={control}
+					rules={{ required: false }}
+					name='details'
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							placeholder='Detalhes ou observações'
+							onBlur={onBlur}
+							onChangeText={onChange}
+							value={value}
+							editable={!formState.isSubmitting}
+						/>
+					)}
+				/>
+				<Controller
+					control={control}
 					rules={{ required: true }}
 					name='coordinates'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
-							defaultValue={getCoordinates(value)}
+							defaultValue={value}
 							placeholder='Coordenadas'
 							onBlur={onBlur}
-							onChangeText={text => onChange(setCoordinates(text))}
+							onChangeText={onChange}
+							value={value}
 							editable={!formState.isSubmitting}
 						/>
 					)}

@@ -14,12 +14,19 @@ import * as S from './styles'
 
 const AddMap = () => {
 	const { cities } = useCities()
-	const { mutate } = useMaps()
+	const { mutate } = useMaps({ search: '' })
 	const { resume } = useResume()
 	const defaultValues: Partial<AddMapReq> = { name: `Mapa ${resume.maps + 1}` }
 	const { control, formState, handleSubmit } = useForm<AddMapReq>({ defaultValues })
 
 	const save: SubmitHandler<AddMapReq> = async data => {
+		const [lat, lng] = setCoordinates(data.coordinates)
+
+		if (lat === 0 && lng === 0) {
+			error('mapa, coordenadas inválidas')
+			return
+		}
+
 		const result = await add(data)
 
 		if (result) {
@@ -66,13 +73,28 @@ const AddMap = () => {
 				/>
 				<Controller
 					control={control}
+					rules={{ required: false }}
+					name='details'
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							placeholder='Detalhes ou observações'
+							onBlur={onBlur}
+							onChangeText={onChange}
+							value={value}
+							editable={!formState.isSubmitting}
+						/>
+					)}
+				/>
+				<Controller
+					control={control}
 					rules={{ required: true }}
 					name='coordinates'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
 							placeholder='Coordenadas'
 							onBlur={onBlur}
-							onChangeText={text => onChange(setCoordinates(text))}
+							onChangeText={onChange}
+							value={value}
 							editable={!formState.isSubmitting}
 						/>
 					)}

@@ -1,6 +1,7 @@
 export const getMarkerCoordinate = (coordinates: [number, number]) => {
+	const fixedCoord = coordinates.sort()
 	return {
-		latitude: coordinates[0],
-		longitude: coordinates[1],
+		latitude: fixedCoord[0],
+		longitude: fixedCoord[1],
 	}
 }
