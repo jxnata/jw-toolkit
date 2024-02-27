@@ -7,9 +7,10 @@ import * as S from './styles'
 
 interface AssignmentProps {
 	assignment: IAssignment
+	onCancel: () => void
 }
 
-const AssignmentMapCard = ({ assignment }: AssignmentProps) => {
+const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const router = useRouter()
 	const { mutate } = useMyAssignments()
 
@@ -32,8 +33,9 @@ const AssignmentMapCard = ({ assignment }: AssignmentProps) => {
 	return (
 		<S.Container>
 			<S.Content>
-				<S.Paragraph>Quando terminar a visita, finalize escolhendo uma das opções abaixo.</S.Paragraph>
+				<S.CloseButton icon='close-circle-outline' onPress={onCancel} />
 				<S.Title>Encontrou alguém?</S.Title>
+				<S.Paragraph>Ao escolher uma opção, você termina sua designação.</S.Paragraph>
 				<S.ButtonGroup>
 					<S.ButtonPositive onPress={saveFound}>
 						<S.ButtonTitlePositive>Sim</S.ButtonTitlePositive>
