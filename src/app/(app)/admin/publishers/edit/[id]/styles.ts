@@ -10,7 +10,7 @@ export const Content = styled.ScrollView`
 	height: 100%;
 	background-color: ${({ theme }) => theme.background};
 `
-export const DataContainer = styled.TouchableOpacity`
+export const DataContainer = styled.Pressable`
 	padding: 15px;
 	width: 100%;
 	gap: 10px;
@@ -24,6 +24,9 @@ export const Row = styled.View`
 	gap: 5px;
 	flex-direction: row;
 	justify-content: center;
+`
+export const RowMargin = styled(Row)`
+	margin-top: 15px;
 `
 export const Paragraph = styled.Text`
 	font-size: 15px;

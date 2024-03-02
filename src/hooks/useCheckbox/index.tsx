@@ -2,10 +2,10 @@ import React, { useCallback, useState } from 'react'
 import * as S from './styles'
 
 type CheckboxComponentProps = {
-	onChange: () => void
+	onChange?: () => void
 }
 
-const useCheckbox = (options: string[], initialSelected?: string[]) => {
+const useCheckbox = (options: string[], initialSelected?: string[], unique?: boolean) => {
 	const [selectedValues, setSelectedValues] = useState(initialSelected || [])
 
 	const isSelected = (option: string) => {
@@ -13,13 +13,19 @@ const useCheckbox = (options: string[], initialSelected?: string[]) => {
 	}
 
 	const onChangeSelected = (value, callback) => {
+		if (unique) {
+			setSelectedValues([value])
+			if (callback) callback([value])
+			return
+		}
+
 		if (selectedValues.includes(value)) {
 			const values = selectedValues.filter(selected => selected !== value)
 			setSelectedValues(values)
-			callback(values)
+			if (callback) callback(values)
 		} else {
 			setSelectedValues([...selectedValues, value])
-			callback([...selectedValues, value])
+			if (callback) callback([...selectedValues, value])
 		}
 	}
 

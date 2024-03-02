@@ -37,7 +37,7 @@ const AddCity = () => {
 						<Input placeholder='Nome da cidade' onBlur={onBlur} onChangeText={onChange} value={value} />
 					)}
 				/>
-				<Button loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 					Salvar
 				</Button>
 			</S.Content>

@@ -9,7 +9,7 @@ export const Content = styled.ScrollView`
 	height: 100%;
 	background-color: ${({ theme }) => theme.background};
 `
-export const DataContainer = styled.TouchableOpacity`
+export const DataContainer = styled.Pressable`
 	padding: 15px;
 	width: 100%;
 	gap: 10px;

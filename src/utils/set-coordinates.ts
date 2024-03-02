@@ -1,9 +1,9 @@
 import compact from 'lodash/compact';
 
 export const setCoordinates = (text: string): [number, number] => {
-	let str = text
+	let str = text || '0,0'
 
-	if (text.includes('http')) {
+	if (str.includes('http')) {
 		const pos = text.indexOf('/@')
 		str = text.substring(pos)
 	}

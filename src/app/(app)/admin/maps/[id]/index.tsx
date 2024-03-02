@@ -32,7 +32,7 @@ const ViewMap = () => {
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: params._id } })
 
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
-	const region = getMapRegion(map ? map.coordinates : [0, 0])
+	const region = getMapRegion(map ? map.coordinates : [0, 0], 0.01)
 	const marker = getMarkerCoordinate(map ? map.coordinates : [0, 0])
 
 	const save: SubmitHandler<AddAssignmentReq> = async data => {

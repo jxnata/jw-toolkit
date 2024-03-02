@@ -18,7 +18,7 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 10px;
 `
-export const MenuItem = styled.TouchableOpacity`
+export const MenuItem = styled.Pressable`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -52,7 +52,7 @@ export const Icon = styled.Text`
 	color: ${({ theme }) => theme.primary};
 	font-family: 'jw-icons';
 `
-export const IconButton = styled.TouchableOpacity``
+export const IconButton = styled.Pressable``
 export const RefreshControl = styled.RefreshControl``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,

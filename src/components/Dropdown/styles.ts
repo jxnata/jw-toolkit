@@ -28,7 +28,7 @@ export const Dropdown = styled(DropdownSelect).attrs(({ theme }) => ({
 	},
 	dropdownIconStyle: {
 		top: 15,
-		right: 16
+		right: 16,
 	},
 	checkboxComponentStyles: {
 		checkboxLabelStyle: {

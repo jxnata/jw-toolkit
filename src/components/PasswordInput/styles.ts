@@ -13,7 +13,7 @@ export const Input = styled.TextInput.attrs(({ theme }) => ({
 	font-family: 'urbanist-medium';
 `
 export const Container = styled.View``
-export const Icon = styled.TouchableOpacity`
+export const Icon = styled.Pressable`
 	position: absolute;
 	right: 15px;
 	top: 15px;

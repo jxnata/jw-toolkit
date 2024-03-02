@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import get from 'lodash/get'
 import { api } from 'services/api/main'
 import { PublisherAuthRequest } from 'types/auth/publisher'
 import { IPublisher } from 'types/models/Publisher'

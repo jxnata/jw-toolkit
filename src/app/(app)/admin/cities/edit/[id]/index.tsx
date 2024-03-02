@@ -77,7 +77,7 @@ const EditCity = () => {
 					)}
 				/>
 				<S.Row>
-					<Button loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 						Atualizar
 					</Button>
 					<IconButton icon='trash-bin-outline' color={colors.error} onPress={showDeleteAlert} />

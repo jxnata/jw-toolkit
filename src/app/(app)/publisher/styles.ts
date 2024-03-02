@@ -25,7 +25,7 @@ export const Paragraph = styled.Text`
 	font-family: 'urbanist-medium';
 	align-self: center;
 `
-export const IconButton = styled.TouchableOpacity``
+export const IconButton = styled.Pressable``
 export const RefreshControl = styled.RefreshControl``
 export const Icon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,

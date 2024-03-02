@@ -76,7 +76,7 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 10px;
 `
-export const IconButton = styled.TouchableOpacity`
+export const IconButton = styled.Pressable`
 	position: absolute;
 	top: 5px;
 	right: 7px;

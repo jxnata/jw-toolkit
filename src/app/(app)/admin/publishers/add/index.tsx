@@ -78,13 +78,15 @@ const AddPublisher = () => {
 								<CheckboxComponent onChange={onChange} />
 							)}
 						/>
-						<Button
-							disabled={!!publisherData}
-							loading={formState.isSubmitting}
-							onPress={handleSubmit(save)}
-						>
-							Salvar
-						</Button>
+						<S.RowMargin>
+							<Button
+								disabled={!!publisherData}
+								loading={formState.isSubmitting}
+								onPress={handleSubmit(save)}
+							>
+								Salvar
+							</Button>
+						</S.RowMargin>
 					</>
 				)}
 			</S.Content>

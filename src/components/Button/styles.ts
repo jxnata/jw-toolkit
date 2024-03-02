@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 
-export const Button = styled.TouchableOpacity`
+export const Button = styled.Pressable`
 	flex: 1;
 	gap: 5px;
 	display: flex;
@@ -10,6 +10,7 @@ export const Button = styled.TouchableOpacity`
 	height: 50px;
 	border-radius: 12px;
 	background: ${({ theme }) => theme.secondary};
+	opacity: ${({ disabled }) => (disabled ? 0.7 : 1)};
 	font-size: 15px;
 	margin-bottom: 15px;
 `

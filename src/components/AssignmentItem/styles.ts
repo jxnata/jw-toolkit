@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 
 const screenWidth = Dimensions.get('screen').width
 
-export const Container = styled.TouchableOpacity`
+export const Container = styled.Pressable`
 	display: flex;
 	flex-direction: row;
 	margin-bottom: 5px;

@@ -1,4 +1,4 @@
-import { TouchableOpacityProps } from 'react-native'
+import { PressableProps } from 'react-native'
 import * as S from './styles'
 
 interface ButtonProps {
@@ -7,7 +7,7 @@ interface ButtonProps {
 	loading?: boolean
 }
 
-const IconButton = (props: TouchableOpacityProps & ButtonProps) => {
+const IconButton = (props: PressableProps & ButtonProps) => {
 	return (
 		<S.Button disabled={props.loading} {...props}>
 			{/* @ts-ignore */}

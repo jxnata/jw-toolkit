@@ -49,7 +49,7 @@ export const Row = styled.View`
 	flex-direction: row;
 	justify-content: center;
 `
-export const IconButton = styled.TouchableOpacity``
+export const IconButton = styled.Pressable``
 export const Icon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`

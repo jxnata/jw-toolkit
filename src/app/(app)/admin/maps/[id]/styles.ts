@@ -14,7 +14,7 @@ export const Content = styled.View`
 	height: 100%;
 	background-color: ${({ theme }) => theme.background};
 `
-export const DataContainer = styled.TouchableOpacity`
+export const DataContainer = styled.Pressable`
 	padding: 15px;
 	width: 100%;
 	gap: 10px;
@@ -77,7 +77,7 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 10px;
 `
-export const IconButton = styled.TouchableOpacity``
+export const IconButton = styled.Pressable``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`

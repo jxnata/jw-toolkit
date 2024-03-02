@@ -74,7 +74,11 @@ const Login = () => {
 							)}
 						/>
 						<S.Row>
-							<Button loading={formState.isSubmitting} onPress={handleSubmit(auth)}>
+							<Button
+								disabled={!formState.isValid}
+								loading={formState.isSubmitting}
+								onPress={handleSubmit(auth)}
+							>
 								Entrar {type === 'publisher' ? '' : 'como admininstrador'}
 							</Button>
 						</S.Row>

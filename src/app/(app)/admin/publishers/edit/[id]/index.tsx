@@ -149,7 +149,7 @@ const EditPublisher = () => {
 								<CheckboxComponent onChange={onChange} />
 							)}
 						/>
-						<S.Row>
+						<S.RowMargin>
 							<Button
 								disabled={!!publisherData}
 								loading={formState.isSubmitting}
@@ -159,7 +159,7 @@ const EditPublisher = () => {
 							</Button>
 							<IconButton icon='reload-outline' color={colors.warning} onPress={showResetAlert} />
 							<IconButton icon='trash-bin-outline' color={colors.error} onPress={showDeleteAlert} />
-						</S.Row>
+						</S.RowMargin>
 					</>
 				)}
 			</S.Content>

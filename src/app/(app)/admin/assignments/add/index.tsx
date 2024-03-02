@@ -83,7 +83,7 @@ const AddAssignment = () => {
 						/>
 					)}
 				/>
-				<Button loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 					Salvar
 				</Button>
 			</S.Content>

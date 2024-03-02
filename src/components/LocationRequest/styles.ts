@@ -28,7 +28,7 @@ export const Label = styled.Text`
 	padding: 10px 0;
 	font-family: 'urbanist-medium';
 `
-export const Button = styled.TouchableOpacity`
+export const Button = styled.Pressable`
 	gap: 5px;
 	display: flex;
 	flex-direction: row;
