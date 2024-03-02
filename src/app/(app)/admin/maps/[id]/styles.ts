@@ -53,7 +53,7 @@ export const ParagraphWrap = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-family: 'urbanist-medium';
 	flex-wrap: wrap;
-	max-width: ${screenWidth - ((screenWidth / 4) + 20)}px;
+	max-width: ${screenWidth - (screenWidth / 4 + 20)}px;
 `
 export const Label = styled.Text`
 	font-size: 15px;

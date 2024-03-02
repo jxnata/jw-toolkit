@@ -1,4 +1,4 @@
-import compact from 'lodash/compact';
+import compact from 'lodash/compact'
 
 export const setCoordinates = (text: string): [number, number] => {
 	let str = text || '0,0'
@@ -10,10 +10,10 @@ export const setCoordinates = (text: string): [number, number] => {
 
 	const cleaned = str.replace(/[^\d,\-.]/g, '')
 
-	const [latitudeStr = '', longitudeStr = ''] = compact(cleaned.split(','));
+	const [latitudeStr = '', longitudeStr = ''] = compact(cleaned.split(','))
 
-	const latitude = parseFloat(latitudeStr.trim()) || 0;
-	const longitude = parseFloat(longitudeStr.trim()) || 0;
+	const latitude = parseFloat(latitudeStr.trim()) || 0
+	const longitude = parseFloat(longitudeStr.trim()) || 0
 
 	return [latitude, longitude]
 }

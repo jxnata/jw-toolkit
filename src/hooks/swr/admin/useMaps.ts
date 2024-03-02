@@ -17,7 +17,10 @@ const defaultProps = { skip: 0, limit: 10, search: '', all: false }
 const useMaps = (props: Props = defaultProps) => {
 	const { skip = 0, limit = 10, search = '', all = false } = props
 
-	const { data, error, mutate } = useSWR(`/maps?${all ? 'all&' : ''}skip=${skip}&limit=${limit}&search=${search}`, fetcher)
+	const { data, error, mutate } = useSWR(
+		`/maps?${all ? 'all&' : ''}skip=${skip}&limit=${limit}&search=${search}`,
+		fetcher
+	)
 
 	const maps: IMap[] = get(data, 'maps', [])
 

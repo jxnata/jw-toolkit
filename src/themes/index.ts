@@ -4,7 +4,7 @@ export const colors = {
 	error: '#FF9999',
 	successAlt: '#3b663f',
 	warningAlt: '#7c6f15',
-	errorAlt: '#822a2a'
+	errorAlt: '#822a2a',
 }
 
 export const light = {
@@ -21,7 +21,7 @@ export const light = {
 	error: colors.errorAlt,
 	successAlt: colors.success,
 	warningAlt: colors.warning,
-	errorAlt: colors.error
+	errorAlt: colors.error,
 }
 
 export const dark = {
@@ -38,7 +38,7 @@ export const dark = {
 	error: colors.error,
 	successAlt: colors.successAlt,
 	warningAlt: colors.warningAlt,
-	errorAlt: colors.errorAlt
+	errorAlt: colors.errorAlt,
 }
 
 export default { dark, light }

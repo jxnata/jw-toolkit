@@ -11,7 +11,7 @@ export const Dropdown = styled(DropdownSelect).attrs(({ theme }) => ({
 		paddingLeft: 16,
 	},
 	dropdownContainerStyle: {
-		marginBottom: 10
+		marginBottom: 10,
 	},
 	modalOptionsContainerStyle: {
 		backgroundColor: theme.backgroundAlt,
@@ -38,9 +38,9 @@ export const Dropdown = styled(DropdownSelect).attrs(({ theme }) => ({
 		},
 		checkboxStyle: {
 			borderColor: theme.background,
-		}
+		},
 	},
-	primaryColor: theme.primary
+	primaryColor: theme.primary,
 }))`
 	width: 100%;
 	padding: 16px;

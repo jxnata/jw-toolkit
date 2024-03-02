@@ -20,7 +20,7 @@ export const AssignLink = styled.Text`
 	flex-wrap: wrap;
 	align-self: center;
 	text-align: center;
-	padding: 5px 0 ;
+	padding: 5px 0;
 `
 export const Columm = styled.View`
 	gap: 5px;
@@ -53,7 +53,7 @@ export const ParagraphWrap = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-family: 'urbanist-medium';
 	flex-wrap: wrap;
-	max-width: ${screenWidth - ((screenWidth / 4) + 20)}px;
+	max-width: ${screenWidth - (screenWidth / 4 + 20)}px;
 `
 export const Label = styled.Text`
 	font-size: 15px;
@@ -89,5 +89,10 @@ export const EditIcon = styled(Ionicons).attrs(({ theme }) => ({
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 40,
 }))`
-	color: ${(props) => props["aria-valuetext"] === 'permanent' ? props.theme.warning : props["aria-valuetext"] === 'assigned' ? props.theme.error : props.theme.success};
+	color: ${props =>
+		props['aria-valuetext'] === 'permanent'
+			? props.theme.warning
+			: props['aria-valuetext'] === 'assigned'
+			  ? props.theme.error
+			  : props.theme.success};
 `

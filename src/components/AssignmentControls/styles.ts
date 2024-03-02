@@ -51,7 +51,7 @@ export const ButtonPrimary = styled(Button)`
 	background: ${({ theme }) => theme.primary};
 `
 export const ButtonSecondary = styled(Button)`
-	background:${({ theme }) => theme.secondary};
+	background: ${({ theme }) => theme.secondary};
 `
 export const ButtonTitlePrimary = styled.Text`
 	color: ${({ theme }) => theme.secondary};

@@ -58,7 +58,7 @@ export const ButtonPositive = styled(Button)`
 	background: ${({ theme }) => theme.success};
 `
 export const ButtonNegative = styled(Button)`
-	background:${({ theme }) => theme.error};
+	background: ${({ theme }) => theme.error};
 `
 export const ButtonTitlePositive = styled.Text`
 	color: ${({ theme }) => theme.successAlt};
