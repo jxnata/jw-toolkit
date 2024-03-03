@@ -78,7 +78,7 @@ const AddAssignment = () => {
 								{ label: 'Permanente', value: 'true' },
 								{ label: 'Temporária', value: 'false' },
 							]}
-							selectedValue={value}
+							selectedValue={value ? value.toString() : 'false'}
 							onValueChange={onChange}
 						/>
 					)}

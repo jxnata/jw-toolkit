@@ -8,7 +8,7 @@ import useCities from 'hooks/swr/admin/useCities'
 import useMaps from 'hooks/swr/admin/useMaps'
 import useResume from 'hooks/swr/admin/useResume'
 import { error, success } from 'messages/add'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Modal } from 'react-native'
 import { add } from 'services/maps/add'
@@ -24,6 +24,8 @@ const AddMap = () => {
 	const { resume } = useResume()
 	const defaultValues: Partial<AddMapReq> = { name: `Mapa ${resume.maps + 1}` }
 	const { control, formState, handleSubmit, setValue, getValues } = useForm<AddMapReq>({ defaultValues })
+
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c._id })), [cities])
 
 	const save: SubmitHandler<AddMapReq> = async data => {
 		const [lat, lng] = setCoordinates(data.coordinates)
@@ -121,9 +123,7 @@ const AddMap = () => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Dropdown
 							placeholder='Selecione uma cidade...'
-							options={cities}
-							optionLabel='name'
-							optionValue='_id'
+							options={citiesList}
 							selectedValue={value}
 							onValueChange={onChange}
 						/>

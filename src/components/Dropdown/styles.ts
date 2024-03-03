@@ -1,56 +1,62 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
-import DropdownSelect from 'react-native-input-select'
+import { Dimensions, FlatList } from 'react-native'
 import styled from 'styled-components/native'
 
-export const Dropdown = styled(DropdownSelect).attrs(({ theme }) => ({
-	dropdownStyle: {
-		backgroundColor: theme.backgroundAlt,
-		borderRadius: 12,
-		borderWidth: 0,
-		minHeight: 40,
-		paddingLeft: 16,
-	},
-	dropdownContainerStyle: {
-		marginBottom: 10,
-	},
-	modalOptionsContainerStyle: {
-		backgroundColor: theme.backgroundAlt,
-	},
-	placeholderStyle: {
-		color: theme.textAlt,
-		fontSize: 15,
-		fontFamily: 'urbanist-medium',
-	},
-	selectedItemStyle: {
-		color: theme.text,
-		fontSize: 15,
-		fontFamily: 'urbanist-medium',
-	},
-	dropdownIconStyle: {
-		top: 15,
-		right: 16,
-	},
-	checkboxComponentStyles: {
-		checkboxLabelStyle: {
-			color: theme.text,
-			fontSize: 15,
-			fontFamily: 'urbanist-medium',
-		},
-		checkboxStyle: {
-			borderColor: theme.background,
-		},
-	},
-	primaryColor: theme.primary,
-}))`
+const { height, width } = Dimensions.get('window')
+
+export const DropdowContainer = styled.View`
+	margin-bottom: 10px;
+`
+export const Input = styled.Pressable`
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
 	width: 100%;
 	padding: 16px;
 	border-radius: 12px;
 	background: ${({ theme }) => theme.backgroundAlt};
+`
+export const Placeholder = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-size: 15px;
-	margin-bottom: 10px;
 	font-family: 'urbanist-medium';
 `
+export const Container = styled.Pressable`
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	height: 100%;
+	background-color: ${({ theme }) => theme.background}90;
+`
+export const Content = styled.SafeAreaView`
+	display: flex;
+	width: 100%;
+	max-height: ${height * 0.6}px;
+	align-items: center;
+	border-radius: 10px;
+	background-color: ${({ theme }) => theme.backgroundAlt};
+`
+export const Item = styled.Pressable`
+	flex-direction: row;
+	align-items: center;
+	border-radius: 12px;
+	background: ${({ theme }) => theme.background}70;
+	padding: 16px;
+	margin-top: 5px;
+	gap: 10px;
+`
+export const Label = styled.Text`
+	color: ${({ theme }) => theme.text};
+	font-size: 16px;
+	font-family: 'urbanist-medium';
+`
+export const Space = styled.View`
+	height: 30px;
+`
+export const List = styled.FlatList`
+	width: 100%;
+	padding: 10px;
+` as typeof FlatList
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`

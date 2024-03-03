@@ -24,6 +24,8 @@ const EditMap = () => {
 	const { mutate: mutateMaps } = useMaps({ search: '' })
 	const { cities } = useCities()
 
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c._id })), [cities])
+
 	const defaultValues: EditMapReq = useMemo(
 		() => ({
 			name: map.name,
@@ -135,9 +137,7 @@ const EditMap = () => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Dropdown
 							placeholder='Selecione uma cidade...'
-							options={cities}
-							optionLabel='name'
-							optionValue='_id'
+							options={citiesList}
 							selectedValue={value}
 							onValueChange={onChange}
 						/>
