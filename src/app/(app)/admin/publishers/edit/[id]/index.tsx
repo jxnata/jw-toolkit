@@ -2,6 +2,7 @@ import Button from 'components/Button'
 import IconButton from 'components/IconButton'
 import Input from 'components/Input'
 import { DEFAULT_PRIVILEGES } from 'constants/content'
+import { JW_TOOLKIT_API } from 'constants/urls'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import usePublisher from 'hooks/swr/admin/usePublisher'
 import usePublishers from 'hooks/swr/admin/usePublishers'
@@ -70,7 +71,7 @@ const EditPublisher = () => {
 
 	const sharePublisher = useCallback(async () => {
 		await Share.share({
-			message: `Seu login no JW Maps\n\nUsuário: ${publisherData.publisher}\nSenha: ${publisherData.passcode}`,
+			message: `Seu login no JW Maps\n\nUsuário: ${publisherData.publisher}\nSenha: ${publisherData.passcode}\n\nLink para entrar:\n${JW_TOOLKIT_API}/launch/auth?type=publisher&user=${publisherData.publisher}&pass=${publisherData.passcode}`,
 		})
 	}, [publisherData])
 
