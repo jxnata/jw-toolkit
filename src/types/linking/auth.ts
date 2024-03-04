@@ -1,5 +1,5 @@
 export type AuthQuery = {
-    type: 'publisher' | 'admin'
-    user: string
-    pass: string
+	type: 'publisher' | 'admin'
+	user: string
+	pass: string
 }

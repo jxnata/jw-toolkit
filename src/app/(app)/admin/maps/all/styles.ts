@@ -93,6 +93,6 @@ export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 		props['aria-valuetext'] === 'permanent'
 			? props.theme.warning
 			: props['aria-valuetext'] === 'assigned'
-				? props.theme.error
-				: props.theme.success};
+			  ? props.theme.error
+			  : props.theme.success};
 `

@@ -1,10 +1,12 @@
 import { authStorage } from 'database/auth'
 import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
+import { IPublisher } from 'types/models/Publisher'
+import { IUser } from 'types/models/User'
 import { adminAuth } from 'utils/admin-auth'
 import { publisherAuth } from 'utils/publisher-auth'
 import { IAuthContext, ISession } from './types'
 
-const AuthContext = createContext<IAuthContext | null>(null)
+const AuthContext = createContext<IAuthContext<IUser | IPublisher> | null>(null)
 
 export type AuthRequest = {
 	user: string
@@ -14,14 +16,14 @@ export type AuthRequest = {
 
 const initialData = () => {
 	try {
-		const { data, token, type } = authStorage.getAuth()
-		return { data: JSON.parse(data), token, type } as ISession
+		const { data, token, type, private_key } = authStorage.getAuth()
+		return { data: JSON.parse(data), token, type, private_key } as ISession<IUser | IPublisher>
 	} catch (error) {
 		authStorage.clear()
 	}
 }
 
-export function useSession() {
+export function useSession<T extends IUser | IPublisher = IUser | IPublisher>() {
 	const value = useContext(AuthContext)
 
 	if (process.env.NODE_ENV !== 'production') {
@@ -30,11 +32,11 @@ export function useSession() {
 		}
 	}
 
-	return value
+	return value as IAuthContext<T>
 }
 
 export function SessionProvider(props: PropsWithChildren) {
-	const [session, setSession] = useState<ISession>(initialData())
+	const [session, setSession] = useState<ISession<IUser | IPublisher>>(initialData())
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const authHandlerPublisher = useCallback(async ({ user, pass, type }: AuthRequest) => {
@@ -56,11 +58,17 @@ export function SessionProvider(props: PropsWithChildren) {
 
 		if (!authorized) return false
 
-		authStorage.setAuth({ type, token: authorized.token, data: JSON.stringify(authorized.user) })
+		authStorage.setAuth({
+			type,
+			token: authorized.token,
+			data: JSON.stringify(authorized.user),
+			private_key: authorized.private_key,
+		})
 
 		setSession({
 			data: authorized.user,
 			token: authorized.token,
+			private_key: authorized.private_key,
 			type,
 		})
 	}, [])

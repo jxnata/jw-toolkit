@@ -1,16 +1,14 @@
-import { IPublisher } from 'types/models/Publisher'
-import { IUser } from 'types/models/User'
 import { AuthRequest } from '.'
-
-export type IAuthContext = {
-	signIn: (_: AuthRequest) => Promise<boolean>
-	signOut: () => void
-	session: ISession
-	loading: boolean
+export interface ISession<T> {
+	token: string
+	private_key?: string
+	type: 'publisher' | 'admin'
+	data: T
 }
 
-export type ISession = {
-	token: string
-	type: 'publisher' | 'admin'
-	data: IUser | IPublisher
+export type IAuthContext<T> = {
+	signIn: (_: AuthRequest) => Promise<boolean>
+	signOut: () => void
+	session: ISession<T>
+	loading: boolean
 }

@@ -1,5 +1,8 @@
+import AssignmentCode from 'components/AssignmentCode'
 import Button from 'components/Button'
 import Dropdown from 'components/Dropdown'
+import { JW_TOOLKIT_API } from 'constants/urls'
+import { useSession } from 'contexts/Auth'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import useAssignments from 'hooks/swr/admin/useAssignments'
 import useMap from 'hooks/swr/admin/useMap'
@@ -7,23 +10,26 @@ import useMaps from 'hooks/swr/admin/useMaps'
 import usePublishers from 'hooks/swr/admin/usePublishers'
 import { error, success } from 'messages/add'
 import { error as removeError, success as removeSuccess } from 'messages/delete'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Dimensions } from 'react-native'
+import { Alert } from 'react-native'
 import { Marker } from 'react-native-maps'
-import QRCode from 'react-native-qrcode-svg'
 import { add } from 'services/assignments/add'
 import { remove } from 'services/maps/remove'
 import { AddAssignmentReq } from 'types/api/assignments'
 import { IMap } from 'types/models/Map'
+import { IUser } from 'types/models/User'
 import { formatDate } from 'utils/date-format'
+import { getAssignmentMessage } from 'utils/get-assignment-message'
+import { getExpiration } from 'utils/get-expiration'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
+import { signMessage } from 'utils/sign-message'
 import * as S from './styles'
 
-const qrSize = Dimensions.get('screen').width / 4
-
 const ViewMap = () => {
+	const [qr, setQr] = useState<string>()
+	const { session } = useSession<IUser>()
 	const params: Partial<IMap> = useLocalSearchParams()
 	const { map, mutate } = useMap(params._id)
 	const { assignments, mutate: mutateAssignments } = useAssignments({ map: params._id })
@@ -34,6 +40,17 @@ const ViewMap = () => {
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
 	const region = getMapRegion(map ? map.coordinates : [0, 0], 0.01)
 	const marker = getMarkerCoordinate(map ? map.coordinates : [0, 0])
+
+	const generateQR = useCallback(async () => {
+		const expiration = getExpiration(10)
+
+		const qrMessage = getAssignmentMessage(params._id, session.data._id, expiration.toString())
+
+		const signature = await signMessage(qrMessage, session.private_key)
+		const qrCodeUrl = `${JW_TOOLKIT_API}/launch/assignments/accept?user=${session.data._id}&map=${params._id}&expiration=${expiration}&signature=${signature}`
+
+		setQr(qrCodeUrl)
+	}, [session, params])
 
 	const save: SubmitHandler<AddAssignmentReq> = async data => {
 		const result = await add(data)
@@ -94,6 +111,12 @@ const ViewMap = () => {
 		[]
 	)
 
+	useEffect(() => {
+		if (session && params) {
+			generateQR()
+		}
+	}, [session, params])
+
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: params.name, headerRight: HeaderRight }} />
@@ -103,7 +126,7 @@ const ViewMap = () => {
 						<>
 							<S.Row>
 								<S.Columm>
-									<QRCode size={qrSize} value={params._id} />
+									<AssignmentCode data={qr} />
 								</S.Columm>
 								<S.Columm>
 									<S.Paragraph>{map.name}</S.Paragraph>

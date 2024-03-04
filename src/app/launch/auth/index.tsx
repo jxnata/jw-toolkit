@@ -2,7 +2,6 @@ import { AuthRequest, useSession } from 'contexts/Auth'
 import { parse, useURL } from 'expo-linking'
 import { useRouter } from 'expo-router'
 import { useEffect } from 'react'
-import { SubmitHandler } from 'react-hook-form'
 import { AuthQuery } from 'types/linking/auth'
 import * as S from './styles'
 
@@ -12,7 +11,7 @@ const LaunchAuth = () => {
 	const router = useRouter()
 	const { signIn } = useSession()
 
-	const auth: SubmitHandler<AuthRequest> = async data => {
+	const auth = async (data: AuthRequest) => {
 		const authorized = await signIn(data)
 
 		if (!authorized) return alert('Usuário ou senha inválidos')

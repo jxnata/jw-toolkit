@@ -10,9 +10,10 @@ export const adminAuth = async ({ username, password }: AdminAuthRequest) => {
 
 		const user: IUser = get(authResult, 'data.user', undefined)
 		const token: string = get(authResult, 'data.token', undefined)
+		const private_key: string = get(authResult, 'data.private_key', undefined)
 
-		if (!!user && !!token) {
-			return { user, token }
+		if (!!user && !!token && !!private_key) {
+			return { user, token, private_key }
 		}
 
 		return false

@@ -37,3 +37,14 @@ export type RemoveAssignmentRes = {
 export type RestoreAssignmentRes = {
 	message: string
 }
+
+export type AcceptAssignmentReq = {
+	user: string
+	map: string
+	expiration: string
+	signature: string
+}
+
+export type AcceptAssignmentRes = {
+	assignment: string
+}

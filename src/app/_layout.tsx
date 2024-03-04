@@ -1,3 +1,5 @@
+import '../../polyfills'
+
 import { fonts } from 'constants/fonts'
 import { configToast } from 'constants/toast'
 import { SessionProvider } from 'contexts/Auth'
