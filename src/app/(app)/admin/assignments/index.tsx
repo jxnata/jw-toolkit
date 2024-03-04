@@ -4,7 +4,8 @@ import { Stack, useRouter } from 'expo-router'
 import useAssignments from 'hooks/swr/admin/useAssignments'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
-import { FlatList } from 'react-native'
+import { Alert, FlatList } from 'react-native'
+import { restore } from 'services/assignments/restore'
 import * as S from './styles'
 
 const Assignments = () => {
@@ -15,6 +16,9 @@ const Assignments = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
+				<S.IconButton onPress={showDeleteAlert}>
+					<S.IoniconWarning name='backspace-outline' />
+				</S.IconButton>
 				<S.IconButton onPress={() => router.push('/admin/assignments/add')}>
 					<S.Ionicon name='add-circle-outline' />
 				</S.IconButton>
@@ -22,6 +26,25 @@ const Assignments = () => {
 		),
 		[]
 	)
+
+	const restoreAssignments = async () => {
+		const result = await restore()
+
+		if (result) mutate()
+	}
+
+	const showDeleteAlert = () =>
+		Alert.alert('Restaurar', 'Deseja restaurar todas as designações? Essa opção não pode ser revertida.', [
+			{
+				text: 'Cancelar',
+				style: 'cancel',
+			},
+			{
+				text: 'Sim',
+				onPress: restoreAssignments,
+				style: 'default',
+			},
+		])
 
 	const debouncedSearch = debounce(async term => {
 		setSearchTerm(term)

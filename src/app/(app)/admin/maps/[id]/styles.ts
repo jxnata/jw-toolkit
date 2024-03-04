@@ -75,7 +75,7 @@ export const HeaderContainer = styled.View`
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	gap: 10px;
+	gap: 15px;
 `
 export const IconButton = styled.Pressable``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({

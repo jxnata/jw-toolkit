@@ -33,3 +33,7 @@ export type RemoveAssignmentReq = string
 export type RemoveAssignmentRes = {
 	assignment: string
 }
+
+export type RestoreAssignmentRes = {
+	message: string
+}
