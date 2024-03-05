@@ -8,3 +8,12 @@ export type IPublisher = {
 	congregation: ICongregation
 	created_at: string
 }
+
+export type IPublisherParams = {
+	_id: string
+	name: string
+	username: string
+	privileges: string
+	congregation: string
+	created_at: string
+}

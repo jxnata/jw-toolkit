@@ -7,6 +7,8 @@ import { Stack, router, useLocalSearchParams } from 'expo-router'
 import usePublisher from 'hooks/swr/admin/usePublisher'
 import usePublishers from 'hooks/swr/admin/usePublishers'
 import useCheckbox from 'hooks/useCheckbox'
+import compact from 'lodash/compact'
+import split from 'lodash/split'
 import { error as removeError, success as removeSuccess } from 'messages/delete'
 import { error, success } from 'messages/edit'
 import { error as resetError, success as resetSuccess } from 'messages/reset'
@@ -18,20 +20,22 @@ import { remove } from 'services/publishers/remove'
 import { reset } from 'services/publishers/reset'
 import { colors } from 'themes'
 import { EditPublisherReq, ResetPublisherRes } from 'types/api/publishers'
-import { IPublisher } from 'types/models/Publisher'
+import { IPublisherParams } from 'types/models/Publisher'
 import * as S from './styles'
 
 const EditPublisher = () => {
-	const params: Partial<IPublisher> = useLocalSearchParams()
+	const params: Partial<IPublisherParams> = useLocalSearchParams()
 	const { publisher, mutate: mutatePublisher } = usePublisher(params._id)
 	const { mutate } = usePublishers({ all: true, search: '' })
 	const [publisherData, setPublisherData] = useState<ResetPublisherRes>()
-	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({ defaultValues: { name: params.name } })
+	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
+		defaultValues: { name: params.name, privileges: split(params.privileges, ',') },
+	})
 
-	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES, publisher && publisher.privileges)
+	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES, split(params.privileges, ','))
 
 	const save: SubmitHandler<EditPublisherReq> = async data => {
-		const result = await edit(publisher._id, data)
+		const result = await edit(params._id, { ...data, privileges: compact(data.privileges || []) })
 
 		if (result) {
 			success('publicador')
@@ -44,7 +48,7 @@ const EditPublisher = () => {
 	}
 
 	const resetPassword = async () => {
-		const result = await reset(publisher._id)
+		const result = await reset(params._id)
 
 		if (result) {
 			resetSuccess('publicador')
@@ -57,7 +61,7 @@ const EditPublisher = () => {
 	}
 
 	const deletePublisher = async () => {
-		const result = await remove(publisher._id)
+		const result = await remove(params._id)
 
 		if (result) {
 			removeSuccess('publicador')
@@ -144,7 +148,7 @@ const EditPublisher = () => {
 						/>
 						<Controller
 							control={control}
-							rules={{ required: true }}
+							rules={{ required: false }}
 							name='privileges'
 							render={({ field: { onChange, onBlur, value } }) => (
 								<CheckboxComponent onChange={onChange} />

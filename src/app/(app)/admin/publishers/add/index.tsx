@@ -5,6 +5,7 @@ import { JW_TOOLKIT_API } from 'constants/urls'
 import { Stack } from 'expo-router'
 import usePublishers from 'hooks/swr/admin/usePublishers'
 import useCheckbox from 'hooks/useCheckbox'
+import compact from 'lodash/compact'
 import { error, success } from 'messages/add'
 import { useCallback, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
@@ -20,7 +21,11 @@ const AddPublisher = () => {
 	const { CheckboxComponent } = useCheckbox(DEFAULT_PRIVILEGES)
 
 	const save: SubmitHandler<AddPublisherReq> = async data => {
-		const result = await add(data)
+		if (!data.privileges) {
+			data.privileges = []
+		}
+
+		const result = await add({ ...data, privileges: compact(data.privileges || []) })
 
 		if (result) {
 			success('publicador')
@@ -73,7 +78,7 @@ const AddPublisher = () => {
 						/>
 						<Controller
 							control={control}
-							rules={{ required: true }}
+							rules={{ required: false }}
 							name='privileges'
 							render={({ field: { onChange, onBlur, value } }) => (
 								<CheckboxComponent onChange={onChange} />
@@ -81,7 +86,7 @@ const AddPublisher = () => {
 						/>
 						<S.RowMargin>
 							<Button
-								disabled={!!publisherData}
+								disabled={!formState.isValid}
 								loading={formState.isSubmitting}
 								onPress={handleSubmit(save)}
 							>

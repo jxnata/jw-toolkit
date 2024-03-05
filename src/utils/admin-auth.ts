@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import get from 'lodash/get'
 import { api } from 'services/api/main'
 import { AdminAuthRequest } from 'types/auth/admin'
 import { IUser } from 'types/models/User'
