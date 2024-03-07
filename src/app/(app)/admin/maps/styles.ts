@@ -6,10 +6,23 @@ export const Container = styled.View`
 `
 export const Content = styled.View`
 	display: flex;
-	padding: 10px;
+	padding: 10px 0;
 	width: 100%;
 	height: 100%;
 	background-color: ${({ theme }) => theme.background};
+`
+export const FilterContainer = styled.View`
+	flex-direction: row;
+	padding: 0 10px 5px 10px;
+	width: 100%;
+	gap: 5px;
+	background-color: ${({ theme }) => theme.background};
+`
+export const FilterItemsContainer = styled.View`
+	flex: 1;
+`
+export const ListContainer = styled.View`
+	margin: 0 10px;
 `
 export const HeaderContainer = styled.View`
 	display: flex;
@@ -30,7 +43,6 @@ export const MenuItem = styled.Pressable`
 	padding: 10px;
 	gap: 5px;
 `
-
 export const MenuTitle = styled.Text`
 	font-size: 15px;
 	color: ${({ theme }) => theme.text};

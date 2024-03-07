@@ -19,9 +19,6 @@ const Assignments = () => {
 				<S.IconButton onPress={showDeleteAlert}>
 					<S.IoniconWarning name='backspace-outline' />
 				</S.IconButton>
-				<S.IconButton onPress={() => router.push('/admin/assignments/add')}>
-					<S.Ionicon name='add-circle-outline' />
-				</S.IconButton>
 			</S.HeaderContainer>
 		),
 		[]

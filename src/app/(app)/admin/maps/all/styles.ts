@@ -20,7 +20,8 @@ export const AssignLink = styled.Text`
 	flex-wrap: wrap;
 	align-self: center;
 	text-align: center;
-	padding: 5px 0;
+	padding: 5px;
+	flex: 1;
 `
 export const Columm = styled.View`
 	gap: 5px;
@@ -85,14 +86,4 @@ export const EditIcon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 18,
 }))`
 	color: ${({ theme }) => theme.textAlt};
-`
-export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
-	size: 40,
-}))`
-	color: ${props =>
-		props['aria-valuetext'] === 'permanent'
-			? props.theme.warning
-			: props['aria-valuetext'] === 'assigned'
-			  ? props.theme.error
-			  : props.theme.success};
 `

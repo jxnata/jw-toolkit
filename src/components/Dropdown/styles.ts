@@ -12,7 +12,7 @@ export const Input = styled.Pressable`
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	padding: 16px;
+	padding: 14px 16px;
 	border-radius: 12px;
 	background: ${({ theme }) => theme.backgroundAlt};
 `
@@ -58,7 +58,7 @@ export const List = styled.FlatList`
 	padding: 10px;
 ` as typeof FlatList
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
-	size: 24,
+	size: 20,
 }))`
 	color: ${({ theme }) => theme.textAlt};
 `

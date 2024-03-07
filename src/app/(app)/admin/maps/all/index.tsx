@@ -1,15 +1,16 @@
 import * as Location from 'expo-location'
 import { Link, Stack } from 'expo-router'
-import useMaps from 'hooks/swr/admin/useMaps'
+import useAllMaps from 'hooks/swr/admin/useAllMaps'
 import { useCallback, useEffect, useState } from 'react'
 import { Marker } from 'react-native-maps'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
+import { getPinColor } from 'utils/get-pin-color'
 import * as S from './styles'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState(null)
-	const { maps } = useMaps({ all: true })
+	const { maps } = useAllMaps()
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
@@ -35,20 +36,11 @@ const AllMaps = () => {
 								coordinate={getMarkerCoordinate(map.coordinates)}
 								title={map.name}
 								description={map.address}
+								pinColor={getPinColor(!!map.assigned)}
 							>
-								<S.Ionicon
-									name='location'
-									aria-valuetext={
-										map.assigned
-											? map.assigned.permanent
-												? 'permanent'
-												: 'assigned'
-											: 'unassigned'
-									}
-								/>
 								<S.MarkerCallout tooltip>
 									<Link href={{ pathname: `/admin/maps/${map._id}`, params: map }} asChild>
-										<S.IconButton hitSlop={100}>
+										<S.IconButton hitSlop={50}>
 											<S.EditIcon name='eye-outline' />
 										</S.IconButton>
 									</Link>

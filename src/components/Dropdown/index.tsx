@@ -23,8 +23,14 @@ const Dropdown = ({ selectedValue, options, placeholder, onValueChange }: Props)
 
 	const selectedLabel = useMemo(() => {
 		if (!selectedValue) return
+		if (!options) return
+		if (!options.length) return
 
-		return options.find(o => o.value === selectedValue).label
+		const selected = options.find(o => o.value === selectedValue)
+
+		if (!selected) return
+
+		return selected.label
 	}, [selectedValue, options])
 
 	return (

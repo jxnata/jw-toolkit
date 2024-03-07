@@ -1,9 +1,7 @@
 import get from 'lodash/get'
 import { api } from 'services/api/main'
-import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 import { IMap } from 'types/models/Map'
-
-const fetcher = (url: string) => api.get(url).then(res => res.data)
 
 type Props = {
 	skip?: number
@@ -12,22 +10,51 @@ type Props = {
 	all?: boolean
 }
 
-const defaultProps = { skip: 0, limit: 10, search: '', all: false }
+type GetMapsResponse = {
+	maps: IMap[]
+}
+
+const fetcher = (url: string) => api.get<GetMapsResponse>(url).then(res => res.data)
+
+const defaultProps = { limit: 10, search: '', all: false }
+
+const getKey = (page: number, previousPageData: GetMapsResponse, search: string) => {
+	if (previousPageData && !previousPageData.maps.length) return null
+
+	const skip = (page || 0) * 10
+
+	return `/maps?skip=${skip}&limit=10&search=${search}`
+}
 
 const useMaps = (props: Props = defaultProps) => {
-	const { skip = 0, limit = 10, search = '', all = false } = props
+	const { search = '' } = props
 
-	const { data, error, mutate } = useSWR(
-		`/maps?${all ? 'all&' : ''}skip=${skip}&limit=${limit}&search=${search}`,
+	const { data, error, size, isLoading, mutate, setSize } = useSWRInfinite(
+		(p, prev) => getKey(p, prev, search),
 		fetcher
 	)
 
-	const maps: IMap[] = get(data, 'maps', [])
+	let maps: IMap[] = []
+
+	if (data) {
+		for (const item of data) {
+			const items: IMap[] = get(item, 'maps', [])
+			maps.push(...items)
+		}
+	}
+
+	const next = () => {
+		if (maps.length > 9 && !isLoading) {
+			setSize(old => old + 1)
+		}
+	}
 
 	return {
 		maps,
+		page: size,
 		loading: !error && !data,
 		error: error,
+		next,
 		mutate,
 	}
 }
