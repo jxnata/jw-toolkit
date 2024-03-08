@@ -1,16 +1,20 @@
+import { LocationObjectCoords } from 'expo-location'
 import { IAssignment } from 'types/models/Assignment'
 import { formatDate } from 'utils/date-format'
+import { getLocationDistance } from 'utils/get-location-distance'
 import { mapImage } from 'utils/map-image'
 import * as S from './styles'
 
 interface AssignmentProps {
 	assignment: IAssignment
+	location: LocationObjectCoords
 	onPress?: () => void
 	showPublisher?: boolean
 }
 
-const AssignmentCard = ({ assignment, showPublisher, onPress }: AssignmentProps) => {
+const AssignmentItem = ({ assignment, showPublisher, location, onPress }: AssignmentProps) => {
 	const coordinates: [number, number] = typeof assignment.map !== 'string' ? assignment.map.coordinates : [0, 0]
+	const distance = getLocationDistance(location, coordinates)
 
 	return (
 		<S.Container onPress={onPress}>
@@ -33,8 +37,11 @@ const AssignmentCard = ({ assignment, showPublisher, onPress }: AssignmentProps)
 					)}
 				</S.Column>
 			)}
+			<S.Distance>
+				<S.DistanceText>{distance}</S.DistanceText>
+			</S.Distance>
 		</S.Container>
 	)
 }
 
-export default AssignmentCard
+export default AssignmentItem

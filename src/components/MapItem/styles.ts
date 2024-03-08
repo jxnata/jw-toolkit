@@ -58,3 +58,16 @@ export const UnassignedText = styled.Text`
 	font-size: 10px;
 	color: ${({ theme }) => theme.successAlt};
 `
+export const Distance = styled.View`
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	background-color: ${({ theme }) => theme.background};
+	padding: 2px 5px;
+	border-radius: 5px;
+`
+export const DistanceText = styled.Text`
+	font-family: 'urbanist-bold';
+	font-size: 10px;
+	color: ${({ theme }) => theme.textAlt};
+`

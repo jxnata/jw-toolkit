@@ -1,10 +1,12 @@
-import AssignmentCard from 'components/AssignmentItem'
+import AssignmentItem from 'components/AssignmentItem'
 import { Stack, router } from 'expo-router'
 import useHistoryAssignments from 'hooks/swr/publisher/useHistoryAssignments'
+import { useLocation } from 'hooks/useLocation'
 import * as S from './styles'
 
 const AssignmentHistory = () => {
 	const { assigments, loading, mutate } = useHistoryAssignments()
+	const { location } = useLocation()
 
 	return (
 		<S.Container>
@@ -12,9 +14,10 @@ const AssignmentHistory = () => {
 			<S.Content>
 				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
 				{assigments.map(assignment => (
-					<AssignmentCard
+					<AssignmentItem
 						key={assignment._id}
 						assignment={assignment}
+						location={location}
 						onPress={() =>
 							router.push({
 								pathname: '/publisher/assignment',

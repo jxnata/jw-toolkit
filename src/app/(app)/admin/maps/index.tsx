@@ -4,6 +4,7 @@ import MapItem from 'components/MapItem'
 import { Stack, useRouter } from 'expo-router'
 import useCities from 'hooks/swr/admin/useCities'
 import useMaps from 'hooks/swr/admin/useMaps'
+import { useLocation } from 'hooks/useLocation'
 import debounce from 'lodash/debounce'
 import { useCallback, useMemo, useState } from 'react'
 import { FlatList } from 'react-native'
@@ -15,6 +16,7 @@ const Maps = () => {
 	const [searchCity, setSearchCity] = useState('')
 	const { maps, loading, mutate, next } = useMaps({ search: searchCity || searchTerm })
 	const { cities } = useCities()
+	const { location } = useLocation()
 
 	const citiesList = useMemo(
 		() => [{ label: 'Todos', value: null }, ...cities.map(c => ({ label: c.name, value: c._id }))],
@@ -77,6 +79,7 @@ const Maps = () => {
 							<MapItem
 								key={item._id}
 								map={item}
+								location={location}
 								onPress={() => router.push({ pathname: `/admin/maps/${item._id}`, params: item })}
 							/>
 						</S.ListContainer>

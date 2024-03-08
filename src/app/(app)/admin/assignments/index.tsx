@@ -1,7 +1,8 @@
-import AssignmentCard from 'components/AssignmentItem'
+import AssignmentItem from 'components/AssignmentItem'
 import Input from 'components/Input'
 import { Stack, useRouter } from 'expo-router'
 import useAssignments from 'hooks/swr/admin/useAssignments'
+import { useLocation } from 'hooks/useLocation'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { Alert, FlatList } from 'react-native'
@@ -12,6 +13,7 @@ const Assignments = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const { assignments, loading, mutate } = useAssignments({ search: searchTerm })
+	const { location } = useLocation()
 
 	const HeaderRight = useCallback(
 		() => (
@@ -64,9 +66,10 @@ const Assignments = () => {
 					keyExtractor={item => item._id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
-						<AssignmentCard
+						<AssignmentItem
 							key={item._id}
 							assignment={item}
+							location={location}
 							showPublisher
 							onPress={() =>
 								router.push({

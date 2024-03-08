@@ -1,12 +1,13 @@
-import AssignmentCard from 'components/AssignmentItem'
+import AssignmentItem from 'components/AssignmentItem'
 import { Stack, useRouter } from 'expo-router'
 import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
+import { useLocation } from 'hooks/useLocation'
 import { useCallback } from 'react'
 import * as S from './styles'
 
 const PublisherHome = () => {
 	const router = useRouter()
-
+	const { location } = useLocation()
 	const { assigments, loading, mutate } = useMyAssignments()
 
 	const HeaderRight = useCallback(
@@ -29,9 +30,10 @@ const PublisherHome = () => {
 			<S.Content>
 				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
 				{assigments.map(assignment => (
-					<AssignmentCard
+					<AssignmentItem
 						key={assignment._id}
 						assignment={assignment}
+						location={location}
 						onPress={() =>
 							router.push({
 								pathname: '/publisher/assignment',

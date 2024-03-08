@@ -40,3 +40,16 @@ export const Small = styled.Text`
 	font-size: 12px;
 	font-family: 'urbanist-regular';
 `
+export const Distance = styled.View`
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	background-color: ${({ theme }) => theme.background};
+	padding: 2px 5px;
+	border-radius: 5px;
+`
+export const DistanceText = styled.Text`
+	font-family: 'urbanist-bold';
+	font-size: 10px;
+	color: ${({ theme }) => theme.textAlt};
+`

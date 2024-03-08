@@ -1,14 +1,19 @@
+import { LocationObjectCoords } from 'expo-location'
 import { IMap } from 'types/models/Map'
 import { formatDate } from 'utils/date-format'
+import { getLocationDistance } from 'utils/get-location-distance'
 import { mapImage } from 'utils/map-image'
 import * as S from './styles'
 
 interface MapProps {
 	map: IMap
+	location: LocationObjectCoords
 	onPress: () => void
 }
 
-const MapItem = ({ map, onPress }: MapProps) => {
+const MapItem = ({ map, location, onPress }: MapProps) => {
+	const distance = getLocationDistance(location, map.coordinates)
+
 	return (
 		<S.Container onPress={onPress}>
 			{!!map.assigned ? (
@@ -36,6 +41,9 @@ const MapItem = ({ map, onPress }: MapProps) => {
 					<S.Small>Ainda não visitado</S.Small>
 				)}
 			</S.Column>
+			<S.Distance>
+				<S.DistanceText>{distance}</S.DistanceText>
+			</S.Distance>
 		</S.Container>
 	)
 }
