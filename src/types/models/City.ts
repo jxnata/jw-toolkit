@@ -3,3 +3,7 @@ export type ICity = {
 	name: string
 	created_at: string
 }
+
+export type ICityListItem = ICity & {
+	maps_count: number;
+}

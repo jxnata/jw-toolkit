@@ -51,6 +51,19 @@ export const IconContainer = styled.View`
 	border-radius: 8px;
 	background: ${({ theme }) => theme.background};
 `
+export const MapsCount = styled.View`
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	background-color: ${({ theme }) => theme.background};
+	padding: 2px 5px;
+	border-radius: 5px;
+`
+export const MapsCountText = styled.Text`
+	font-family: 'urbanist-bold';
+	font-size: 10px;
+	color: ${({ theme }) => theme.textAlt};
+`
 export const IconButton = styled.Pressable``
 export const RefreshControl = styled.RefreshControl``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({

@@ -52,6 +52,9 @@ const Cities = () => {
 								<S.Icon>{firstLetter(item.name)}</S.Icon>
 							</S.IconContainer>
 							<S.MenuTitle>{item.name}</S.MenuTitle>
+							<S.MapsCount>
+								<S.MapsCountText>{item.maps_count || 0} mapas</S.MapsCountText>
+							</S.MapsCount>
 						</S.MenuItem>
 					)}
 				/>
