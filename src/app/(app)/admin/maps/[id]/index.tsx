@@ -17,7 +17,7 @@ import { Marker } from 'react-native-maps'
 import { add } from 'services/assignments/add'
 import { remove } from 'services/maps/remove'
 import { AddAssignmentReq } from 'types/api/assignments'
-import { IMap } from 'types/models/Map'
+import { PageParams } from 'types/app'
 import { IUser } from 'types/models/User'
 import { formatDate } from 'utils/date-format'
 import { getAssignmentMessage } from 'utils/get-assignment-message'
@@ -30,12 +30,12 @@ import * as S from './styles'
 const ViewMap = () => {
 	const [qr, setQr] = useState<string>()
 	const { session } = useSession<IUser>()
-	const params: Partial<IMap> = useLocalSearchParams()
-	const { map, mutate } = useMap(params._id)
-	const { assignments, mutate: mutateAssignments } = useAssignments({ map: params._id })
+	const { id }: Partial<PageParams> = useLocalSearchParams()
+	const { map, mutate } = useMap(id)
+	const { assignments, mutate: mutateAssignments } = useAssignments({ map: id })
 	const { mutate: mutateMaps } = useMaps({ search: '' })
 	const { publishers } = usePublishers({ all: true })
-	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: params._id } })
+	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: id } })
 
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
 	const region = getMapRegion(map ? map.coordinates : [0, 0], 0.01)
@@ -44,13 +44,13 @@ const ViewMap = () => {
 	const generateQR = useCallback(async () => {
 		const expiration = getExpiration(10)
 
-		const qrMessage = getAssignmentMessage(params._id, session.data._id, expiration.toString())
+		const qrMessage = getAssignmentMessage(id, session.data._id, expiration.toString())
 
 		const signature = await signMessage(qrMessage, session.private_key)
-		const qrCodeUrl = `${JW_TOOLKIT_API}/launch/assignments/accept?user=${session.data._id}&map=${params._id}&expiration=${expiration}&signature=${signature}`
+		const qrCodeUrl = `${JW_TOOLKIT_API}/launch/assignments/accept?user=${session.data._id}&map=${id}&expiration=${expiration}&signature=${signature}`
 
 		setQr(qrCodeUrl)
-	}, [session, params])
+	}, [session, id])
 
 	const save: SubmitHandler<AddAssignmentReq> = async data => {
 		const result = await add(data)
@@ -67,7 +67,7 @@ const ViewMap = () => {
 	}
 
 	const deleteMap = async () => {
-		const result = await remove(params._id)
+		const result = await remove(id)
 
 		if (result) {
 			removeSuccess('mapa')
@@ -100,7 +100,7 @@ const ViewMap = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.replace(`/admin/maps/${params._id}/edit`)}>
+				<S.IconButton onPress={() => router.replace(`/admin/maps/${id}/edit`)}>
 					<S.Ionicon name='create-outline' />
 				</S.IconButton>
 				<S.IconButton onPress={showDeleteAlert}>
@@ -112,14 +112,14 @@ const ViewMap = () => {
 	)
 
 	useEffect(() => {
-		if (session && params) {
+		if (session && id) {
 			generateQR()
 		}
-	}, [session, params])
+	}, [session, id])
 
 	return (
 		<S.Container>
-			<Stack.Screen options={{ title: params.name, headerRight: HeaderRight }} />
+			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
 			<S.Content>
 				<S.DetailsContainer>
 					{!!map && (
@@ -185,11 +185,13 @@ const ViewMap = () => {
 						</>
 					)}
 				</S.DetailsContainer>
-				<S.MapContainer>
-					<S.Map region={region}>
-						<Marker key={params._id} coordinate={marker} title={params.name} description={params.address} />
-					</S.Map>
-				</S.MapContainer>
+				{!!map && (
+					<S.MapContainer>
+						<S.Map region={region}>
+							<Marker key={map._id} coordinate={marker} title={map.name} description={map.address} />
+						</S.Map>
+					</S.MapContainer>
+				)}
 			</S.Content>
 		</S.Container>
 	)

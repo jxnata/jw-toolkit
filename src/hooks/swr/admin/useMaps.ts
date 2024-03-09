@@ -14,16 +14,18 @@ type GetMapsResponse = {
 	maps: IMap[]
 }
 
+const LIMIT = 10
+
 const fetcher = (url: string) => api.get<GetMapsResponse>(url).then(res => res.data)
 
-const defaultProps = { limit: 10, search: '', all: false }
+const defaultProps = { limit: LIMIT, search: '', all: false }
 
 const getKey = (page: number, previousPageData: GetMapsResponse, search: string) => {
 	if (previousPageData && !previousPageData.maps.length) return null
 
-	const skip = (page || 0) * 10
+	const skip = (page || 0) * LIMIT
 
-	return `/maps?skip=${skip}&limit=10&search=${search}`
+	return `/maps?skip=${skip}&limit=${LIMIT}&search=${search}`
 }
 
 const useMaps = (props: Props = defaultProps) => {
@@ -31,7 +33,8 @@ const useMaps = (props: Props = defaultProps) => {
 
 	const { data, error, size, isLoading, mutate, setSize } = useSWRInfinite(
 		(p, prev) => getKey(p, prev, search),
-		fetcher
+		fetcher,
+		{ revalidateAll: true }
 	)
 
 	let maps: IMap[] = []
