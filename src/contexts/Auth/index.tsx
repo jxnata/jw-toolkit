@@ -2,9 +2,11 @@ import { authStorage } from 'database/auth'
 import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
 import { IPublisher } from 'types/models/Publisher'
 import { IUser } from 'types/models/User'
-import { adminAuth } from 'utils/admin-auth'
-import { publisherAuth } from 'utils/publisher-auth'
 
+import { authHandlerAdmin } from './handlers/admin'
+import { authHandlerPublisher } from './handlers/publisher'
+import { swapHandlerPublisher } from './handlers/swap-publisher'
+import { swapHandlerUser } from './handlers/swap-user'
 import { IAuthContext, ISession } from './types'
 
 const AuthContext = createContext<IAuthContext<IUser | IPublisher> | null>(null)
@@ -40,57 +42,42 @@ export function SessionProvider(props: PropsWithChildren) {
 	const [session, setSession] = useState<ISession<IUser | IPublisher>>(initialData())
 	const [loading, setLoading] = useState<boolean>(false)
 
-	const authHandlerPublisher = useCallback(async ({ user, pass, type }: AuthRequest) => {
-		const authorized = await publisherAuth({ username: user, passcode: pass })
+	const signIn = useCallback(async ({ user, pass, type }: AuthRequest) => {
+		setLoading(true)
 
-		if (!authorized) return false
+		if (type === 'publisher') {
+			await authHandlerPublisher({ user, pass, setSession })
+		}
+		if (type === 'admin') {
+			await authHandlerAdmin({ user, pass, setSession })
+		}
 
-		authStorage.setAuth({ type, token: authorized.token, data: JSON.stringify(authorized.publisher) })
+		setLoading(false)
 
-		setSession({
-			data: authorized.publisher,
-			token: authorized.token,
-			type,
-		})
+		return true
 	}, [])
 
-	const authHandlerAdmin = useCallback(async ({ user, pass, type }: AuthRequest) => {
-		const authorized = await adminAuth({ username: user, password: pass })
-
-		if (!authorized) return false
-
-		authStorage.setAuth({
-			type,
-			token: authorized.token,
-			data: JSON.stringify(authorized.user),
-			private_key: authorized.private_key,
-		})
-
-		setSession({
-			data: authorized.user,
-			token: authorized.token,
-			private_key: authorized.private_key,
-			type,
-		})
-	}, [])
-
-	const signIn = useCallback(
-		async ({ user, pass, type }: AuthRequest) => {
+	const swap = useCallback(async () => {
+		try {
 			setLoading(true)
 
-			if (type === 'publisher') {
-				await authHandlerPublisher({ user, pass, type })
+			if (!session) return false
+
+			if (session.type === 'publisher') {
+				await swapHandlerPublisher({ setSession })
 			}
-			if (type === 'admin') {
-				await authHandlerAdmin({ user, pass, type })
+
+			if (session.type === 'admin') {
+				await swapHandlerUser({ setSession, currentUser: session.data._id })
 			}
 
 			setLoading(false)
-
 			return true
-		},
-		[authHandlerAdmin, authHandlerPublisher]
-	)
+		} catch {
+			setLoading(false)
+			return false
+		}
+	}, [session])
 
 	const signOut = useCallback(() => {
 		authStorage.clear()
@@ -102,6 +89,7 @@ export function SessionProvider(props: PropsWithChildren) {
 			value={{
 				signIn,
 				signOut,
+				swap,
 				session,
 				loading,
 			}}

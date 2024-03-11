@@ -9,6 +9,10 @@ export type IPublisher = {
 	created_at: string
 }
 
+export type IVinculatedPublisher = IPublisher & {
+	user?: string
+}
+
 export type IPublisherParams = {
 	_id: string
 	name: string

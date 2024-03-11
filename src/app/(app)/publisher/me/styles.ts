@@ -35,14 +35,19 @@ export const Label = styled.Text`
 	padding: 10px 0;
 	font-family: 'urbanist-medium';
 `
+export const ButtonGroup = styled.View`
+	flex-direction: row;
+	gap: 10px;
+	margin-top: 10px;
+`
 export const Button = styled.Pressable`
 	gap: 5px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	padding: 20px;
+	padding: 10px 20px;
+	height: 50px;
 	border-radius: 12px;
 	background: ${({ theme }) => theme.backgroundAlt};
 	font-size: 15px;
