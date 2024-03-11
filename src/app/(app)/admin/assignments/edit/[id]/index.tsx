@@ -2,10 +2,10 @@ import Button from 'components/Button'
 import Dropdown from 'components/Dropdown'
 import IconButton from 'components/IconButton'
 import Input from 'components/Input'
+import MapViewDetails from 'components/MapViewDetails'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import useAssignment from 'hooks/swr/admin/useAssignment'
 import useAssignments from 'hooks/swr/admin/useAssignments'
-import useMaps from 'hooks/swr/admin/useMaps'
+import useMap from 'hooks/swr/admin/useMap'
 import usePublishers from 'hooks/swr/admin/usePublishers'
 import { error as removeError, success as removeSuccess } from 'messages/delete'
 import { error, success } from 'messages/edit'
@@ -21,8 +21,7 @@ import * as S from './styles'
 
 const EditAssignment = () => {
 	const params: Partial<IAssignment> = useLocalSearchParams()
-	const { assignment } = useAssignment(params._id)
-	const { maps } = useMaps()
+	const { map } = useMap(typeof params.map === 'object' ? params.map._id : params.map)
 	const { publishers } = usePublishers({ all: true })
 	const { mutate } = useAssignments({ search: '' })
 
@@ -38,11 +37,6 @@ const EditAssignment = () => {
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
 
-	const mapList = useMemo(
-		() =>
-			maps.filter(m => !m.assigned || m.assigned._id === params._id).map(m => ({ label: m.name, value: m._id })),
-		[maps]
-	)
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
 
 	const save: SubmitHandler<EditAssignmentReq> = async data => {
@@ -88,19 +82,7 @@ const EditAssignment = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Editar Designação' }} />
 			<S.Content>
-				<Controller
-					control={control}
-					rules={{ required: true }}
-					name='map'
-					render={({ field: { onChange, value } }) => (
-						<Dropdown
-							placeholder='Selecione um mapa...'
-							options={mapList}
-							selectedValue={value}
-							onValueChange={onChange}
-						/>
-					)}
-				/>
+				<MapViewDetails map={map} />
 				<Controller
 					control={control}
 					rules={{ required: true }}

@@ -3,13 +3,11 @@ import styled from 'styled-components/native'
 
 const screenWidth = Dimensions.get('screen').width
 
-export const Container = styled.Pressable`
+export const Container = styled.View`
 	display: flex;
 	flex-direction: row;
 	margin-bottom: 5px;
 	width: 100%;
-	border-radius: 10px;
-	background-color: ${({ theme }) => theme.backgroundAlt};
 	padding: 10px;
 	gap: 10px;
 `
@@ -51,33 +49,4 @@ const Status = styled.View`
 	background-color: ${({ theme }) => theme.background};
 	padding: 2px 5px;
 	border-radius: 5px;
-`
-export const StatusAssigned = styled(Status)`
-	background-color: ${({ theme }) => theme.warning};
-`
-export const StatusUnassigned = styled(Status)`
-	background-color: ${({ theme }) => theme.success};
-`
-export const AssignedText = styled.Text`
-	font-family: 'urbanist-semibold';
-	font-size: 10px;
-	color: ${({ theme }) => theme.warningAlt};
-`
-export const UnassignedText = styled.Text`
-	font-family: 'urbanist-semibold';
-	font-size: 10px;
-	color: ${({ theme }) => theme.successAlt};
-`
-export const Distance = styled.View`
-	position: absolute;
-	bottom: 5px;
-	right: 5px;
-	background-color: ${({ theme }) => theme.background};
-	padding: 2px 5px;
-	border-radius: 5px;
-`
-export const DistanceText = styled.Text`
-	font-family: 'urbanist-bold';
-	font-size: 10px;
-	color: ${({ theme }) => theme.textAlt};
 `

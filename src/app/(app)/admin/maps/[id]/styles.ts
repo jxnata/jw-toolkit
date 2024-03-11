@@ -32,6 +32,9 @@ export const Row = styled.View`
 	gap: 10px;
 	flex-direction: row;
 `
+export const RowCenter = styled(Row)`
+	align-items: center;
+`
 export const DetailsContainer = styled.View`
 	gap: 15px;
 `

@@ -1,6 +1,7 @@
 import AssignmentCode from 'components/AssignmentCode'
 import Button from 'components/Button'
 import Dropdown from 'components/Dropdown'
+import MapViewDetails from 'components/MapViewDetails'
 import { JW_TOOLKIT_API } from 'constants/urls'
 import { useSession } from 'contexts/Auth'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
@@ -19,7 +20,6 @@ import { remove } from 'services/maps/remove'
 import { AddAssignmentReq } from 'types/api/assignments'
 import { PageParams } from 'types/app'
 import { IUser } from 'types/models/User'
-import { formatDate } from 'utils/date-format'
 import { getAssignmentMessage } from 'utils/get-assignment-message'
 import { getExpiration } from 'utils/get-expiration'
 import { getMapRegion } from 'utils/get-map-region'
@@ -124,24 +124,15 @@ const ViewMap = () => {
 				<S.DetailsContainer>
 					{!!map && (
 						<>
-							<S.Row>
-								<S.Columm>
-									<AssignmentCode data={qr} />
-								</S.Columm>
-								<S.Columm>
-									<S.Paragraph>{map.name}</S.Paragraph>
-									<S.ParagraphWrap numberOfLines={3} ellipsizeMode='tail'>
-										{map.address}, {map.city.name}
-									</S.ParagraphWrap>
-									{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
-										<S.Small>
-											Visitado por {map.last_visited_by.name} em {formatDate(map.last_visited)}
-										</S.Small>
-									) : (
-										<S.Small>Ainda não visitado</S.Small>
-									)}
-								</S.Columm>
-							</S.Row>
+							<S.RowCenter>
+								{!map.last_assignment ||
+									(!!map.last_assignment?.finished && (
+										<S.Columm>
+											<AssignmentCode data={qr} />
+										</S.Columm>
+									))}
+								<MapViewDetails map={map} />
+							</S.RowCenter>
 							{assignments.length === 0 ? (
 								<S.Columm>
 									<S.Label>Designar mapa</S.Label>

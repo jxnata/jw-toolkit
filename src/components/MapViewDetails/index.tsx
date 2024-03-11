@@ -1,20 +1,15 @@
-import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
 import { IMap } from 'types/models/Map'
 import { formatDate } from 'utils/date-format'
-import { getLocationDistance } from 'utils/get-location-distance'
 import { mapImage } from 'utils/map-image'
 import * as S from './styles'
 
 interface MapProps {
 	map: IMap
-	location: LocationObjectCoords
-	onPress: () => void
+	showImage?: boolean
 }
 
-const MapItem = ({ map, location, onPress }: MapProps) => {
-	const distance = getLocationDistance(location, map.coordinates)
-
+const MapViewDetails = ({ map, showImage }: MapProps) => {
 	const found = useMemo(() => {
 		if (map) {
 			if (map.last_assignment) {
@@ -28,23 +23,12 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 	}, [map])
 
 	return (
-		<S.Container onPress={onPress}>
-			{map.last_assignment && (
-				<>
-					{!map.last_assignment.finished ? (
-						<S.StatusAssigned>
-							<S.AssignedText>DESIGNADO</S.AssignedText>
-						</S.StatusAssigned>
-					) : (
-						<S.StatusUnassigned>
-							<S.UnassignedText>LIVRE</S.UnassignedText>
-						</S.StatusUnassigned>
-					)}
-				</>
+		<S.Container>
+			{showImage && (
+				<S.Column>
+					<S.Image resizeMode='contain' source={{ uri: mapImage(map.coordinates) }} />
+				</S.Column>
 			)}
-			<S.Column>
-				<S.Image resizeMode='contain' source={{ uri: mapImage(map.coordinates) }} />
-			</S.Column>
 			<S.Column>
 				<S.Paragraph>
 					{map.city.name} - {map.name}
@@ -52,6 +36,7 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				<S.Paragraph numberOfLines={2} ellipsizeMode='tail'>
 					{map.address}
 				</S.Paragraph>
+				{!!map.details && <S.Paragraph>{map.details}</S.Paragraph>}
 				{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
 					<S.Column>
 						<S.Small>
@@ -63,11 +48,8 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 					<S.Small>Ainda não visitado</S.Small>
 				)}
 			</S.Column>
-			<S.Distance>
-				<S.DistanceText>{distance}</S.DistanceText>
-			</S.Distance>
 		</S.Container>
 	)
 }
 
-export default MapItem
+export default MapViewDetails

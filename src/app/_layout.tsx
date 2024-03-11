@@ -19,7 +19,7 @@ import { SWRConfig } from 'swr'
 import theme from 'themes'
 import { storage } from '../database'
 
-console.tron = Reactotron.configure({ host: '192.168.0.4' }).useReactNative().use(mmkvPlugin({ storage })).connect()
+console.tron = Reactotron.configure({ host: '192.168.0.2' }).useReactNative().use(mmkvPlugin({ storage })).connect()
 
 SplashScreen.preventAutoHideAsync()
 

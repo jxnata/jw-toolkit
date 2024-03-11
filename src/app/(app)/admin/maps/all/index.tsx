@@ -36,7 +36,7 @@ const AllMaps = () => {
 								coordinate={getMarkerCoordinate(map.coordinates)}
 								title={map.name}
 								description={map.address}
-								pinColor={getPinColor(!!map.assigned)}
+								pinColor={getPinColor(!map.last_assignment?.finished)}
 							>
 								<S.MarkerCallout tooltip>
 									<Link href={{ pathname: `/admin/maps/${map._id}`, params: map }} asChild>
@@ -49,7 +49,7 @@ const AllMaps = () => {
 										<S.ParagraphWrap numberOfLines={3} ellipsizeMode='tail'>
 											{map.address}, {map.city.name}
 										</S.ParagraphWrap>
-										{map.assigned ? (
+										{map.last_assignment?.finished ? (
 											<S.Small>Mapa designado</S.Small>
 										) : (
 											<Link

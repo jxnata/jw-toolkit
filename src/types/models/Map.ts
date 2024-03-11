@@ -13,6 +13,6 @@ export type IMap = {
 	congregation: ICongregation | string
 	last_visited?: string
 	last_visited_by?: IPublisher | string
-	assigned?: IAssignment | null
+	last_assignment?: IAssignment | undefined
 	created_at: string
 }
