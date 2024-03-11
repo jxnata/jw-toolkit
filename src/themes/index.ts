@@ -1,7 +1,7 @@
 export const colors = {
-	success: '#8EFF99',
-	warning: '#FFFF99',
-	error: '#FF9999',
+	success: '#63b26b',
+	warning: '#b2b26b',
+	error: '#b26b6b',
 	successAlt: '#3b663f',
 	warningAlt: '#7c6f15',
 	errorAlt: '#822a2a',

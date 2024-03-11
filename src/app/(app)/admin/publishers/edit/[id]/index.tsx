@@ -3,6 +3,7 @@ import IconButton from 'components/IconButton'
 import Input from 'components/Input'
 import { DEFAULT_PRIVILEGES } from 'constants/content'
 import { JW_TOOLKIT_API } from 'constants/urls'
+import { useSession } from 'contexts/Auth'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import usePublisher from 'hooks/swr/admin/usePublisher'
 import usePublishers from 'hooks/swr/admin/usePublishers'
@@ -12,19 +13,23 @@ import split from 'lodash/split'
 import { error as removeError, success as removeSuccess } from 'messages/delete'
 import { error, success } from 'messages/edit'
 import { error as resetError, success as resetSuccess } from 'messages/reset'
+import { error as vinculateError, success as vinculateSuccess } from 'messages/vinculate'
 import { useCallback, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, Share } from 'react-native'
 import { edit } from 'services/publishers/edit'
 import { remove } from 'services/publishers/remove'
 import { reset } from 'services/publishers/reset'
+import { vinculate } from 'services/user/vinculate'
 import { colors } from 'themes'
 import { EditPublisherReq, ResetPublisherRes } from 'types/api/publishers'
 import { IPublisherParams } from 'types/models/Publisher'
+import { IUser } from 'types/models/User'
 
 import * as S from './styles'
 
 const EditPublisher = () => {
+	const { session } = useSession<IUser>()
 	const params: Partial<IPublisherParams> = useLocalSearchParams()
 	const { publisher, mutate: mutatePublisher } = usePublisher(params._id)
 	const { mutate } = usePublishers({ all: true, search: '' })
@@ -74,6 +79,18 @@ const EditPublisher = () => {
 		removeError('publicador')
 	}
 
+	const vinculateUser = async () => {
+		const result = await vinculate(params._id)
+
+		if (result) {
+			vinculateSuccess()
+			router.back()
+			return
+		}
+
+		vinculateError()
+	}
+
 	const sharePublisher = useCallback(async () => {
 		await Share.share({
 			message: `Seu login no JW Maps\n\nUsuário: ${publisherData.publisher}\nSenha: ${publisherData.passcode}\n\nLink para entrar:\n${JW_TOOLKIT_API}/launch/auth?type=publisher&user=${publisherData.publisher}&pass=${publisherData.passcode}`,
@@ -109,6 +126,23 @@ const EditPublisher = () => {
 				{
 					text: 'Sim, excluir',
 					onPress: () => deletePublisher(),
+					style: 'default',
+				},
+			]
+		)
+
+	const showVinculateAlert = () =>
+		Alert.alert(
+			'Vincular',
+			'Deseja vincular o publicador para seu usuário? Depois de vincular, faça login novamente como admin.',
+			[
+				{
+					text: 'Cancelar',
+					style: 'cancel',
+				},
+				{
+					text: 'Sim, excluir',
+					onPress: () => vinculateUser(),
 					style: 'default',
 				},
 			]
@@ -151,9 +185,7 @@ const EditPublisher = () => {
 							control={control}
 							rules={{ required: false }}
 							name='privileges'
-							render={({ field: { onChange, onBlur, value } }) => (
-								<CheckboxComponent onChange={onChange} />
-							)}
+							render={({ field: { onChange } }) => <CheckboxComponent onChange={onChange} />}
 						/>
 						<S.RowMargin>
 							<Button
@@ -163,6 +195,13 @@ const EditPublisher = () => {
 							>
 								Atualizar
 							</Button>
+							{!session.data.publisher && (
+								<IconButton
+									icon='git-branch-outline'
+									color={colors.success}
+									onPress={showVinculateAlert}
+								/>
+							)}
 							<IconButton icon='reload-outline' color={colors.warning} onPress={showResetAlert} />
 							<IconButton icon='trash-bin-outline' color={colors.error} onPress={showDeleteAlert} />
 						</S.RowMargin>
