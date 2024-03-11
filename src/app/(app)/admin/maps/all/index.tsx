@@ -6,6 +6,7 @@ import { Marker } from 'react-native-maps'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
 import { getPinColor } from 'utils/get-pin-color'
+
 import * as S from './styles'
 
 const AllMaps = () => {

@@ -13,7 +13,7 @@ const useAssignment = (id: string) => {
 	return {
 		assignment,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

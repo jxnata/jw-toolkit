@@ -9,6 +9,8 @@
 		"ios": "expo run:ios",
 		"web": "expo start --web",
 		"format": "prettier --write ./src",
+		"lint": "eslint .",
+		"lint-fix": "eslint . --fix",
 		"test": "jest"
 	},
 	"dependencies": {
@@ -49,11 +51,13 @@
 		"@react-native-community/eslint-config": "^3.2.0",
 		"@types/jest": "^29.5.12",
 		"babel-eslint": "^10.1.0",
-		"eslint": "^8.53.0",
+		"eslint": "^8.57.0",
+		"eslint-config-airbnb": "^19.0.4",
 		"eslint-config-prettier": "^9.0.0",
+		"eslint-config-universe": "^12.0.0",
 		"eslint-plugin-prettier": "^5.0.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
-		"prettier": "^3.1.0",
+		"prettier": "^3.2.5",
 		"reactotron-react-native": "^5.0.3",
 		"reactotron-react-native-mmkv": "^0.1.5"
 	},

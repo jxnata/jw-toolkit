@@ -8,7 +8,7 @@ export const edit = async (id: string, body: EditAssignmentReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

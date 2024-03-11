@@ -12,6 +12,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Share } from 'react-native'
 import { add } from 'services/publishers/add'
 import { AddPublisherReq, AddPublisherRes } from 'types/api/publishers'
+
 import * as S from './styles'
 
 const AddPublisher = () => {

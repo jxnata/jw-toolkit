@@ -8,6 +8,7 @@ import { useLocation } from 'hooks/useLocation'
 import debounce from 'lodash/debounce'
 import { useCallback, useMemo, useState } from 'react'
 import { FlatList } from 'react-native'
+
 import * as S from './styles'
 
 const Maps = () => {
@@ -34,7 +35,7 @@ const Maps = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[]
+		[router]
 	)
 
 	const debouncedSearch = debounce(async term => {

@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useCallback, useState } from 'react'
 import { TextInputProps } from 'react-native'
+
 import * as S from './styles'
 
 const PasswordInput = (props: TextInputProps) => {

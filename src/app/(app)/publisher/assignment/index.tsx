@@ -6,6 +6,7 @@ import { MapMarker, Marker } from 'react-native-maps'
 import { IAssignment } from 'types/models/Assignment'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
+
 import * as S from './styles'
 
 const AssigmentDetails = () => {

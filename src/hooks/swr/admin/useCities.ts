@@ -23,7 +23,7 @@ const useCities = (props: Props = defaultProps) => {
 	return {
 		cities,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

@@ -13,7 +13,7 @@ const useAllMaps = () => {
 	return {
 		maps,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

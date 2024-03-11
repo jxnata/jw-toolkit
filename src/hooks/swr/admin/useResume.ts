@@ -24,7 +24,7 @@ const useResume = () => {
 	return {
 		resume,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

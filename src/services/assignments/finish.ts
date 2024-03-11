@@ -8,7 +8,7 @@ export const finish = async (id: string, body: FinishAssignmentReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

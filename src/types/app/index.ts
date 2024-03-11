@@ -1,3 +1,3 @@
 export type PageParams = {
-    id: string
+	id: string
 }

@@ -8,7 +8,7 @@ import theme from 'themes'
 export default function Layout() {
 	const scheme = useColorScheme()
 	const { session } = useSession()
-	const [status, requestPermission] = useForegroundPermissions()
+	const [status] = useForegroundPermissions()
 
 	if (!session) {
 		return <Redirect href='/sign-in' />

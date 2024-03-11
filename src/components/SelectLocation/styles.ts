@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native'
 import MapView from 'react-native-maps'
 import styled from 'styled-components/native'
 
-const { height, width } = Dimensions.get('window')
+const { height } = Dimensions.get('window')
 
 export const Container = styled.View`
 	display: flex;

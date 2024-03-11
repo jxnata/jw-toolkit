@@ -24,7 +24,7 @@ const usePublishers = (props: Props = defaultProps) => {
 	return {
 		publishers,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

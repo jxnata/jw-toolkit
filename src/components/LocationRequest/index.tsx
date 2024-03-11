@@ -1,5 +1,6 @@
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect } from 'expo-router'
+
 import * as S from './styles'
 
 const LocationRequest = () => {

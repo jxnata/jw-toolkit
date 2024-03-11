@@ -2,6 +2,7 @@ import AssignmentItem from 'components/AssignmentItem'
 import { Stack, router } from 'expo-router'
 import useHistoryAssignments from 'hooks/swr/publisher/useHistoryAssignments'
 import { useLocation } from 'hooks/useLocation'
+
 import * as S from './styles'
 
 const AssignmentHistory = () => {

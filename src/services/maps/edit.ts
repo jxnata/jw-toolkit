@@ -11,7 +11,7 @@ export const edit = async (id: string, body: EditMapReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

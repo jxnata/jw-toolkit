@@ -11,7 +11,7 @@ export const add = async (req: AddMapReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

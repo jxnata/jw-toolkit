@@ -42,11 +42,3 @@ export const NotFound = styled(Small)`
 	color: ${({ theme }) => theme.warning};
 	padding-top: 0px;
 `
-const Status = styled.View`
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	background-color: ${({ theme }) => theme.background};
-	padding: 2px 5px;
-	border-radius: 5px;
-`

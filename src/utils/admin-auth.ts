@@ -2,6 +2,7 @@ import get from 'lodash/get'
 import { api } from 'services/api/main'
 import { AdminAuthRequest } from 'types/auth/admin'
 import { IUser } from 'types/models/User'
+
 import { normalizeUsername } from './normalize-username'
 
 export const adminAuth = async ({ username, password }: AdminAuthRequest) => {
@@ -17,7 +18,7 @@ export const adminAuth = async ({ username, password }: AdminAuthRequest) => {
 		}
 
 		return false
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

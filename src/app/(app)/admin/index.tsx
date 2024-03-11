@@ -2,6 +2,7 @@ import { useSession } from 'contexts/Auth'
 import { Link, Stack, useRouter } from 'expo-router'
 import useResume from 'hooks/swr/admin/useResume'
 import { useCallback } from 'react'
+
 import * as S from './styles'
 
 const Admin = () => {
@@ -12,15 +13,12 @@ const Admin = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
-				{/* <S.IconButton onPress={() => router.push('/publisher/history')}>
-					<S.Icon name='file-tray-full-outline' />
-				</S.IconButton> */}
 				<S.IconButton onPress={() => router.push('/admin/me')}>
 					<S.Ionicon name='person-circle-outline' />
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[]
+		[router]
 	)
 
 	return (

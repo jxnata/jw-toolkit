@@ -17,6 +17,7 @@ import mmkvPlugin from 'reactotron-react-native-mmkv'
 import { ThemeProvider } from 'styled-components/native'
 import { SWRConfig } from 'swr'
 import theme from 'themes'
+
 import { storage } from '../database'
 
 console.tron = Reactotron.configure({ host: '192.168.0.2' }).useReactNative().use(mmkvPlugin({ storage })).connect()

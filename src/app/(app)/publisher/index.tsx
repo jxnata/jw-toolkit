@@ -3,6 +3,7 @@ import { Stack, useRouter } from 'expo-router'
 import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
 import { useLocation } from 'hooks/useLocation'
 import { useCallback } from 'react'
+
 import * as S from './styles'
 
 const PublisherHome = () => {
@@ -21,7 +22,7 @@ const PublisherHome = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[]
+		[router]
 	)
 
 	return (

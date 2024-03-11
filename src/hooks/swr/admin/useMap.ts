@@ -13,7 +13,7 @@ const useMap = (id: string) => {
 	return {
 		map,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

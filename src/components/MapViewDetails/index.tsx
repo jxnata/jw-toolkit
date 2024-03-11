@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { IMap } from 'types/models/Map'
 import { formatDate } from 'utils/date-format'
 import { mapImage } from 'utils/map-image'
+
 import * as S from './styles'
 
 interface MapProps {

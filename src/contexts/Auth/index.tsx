@@ -4,6 +4,7 @@ import { IPublisher } from 'types/models/Publisher'
 import { IUser } from 'types/models/User'
 import { adminAuth } from 'utils/admin-auth'
 import { publisherAuth } from 'utils/publisher-auth'
+
 import { IAuthContext, ISession } from './types'
 
 const AuthContext = createContext<IAuthContext<IUser | IPublisher> | null>(null)
@@ -18,7 +19,7 @@ const initialData = () => {
 	try {
 		const { data, token, type, private_key } = authStorage.getAuth()
 		return { data: JSON.parse(data), token, type, private_key } as ISession<IUser | IPublisher>
-	} catch (error) {
+	} catch {
 		authStorage.clear()
 	}
 }
@@ -73,20 +74,23 @@ export function SessionProvider(props: PropsWithChildren) {
 		})
 	}, [])
 
-	const signIn = useCallback(async ({ user, pass, type }: AuthRequest) => {
-		setLoading(true)
+	const signIn = useCallback(
+		async ({ user, pass, type }: AuthRequest) => {
+			setLoading(true)
 
-		if (type === 'publisher') {
-			await authHandlerPublisher({ user, pass, type })
-		}
-		if (type === 'admin') {
-			await authHandlerAdmin({ user, pass, type })
-		}
+			if (type === 'publisher') {
+				await authHandlerPublisher({ user, pass, type })
+			}
+			if (type === 'admin') {
+				await authHandlerAdmin({ user, pass, type })
+			}
 
-		setLoading(false)
+			setLoading(false)
 
-		return true
-	}, [])
+			return true
+		},
+		[authHandlerAdmin, authHandlerPublisher]
+	)
 
 	const signOut = useCallback(() => {
 		authStorage.clear()

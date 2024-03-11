@@ -7,6 +7,7 @@ import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { Alert, FlatList } from 'react-native'
 import { restore } from 'services/assignments/restore'
+
 import * as S from './styles'
 
 const Assignments = () => {
@@ -14,6 +15,28 @@ const Assignments = () => {
 	const [searchTerm, setSearchTerm] = useState('')
 	const { assignments, loading, mutate } = useAssignments({ search: searchTerm })
 	const { location } = useLocation()
+
+	const restoreAssignments = useCallback(async () => {
+		const result = await restore()
+
+		if (result) mutate()
+	}, [mutate])
+
+	const showDeleteAlert = useCallback(
+		() =>
+			Alert.alert('Restaurar', 'Deseja restaurar todas as designações? Essa opção não pode ser revertida.', [
+				{
+					text: 'Cancelar',
+					style: 'cancel',
+				},
+				{
+					text: 'Sim',
+					onPress: restoreAssignments,
+					style: 'default',
+				},
+			]),
+		[restoreAssignments]
+	)
 
 	const HeaderRight = useCallback(
 		() => (
@@ -23,27 +46,8 @@ const Assignments = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[]
+		[showDeleteAlert]
 	)
-
-	const restoreAssignments = async () => {
-		const result = await restore()
-
-		if (result) mutate()
-	}
-
-	const showDeleteAlert = () =>
-		Alert.alert('Restaurar', 'Deseja restaurar todas as designações? Essa opção não pode ser revertida.', [
-			{
-				text: 'Cancelar',
-				style: 'cancel',
-			},
-			{
-				text: 'Sim',
-				onPress: restoreAssignments,
-				style: 'default',
-			},
-		])
 
 	const debouncedSearch = debounce(async term => {
 		setSearchTerm(term)

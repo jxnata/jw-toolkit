@@ -25,6 +25,7 @@ import { getExpiration } from 'utils/get-expiration'
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
 import { signMessage } from 'utils/sign-message'
+
 import * as S from './styles'
 
 const ViewMap = () => {
@@ -66,7 +67,7 @@ const ViewMap = () => {
 		error('designação')
 	}
 
-	const deleteMap = async () => {
+	const deleteMap = useCallback(async () => {
 		const result = await remove(id)
 
 		if (result) {
@@ -78,24 +79,27 @@ const ViewMap = () => {
 		}
 
 		removeError('mapa')
-	}
+	}, [id, mutate, mutateMaps])
 
-	const showDeleteAlert = () =>
-		Alert.alert(
-			'Excluir',
-			'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.',
-			[
-				{
-					text: 'Cancelar',
-					style: 'cancel',
-				},
-				{
-					text: 'Sim, excluir',
-					onPress: () => deleteMap(),
-					style: 'default',
-				},
-			]
-		)
+	const showDeleteAlert = useCallback(
+		() =>
+			Alert.alert(
+				'Excluir',
+				'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.',
+				[
+					{
+						text: 'Cancelar',
+						style: 'cancel',
+					},
+					{
+						text: 'Sim, excluir',
+						onPress: () => deleteMap(),
+						style: 'default',
+					},
+				]
+			),
+		[deleteMap]
+	)
 
 	const HeaderRight = useCallback(
 		() => (
@@ -108,14 +112,14 @@ const ViewMap = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[]
+		[id, showDeleteAlert]
 	)
 
 	useEffect(() => {
 		if (session && id) {
 			generateQR()
 		}
-	}, [session, id])
+	}, [session, id, generateQR])
 
 	return (
 		<S.Container>

@@ -1,4 +1,5 @@
 import { storage } from 'database'
+
 import { AuthStorage } from './types'
 
 export const authStorage = {

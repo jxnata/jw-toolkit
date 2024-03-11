@@ -28,7 +28,7 @@ const useAssignments = (props: Props = defaultProps) => {
 	return {
 		assignments,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

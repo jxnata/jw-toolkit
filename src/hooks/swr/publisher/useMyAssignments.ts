@@ -13,7 +13,7 @@ const useMyAssignments = () => {
 	return {
 		assigments,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

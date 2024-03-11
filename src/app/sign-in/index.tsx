@@ -7,6 +7,7 @@ import { Stack } from 'expo-router/stack'
 import { useCallback, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
 import * as S from './styles'
 
 const Login = () => {
@@ -28,7 +29,7 @@ const Login = () => {
 
 			router.replace(`/${type}`)
 		},
-		[type]
+		[router, signIn, type]
 	)
 
 	return (

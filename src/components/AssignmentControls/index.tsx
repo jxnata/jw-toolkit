@@ -1,5 +1,6 @@
 import { Linking, Platform } from 'react-native'
 import { IAssignment } from 'types/models/Assignment'
+
 import * as S from './styles'
 
 interface AssignmentProps {

@@ -6,7 +6,7 @@ export const accept = async (body: AcceptAssignmentReq) => {
 		const { data } = await api.post<AcceptAssignmentRes>(`/assignments/accept`, body)
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

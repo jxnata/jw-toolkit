@@ -8,7 +8,7 @@ export const restore = async () => {
 		if (!data) return false
 
 		return true
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

@@ -15,6 +15,7 @@ import { edit } from 'services/maps/edit'
 import { EditMapReq } from 'types/api/maps'
 import { getCoordinates } from 'utils/get-coordinates'
 import { setCoordinates } from 'utils/set-coordinates'
+
 import * as S from './styles'
 
 const EditMap = () => {
@@ -34,7 +35,7 @@ const EditMap = () => {
 			city: map.city._id,
 			coordinates: getCoordinates(map.coordinates),
 		}),
-		[]
+		[map.address, map.city._id, map.coordinates, map.details, map.name]
 	)
 
 	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })
@@ -143,7 +144,7 @@ const EditMap = () => {
 						/>
 					)}
 				/>
-				<Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={toggleMap}>
+				<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}

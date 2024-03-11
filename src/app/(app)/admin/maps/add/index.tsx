@@ -15,6 +15,7 @@ import { add } from 'services/maps/add'
 import { AddMapReq } from 'types/api/maps'
 import { getCoordinates } from 'utils/get-coordinates'
 import { setCoordinates } from 'utils/set-coordinates'
+
 import * as S from './styles'
 
 const AddMap = () => {
@@ -129,7 +130,7 @@ const AddMap = () => {
 						/>
 					)}
 				/>
-				<Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={toggleMap}>
+				<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}

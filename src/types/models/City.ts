@@ -5,5 +5,5 @@ export type ICity = {
 }
 
 export type ICityListItem = ICity & {
-	maps_count: number;
+	maps_count: number
 }

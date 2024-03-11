@@ -1,9 +1,10 @@
 import { useSession } from 'contexts/Auth'
 import { parse, useURL } from 'expo-linking'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { accept } from 'services/assignments/accept'
 import { AcceptAssignmentQuery } from 'types/linking/accept-assignment'
+
 import * as S from './styles'
 
 const LaunchAcceptAssignment = () => {
@@ -12,20 +13,23 @@ const LaunchAcceptAssignment = () => {
 	const url = useURL()
 	const router = useRouter()
 
-	const acceptAssignment = async (data: AcceptAssignmentQuery) => {
-		const result = await accept(data)
-
-		if (!result) {
-			setError(true)
-			return
-		}
-
-		back()
-	}
-
-	const back = async () => {
+	const back = useCallback(async () => {
 		router.replace('/')
-	}
+	}, [router])
+
+	const acceptAssignment = useCallback(
+		async (data: AcceptAssignmentQuery) => {
+			const result = await accept(data)
+
+			if (!result) {
+				setError(true)
+				return
+			}
+
+			back()
+		},
+		[back]
+	)
 
 	useEffect(() => {
 		if (!url) return
@@ -46,7 +50,7 @@ const LaunchAcceptAssignment = () => {
 		}
 
 		acceptAssignment(link)
-	}, [url])
+	}, [acceptAssignment, back, session, url])
 
 	return (
 		<S.Container>

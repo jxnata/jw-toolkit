@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Dimensions, Modal } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
+
 import * as S from './styles'
 
 type Props = {
@@ -21,7 +22,7 @@ const AssignmentCode = ({ data }: Props) => {
 			<S.QRIcon onPress={toggle}>
 				<S.Ionicon name='qr-code-outline' />
 			</S.QRIcon>
-			<Modal animationType='fade' transparent={true} visible={open} onRequestClose={toggle}>
+			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
 				<S.Container onPress={toggle}>
 					<S.Content>
 						<QRCode size={qrSize} value={data} />

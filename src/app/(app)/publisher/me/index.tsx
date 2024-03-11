@@ -1,5 +1,6 @@
 import { useSession } from 'contexts/Auth'
 import { Stack } from 'expo-router'
+
 import * as S from './styles'
 
 const PublisherDetails = () => {

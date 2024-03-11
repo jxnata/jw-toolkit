@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions, FlatList } from 'react-native'
 import styled from 'styled-components/native'
 
-const { height, width } = Dimensions.get('window')
+const { height } = Dimensions.get('window')
 
 export const DropdowContainer = styled.View`
 	margin-bottom: 10px;

@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { FlatList } from 'react-native'
 import { firstLetter } from 'utils/first-letter'
+
 import * as S from './styles'
 
 const Cities = () => {
@@ -20,7 +21,7 @@ const Cities = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[]
+		[router]
 	)
 
 	const debouncedSearch = debounce(async term => {

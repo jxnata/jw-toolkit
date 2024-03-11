@@ -6,6 +6,7 @@ import MapView, { LatLng, MapMarker, MapPressEvent, MapType, Marker, Region } fr
 import { getMapRegion } from 'utils/get-map-region'
 import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
 import { validCoordinates } from 'utils/valid-coordinates'
+
 import * as S from './styles'
 
 type Props = {
@@ -24,13 +25,19 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	const mapType: MapType = useMemo(() => selectedValues[0], [selectedValues]) as 'standard' | 'satellite'
 	const marker: LatLng = useMemo(() => getMarkerCoordinate(pin), [pin])
 
-	const onSelectLocation = useCallback((e: MapPressEvent) => {
-		const coordinates: [number, number] = [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude]
-		setPin(coordinates)
-		onSelect(coordinates)
-	}, [])
+	const onSelectLocation = useCallback(
+		(e: MapPressEvent) => {
+			const coordinates: [number, number] = [
+				e.nativeEvent.coordinate.latitude,
+				e.nativeEvent.coordinate.longitude,
+			]
+			setPin(coordinates)
+			onSelect(coordinates)
+		},
+		[onSelect]
+	)
 
-	const getInitialLocation = async () => {
+	const getInitialLocation = useCallback(async () => {
 		if (pin) {
 			setInitialLocation(getMapRegion(pin, 0.001))
 			return
@@ -38,11 +45,11 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 		const location = await getCurrentPositionAsync()
 		const region = getMapRegion([location.coords.latitude, location.coords.longitude])
 		setInitialLocation(region)
-	}
+	}, [pin])
 
 	useEffect(() => {
 		getInitialLocation()
-	}, [])
+	}, [getInitialLocation])
 
 	useEffect(() => {
 		if (!pin) return
@@ -60,7 +67,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 				<S.CloseButton onPress={onClose}>
 					<S.Icon name='close-outline' />
 				</S.CloseButton>
-				{!!initialLocation ? (
+				{initialLocation ? (
 					<S.Map
 						ref={mapRef}
 						initialRegion={initialLocation}

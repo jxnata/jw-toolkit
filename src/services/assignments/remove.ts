@@ -8,7 +8,7 @@ export const remove = async (id: RemoveAssignmentReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

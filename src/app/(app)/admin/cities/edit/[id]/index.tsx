@@ -13,6 +13,7 @@ import { remove } from 'services/cities/remove'
 import { colors } from 'themes'
 import { EditCityReq } from 'types/api/cities'
 import { ICity } from 'types/models/City'
+
 import * as S from './styles'
 
 const EditCity = () => {

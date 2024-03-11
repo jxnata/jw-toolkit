@@ -1,6 +1,7 @@
-import { LocationObjectCoords } from "expo-location";
-import getDistance from 'geolib/es/getDistance';
-import { getMarkerCoordinate } from "./get-marker-coordinate";
+import { LocationObjectCoords } from 'expo-location'
+import getDistance from 'geolib/es/getDistance'
+
+import { getMarkerCoordinate } from './get-marker-coordinate'
 
 export const getLocationDistance = (from: LocationObjectCoords, to: [number, number]) => {
 	if (!to) return

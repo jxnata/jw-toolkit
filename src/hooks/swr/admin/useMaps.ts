@@ -37,7 +37,7 @@ const useMaps = (props: Props = defaultProps) => {
 		{ revalidateAll: true }
 	)
 
-	let maps: IMap[] = []
+	const maps: IMap[] = []
 
 	if (data) {
 		for (const item of data) {
@@ -56,7 +56,7 @@ const useMaps = (props: Props = defaultProps) => {
 		maps,
 		page: size,
 		loading: !error && !data,
-		error: error,
+		error,
 		next,
 		mutate,
 	}

@@ -13,7 +13,7 @@ const useCity = (id: string) => {
 	return {
 		city,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

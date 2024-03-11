@@ -3,6 +3,7 @@ import { IAssignment } from 'types/models/Assignment'
 import { formatDate } from 'utils/date-format'
 import { getLocationDistance } from 'utils/get-location-distance'
 import { mapImage } from 'utils/map-image'
+
 import * as S from './styles'
 
 interface AssignmentProps {

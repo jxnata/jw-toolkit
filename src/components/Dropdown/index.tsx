@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Modal } from 'react-native'
+
 import * as S from './styles'
 
 type Props = {
@@ -39,7 +40,7 @@ const Dropdown = ({ selectedValue, options, placeholder, onValueChange }: Props)
 				<S.Placeholder>{selectedLabel || placeholder}</S.Placeholder>
 				<S.Ionicon name='chevron-down' />
 			</S.Input>
-			<Modal animationType='fade' transparent={true} visible={open} onRequestClose={toggle}>
+			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
 				<S.Container onPress={toggle}>
 					<S.Content>
 						<S.List

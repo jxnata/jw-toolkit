@@ -17,6 +17,7 @@ import { remove } from 'services/assignments/remove'
 import { colors } from 'themes'
 import { EditAssignmentReq } from 'types/api/assignments'
 import { IAssignment } from 'types/models/Assignment'
+
 import * as S from './styles'
 
 const EditAssignment = () => {
@@ -32,7 +33,7 @@ const EditAssignment = () => {
 			details: params.details,
 			permanent: params.permanent,
 		}),
-		[]
+		[params.details, params.map, params.permanent, params.publisher]
 	)
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })

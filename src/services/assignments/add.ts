@@ -8,7 +8,7 @@ export const add = async (req: AddAssignmentReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

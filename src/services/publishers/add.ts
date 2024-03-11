@@ -8,7 +8,7 @@ export const add = async (body: AddPublisherReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

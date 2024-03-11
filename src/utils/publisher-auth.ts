@@ -2,6 +2,7 @@ import get from 'lodash/get'
 import { api } from 'services/api/main'
 import { PublisherAuthRequest } from 'types/auth/publisher'
 import { IPublisher } from 'types/models/Publisher'
+
 import { normalizeUsername } from './normalize-username'
 
 export const publisherAuth = async ({ username, passcode }: PublisherAuthRequest) => {
@@ -16,7 +17,7 @@ export const publisherAuth = async ({ username, passcode }: PublisherAuthRequest
 		}
 
 		return false
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

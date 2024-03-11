@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+
 import * as S from './styles'
 
 type CheckboxComponentProps = {
@@ -8,26 +9,32 @@ type CheckboxComponentProps = {
 const useCheckbox = (options: string[], initialSelected?: string[], unique?: boolean) => {
 	const [selectedValues, setSelectedValues] = useState(initialSelected || [])
 
-	const isSelected = (option: string) => {
-		return selectedValues.includes(option)
-	}
+	const isSelected = useCallback(
+		(option: string) => {
+			return selectedValues.includes(option)
+		},
+		[selectedValues]
+	)
 
-	const onChangeSelected = (value, callback) => {
-		if (unique) {
-			setSelectedValues([value])
-			if (callback) callback([value])
-			return
-		}
+	const onChangeSelected = useCallback(
+		(value, callback) => {
+			if (unique) {
+				setSelectedValues([value])
+				if (callback) callback([value])
+				return
+			}
 
-		if (selectedValues.includes(value)) {
-			const values = selectedValues.filter(selected => selected !== value)
-			setSelectedValues(values)
-			if (callback) callback(values)
-		} else {
-			setSelectedValues([...selectedValues, value])
-			if (callback) callback([...selectedValues, value])
-		}
-	}
+			if (selectedValues.includes(value)) {
+				const values = selectedValues.filter(selected => selected !== value)
+				setSelectedValues(values)
+				if (callback) callback(values)
+			} else {
+				setSelectedValues([...selectedValues, value])
+				if (callback) callback([...selectedValues, value])
+			}
+		},
+		[selectedValues, unique]
+	)
 
 	const CheckboxComponent = useCallback(
 		({ onChange }: CheckboxComponentProps) => {
@@ -45,7 +52,7 @@ const useCheckbox = (options: string[], initialSelected?: string[], unique?: boo
 				</S.Container>
 			)
 		},
-		[selectedValues, options]
+		[options, isSelected, onChangeSelected]
 	)
 
 	return { CheckboxComponent, selectedValues }

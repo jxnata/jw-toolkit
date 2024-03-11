@@ -13,7 +13,7 @@ const usePublisher = (id: string) => {
 	return {
 		publisher,
 		loading: !error && !data,
-		error: error,
+		error,
 		mutate,
 	}
 }

@@ -8,7 +8,7 @@ export const reset = async (id: ResetPublisherReq) => {
 		if (!data) return false
 
 		return data
-	} catch (error) {
+	} catch {
 		return false
 	}
 }
