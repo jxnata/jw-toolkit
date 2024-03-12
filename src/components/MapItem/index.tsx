@@ -28,20 +28,28 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 		return false
 	}, [map])
 
+	const assigned = useMemo(() => {
+		if (map) {
+			if (map.last_assignment) {
+				if (map.last_assignment.finished === false) {
+					return true
+				}
+			}
+		}
+
+		return false
+	}, [map])
+
 	return (
 		<S.Container onPress={onPress}>
-			{map.last_assignment && (
-				<>
-					{!map.last_assignment.finished ? (
-						<S.StatusAssigned>
-							<S.AssignedText>DESIGNADO</S.AssignedText>
-						</S.StatusAssigned>
-					) : (
-						<S.StatusUnassigned>
-							<S.UnassignedText>LIVRE</S.UnassignedText>
-						</S.StatusUnassigned>
-					)}
-				</>
+			{assigned ? (
+				<S.StatusAssigned>
+					<S.AssignedText>DESIGNADO</S.AssignedText>
+				</S.StatusAssigned>
+			) : (
+				<S.StatusUnassigned>
+					<S.UnassignedText>LIVRE</S.UnassignedText>
+				</S.StatusUnassigned>
 			)}
 			<S.Column>
 				<S.Image resizeMode='contain' source={{ uri: mapImage(map.coordinates) }} />

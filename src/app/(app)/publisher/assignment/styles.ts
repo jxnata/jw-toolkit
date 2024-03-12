@@ -32,7 +32,7 @@ export const Label = styled.Text`
 `
 export const CloseButton = styled.Pressable`
 	position: absolute;
-	right: 10px;
+	left: 10px;
 	top: 10px;
 	align-items: center;
 	justify-content: center;

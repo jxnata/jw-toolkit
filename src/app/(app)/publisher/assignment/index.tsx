@@ -37,7 +37,7 @@ const AssigmentDetails = () => {
 			<Stack.Screen options={{ presentation: 'modal' }} />
 			<S.Content>
 				<S.CloseButton onPress={router.back}>
-					<S.Icon name='close-outline' />
+					<S.Icon name='arrow-back' />
 				</S.CloseButton>
 				<S.Map region={region} onMapReady={onMapReady} showsUserLocation>
 					<Marker

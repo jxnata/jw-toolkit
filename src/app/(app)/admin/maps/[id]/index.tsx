@@ -129,12 +129,11 @@ const ViewMap = () => {
 					{!!map && (
 						<>
 							<S.RowCenter>
-								{!map.last_assignment ||
-									(!!map.last_assignment?.finished && (
-										<S.Columm>
-											<AssignmentCode data={qr} />
-										</S.Columm>
-									))}
+								{assignments.length === 0 && (
+									<S.Columm>
+										<AssignmentCode data={qr} />
+									</S.Columm>
+								)}
 								<MapViewDetails map={map} />
 							</S.RowCenter>
 							{assignments.length === 0 ? (
