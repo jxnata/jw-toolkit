@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions, FlatList } from 'react-native'
 import styled from 'styled-components/native'
 
-const { height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 export const QRContainer = styled.View`
 	margin-bottom: 10px;
@@ -24,11 +24,14 @@ export const Container = styled.Pressable`
 	height: 100%;
 	background-color: ${({ theme }) => theme.background}ca;
 `
-export const Content = styled.SafeAreaView`
-	display: flex;
+export const Content = styled.View`
 	width: 100%;
-	max-height: ${height * 0.6}px;
+	justify-content: center;
 	align-items: center;
+	height: ${width}px;
+	align-items: center;
+	background-color: white;
+	border-radius: 12px;
 `
 export const Item = styled.Pressable`
 	flex-direction: row;

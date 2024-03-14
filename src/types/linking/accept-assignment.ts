@@ -1,6 +1,6 @@
 export type AcceptAssignmentQuery = {
-	map: string
-	user: string
-	signature: string
-	expiration: string
+	m: string
+	u: string
+	s: string
+	e: string
 }

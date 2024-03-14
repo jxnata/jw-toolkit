@@ -1,4 +1,4 @@
-package dev.jxnata.jwtoolkit;
+package dev.jxnata.jwmaps;
 
 import android.app.Application;
 import android.content.res.Configuration;

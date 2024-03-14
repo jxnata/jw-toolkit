@@ -22,7 +22,7 @@
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#D08129"
 			},
-			"package": "dev.jxnata.jwtoolkit"
+			"package": "dev.jxnata.jwmaps"
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"

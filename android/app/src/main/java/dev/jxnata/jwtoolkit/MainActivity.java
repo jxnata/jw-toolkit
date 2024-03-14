@@ -1,4 +1,4 @@
-package dev.jxnata.jwtoolkit;
+package dev.jxnata.jwmaps;
 
 import android.os.Build;
 import android.os.Bundle;

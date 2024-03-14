@@ -93,7 +93,7 @@ const EditPublisher = () => {
 
 	const sharePublisher = useCallback(async () => {
 		await Share.share({
-			message: `Seu login no JW Maps\n\nUsuário: ${publisherData.publisher}\nSenha: ${publisherData.passcode}\n\nLink para entrar:\n${JW_TOOLKIT_API}/launch/auth?type=publisher&user=${publisherData.publisher}&pass=${publisherData.passcode}`,
+			message: `Seu login no JW Maps\n\nUsuário: ${publisherData.publisher}\nSenha: ${publisherData.passcode}\n\nLink para entrar:\n${JW_TOOLKIT_API}/go/auth?type=publisher&user=${publisherData.publisher}&pass=${publisherData.passcode}`,
 		})
 	}, [publisherData])
 

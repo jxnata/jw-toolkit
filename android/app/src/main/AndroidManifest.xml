@@ -30,7 +30,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="jw-toolkit"/>
-        <data android:scheme="dev.jxnata.jwtoolkit"/>
+        <data android:scheme="dev.jxnata.jwmaps"/>
       </intent-filter>
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />

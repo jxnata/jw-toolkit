@@ -3,6 +3,7 @@ import { parse, useURL } from 'expo-linking'
 import { useRouter } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { accept } from 'services/assignments/accept'
+import { AcceptAssignmentReq } from 'types/api/assignments'
 import { AcceptAssignmentQuery } from 'types/linking/accept-assignment'
 
 import * as S from './styles'
@@ -19,7 +20,14 @@ const LaunchAcceptAssignment = () => {
 
 	const acceptAssignment = useCallback(
 		async (data: AcceptAssignmentQuery) => {
-			const result = await accept(data)
+			const body: AcceptAssignmentReq = {
+				user: data.u,
+				map: data.m,
+				expiration: data.e,
+				signature: data.s,
+			}
+
+			const result = await accept(body)
 
 			if (!result) {
 				setError(true)
@@ -39,12 +47,12 @@ const LaunchAcceptAssignment = () => {
 		const { queryParams } = parse(url)
 		const link = queryParams as AcceptAssignmentQuery
 
-		if (!link.map || !link.expiration || !link.user || !link.signature) {
+		if (!link.m || !link.e || !link.u || !link.s) {
 			setError(true)
 			return
 		}
 
-		if (Number(link.expiration) < Date.now()) {
+		if (Number(link.e) < Date.now()) {
 			setError(true)
 			return
 		}

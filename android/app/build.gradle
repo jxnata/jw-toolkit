@@ -81,9 +81,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace 'dev.jxnata.jwtoolkit'
+    namespace 'dev.jxnata.jwmaps'
     defaultConfig {
-        applicationId 'dev.jxnata.jwtoolkit'
+        applicationId 'dev.jxnata.jwmaps'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 7

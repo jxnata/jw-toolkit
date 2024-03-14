@@ -48,7 +48,7 @@ const ViewMap = () => {
 		const qrMessage = getAssignmentMessage(id, session.data._id, expiration.toString())
 
 		const signature = await signMessage(qrMessage, session.private_key)
-		const qrCodeUrl = `${JW_TOOLKIT_API}/launch/assignments/accept?user=${session.data._id}&map=${id}&expiration=${expiration}&signature=${signature}`
+		const qrCodeUrl = `${JW_TOOLKIT_API}/go/assign?u=${session.data._id}&m=${id}&e=${expiration}&s=${signature}`
 
 		setQr(qrCodeUrl)
 	}, [session, id])
