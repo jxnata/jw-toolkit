@@ -34,6 +34,7 @@ export const Row = styled.View`
 export const MarkerCallout = styled(Callout)`
 	padding: 10px;
 	border-radius: 10px;
+	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.background};
 	width: ${screenWidth / 2}px;
 `

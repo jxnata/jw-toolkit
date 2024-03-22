@@ -83,7 +83,7 @@ const EditAssignment = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Editar Designação' }} />
 			<S.Content>
-				<MapViewDetails map={map} />
+				{!!map && <MapViewDetails map={map} />}
 				<Controller
 					control={control}
 					rules={{ required: true }}

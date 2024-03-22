@@ -1,4 +1,4 @@
-import IconButton from 'components/IconButton'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
@@ -11,6 +11,7 @@ export const Content = styled.View`
 	align-items: center;
 	padding: 10px;
 	border-radius: 10px;
+	border: 1.5px solid ${({ theme }) => theme.border};
 	background-color: ${({ theme }) => theme.backgroundAlt};
 	gap: 10px;
 `
@@ -49,10 +50,20 @@ export const Button = styled.Pressable`
 	font-size: 15px;
 	margin-bottom: 15px;
 `
-export const CloseButton = styled(IconButton)`
+export const CloseButton = styled.Pressable`
 	position: absolute;
 	top: 5px;
 	right: 5px;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	background: ${({ theme }) => theme.backgroundAlt};
+	font-size: 15px;
+	margin-bottom: 15px;
 `
 export const ButtonPositive = styled(Button)`
 	background: ${({ theme }) => theme.success};
@@ -69,4 +80,9 @@ export const ButtonTitleNegative = styled.Text`
 	color: ${({ theme }) => theme.errorAlt};
 	font-size: 15px;
 	font-family: 'urbanist-bold';
+`
+export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
+	size: 24,
+}))`
+	color: ${({ theme, color }) => color || theme.text};
 `

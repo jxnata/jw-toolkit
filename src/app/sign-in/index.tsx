@@ -24,7 +24,7 @@ const Login = () => {
 	const auth: SubmitHandler<AuthRequest> = useCallback(
 		async data => {
 			const authorized = await signIn({ ...data, type })
-
+			console.log(authorized)
 			if (!authorized) return alert('Usuário ou senha inválidos')
 
 			router.replace(`/${type}`)
@@ -42,7 +42,7 @@ const Login = () => {
 						<S.TitleContainer>
 							<S.Small>Login</S.Small>
 							<S.Title>{type === 'publisher' ? 'Publicador' : 'Admin'}</S.Title>
-							<S.IconButton onPress={switchType}>
+							<S.IconButton hitSlop={20} onPress={switchType}>
 								<S.Icon name='swap-horizontal-outline' />
 							</S.IconButton>
 						</S.TitleContainer>

@@ -12,8 +12,10 @@ export const Input = styled.Pressable`
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
+	height: 50px;
 	padding: 14px 16px;
 	border-radius: 12px;
+	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.backgroundAlt};
 `
 export const Placeholder = styled.Text`

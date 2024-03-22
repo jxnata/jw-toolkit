@@ -6320,7 +6320,7 @@ internal-slot@^1.0.7:
     hasown "^2.0.0"
     side-channel "^1.0.4"
 
-invariant@*, invariant@^2.2.4:
+invariant@*, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -9050,6 +9050,13 @@ react-native-mmkv@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.11.0.tgz#51b9985f6a5c09fe9c16d8c1861cc2901856ace1"
   integrity sha512-28PdUHjZJmAw3q+8zJDAAdohnZMpDC7WgRUJxACOMkcmJeqS3u5cKS/lSq2bhf1CvaeIiHYHUWiyatUjMRCDQQ==
+
+react-native-onesignal@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-5.1.0.tgz#c3023cf27e3fbadb0d49f5c1971eb879d79c63c7"
+  integrity sha512-iKCJ9ZdM9Qsxch6iycrwsiFKow931iCzuqLPtql1fEwwyrn02+pXpUS8zxub0244Loxb7BaHbzgvafKR5Voyjg==
+  dependencies:
+    invariant "^2.2.2"
 
 react-native-qrcode-svg@^6.2.0:
   version "6.2.0"

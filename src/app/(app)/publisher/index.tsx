@@ -2,7 +2,8 @@ import AssignmentItem from 'components/AssignmentItem'
 import { Stack, useRouter } from 'expo-router'
 import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
 import { useLocation } from 'hooks/useLocation'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { OneSignal } from 'react-native-onesignal'
 
 import * as S from './styles'
 
@@ -24,6 +25,14 @@ const PublisherHome = () => {
 		),
 		[router]
 	)
+
+	useEffect(() => {
+		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
+			event.preventDefault()
+			mutate()
+			event.getNotification().display()
+		})
+	}, [mutate])
 
 	return (
 		<S.Container>

@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
 import { Marker } from 'react-native-maps'
+import { OneSignal } from 'react-native-onesignal'
 import { add } from 'services/assignments/add'
 import { remove } from 'services/maps/remove'
 import { AddAssignmentReq } from 'types/api/assignments'
@@ -120,6 +121,14 @@ const ViewMap = () => {
 			generateQR()
 		}
 	}, [session, id, generateQR])
+
+	useEffect(() => {
+		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
+			event.preventDefault()
+			mutate()
+			mutateAssignments()
+		})
+	}, [mutate, mutateAssignments])
 
 	return (
 		<S.Container>

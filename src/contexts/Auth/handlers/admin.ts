@@ -13,7 +13,7 @@ export type AuthHandlerUser = {
 export const authHandlerAdmin = async ({ user, pass, setSession }: AuthHandlerUser) => {
 	const authorized = await adminAuth({ username: user, password: pass })
 
-	if (!authorized) return false
+	if (!authorized) throw new Error('authorization failed')
 
 	authStorage.setAuth({
 		type: 'admin',
@@ -25,6 +25,7 @@ export const authHandlerAdmin = async ({ user, pass, setSession }: AuthHandlerUs
 	setSession({
 		data: authorized.user,
 		token: authorized.token,
+		private_key: authorized.private_key,
 		type: 'admin',
 	})
 }

@@ -6,9 +6,8 @@ export const getMarkerCoordinate = (coordinates: [number, number]) => {
 		return { latitude: 0, longitude: 0 }
 	}
 
-	const fixedCoord = coordinates.sort()
 	return {
-		latitude: fixedCoord[0],
-		longitude: fixedCoord[1],
+		latitude: coordinates[0],
+		longitude: coordinates[1],
 	}
 }

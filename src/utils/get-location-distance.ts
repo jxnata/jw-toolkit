@@ -8,7 +8,7 @@ export const getLocationDistance = (from: LocationObjectCoords, to: [number, num
 	if (to.length < 2) return
 	if (!from) return
 
-	const fixedTo = getMarkerCoordinate(to.sort())
+	const fixedTo = getMarkerCoordinate(to)
 
 	const total = getDistance(from, fixedTo)
 

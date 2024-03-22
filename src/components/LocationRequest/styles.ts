@@ -42,7 +42,7 @@ export const Button = styled.Pressable`
 	margin-bottom: 15px;
 `
 export const ButtonTitle = styled.Text`
-	color: ${({ theme }) => theme.text};
+	color: ${({ theme }) => theme.secondary};
 	font-size: 15px;
 	font-family: 'urbanist-bold';
 `

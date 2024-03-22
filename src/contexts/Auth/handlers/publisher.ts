@@ -13,7 +13,7 @@ export type AuthHandlerPublisher = {
 export const authHandlerPublisher = async ({ user, pass, setSession }: AuthHandlerPublisher) => {
 	const authorized = await publisherAuth({ username: user, passcode: pass })
 
-	if (!authorized) return false
+	if (!authorized) throw new Error('authorization failed')
 
 	authStorage.setAuth({ type: 'publisher', token: authorized.token, data: JSON.stringify(authorized.publisher) })
 

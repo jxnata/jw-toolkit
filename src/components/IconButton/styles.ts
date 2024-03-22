@@ -9,6 +9,7 @@ export const Button = styled.Pressable`
 	align-items: center;
 	justify-content: center;
 	border-radius: 12px;
+	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.backgroundAlt};
 	font-size: 15px;
 	margin-bottom: 15px;

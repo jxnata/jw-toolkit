@@ -34,7 +34,9 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	return (
 		<S.Container>
 			<S.Content>
-				<S.CloseButton icon='close-circle-outline' onPress={onCancel} />
+				<S.CloseButton onPress={onCancel}>
+					<S.Ionicon name='close-circle-outline' />
+				</S.CloseButton>
 				<S.Title>Encontrou alguém?</S.Title>
 				<S.Paragraph>Ao escolher uma opção, você termina sua designação.</S.Paragraph>
 				<S.ButtonGroup>

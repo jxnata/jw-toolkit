@@ -11,8 +11,8 @@ export const light = {
 	background: '#f2efe6',
 	border: '#afab9a',
 	backgroundAlt: '#eae6da',
-	textAlt: '#afab9a',
-	text: '#878376',
+	textAlt: '#898573',
+	text: '#605b4a',
 	primary: '#BB7424',
 	secondary: '#F0D9BE',
 	tertiary: '#A66720',
@@ -26,7 +26,7 @@ export const light = {
 
 export const dark = {
 	background: '#1e1e1d',
-	border: '#2b2a2a',
+	border: '#5b5a52',
 	backgroundAlt: '#302f2e',
 	textAlt: '#afab9a',
 	text: '#eae6da',

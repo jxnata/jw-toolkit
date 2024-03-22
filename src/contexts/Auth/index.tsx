@@ -1,5 +1,6 @@
 import { authStorage } from 'database/auth'
 import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
+import { OneSignal } from 'react-native-onesignal'
 import { IPublisher } from 'types/models/Publisher'
 import { IUser } from 'types/models/User'
 
@@ -43,18 +44,22 @@ export function SessionProvider(props: PropsWithChildren) {
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const signIn = useCallback(async ({ user, pass, type }: AuthRequest) => {
-		setLoading(true)
+		try {
+			setLoading(true)
 
-		if (type === 'publisher') {
-			await authHandlerPublisher({ user, pass, setSession })
+			if (type === 'publisher') {
+				await authHandlerPublisher({ user, pass, setSession })
+			}
+			if (type === 'admin') {
+				await authHandlerAdmin({ user, pass, setSession })
+			}
+
+			return true
+		} catch {
+			return false
+		} finally {
+			setLoading(false)
 		}
-		if (type === 'admin') {
-			await authHandlerAdmin({ user, pass, setSession })
-		}
-
-		setLoading(false)
-
-		return true
 	}, [])
 
 	const swap = useCallback(async () => {
@@ -80,6 +85,7 @@ export function SessionProvider(props: PropsWithChildren) {
 	}, [session])
 
 	const signOut = useCallback(() => {
+		OneSignal.logout()
 		authStorage.clear()
 		setSession(null)
 	}, [])

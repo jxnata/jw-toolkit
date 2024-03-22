@@ -141,7 +141,7 @@ const EditPublisher = () => {
 					style: 'cancel',
 				},
 				{
-					text: 'Sim, excluir',
+					text: 'Sim, vincular',
 					onPress: () => vinculateUser(),
 					style: 'default',
 				},

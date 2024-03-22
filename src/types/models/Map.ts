@@ -15,4 +15,5 @@ export type IMap = {
 	last_visited_by?: IPublisher | string
 	last_assignment?: IAssignment | undefined
 	created_at: string
+	updated_at: string
 }

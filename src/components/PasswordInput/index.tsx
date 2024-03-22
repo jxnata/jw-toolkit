@@ -14,7 +14,7 @@ const PasswordInput = (props: TextInputProps) => {
 	return (
 		<S.Container>
 			<S.Input {...props} secureTextEntry={!show} />
-			<S.Icon onPress={toggleShow}>
+			<S.Icon hitSlop={20} onPress={toggleShow}>
 				<Ionicons name={show ? 'eye-outline' : 'eye-off-outline'} size={24} color='#afab9a' />
 			</S.Icon>
 		</S.Container>
