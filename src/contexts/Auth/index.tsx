@@ -68,6 +68,8 @@ export function SessionProvider(props: PropsWithChildren) {
 
 			if (!session) return false
 
+			OneSignal.logout()
+
 			if (session.type === 'publisher') {
 				await swapHandlerPublisher({ setSession })
 			}
