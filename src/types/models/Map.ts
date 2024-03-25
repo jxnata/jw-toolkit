@@ -11,6 +11,7 @@ export type IMap = {
 	city: ICity
 	coordinates: [number, number]
 	congregation: ICongregation | string
+	assigned: boolean
 	last_visited?: string
 	last_visited_by?: IPublisher | string
 	last_assignment?: IAssignment | undefined
