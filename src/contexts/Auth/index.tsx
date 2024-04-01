@@ -37,15 +37,15 @@ export function SessionProvider(props: PropsWithChildren) {
 	const [session, setSession] = useState<ISession<IUser | IPublisher>>(initialData())
 	const [loading, setLoading] = useState<boolean>(false)
 
-	const signIn = useCallback(async ({ user, pass, type }: AuthRequest) => {
+	const signIn = useCallback(async ({ user, pass, type, congregation }: AuthRequest) => {
 		try {
 			setLoading(true)
 
 			if (type === 'publisher') {
-				await authHandlerPublisher({ user, pass, setSession })
+				await authHandlerPublisher({ user, pass, congregation, setSession })
 			}
 			if (type === 'admin') {
-				await authHandlerAdmin({ user, pass, setSession })
+				await authHandlerAdmin({ user, pass, congregation, setSession })
 			}
 
 			return true

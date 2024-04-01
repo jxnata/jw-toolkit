@@ -7,11 +7,12 @@ import { ISession } from '../types'
 export type AuthHandlerPublisher = {
 	user: string
 	pass: string
+	congregation?: string
 	setSession: (session: ISession<IPublisher>) => void
 }
 
-export const authHandlerPublisher = async ({ user, pass, setSession }: AuthHandlerPublisher) => {
-	const authorized = await publisherAuth({ username: user, passcode: pass })
+export const authHandlerPublisher = async ({ user, pass, congregation, setSession }: AuthHandlerPublisher) => {
+	const authorized = await publisherAuth({ username: user, passcode: pass, congregation })
 
 	if (!authorized) throw new Error('authorization failed')
 

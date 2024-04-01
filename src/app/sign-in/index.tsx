@@ -66,7 +66,7 @@ const Login = () => {
 								<Dropdown
 									placeholder='Congregação'
 									options={congregationsList}
-									selectedValue={value ? value.toString() : 'false'}
+									selectedValue={value}
 									onValueChange={onChange}
 								/>
 							)}

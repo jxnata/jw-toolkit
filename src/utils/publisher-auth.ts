@@ -5,9 +5,13 @@ import { IPublisher } from 'types/models/Publisher'
 
 import { normalizeUsername } from './normalize-username'
 
-export const publisherAuth = async ({ username, passcode }: PublisherAuthRequest) => {
+export const publisherAuth = async ({ username, passcode, congregation }: PublisherAuthRequest) => {
 	try {
-		const authResult = await api.post('/auth/publishers', { username: normalizeUsername(username), passcode })
+		const authResult = await api.post('/auth/publishers', {
+			username: normalizeUsername(username),
+			passcode,
+			congregation,
+		})
 
 		const publisher: IPublisher = get(authResult, 'data.publisher', undefined)
 		const token: string = get(authResult, 'data.token', undefined)

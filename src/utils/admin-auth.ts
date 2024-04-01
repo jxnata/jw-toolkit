@@ -5,9 +5,13 @@ import { IUser } from 'types/models/User'
 
 import { normalizeUsername } from './normalize-username'
 
-export const adminAuth = async ({ username, password }: AdminAuthRequest) => {
+export const adminAuth = async ({ username, password, congregation }: AdminAuthRequest) => {
 	try {
-		const authResult = await api.post('/auth/users', { username: normalizeUsername(username), password })
+		const authResult = await api.post('/auth/users', {
+			username: normalizeUsername(username),
+			password,
+			congregation,
+		})
 
 		const user: IUser = get(authResult, 'data.user', undefined)
 		const token: string = get(authResult, 'data.token', undefined)
