@@ -69,6 +69,17 @@ const Admin = () => {
 						</S.Column>
 					</S.MenuItem>
 				</Link>
+				<Link href='/admin/users' asChild>
+					<S.MenuItem>
+						<S.Column>
+							<S.Icon></S.Icon>
+							<S.MenuTitle>Administradores</S.MenuTitle>
+						</S.Column>
+						<S.Column>
+							<S.MenuNumber>{resume.users || ''}</S.MenuNumber>
+						</S.Column>
+					</S.MenuItem>
+				</Link>
 			</S.Content>
 		</S.Container>
 	)

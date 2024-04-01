@@ -18,5 +18,5 @@ export const Container = styled.View``
 export const Icon = styled.Pressable`
 	position: absolute;
 	right: 15px;
-	top: 15px;
+	top: 12px;
 `

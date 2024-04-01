@@ -1,6 +1,6 @@
 import { authStorage } from 'database/auth'
 import get from 'lodash/get'
-import { swap } from 'services/user/swap'
+import { swap } from 'services/users/swap'
 import { IPublisher, IVinculatedPublisher } from 'types/models/Publisher'
 
 import { ISession } from '../types'

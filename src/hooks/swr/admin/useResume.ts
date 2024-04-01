@@ -9,6 +9,7 @@ type IResume = {
 	maps: number
 	assignments: number
 	cities: number
+	users: number
 }
 
 const useResume = () => {
@@ -19,6 +20,7 @@ const useResume = () => {
 		maps: get(data, 'maps', 0),
 		assignments: get(data, 'assignments', 0),
 		cities: get(data, 'cities', 0),
+		users: get(data, 'users', 0),
 	}
 
 	return {
