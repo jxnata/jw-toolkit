@@ -1,18 +1,24 @@
 import Button from 'components/Button'
+import Dropdown from 'components/Dropdown'
 import Input from 'components/Input'
 import PasswordInput from 'components/PasswordInput'
-import { AuthRequest, useSession } from 'contexts/Auth'
+import { useSession } from 'contexts/Auth'
+import { AuthRequest } from 'contexts/Auth/types'
 import { useRouter } from 'expo-router'
 import { Stack } from 'expo-router/stack'
-import { useCallback, useState } from 'react'
+import useCongregations from 'hooks/swr/general/useCongregations'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import * as S from './styles'
 
 const Login = () => {
-	const { control, formState, handleSubmit } = useForm<AuthRequest>()
+	const { control, formState, handleSubmit, setValue } = useForm<AuthRequest>()
 	const [type, setType] = useState<'publisher' | 'admin'>('publisher')
+	const { congregations } = useCongregations()
+
+	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c._id })), [congregations])
 
 	const router = useRouter()
 	const { signIn } = useSession()
@@ -24,13 +30,19 @@ const Login = () => {
 	const auth: SubmitHandler<AuthRequest> = useCallback(
 		async data => {
 			const authorized = await signIn({ ...data, type })
-			console.log(authorized)
+
 			if (!authorized) return alert('Usuário ou senha inválidos')
 
 			router.replace(`/${type}`)
 		},
 		[router, signIn, type]
 	)
+
+	useEffect(() => {
+		if (congregationsList.length) {
+			setValue('congregation', congregationsList[0].value)
+		}
+	}, [congregationsList, setValue])
 
 	return (
 		<S.Container>
@@ -46,6 +58,19 @@ const Login = () => {
 								<S.Icon name='swap-horizontal-outline' />
 							</S.IconButton>
 						</S.TitleContainer>
+						<Controller
+							control={control}
+							rules={{ required: true }}
+							name='congregation'
+							render={({ field: { onChange, value } }) => (
+								<Dropdown
+									placeholder='Congregação'
+									options={congregationsList}
+									selectedValue={value ? value.toString() : 'false'}
+									onValueChange={onChange}
+								/>
+							)}
+						/>
 						<Controller
 							control={control}
 							rules={{ required: true }}

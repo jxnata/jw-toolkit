@@ -1,4 +1,9 @@
-import { AuthRequest } from '.'
+export type AuthRequest = {
+	user: string
+	pass: string
+	congregation?: string
+	type: 'publisher' | 'admin'
+}
 export interface ISession<T> {
 	token: string
 	private_key?: string

@@ -8,15 +8,9 @@ import { authHandlerAdmin } from './handlers/admin'
 import { authHandlerPublisher } from './handlers/publisher'
 import { swapHandlerPublisher } from './handlers/swap-publisher'
 import { swapHandlerUser } from './handlers/swap-user'
-import { IAuthContext, ISession } from './types'
+import { AuthRequest, IAuthContext, ISession } from './types'
 
 const AuthContext = createContext<IAuthContext<IUser | IPublisher> | null>(null)
-
-export type AuthRequest = {
-	user: string
-	pass: string
-	type: 'publisher' | 'admin'
-}
 
 const initialData = () => {
 	try {

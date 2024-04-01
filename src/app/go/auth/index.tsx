@@ -1,4 +1,5 @@
-import { AuthRequest, useSession } from 'contexts/Auth'
+import { useSession } from 'contexts/Auth'
+import { AuthRequest } from 'contexts/Auth/types'
 import { parse, useURL } from 'expo-linking'
 import { useRouter } from 'expo-router'
 import { useCallback, useEffect } from 'react'
