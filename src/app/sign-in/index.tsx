@@ -2,8 +2,11 @@ import Button from 'components/Button'
 import Dropdown from 'components/Dropdown'
 import Input from 'components/Input'
 import PasswordInput from 'components/PasswordInput'
+import { APP_VERSION } from 'constants/content'
 import { useSession } from 'contexts/Auth'
 import { AuthRequest } from 'contexts/Auth/types'
+import { history } from 'database'
+import { LAST_CONGREGATION, LAST_TYPE, LAST_USER } from 'database/types/keys'
 import { useRouter } from 'expo-router'
 import { Stack } from 'expo-router/stack'
 import useCongregations from 'hooks/swr/general/useCongregations'
@@ -19,6 +22,9 @@ const Login = () => {
 	const { congregations } = useCongregations()
 
 	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c._id })), [congregations])
+	const lastCongregation = useMemo(() => history.getString(LAST_CONGREGATION), [])
+	const lastUser = useMemo(() => history.getString(LAST_USER), [])
+	const lastType = useMemo(() => history.getString(LAST_TYPE), [])
 
 	const router = useRouter()
 	const { signIn } = useSession()
@@ -33,6 +39,9 @@ const Login = () => {
 
 			if (!authorized) return alert('Usuário ou senha inválidos')
 
+			history.set(LAST_USER, data.user)
+			history.set(LAST_TYPE, type)
+			history.set(LAST_CONGREGATION, data.congregation)
 			router.replace(`/${type}`)
 		},
 		[router, signIn, type]
@@ -40,9 +49,23 @@ const Login = () => {
 
 	useEffect(() => {
 		if (congregationsList.length) {
+			if (lastCongregation) {
+				setValue('congregation', lastCongregation)
+				return
+			}
+
 			setValue('congregation', congregationsList[0].value)
+			history.set(LAST_CONGREGATION, congregationsList[0].value)
 		}
-	}, [congregationsList, setValue])
+	}, [congregationsList, lastCongregation, setValue])
+
+	useEffect(() => {
+		if (lastUser) setValue('user', lastUser)
+	}, [lastUser, setValue])
+
+	useEffect(() => {
+		if (lastType) setType(lastType as 'publisher' | 'admin')
+	}, [lastType, setType])
 
 	return (
 		<S.Container>
@@ -110,6 +133,7 @@ const Login = () => {
 						</S.Row>
 					</S.Content>
 				</SafeAreaView>
+				<S.Version>Versão: {APP_VERSION}</S.Version>
 			</S.Background>
 		</S.Container>
 	)

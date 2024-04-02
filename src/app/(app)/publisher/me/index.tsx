@@ -1,4 +1,5 @@
 import Button from 'components/Button'
+import { APP_VERSION } from 'constants/content'
 import { useSession } from 'contexts/Auth'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
@@ -39,6 +40,7 @@ const PublisherDetails = () => {
 						<S.ButtonTitle>Sair</S.ButtonTitle>
 					</S.Button>
 				</S.ButtonGroup>
+				<S.Version>Versão: {APP_VERSION}</S.Version>
 			</S.Content>
 		</S.Container>
 	)

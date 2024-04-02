@@ -1,6 +1,6 @@
 {
 	"name": "jw-toolkit",
-	"version": "1.0.1",
+	"version": "1.0.12",
 	"main": "expo-router/entry",
 	"scripts": {
 		"ts:check": "tsc",

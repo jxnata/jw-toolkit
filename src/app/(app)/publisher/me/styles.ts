@@ -35,6 +35,10 @@ export const Label = styled.Text`
 	padding: 10px 0;
 	font-family: 'urbanist-medium';
 `
+export const Version = styled(Label)`
+	position: absolute;
+	bottom: 50px;
+`
 export const ButtonGroup = styled.View`
 	flex-direction: row;
 	gap: 10px;

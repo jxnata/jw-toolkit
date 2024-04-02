@@ -1,3 +1,4 @@
+import { APP_VERSION } from 'constants/content'
 import { useSession } from 'contexts/Auth'
 import { Link, Stack, useRouter } from 'expo-router'
 import useResume from 'hooks/swr/admin/useResume'
@@ -81,6 +82,7 @@ const Admin = () => {
 					</S.MenuItem>
 				</Link>
 			</S.Content>
+			<S.Version>Versão: {APP_VERSION}</S.Version>
 		</S.Container>
 	)
 }

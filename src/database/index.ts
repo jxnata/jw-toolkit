@@ -9,3 +9,7 @@ export const storage = new MMKV({
 export const cache = new MMKV({
 	id: 'cache_storage',
 })
+
+export const history = new MMKV({
+	id: 'history_storage',
+})

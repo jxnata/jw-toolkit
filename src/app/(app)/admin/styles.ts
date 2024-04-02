@@ -47,6 +47,15 @@ export const MenuNumber = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-family: 'urbanist-bold';
 `
+export const Version = styled.Text`
+	font-size: 12px;
+	color: ${({ theme }) => theme.text};
+	padding: 10px 0;
+	font-family: 'urbanist-medium';
+	position: absolute;
+	bottom: 50px;
+	align-self: center;
+`
 export const Icon = styled.Text`
 	font-size: 32px;
 	color: ${({ theme }) => theme.primary};

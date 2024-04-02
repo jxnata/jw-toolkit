@@ -37,6 +37,11 @@ export const Small = styled.Text`
 	color: ${({ theme }) => theme.textAlt};
 	font-family: 'urbanist-regular';
 `
+export const Version = styled(Small)`
+	position: absolute;
+	bottom: 50px;
+	align-self: center;
+`
 export const TitleContainer = styled.View`
 	flex-direction: row;
 	text-align: center;
