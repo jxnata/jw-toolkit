@@ -4,9 +4,8 @@ import { ONESIGNAL_APP_ID } from 'constants/env'
 import { fonts } from 'constants/fonts'
 import { configToast } from 'constants/toast'
 import { SessionProvider } from 'contexts/Auth'
-import { cacheProvider, populateCache } from 'database/cache/provider'
 import { useFonts } from 'expo-font'
-import { Slot, usePathname } from 'expo-router'
+import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect } from 'react'
@@ -32,9 +31,6 @@ export default function Layout() {
 	const scheme = useColorScheme()
 	const [isLoaded] = useFonts(fonts)
 	const config = configToast(scheme)
-	const path = usePathname()
-
-	useEffect(populateCache, [path])
 
 	const handleOnLayout = useCallback(async () => {
 		if (isLoaded) await SplashScreen.hideAsync()
@@ -52,7 +48,7 @@ export default function Layout() {
 			<SessionProvider>
 				<ThemeProvider theme={theme[scheme]}>
 					<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-					<SWRConfig value={{ provider: cacheProvider }}>
+					<SWRConfig>
 						<Slot />
 					</SWRConfig>
 				</ThemeProvider>
