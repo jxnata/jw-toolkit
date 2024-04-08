@@ -43,7 +43,10 @@ export default function Layout() {
 			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/history/index' options={{ presentation: 'modal' }} />
-			<Stack.Screen name='publisher/assignment/index' options={{ presentation: 'modal', headerShown: false }} />
+			<Stack.Screen
+				name='publisher/assignment/[id]/index'
+				options={{ presentation: 'modal', headerShown: false }}
+			/>
 		</Stack>
 	)
 }

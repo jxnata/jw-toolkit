@@ -13,7 +13,7 @@ import * as S from './styles'
 const Assignments = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
-	const { assignments, loading, mutate } = useAssignments({ search: searchTerm })
+	const { assignments, loading, mutate, next } = useAssignments({ search: searchTerm })
 	const { location } = useLocation()
 
 	const restoreAssignments = useCallback(async () => {
@@ -88,6 +88,7 @@ const Assignments = () => {
 							}
 						/>
 					)}
+					onEndReached={next}
 				/>
 			</S.Content>
 		</S.Container>

@@ -1,34 +1,65 @@
 import get from 'lodash/get'
 import { api } from 'services/api/main'
-import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 import { IAssignment } from 'types/models/Assignment'
 
-const fetcher = (url: string) => api.get(url).then(res => res.data)
+const LIMIT = 20
+
+const fetcher = (url: string) => api.get<GetAssignmentResponse>(url).then(res => res.data)
 
 type Props = {
-	skip?: number
-	limit?: number
 	search?: string
 	map?: string
 }
 
-const defaultProps = { skip: 0, limit: 10, search: '', map: undefined }
+type GetAssignmentResponse = {
+	assignments: IAssignment[]
+}
+
+const defaultProps = { limit: 10, search: '', map: undefined }
+
+const getKey = (page: number, previousPageData: GetAssignmentResponse, route: string) => {
+	if (previousPageData && !previousPageData.assignments.length) return null
+
+	const skip = (page || 0) * LIMIT
+
+	return `${route}&skip=${skip}`
+}
 
 const useAssignments = (props: Props = defaultProps) => {
-	const { skip = 0, limit = 10, search = '', map } = props
+	const { search = '', map } = props
 
-	let route = `/assignments?skip=${skip}&limit=${limit}`
-	if (map) route = `/assignments/map/${map}?skip=${skip}&limit=${limit}`
-	if (search) route = `/assignments?search=${search}&skip=${skip}&limit=${limit}`
+	let route = `/assignments?limit=${LIMIT}`
+	if (map) route = `/assignments/map/${map}?limit=${LIMIT}`
+	if (search) route = `/assignments?search=${search}&limit=${LIMIT}`
 
-	const { data, error, mutate } = useSWR(route, fetcher)
+	const { data, error, size, isLoading, mutate, setSize } = useSWRInfinite(
+		(p, prev) => getKey(p, prev, route),
+		fetcher,
+		{ revalidateAll: true }
+	)
 
-	const assignments: IAssignment[] = get(data, 'assignments', [])
+	const assignments: IAssignment[] = []
+
+	if (data) {
+		for (const item of data) {
+			const items: IAssignment[] = get(item, 'assignments', [])
+			assignments.push(...items)
+		}
+	}
+
+	const next = () => {
+		if (assignments.length >= LIMIT && !isLoading) {
+			setSize(old => old + 1)
+		}
+	}
 
 	return {
 		assignments,
+		page: size,
 		loading: !error && !data,
 		error,
+		next,
 		mutate,
 	}
 }

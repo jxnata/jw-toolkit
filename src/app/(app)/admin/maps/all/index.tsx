@@ -11,7 +11,7 @@ import * as S from './styles'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState(null)
-	const { maps } = useAllMaps()
+	const { maps, loading } = useAllMaps()
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
@@ -65,6 +65,14 @@ const AllMaps = () => {
 						))}
 					</S.Map>
 				</S.MapContainer>
+				{loading && (
+					<S.LoadingContainer>
+						<S.LoadingContent>
+							<S.Loading />
+							<S.Label>Carregando mapas...</S.Label>
+						</S.LoadingContent>
+					</S.LoadingContainer>
+				)}
 			</S.Content>
 		</S.Container>
 	)

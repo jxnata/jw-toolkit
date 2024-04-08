@@ -44,12 +44,7 @@ const PublisherHome = () => {
 						key={assignment._id}
 						assignment={assignment}
 						location={location}
-						onPress={() =>
-							router.push({
-								pathname: '/publisher/assignment',
-								params: { data: JSON.stringify(assignment) },
-							})
-						}
+						onPress={() => router.push(`/publisher/assignment/${assignment._id}`)}
 					/>
 				))}
 				{!assigments.length && !loading && <S.Paragraph>Nenhuma designação</S.Paragraph>}

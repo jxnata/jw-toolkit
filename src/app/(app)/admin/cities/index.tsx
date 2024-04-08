@@ -11,7 +11,7 @@ import * as S from './styles'
 const Cities = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
-	const { cities, loading, mutate } = useCities({ search: searchTerm })
+	const { cities, loading, mutate, next } = useCities({ search: searchTerm })
 
 	const HeaderRight = useCallback(
 		() => (
@@ -58,6 +58,7 @@ const Cities = () => {
 							</S.MapsCount>
 						</S.MenuItem>
 					)}
+					onEndReached={next}
 				/>
 			</S.Content>
 		</S.Container>

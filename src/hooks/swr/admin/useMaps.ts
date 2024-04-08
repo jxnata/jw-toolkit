@@ -4,8 +4,6 @@ import useSWRInfinite from 'swr/infinite'
 import { IMap } from 'types/models/Map'
 
 type Props = {
-	skip?: number
-	limit?: number
 	search?: string
 	all?: boolean
 }
@@ -14,7 +12,7 @@ type GetMapsResponse = {
 	maps: IMap[]
 }
 
-const LIMIT = 10
+const LIMIT = 20
 
 const fetcher = (url: string) => api.get<GetMapsResponse>(url).then(res => res.data)
 
@@ -47,7 +45,7 @@ const useMaps = (props: Props = defaultProps) => {
 	}
 
 	const next = () => {
-		if (maps.length > 9 && !isLoading) {
+		if (maps.length >= LIMIT && !isLoading) {
 			setSize(old => old + 1)
 		}
 	}

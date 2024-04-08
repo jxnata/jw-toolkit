@@ -83,6 +83,26 @@ export const IconButton = styled.Pressable`
 	top: 5px;
 	right: 7px;
 `
+export const LoadingContainer = styled.View`
+	position: absolute;
+	bottom: 40px;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+`
+export const LoadingContent = styled.View`
+	padding: 20px;
+	gap: 10px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	background-color: ${({ theme }) => theme.background};
+`
+export const Loading = styled.ActivityIndicator.attrs(({ theme }) => ({
+	color: theme.primary,
+	size: 'small',
+}))``
 export const EditIcon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 18,
 }))`

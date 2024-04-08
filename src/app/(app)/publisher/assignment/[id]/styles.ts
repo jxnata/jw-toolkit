@@ -46,6 +46,17 @@ export const Map = styled(MapView)`
 	width: 100%;
 	height: 100%;
 `
+export const LoadingContainer = styled.View`
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	background-color: ${({ theme }) => theme.background};
+`
+export const Loading = styled.ActivityIndicator.attrs(({ theme }) => ({
+	color: theme.primary,
+	size: 'large',
+}))``
 export const Icon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`
