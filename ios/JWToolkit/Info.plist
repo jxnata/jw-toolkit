@@ -50,7 +50,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Habilitar a localização permite que o app mostre os mapas mais próximos de você.</string>
+	<string>Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>

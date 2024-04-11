@@ -9051,10 +9051,10 @@ react-native-mmkv@^2.11.0:
   resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.11.0.tgz#51b9985f6a5c09fe9c16d8c1861cc2901856ace1"
   integrity sha512-28PdUHjZJmAw3q+8zJDAAdohnZMpDC7WgRUJxACOMkcmJeqS3u5cKS/lSq2bhf1CvaeIiHYHUWiyatUjMRCDQQ==
 
-react-native-onesignal@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-5.1.0.tgz#c3023cf27e3fbadb0d49f5c1971eb879d79c63c7"
-  integrity sha512-iKCJ9ZdM9Qsxch6iycrwsiFKow931iCzuqLPtql1fEwwyrn02+pXpUS8zxub0244Loxb7BaHbzgvafKR5Voyjg==
+react-native-onesignal@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-5.1.1.tgz#4876331f5dfcfbf3a01e0ba5b7a855673f7b98fa"
+  integrity sha512-MIwarXq2atHKuANRX8ZFI8btvnuq8DBTKBPT//KuOBMkGeVb9xLOxDD6egguox6U1G1+Yp80NC4AN2pYP9bXHw==
   dependencies:
     invariant "^2.2.2"
 
