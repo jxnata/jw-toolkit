@@ -499,14 +499,14 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = JWToolkit/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "JW Maps";
+				INFOPLIST_KEY_CFBundleDisplayName = "LS Mapas";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.17;
+				MARKETING_VERSION = 1.0.18;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -541,14 +541,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = N9G6UA9982;
 				INFOPLIST_FILE = JWToolkit/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "JW Maps";
+				INFOPLIST_KEY_CFBundleDisplayName = "LS Mapas";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.17;
+				MARKETING_VERSION = 1.0.18;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

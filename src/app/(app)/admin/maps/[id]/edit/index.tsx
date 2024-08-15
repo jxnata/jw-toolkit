@@ -31,11 +31,12 @@ const EditMap = () => {
 		() => ({
 			name: map.name,
 			address: map.address,
+			district: map.district,
 			details: map.details,
 			city: map.city._id,
 			coordinates: getCoordinates(map.coordinates),
 		}),
-		[map.address, map.city._id, map.coordinates, map.details, map.name]
+		[map.address, map.city._id, map.coordinates, map.details, map.district, map.name]
 	)
 
 	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })
@@ -90,6 +91,20 @@ const EditMap = () => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
 							placeholder='Endereço'
+							onBlur={onBlur}
+							onChangeText={onChange}
+							value={value}
+							editable={!formState.isSubmitting}
+						/>
+					)}
+				/>
+				<Controller
+					control={control}
+					rules={{ required: true }}
+					name='district'
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							placeholder='Bairro'
 							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}

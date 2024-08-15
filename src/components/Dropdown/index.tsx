@@ -7,10 +7,11 @@ type Props = {
 	selectedValue: string
 	options: { label: string; value: string }[]
 	placeholder: string
+	disabled?: boolean
 	onValueChange: (any) => void
 }
 
-const Dropdown = ({ selectedValue, options, placeholder, onValueChange }: Props) => {
+const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onValueChange }: Props) => {
 	const [open, setOpen] = useState(false)
 
 	const toggle = () => {
@@ -36,7 +37,7 @@ const Dropdown = ({ selectedValue, options, placeholder, onValueChange }: Props)
 
 	return (
 		<S.DropdowContainer>
-			<S.Input onPress={toggle}>
+			<S.Input aria-disabled={disabled} onPress={toggle} disabled={disabled}>
 				<S.Placeholder>{selectedLabel || placeholder}</S.Placeholder>
 				<S.Ionicon name='chevron-down' />
 			</S.Input>

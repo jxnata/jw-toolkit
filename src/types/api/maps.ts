@@ -2,6 +2,7 @@ export type AddMapReq = {
 	name: string
 	address: string
 	details?: string
+	district?: string
 	city: string
 	coordinates: string
 }
@@ -14,6 +15,7 @@ export type EditMapReq = {
 	name: string
 	address: string
 	details?: string
+	district?: string
 	city: string
 	coordinates: string
 }

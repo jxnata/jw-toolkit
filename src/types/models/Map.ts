@@ -7,6 +7,7 @@ export type IMap = {
 	_id: string
 	name: string
 	address: string
+	district: string
 	details: string
 	city: ICity
 	coordinates: [number, number]
