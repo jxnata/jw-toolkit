@@ -3,6 +3,7 @@ import Input from 'components/Input'
 import MapItem from 'components/MapItem'
 import { Stack, useRouter } from 'expo-router'
 import useCities from 'hooks/swr/admin/useCities'
+import useDistricts from 'hooks/swr/admin/useDistricts'
 import useMaps from 'hooks/swr/admin/useMaps'
 import { useLocation } from 'hooks/useLocation'
 import debounce from 'lodash/debounce'
@@ -15,7 +16,15 @@ const Maps = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const [searchCity, setSearchCity] = useState('')
-	const { maps, loading, mutate, next } = useMaps({ search: searchCity || searchTerm })
+	const [searchDistrict, setSearchDistrict] = useState('')
+	const [status, setStatus] = useState('')
+	const [showFilter, setFilter] = useState(false)
+	const { maps, loading, mutate, next } = useMaps({
+		search: searchCity || searchTerm,
+		district: searchDistrict,
+		status,
+	})
+	const { list } = useDistricts(searchCity || undefined)
 	const { cities } = useCities()
 	const { location } = useLocation()
 
@@ -27,11 +36,14 @@ const Maps = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
+				<S.IconButton onPress={() => router.push('/admin/maps/add')}>
+					<S.Ionicon name='add-circle-outline' />
+				</S.IconButton>
 				<S.IconButton onPress={() => router.push('/admin/maps/all')}>
 					<S.Ionicon name='map-outline' />
 				</S.IconButton>
-				<S.IconButton onPress={() => router.push('/admin/maps/add')}>
-					<S.Ionicon name='add-circle-outline' />
+				<S.IconButton onPress={toggleFilter}>
+					<S.Ionicon name='funnel-outline' />
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
@@ -44,7 +56,17 @@ const Maps = () => {
 
 	const filterCity = city => {
 		setSearchTerm('')
+		setSearchDistrict('')
 		setSearchCity(city)
+	}
+
+	const filterDistrict = district => {
+		setSearchTerm('')
+		setSearchDistrict(district)
+	}
+
+	const toggleFilter = () => {
+		setFilter(old => !old)
 	}
 
 	return (
@@ -53,24 +75,54 @@ const Maps = () => {
 			<S.Content>
 				<FlatList
 					ListHeaderComponent={
-						<S.FilterContainer>
-							<S.FilterItemsContainer>
-								<Input
-									autoCorrect={false}
-									placeholder='Buscar um mapa...'
-									onChangeText={debouncedSearch}
-									clearButtonMode='always'
-								/>
-							</S.FilterItemsContainer>
-							<S.FilterItemsContainer>
-								<Dropdown
-									placeholder='Cidade'
-									options={citiesList}
-									selectedValue={searchCity}
-									onValueChange={filterCity}
-								/>
-							</S.FilterItemsContainer>
-						</S.FilterContainer>
+						<>
+							{showFilter && (
+								<>
+									<S.FilterContainer>
+										<S.FilterItemsContainer>
+											<Dropdown
+												placeholder='Todos'
+												options={[
+													{ label: 'Todos', value: '' },
+													{ label: 'Designados', value: 'assigned' },
+													{ label: 'Livres', value: 'unassigned' },
+												]}
+												selectedValue={status}
+												onValueChange={setStatus}
+											/>
+										</S.FilterItemsContainer>
+										<S.FilterItemsContainer>
+											<Input
+												autoCorrect={false}
+												placeholder='Buscar um mapa...'
+												onChangeText={debouncedSearch}
+												clearButtonMode='always'
+											/>
+										</S.FilterItemsContainer>
+									</S.FilterContainer>
+
+									<S.FilterContainer>
+										<S.FilterItemsContainer>
+											<Dropdown
+												placeholder='Cidade'
+												options={citiesList}
+												selectedValue={searchCity}
+												onValueChange={filterCity}
+											/>
+										</S.FilterItemsContainer>
+										<S.FilterItemsContainer>
+											<Dropdown
+												placeholder='Bairro'
+												options={list}
+												selectedValue={searchDistrict}
+												onValueChange={filterDistrict}
+												disabled={!searchCity}
+											/>
+										</S.FilterItemsContainer>
+									</S.FilterContainer>
+								</>
+							)}
+						</>
 					}
 					data={maps}
 					keyExtractor={item => item._id}

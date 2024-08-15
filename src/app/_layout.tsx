@@ -22,7 +22,10 @@ import theme from 'themes'
 import { storage } from '../database'
 
 if (__DEV__) {
-	console.tron = Reactotron.configure({ host: '192.168.0.4' }).useReactNative().use(mmkvPlugin({ storage })).connect()
+	console.tron = Reactotron.configure({ host: '192.168.0.102' })
+		.useReactNative()
+		.use(mmkvPlugin({ storage }))
+		.connect()
 }
 
 SplashScreen.preventAutoHideAsync()

@@ -86,6 +86,20 @@ const AddMap = () => {
 				/>
 				<Controller
 					control={control}
+					rules={{ required: true }}
+					name='district'
+					render={({ field: { onChange, onBlur, value } }) => (
+						<Input
+							placeholder='Bairro'
+							onBlur={onBlur}
+							onChangeText={onChange}
+							value={value}
+							editable={!formState.isSubmitting}
+						/>
+					)}
+				/>
+				<Controller
+					control={control}
 					rules={{ required: false }}
 					name='details'
 					render={({ field: { onChange, onBlur, value } }) => (

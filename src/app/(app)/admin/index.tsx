@@ -9,7 +9,7 @@ import * as S from './styles'
 const Admin = () => {
 	const router = useRouter()
 	const { session } = useSession()
-	const { resume } = useResume()
+	const { resume, mutate, loading } = useResume()
 
 	const HeaderRight = useCallback(
 		() => (
@@ -25,7 +25,7 @@ const Admin = () => {
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: session.data.congregation.name, headerRight: HeaderRight }} />
-			<S.Content>
+			<S.Content refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}>
 				<Link href='/admin/publishers' asChild>
 					<S.MenuItem>
 						<S.Column>

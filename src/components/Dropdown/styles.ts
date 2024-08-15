@@ -17,6 +17,7 @@ export const Input = styled.Pressable`
 	border-radius: 12px;
 	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.backgroundAlt};
+	opacity: ${props => (props['aria-disabled'] ? 0.5 : 1)};
 `
 export const Placeholder = styled.Text`
 	color: ${({ theme }) => theme.text};

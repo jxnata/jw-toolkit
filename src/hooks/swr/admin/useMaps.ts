@@ -5,6 +5,8 @@ import { IMap } from 'types/models/Map'
 
 type Props = {
 	search?: string
+	district?: string
+	status?: string
 	all?: boolean
 }
 
@@ -16,21 +18,21 @@ const LIMIT = 20
 
 const fetcher = (url: string) => api.get<GetMapsResponse>(url).then(res => res.data)
 
-const defaultProps = { limit: LIMIT, search: '', all: false }
+const defaultProps = { limit: LIMIT, search: '', district: '', status: '', all: false }
 
-const getKey = (page: number, previousPageData: GetMapsResponse, search: string) => {
+const getKey = (page: number, previousPageData: GetMapsResponse, search: string, district: string, status: string) => {
 	if (previousPageData && !previousPageData.maps.length) return null
 
 	const skip = (page || 0) * LIMIT
 
-	return `/maps?skip=${skip}&limit=${LIMIT}&search=${search}`
+	return `/maps?skip=${skip}&limit=${LIMIT}&search=${search}&district=${district}&status=${status}`
 }
 
 const useMaps = (props: Props = defaultProps) => {
-	const { search = '' } = props
+	const { search = '', status = '', district = '' } = props
 
 	const { data, error, size, isLoading, mutate, setSize } = useSWRInfinite(
-		(p, prev) => getKey(p, prev, search),
+		(p, prev) => getKey(p, prev, search, district, status),
 		fetcher,
 		{ revalidateAll: true }
 	)
