@@ -81,6 +81,14 @@ const Admin = () => {
 						</S.Column>
 					</S.MenuItem>
 				</Link>
+				<Link href='/admin/export' asChild>
+					<S.MenuItem>
+						<S.Column>
+							<S.Icon></S.Icon>
+							<S.MenuTitle>Exportar mapas</S.MenuTitle>
+						</S.Column>
+					</S.MenuItem>
+				</Link>
 			</S.Content>
 			<S.Version>Versão: {APP_VERSION}</S.Version>
 		</S.Container>

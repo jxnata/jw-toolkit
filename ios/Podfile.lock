@@ -385,6 +385,8 @@ PODS:
   - React-jsinspector (0.72.6)
   - React-logger (0.72.6):
     - glog
+  - react-native-html-to-pdf (0.12.0):
+    - React-Core
   - react-native-maps (1.7.1):
     - React-Core
   - react-native-mmkv (2.11.0):
@@ -554,6 +556,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-onesignal (from `../node_modules/react-native-onesignal`)
@@ -653,6 +656,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-html-to-pdf:
+    :path: "../node_modules/react-native-html-to-pdf"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-mmkv:
@@ -741,6 +746,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 3bf18ff7cb03cd8dfdce08fbbc0d15058c1d71ae
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
+  react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-maps: 667f9b975549c6fa9b1631bf859440f68ebd3b8f
   react-native-mmkv: e97c0c79403fb94577e5d902ab1ebd42b0715b43
   react-native-onesignal: 5edb2b577a6c60f17bf7c38f4e846ee5a1b0ab3d
@@ -770,4 +776,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5b4ce82dc63b0279216f037dbde345d5b4946daa
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2

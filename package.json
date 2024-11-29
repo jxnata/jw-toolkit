@@ -1,6 +1,6 @@
 {
 	"name": "jw-toolkit",
-	"version": "1.0.17",
+	"version": "1.0.20",
 	"main": "expo-router/entry",
 	"scripts": {
 		"ts:check": "tsc",
@@ -16,6 +16,7 @@
 	"dependencies": {
 		"@types/lodash": "^4.14.201",
 		"@types/react": "~18.2.14",
+		"@types/react-native-html-to-pdf": "^0.8.3",
 		"axios": "^1.6.1",
 		"expo": "~49.0.15",
 		"expo-constants": "~14.4.2",
@@ -34,6 +35,7 @@
 		"react-hook-form": "^7.48.2",
 		"react-native": "0.72.6",
 		"react-native-gesture-handler": "~2.12.0",
+		"react-native-html-to-pdf": "^0.12.0",
 		"react-native-maps": "1.7.1",
 		"react-native-mmkv": "^2.11.0",
 		"react-native-onesignal": "^5.1.1",
