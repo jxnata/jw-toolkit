@@ -19,7 +19,7 @@
 		<key>CFBundlePackageType</key>
 		<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 		<key>CFBundleShortVersionString</key>
-		<string>1.0.19</string>
+		<string>1.0.20</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleURLTypes</key>
@@ -39,15 +39,9 @@
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSAllowsArbitraryLoads</key>
+			<false/>
+			<key>NSAllowsLocalNetworking</key>
 			<true/>
-			<key>NSExceptionDomains</key>
-			<dict>
-				<key>localhost</key>
-				<dict>
-					<key>NSExceptionAllowsInsecureHTTPLoads</key>
-					<true/>
-				</dict>
-			</dict>
 		</dict>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada.</string>
@@ -70,7 +64,7 @@
 		<key>UIStatusBarHidden</key>
 		<true/>
 		<key>UIStatusBarStyle</key>
-		<string></string>
+		<string>UIStatusBarStyleDefault</string>
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>

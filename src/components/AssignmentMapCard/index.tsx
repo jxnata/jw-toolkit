@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router/src/hooks'
+import { useRouter } from 'expo-router'
 import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
 import { error, success } from 'messages/edit'
 import { finish } from 'services/assignments/finish'
