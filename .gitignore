@@ -37,5 +37,6 @@ yarn-error.*
 # env
 .env
 
-# android
-jxnata.keystore
+# native
+android/
+ios/
