@@ -13,20 +13,11 @@ import { useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import Reactotron from 'reactotron-react-native'
-import mmkvPlugin from 'reactotron-react-native-mmkv'
 import { ThemeProvider } from 'styled-components/native'
 import { SWRConfig } from 'swr'
 import theme from 'themes'
 
-import { storage } from '../database'
-
-if (__DEV__) {
-	console.tron = Reactotron.configure({ host: '192.168.0.102' })
-		.useReactNative()
-		.use(mmkvPlugin({ storage }))
-		.connect()
-}
+if (__DEV__) require('../../reactotron')
 
 SplashScreen.preventAutoHideAsync()
 
