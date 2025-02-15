@@ -1,4 +1,4 @@
-import { useSession } from 'contexts/Auth'
+import { useSession } from '@contexts/Auth'
 import { Redirect, Slot } from 'expo-router'
 
 export default function App() {

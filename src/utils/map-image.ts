@@ -1,4 +1,4 @@
-import { TOMTOM_API_KEY } from 'constants/env'
+import { TOMTOM_API_KEY } from '@constants/env'
 import reverse from 'lodash/reverse'
 
 export const mapImage = (coordinates: [number, number]) => {

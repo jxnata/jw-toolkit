@@ -1,6 +1,6 @@
-import { api } from 'services/api/main'
-import { AddMapReq, AddMapRes } from 'types/api/maps'
-import { setCoordinates } from 'utils/set-coordinates'
+import { AddMapReq, AddMapRes } from '@interfaces/api/maps'
+import { api } from '@services/api/main'
+import { setCoordinates } from '@utils/set-coordinates'
 
 export const add = async (req: AddMapReq) => {
 	try {

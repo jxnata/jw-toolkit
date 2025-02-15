@@ -1,9 +1,9 @@
-import Button from 'components/Button'
-import { APP_VERSION } from 'constants/content'
-import { useSession } from 'contexts/Auth'
+import Button from '@components/Button'
+import { APP_VERSION } from '@constants/content'
+import { useSession } from '@contexts/Auth'
+import { IVinculatedPublisher } from '@interfaces/models/Publisher'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
-import { IVinculatedPublisher } from 'types/models/Publisher'
 
 import * as S from './styles'
 

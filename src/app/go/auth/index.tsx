@@ -1,9 +1,9 @@
-import { useSession } from 'contexts/Auth'
-import { AuthRequest } from 'contexts/Auth/types'
+import { useSession } from '@contexts/Auth'
+import { AuthRequest } from '@contexts/Auth/types'
+import { AuthQuery } from '@interfaces/linking/auth'
 import { parse, useURL } from 'expo-linking'
 import { useRouter } from 'expo-router'
 import { useCallback, useEffect } from 'react'
-import { AuthQuery } from 'types/linking/auth'
 
 import * as S from './styles'
 

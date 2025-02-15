@@ -1,8 +1,8 @@
+import { IDistricts } from '@interfaces/models/Districts'
 import compact from 'lodash/compact'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
+import { api } from '@services/api/main'
 import useSWR from 'swr'
-import { IDistricts } from 'types/models/Districts'
 
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 

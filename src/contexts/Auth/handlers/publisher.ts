@@ -1,6 +1,6 @@
-import { authStorage } from 'database/auth'
-import { IPublisher } from 'types/models/Publisher'
-import { publisherAuth } from 'utils/publisher-auth'
+import { authStorage } from '@database/auth'
+import { IPublisher } from '@interfaces/models/Publisher'
+import { publisherAuth } from '@utils/publisher-auth'
 
 import { ISession } from '../types'
 

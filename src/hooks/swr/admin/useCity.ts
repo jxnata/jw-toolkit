@@ -1,7 +1,7 @@
+import { ICity } from '@interfaces/models/City'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
+import { api } from '@services/api/main'
 import useSWR from 'swr'
-import { ICity } from 'types/models/City'
 
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 

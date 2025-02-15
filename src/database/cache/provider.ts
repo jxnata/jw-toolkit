@@ -1,5 +1,5 @@
-import { cache } from 'database'
-import { CACHE } from 'database/types/keys'
+import { cache } from '@database'
+import { CACHE } from '@database/types/keys'
 import { Cache } from 'swr'
 
 const map = new Map(JSON.parse(cache.getString(CACHE) || '[]'))

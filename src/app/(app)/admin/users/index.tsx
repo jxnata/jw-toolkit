@@ -1,8 +1,8 @@
+import useUsers from '@hooks/swr/admin/useUsers'
 import { Stack, useRouter } from 'expo-router'
-import useUsers from 'hooks/swr/admin/useUsers'
 import { useCallback } from 'react'
 import { FlatList } from 'react-native'
-import { firstLetter } from 'utils/first-letter'
+import { firstLetter } from '@utils/first-letter'
 
 import * as S from './styles'
 

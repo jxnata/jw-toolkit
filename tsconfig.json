@@ -1,12 +1,22 @@
 {
-	"compilerOptions": {
-		"baseUrl": "src",
-		"paths": {
-			"@/*": ["src/*"]
-		},
-		"skipLibCheck": true
-	},
 	"extends": "expo/tsconfig.base",
-	"include": ["**/*.ts", "**/*.tsx"],
-	"exclude": ["node_modules"]
+	"compilerOptions": {
+		"strict": true,
+		"baseUrl": ".",
+		"paths": {
+			"@app/*": ["src/app/*"],
+			"@assets/*": ["src/assets/*"],
+			"@components/*": ["src/components/*"],
+			"@constants/*": ["src/constants/*"],
+			"@contexts/*": ["src/contexts/*"],
+			"@database/*": ["src/database/*"],
+			"@interfaces/*": ["src/interfaces/*"],
+			"@hooks/*": ["src/hooks/*"],
+			"@messages/*": ["src/messages/*"],
+			"@services/*": ["src/services/*"],
+			"@themes/*": ["src/themes/*"],
+			"@utils/*": ["src/utils/*"]
+		}
+	},
+	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
 }

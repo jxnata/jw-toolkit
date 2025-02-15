@@ -1,7 +1,7 @@
+import { ICityListItem } from '@interfaces/models/City'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
+import { api } from '@services/api/main'
 import useSWRInfinite from 'swr/infinite'
-import { ICityListItem } from 'types/models/City'
 
 type Props = {
 	search?: string

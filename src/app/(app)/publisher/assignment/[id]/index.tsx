@@ -1,11 +1,11 @@
-import AssignmentControls from 'components/AssignmentControls'
-import AssignmentMapCard from 'components/AssignmentMapCard'
+import AssignmentControls from '@components/AssignmentControls'
+import AssignmentMapCard from '@components/AssignmentMapCard'
+import useAssignment from '@hooks/swr/admin/useAssignment'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import useAssignment from 'hooks/swr/admin/useAssignment'
 import { useRef, useState } from 'react'
 import { MapMarker, Marker } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
 
 import * as S from './styles'
 

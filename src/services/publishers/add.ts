@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { AddPublisherReq, AddPublisherRes } from 'types/api/publishers'
+import { AddPublisherReq, AddPublisherRes } from '@interfaces/api/publishers'
+import { api } from '@services/api/main'
 
 export const add = async (body: AddPublisherReq) => {
 	try {

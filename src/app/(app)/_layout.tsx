@@ -1,11 +1,11 @@
-import LocationRequest from 'components/LocationRequest'
-import { useSession } from 'contexts/Auth'
+import LocationRequest from '@components/LocationRequest'
+import { useSession } from '@contexts/Auth'
+import theme from '@themes/index'
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect, Stack } from 'expo-router'
 import { useEffect } from 'react'
 import { useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
-import theme from 'themes'
 
 export default function Layout() {
 	const scheme = useColorScheme()
@@ -30,14 +30,14 @@ export default function Layout() {
 		<Stack
 			screenOptions={{
 				headerStyle: {
-					backgroundColor: theme[scheme].background,
+					backgroundColor: theme[scheme || 'light'].background,
 				},
 				headerShadowVisible: false,
-				headerTintColor: theme[scheme].text,
+				headerTintColor: theme[scheme || 'light'].text,
 				headerTitleStyle: { fontFamily: 'urbanist-bold' },
-				headerBackTitleVisible: false,
+				headerBackVisible: false,
 				headerTitleAlign: 'center',
-				contentStyle: { backgroundColor: theme[scheme].background },
+				contentStyle: { backgroundColor: theme[scheme || 'light'].background },
 			}}
 		>
 			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />

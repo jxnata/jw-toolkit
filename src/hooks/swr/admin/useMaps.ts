@@ -1,7 +1,7 @@
+import { IMap } from '@interfaces/models/Map'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
+import { api } from '@services/api/main'
 import useSWRInfinite from 'swr/infinite'
-import { IMap } from 'types/models/Map'
 
 type Props = {
 	search?: string

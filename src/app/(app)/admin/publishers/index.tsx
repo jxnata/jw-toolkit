@@ -1,10 +1,10 @@
-import Input from 'components/Input'
+import Input from '@components/Input'
+import usePublishers from '@hooks/swr/admin/usePublishers'
 import { Stack, useRouter } from 'expo-router'
-import usePublishers from 'hooks/swr/admin/usePublishers'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { FlatList } from 'react-native'
-import { firstLetter } from 'utils/first-letter'
+import { firstLetter } from '@utils/first-letter'
 
 import * as S from './styles'
 

@@ -1,7 +1,7 @@
-import AssignmentItem from 'components/AssignmentItem'
+import AssignmentItem from '@components/AssignmentItem'
+import useMyAssignments from '@hooks/swr/publisher/useMyAssignments'
+import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
-import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
-import { useLocation } from 'hooks/useLocation'
 import { useCallback, useEffect } from 'react'
 import { OneSignal } from 'react-native-onesignal'
 

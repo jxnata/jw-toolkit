@@ -1,8 +1,8 @@
-import { authStorage } from 'database/auth'
+import { authStorage } from '@database/auth'
+import { IPublisher } from '@interfaces/models/Publisher'
+import { IUser } from '@interfaces/models/User'
 import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
 import { OneSignal } from 'react-native-onesignal'
-import { IPublisher } from 'types/models/Publisher'
-import { IUser } from 'types/models/User'
 
 import { authHandlerAdmin } from './handlers/admin'
 import { authHandlerPublisher } from './handlers/publisher'

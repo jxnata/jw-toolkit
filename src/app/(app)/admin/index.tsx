@@ -1,7 +1,7 @@
-import { APP_VERSION } from 'constants/content'
-import { useSession } from 'contexts/Auth'
+import { APP_VERSION } from '@constants/content'
+import { useSession } from '@contexts/Auth/index'
+import useResume from '@hooks/swr/admin/useResume'
 import { Link, Stack, useRouter } from 'expo-router'
-import useResume from 'hooks/swr/admin/useResume'
 import { useCallback } from 'react'
 
 import * as S from './styles'

@@ -1,9 +1,9 @@
-import Button from 'components/Button'
-import { APP_VERSION } from 'constants/content'
-import { useSession } from 'contexts/Auth'
+import Button from '@components/Button'
+import { APP_VERSION } from '@constants/content'
+import { useSession } from '@contexts/Auth'
+import { IUser } from '@interfaces/models/User'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
-import { IUser } from 'types/models/User'
 
 import * as S from './styles'
 

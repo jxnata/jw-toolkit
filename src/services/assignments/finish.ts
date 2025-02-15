@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { FinishAssignmentReq, FinishAssignmentRes } from 'types/api/assignments'
+import { FinishAssignmentReq, FinishAssignmentRes } from '@interfaces/api/assignments'
+import { api } from '@services/api/main'
 
 export const finish = async (id: string, body: FinishAssignmentReq) => {
 	try {

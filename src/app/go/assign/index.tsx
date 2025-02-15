@@ -1,10 +1,10 @@
-import { useSession } from 'contexts/Auth'
+import { useSession } from '@contexts/Auth'
+import { AcceptAssignmentReq } from '@interfaces/api/assignments'
+import { AcceptAssignmentQuery } from '@interfaces/linking/accept-assignment'
 import { parse, useURL } from 'expo-linking'
 import { useRouter } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { accept } from 'services/assignments/accept'
-import { AcceptAssignmentReq } from 'types/api/assignments'
-import { AcceptAssignmentQuery } from 'types/linking/accept-assignment'
+import { accept } from '@services/assignments/accept'
 
 import * as S from './styles'
 

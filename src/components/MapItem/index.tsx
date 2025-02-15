@@ -1,9 +1,9 @@
+import { IMap } from '@interfaces/models/Map'
 import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
-import { IMap } from 'types/models/Map'
-import { formatDate } from 'utils/date-format'
-import { getLocationDistance } from 'utils/get-location-distance'
-import { mapImage } from 'utils/map-image'
+import { formatDate } from '@utils/date-format'
+import { getLocationDistance } from '@utils/get-location-distance'
+import { mapImage } from '@utils/map-image'
 
 import * as S from './styles'
 

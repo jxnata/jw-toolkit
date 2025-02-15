@@ -1,5 +1,5 @@
-import { storage } from 'database'
-import { AUTH_DATA, AUTH_PK, AUTH_TOKEN, AUTH_TYPE } from 'database/types/keys'
+import { storage } from '@database'
+import { AUTH_DATA, AUTH_PK, AUTH_TOKEN, AUTH_TYPE } from '@database/types/keys'
 
 import { AuthStorage } from './types'
 

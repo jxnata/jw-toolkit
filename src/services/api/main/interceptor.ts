@@ -1,5 +1,5 @@
+import { authStorage } from '@database/auth'
 import { AxiosHeaders, InternalAxiosRequestConfig } from 'axios'
-import { authStorage } from 'database/auth'
 
 export const interceptor = (config: InternalAxiosRequestConfig) => {
 	const { token } = authStorage.getAuth()

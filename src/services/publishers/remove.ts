@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { RemovePublisherReq, RemovePublisherRes } from 'types/api/publishers'
+import { RemovePublisherReq, RemovePublisherRes } from '@interfaces/api/publishers'
+import { api } from '@services/api/main'
 
 export const remove = async (id: RemovePublisherReq) => {
 	try {

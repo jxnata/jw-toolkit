@@ -1,11 +1,11 @@
-import Button from 'components/Button'
-import Input from 'components/Input'
+import Button from '@components/Button'
+import Input from '@components/Input'
+import useCities from '@hooks/swr/admin/useCities'
+import { AddCityReq } from '@interfaces/api/cities'
 import { Stack, router } from 'expo-router'
-import useCities from 'hooks/swr/admin/useCities'
-import { error, success } from 'messages/add'
+import { error, success } from '@messages/add'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { add } from 'services/cities/add'
-import { AddCityReq } from 'types/api/cities'
+import { add } from '@services/cities/add'
 
 import * as S from './styles'
 

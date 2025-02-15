@@ -1,11 +1,11 @@
-import Button from 'components/Button'
-import { useSession } from 'contexts/Auth'
+import Button from '@components/Button'
+import { useSession } from '@contexts/Auth'
+import useAllMaps from '@hooks/swr/admin/useAllMaps'
+import { IMap } from '@interfaces/models/Map'
 import { Stack } from 'expo-router'
-import useAllMaps from 'hooks/swr/admin/useAllMaps'
 import { useState } from 'react'
 import { Platform, Share } from 'react-native'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
-import { IMap } from 'types/models/Map'
 
 import * as S from './styles'
 

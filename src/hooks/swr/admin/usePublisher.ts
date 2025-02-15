@@ -1,7 +1,7 @@
+import { IPublisher } from '@interfaces/models/Publisher'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
+import { api } from '@services/api/main'
 import useSWR from 'swr'
-import { IPublisher } from 'types/models/Publisher'
 
 const fetcher = (url: string) => api.get(url).then(res => res.data)
 

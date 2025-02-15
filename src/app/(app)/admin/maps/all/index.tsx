@@ -1,11 +1,11 @@
+import useAllMaps from '@hooks/swr/admin/useAllMaps'
 import * as Location from 'expo-location'
 import { Link, Stack } from 'expo-router'
-import useAllMaps from 'hooks/swr/admin/useAllMaps'
 import { useCallback, useEffect, useState } from 'react'
 import { Marker } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
-import { getPinColor } from 'utils/get-pin-color'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { getPinColor } from '@utils/get-pin-color'
 
 import * as S from './styles'
 

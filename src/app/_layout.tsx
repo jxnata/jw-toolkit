@@ -1,9 +1,9 @@
 import '../../polyfills'
 
-import { ONESIGNAL_APP_ID } from 'constants/env'
-import { fonts } from 'constants/fonts'
-import { configToast } from 'constants/toast'
-import { SessionProvider } from 'contexts/Auth'
+import { ONESIGNAL_APP_ID } from '@constants/env'
+import { fonts } from '@constants/fonts'
+import { configToast } from '@constants/toast'
+import { SessionProvider } from '@contexts/Auth'
 import { useFonts } from 'expo-font'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -15,7 +15,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import { ThemeProvider } from 'styled-components/native'
 import { SWRConfig } from 'swr'
-import theme from 'themes'
+import theme from '@themes'
 
 if (__DEV__) require('../../reactotron')
 

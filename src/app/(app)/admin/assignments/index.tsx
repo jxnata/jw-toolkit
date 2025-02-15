@@ -1,12 +1,12 @@
-import AssignmentItem from 'components/AssignmentItem'
-import Input from 'components/Input'
+import AssignmentItem from '@components/AssignmentItem'
+import Input from '@components/Input'
+import useAssignments from '@hooks/swr/admin/useAssignments'
+import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
-import useAssignments from 'hooks/swr/admin/useAssignments'
-import { useLocation } from 'hooks/useLocation'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { Alert, FlatList } from 'react-native'
-import { restore } from 'services/assignments/restore'
+import { restore } from '@services/assignments/restore'
 
 import * as S from './styles'
 

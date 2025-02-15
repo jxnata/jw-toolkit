@@ -1,4 +1,4 @@
-import { IPublisher } from 'types/models/Publisher'
+import { IPublisher } from '@interfaces/models/Publisher'
 
 export type AdminAuthRequest = {
 	username: string

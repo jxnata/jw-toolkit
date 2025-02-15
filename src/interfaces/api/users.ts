@@ -1,4 +1,4 @@
-import { IUser } from 'types/models/User'
+import { IUser } from '@interfaces/models/User'
 
 export type VinculateUserReq = {
 	publisher: string

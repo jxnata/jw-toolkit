@@ -1,6 +1,6 @@
-import { authStorage } from 'database/auth'
-import { IUser } from 'types/models/User'
-import { adminAuth } from 'utils/admin-auth'
+import { authStorage } from '@database/auth'
+import { IUser } from '@interfaces/models/User'
+import { adminAuth } from '@utils/admin-auth'
 
 import { ISession } from '../types'
 
