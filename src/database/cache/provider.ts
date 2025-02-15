@@ -1,4 +1,4 @@
-import { cache } from '@database'
+import { cache } from '@database/index'
 import { CACHE } from '@database/types/keys'
 import { Cache } from 'swr'
 

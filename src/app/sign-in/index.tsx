@@ -5,7 +5,7 @@ import PasswordInput from '@components/PasswordInput'
 import { APP_VERSION } from '@constants/content'
 import { useSession } from '@contexts/Auth'
 import { AuthRequest } from '@contexts/Auth/types'
-import { history } from '@database'
+import { history } from '@database/index'
 import { LAST_CONGREGATION, LAST_TYPE, LAST_USER } from '@database/types/keys'
 import useCongregations from '@hooks/swr/general/useCongregations'
 import { useRouter } from 'expo-router'
@@ -70,7 +70,7 @@ const Login = () => {
 	return (
 		<S.Container>
 			<Stack.Screen options={{ headerShown: false }} />
-			<S.Background source={require('../../images/login-bg.jpg')}>
+			<S.Background source={require('../../assets/images/login-bg.jpg')}>
 				<S.Mask />
 				<SafeAreaView>
 					<S.Content>

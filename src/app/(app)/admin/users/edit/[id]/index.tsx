@@ -14,7 +14,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
 import { edit } from '@services/users/edit'
 import { remove } from '@services/users/remove'
-import { colors } from '@themes'
+import { colors } from '@themes/index'
 
 import * as S from './styles'
 

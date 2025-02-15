@@ -24,7 +24,7 @@ import { edit } from '@services/publishers/edit'
 import { remove } from '@services/publishers/remove'
 import { reset } from '@services/publishers/reset'
 import { vinculate } from '@services/users/vinculate'
-import { colors } from '@themes'
+import { colors } from '@themes/index'
 
 import * as S from './styles'
 

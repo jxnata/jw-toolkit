@@ -1,4 +1,4 @@
-import { storage } from '@database'
+import { storage } from '@database/index'
 import reactotron from 'reactotron-react-native'
 import mmkvPlugin from 'reactotron-react-native-mmkv'
 

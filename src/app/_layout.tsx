@@ -15,7 +15,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import { ThemeProvider } from 'styled-components/native'
 import { SWRConfig } from 'swr'
-import theme from '@themes'
+import theme from '@themes/index'
 
 if (__DEV__) require('../../reactotron')
 

@@ -12,7 +12,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
 import { edit } from '@services/cities/edit'
 import { remove } from '@services/cities/remove'
-import { colors } from '@themes'
+import { colors } from '@themes/index'
 
 import * as S from './styles'
 

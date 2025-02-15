@@ -3,30 +3,42 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.0.0",
+		"version": "1.0.21",
 		"orientation": "portrait",
-		"icon": "./assets/icon.png",
+		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
 		"splash": {
-			"image": "./assets/splash.png",
-			"resizeMode": "contain",
+			"image": "./src/assets/splash.png",
+			"resizeMode": "cover",
 			"backgroundColor": "#D08129"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "dev.jxnata.jwtoolkit",
-			"usesAppleSignIn": true
+			"usesAppleSignIn": true,
+			"infoPlist": {
+				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada."
+			}
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
+				"foregroundImage": "./src/assets/adaptive-icon.png",
 				"backgroundColor": "#D08129"
 			},
-			"package": "dev.jxnata.jwmaps"
+			"package": "dev.jxnata.jwmaps",
+			"permissions": [
+				"android.permission.INTERNET",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.SYSTEM_ALERT_WINDOW",
+				"android.permission.VIBRATE",
+				"android.permission.WRITE_EXTERNAL_STORAGE",
+				"android.permission.ACCESS_FINE_LOCATION",
+				"android.permission.ACCESS_COARSE_LOCATION"
+			]
 		},
 		"web": {
-			"favicon": "./assets/favicon.png"
+			"favicon": "./src/assets/favicon.png"
 		},
 		"plugins": [
 			"expo-router",
@@ -41,6 +53,32 @@
 		],
 		"experiments": {
 			"tsconfigPaths": true
-		}
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"build": {
+					"experimental": {
+						"ios": {
+							"appExtensions": [
+								{
+									"targetName": "OneSignalNotificationServiceExtension",
+									"bundleIdentifier": "dev.jxnata.jwtoolkit.OneSignalNotificationServiceExtension",
+									"entitlements": {
+										"com.apple.security.application-groups": [
+											"group.dev.jxnata.jwtoolkit.onesignal"
+										]
+									}
+								}
+							]
+						}
+					}
+				},
+				"projectId": "fd11d33c-dc78-4e42-8f4f-71f7de1cd229"
+			}
+		},
+		"owner": "jxnata"
 	}
 }

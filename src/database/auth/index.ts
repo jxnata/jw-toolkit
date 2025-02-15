@@ -1,4 +1,4 @@
-import { storage } from '@database'
+import { storage } from '@database/index'
 import { AUTH_DATA, AUTH_PK, AUTH_TOKEN, AUTH_TYPE } from '@database/types/keys'
 
 import { AuthStorage } from './types'
