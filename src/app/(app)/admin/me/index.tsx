@@ -1,42 +1,25 @@
-import Button from '@components/Button'
 import { APP_VERSION } from '@constants/content'
 import { useSession } from '@contexts/Auth'
-import { IUser } from '@interfaces/models/User'
-import { Stack, useRouter } from 'expo-router'
-import { useCallback } from 'react'
+import { Stack } from 'expo-router'
 
 import * as S from './styles'
 
 const UserDetails = () => {
-	const { session, loading, signOut, swap } = useSession<IUser>()
-	const router = useRouter()
+	const { current, loading, congregation, logout } = useSession()
 
-	const handleSwap = useCallback(async () => {
-		const swapped = await swap()
-
-		if (!swapped) return alert('Erro ao trocar para publicador.')
-
-		while (router.canGoBack()) {
-			router.back()
-		}
-		router.replace('/publisher')
-	}, [router, swap])
+	if (!current) return null
+	if (!congregation) return null
 
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal' }} />
 			<S.Content>
 				<S.Icon></S.Icon>
-				<S.Title>{session.data.name}</S.Title>
+				<S.Title>{current.name}</S.Title>
 				<S.Label>Congregação</S.Label>
-				<S.Paragraph>{session.data.congregation.name}</S.Paragraph>
+				<S.Paragraph>{congregation.name}</S.Paragraph>
 				<S.ButtonGroup>
-					{!!session.data.publisher && (
-						<Button loading={loading} onPress={handleSwap}>
-							Trocar para publicador
-						</Button>
-					)}
-					<S.Button onPress={signOut} disabled={loading}>
+					<S.Button onPress={logout} disabled={loading}>
 						<S.ButtonTitle>Sair</S.ButtonTitle>
 					</S.Button>
 				</S.ButtonGroup>

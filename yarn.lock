@@ -2491,6 +2491,40 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
+"@tanstack/query-core@5.66.0":
+  version "5.66.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.66.0.tgz#163f670b3b4e3b3cdbff6698ad44b2edfcaed185"
+  integrity sha512-J+JeBtthiKxrpzUu7rfIPDzhscXF2p5zE/hVdrqkACBP8Yu0M96mwJ5m/8cPPYQE9aRNvXztXHlNwIh4FEeMZw==
+
+"@tanstack/query-persist-client-core@5.66.0":
+  version "5.66.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-5.66.0.tgz#9f358b3246a6da9a589894042ec3623395e5cbde"
+  integrity sha512-y6bolShmbOmexexZfnmTiHsBOm4ruJxc2MQJzqi6PxkSPjkKAU+Zqviy4ZwQos5skwSw0g7b9L6V6Rd64oZc9g==
+  dependencies:
+    "@tanstack/query-core" "5.66.0"
+
+"@tanstack/query-sync-storage-persister@^5.66.0":
+  version "5.66.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-5.66.0.tgz#ca92e68bd17ca102d4eaaa131b6a1a9be6060480"
+  integrity sha512-G/QCN1eWGgwIEkjbjas2IJTy1dXYnMcJV61wKtmFB7eFNiqDa5YdWTEynJs4UOsdh9HsvFq5JH/DN8AA/zpKWw==
+  dependencies:
+    "@tanstack/query-core" "5.66.0"
+    "@tanstack/query-persist-client-core" "5.66.0"
+
+"@tanstack/react-query-persist-client@^5.66.0":
+  version "5.66.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-5.66.0.tgz#9b6f9b349ad20aacc58ebc747fbc4c33605618ff"
+  integrity sha512-LpocQrJF9HCR6N09X7+k8TjkgYsVHPB4e4AvV2qvCeL5aOsQWORttEqCHldohnJwdVm/68tWacw2jVP/8AuI1w==
+  dependencies:
+    "@tanstack/query-persist-client-core" "5.66.0"
+
+"@tanstack/react-query@^5.66.0":
+  version "5.66.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.66.0.tgz#9f7aa1b3e844ea6a0ad2ee61fccaed76e614b865"
+  integrity sha512-z3sYixFQJe8hndFnXgWu7C79ctL+pI0KAelYyW+khaNJ1m22lWrhJU2QrsTcRKMuVPtoZvfBYrTStIdKo+x0Xw==
+  dependencies:
+    "@tanstack/query-core" "5.66.0"
+
 "@tootallnate/once@2":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
@@ -8624,30 +8658,25 @@ react@18.3.1:
   dependencies:
     loose-envify "^1.1.0"
 
-reactotron-core-client@2.9.6:
-  version "2.9.6"
-  resolved "https://registry.yarnpkg.com/reactotron-core-client/-/reactotron-core-client-2.9.6.tgz#3130f06d85dec2a8d50404ffa4520f8c6cc04002"
-  integrity sha512-7krCkKn/uy8VF1UhSmgrhYsPJ2VNJ+btYSG0S8NBlhW/EtsRHUtLQy+tbBVg2cHaTHbejY4qrvr0yP5L7L2Osw==
+reactotron-core-client@2.9.7:
+  version "2.9.7"
+  resolved "https://registry.yarnpkg.com/reactotron-core-client/-/reactotron-core-client-2.9.7.tgz#c1fd2842b095dbd2c7522cfc6bd59e34768038eb"
+  integrity sha512-QWd0ekjU71CQL70J87NT5f7cmIJAMVZND+YgOaaUgmgFjhiXzHrpeIWs19+IFQPVLsJr97gdi58X8Y62Hchs9w==
   dependencies:
-    reactotron-core-contract "0.2.4"
+    reactotron-core-contract "0.2.5"
 
-reactotron-core-contract@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/reactotron-core-contract/-/reactotron-core-contract-0.2.4.tgz#c7038ce6bac5b8674b462895d7fe5e30661b24e8"
-  integrity sha512-CmNYahBdk9uES4vimlRsoM1gAQA6T5gXTuJzDvduOjKd0IZufZjkxzBAvhpkX5OIkPl4Xlsv+1AHXLWSJSwFLA==
+reactotron-core-contract@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/reactotron-core-contract/-/reactotron-core-contract-0.2.5.tgz#927160c026895798bfe931bd2462fdd5d4e435f9"
+  integrity sha512-pxuXFG1jffAWQSdT0FBws+/Xvl8++6T6WrAi4g7AxIZU5FPeut2wq//0yDhDWx6lF82eAo5JTZK7zECQy45QxA==
 
-reactotron-react-native-mmkv@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/reactotron-react-native-mmkv/-/reactotron-react-native-mmkv-0.1.5.tgz#ce74786f3d5bde97b019d04a6c215357f6995a46"
-  integrity sha512-p9nu4jgN1fGDIej1epEm6T0pd9uE8gLSCKn9bRKq4cEiqep033Qs2f11X9AxT3+FsOGVeiWlT+IHKe+ucowl0A==
-
-reactotron-react-native@^5.0.3:
-  version "5.1.10"
-  resolved "https://registry.yarnpkg.com/reactotron-react-native/-/reactotron-react-native-5.1.10.tgz#572a1332839e0be7036e2d47328654d4252fe3ce"
-  integrity sha512-CD20odAESgH0K2YJCyfJLQg5K5Ho1qnk0QBB3SjD1yjt5BJhPuHjdXFyuED8PYLgOz+YwOX7jyK2/wu3TCp1OQ==
+reactotron-react-native@^5.1.12:
+  version "5.1.12"
+  resolved "https://registry.yarnpkg.com/reactotron-react-native/-/reactotron-react-native-5.1.12.tgz#fd4d6af812f8af02087ac74c3495688e7f0a8ac8"
+  integrity sha512-3MNdoqoOP0xc1e0jjoKWdKonI0ucgPSj36ETDxj9zFMC+CSFLybvABzHz3K5Mr1KbKln/Csh4mEqCq2XPIpqrg==
   dependencies:
     mitt "^3.0.1"
-    reactotron-core-client "2.9.6"
+    reactotron-core-client "2.9.7"
 
 readable-stream@^3.4.0:
   version "3.6.2"

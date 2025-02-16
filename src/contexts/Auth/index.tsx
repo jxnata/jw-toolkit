@@ -1,102 +1,138 @@
-import { authStorage } from '@database/auth'
-import { IPublisher } from '@interfaces/models/Publisher'
-import { IUser } from '@interfaces/models/User'
-import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
+import { ExecutionMethod, Models } from 'react-native-appwrite'
+import { AppleAuthenticationCredential } from 'expo-apple-authentication'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { Platform } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
+import { account, functions } from '@services/appwrite'
+import { storage } from '@database/index'
+import { router } from 'expo-router'
 
-import { authHandlerAdmin } from './handlers/admin'
-import { authHandlerPublisher } from './handlers/publisher'
-import { swapHandlerPublisher } from './handlers/swap-publisher'
-import { swapHandlerUser } from './handlers/swap-user'
-import { AuthRequest, IAuthContext, ISession } from './types'
-
-const AuthContext = createContext<IAuthContext<IUser | IPublisher> | null>(null)
-
-const initialData = () => {
-	try {
-		const { data, token, type, private_key } = authStorage.getAuth()
-		return { data: JSON.parse(data), token, type, private_key } as ISession<IUser | IPublisher>
-	} catch {
-		authStorage.clear()
-	}
+type LocalSession = {
+	current: Models.User<Models.Preferences> | null
+	type: 'publisher' | 'admin' | null
+	congregation: { id: string; name: string } | null
+	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential) => Promise<void>
+	// googleAuthentication: (user: User) => Promise<void>
+	logout: () => Promise<void>
+	loading: boolean
 }
 
-export function useSession<T extends IUser | IPublisher = IUser | IPublisher>() {
-	const value = useContext(AuthContext)
+type AppSession = Models.User<Models.Preferences> | null
 
-	if (process.env.NODE_ENV !== 'production') {
-		if (!value) {
-			throw new Error('useSession must be wrapped in a <SessionProvider />')
-		}
-	}
-
-	return value as IAuthContext<T>
+const initialState: LocalSession = {
+	current: null,
+	type: null,
+	congregation: null,
+	loading: true,
+	appleAuthentication: async () => {},
+	// googleAuthentication: async () => {},
+	logout: async () => {},
 }
 
-export function SessionProvider(props: PropsWithChildren) {
-	const [session, setSession] = useState<ISession<IUser | IPublisher>>(initialData())
-	const [loading, setLoading] = useState<boolean>(false)
+const SessionContext = createContext<LocalSession>(initialState)
 
-	const signIn = useCallback(async ({ user, pass, type, congregation }: AuthRequest) => {
+export function useSession() {
+	return useContext(SessionContext)
+}
+
+export function SessionProvider(props: { children: React.ReactNode }) {
+	const storedSession = storage.getString('session')
+	const localSession: AppSession = storedSession ? JSON.parse(storedSession) : null
+	const [loading, setLoading] = useState(!localSession)
+	const [user, setUser] = useState<AppSession>(localSession)
+	const [congregation, setCongregation] = useState<{ id: string; name: string } | null>(null)
+	const type = useMemo(() => (user ? (user.labels.includes('admin') ? 'admin' : 'publisher') : null), [])
+
+	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential) {
 		try {
 			setLoading(true)
-
-			if (type === 'publisher') {
-				await authHandlerPublisher({ user, pass, congregation, setSession })
-			}
-			if (type === 'admin') {
-				await authHandlerAdmin({ user, pass, congregation, setSession })
-			}
-
-			return true
-		} catch {
-			return false
+			const result = await functions.createExecution(
+				'apple-auth',
+				JSON.stringify(appleRequestResponse),
+				false,
+				undefined,
+				ExecutionMethod.POST
+			)
+			if (result.responseStatusCode !== 200) throw new Error(result.responseBody)
+			const token: Models.Token = JSON.parse(result.responseBody)
+			await account.createSession(token.userId, token.secret)
+			await init()
 		} finally {
 			setLoading(false)
 		}
-	}, [])
+	}
 
-	const swap = useCallback(async () => {
+	// async function googleAuthentication(user: User) {
+	// 	try {
+	// 		setLoading(true)
+	// 		const result = await functions.createExecution(
+	// 			'google-auth',
+	// 			JSON.stringify({ idToken: user.idToken }),
+	// 			false,
+	// 			undefined,
+	// 			ExecutionMethod.POST
+	// 		)
+	// 		if (result.responseStatusCode !== 200) throw new Error(result.responseBody)
+	// 		const token: Models.Token = JSON.parse(result.responseBody)
+	// 		await account.createSession(token.userId, token.secret)
+	// 		await init()
+	// 	} finally {
+	// 		setLoading(false)
+	// 	}
+	// }
+
+	async function logout() {
+		// if (Platform.OS === 'android') {
+		// 	await GoogleSignin.signOut()
+		// }
+		await account.deleteSession('current')
+		storage.delete('congregation.name')
+		storage.delete('congregation.id')
+		setUser(null)
+		setCongregation(null)
+	}
+
+	async function init() {
 		try {
-			setLoading(true)
+			const loggedIn = await account.get()
 
-			if (!session) return false
+			const userType = loggedIn.labels.includes('admin') ? 'admin' : 'publisher'
 
-			OneSignal.logout()
+			setUser(loggedIn)
+			setCongregation({
+				name: storage.getString('congregation.name') || '',
+				id: storage.getString('congregation.id') || '',
+			})
 
-			if (session.type === 'publisher') {
-				await swapHandlerPublisher({ setSession })
-			}
+			storage.set('session', JSON.stringify(loggedIn))
 
-			if (session.type === 'admin') {
-				await swapHandlerUser({ setSession, currentUser: session.data._id })
-			}
+			OneSignal.login(loggedIn.$id)
+			OneSignal.User.addEmail(loggedIn.email)
 
-			setLoading(false)
-			return true
+			router.replace(`/${userType}`)
 		} catch {
+			setUser(null)
+			storage.delete('session')
+		} finally {
 			setLoading(false)
-			return false
 		}
-	}, [session])
-
-	const signOut = useCallback(() => {
-		OneSignal.logout()
-		authStorage.clear()
-		setSession(null)
+	}
+	useEffect(() => {
+		init()
 	}, [])
-
 	return (
-		<AuthContext.Provider
+		<SessionContext.Provider
 			value={{
-				signIn,
-				signOut,
-				swap,
-				session,
+				current: user,
+				type,
+				congregation,
 				loading,
+				appleAuthentication,
+				// googleAuthentication,
+				logout,
 			}}
 		>
 			{props.children}
-		</AuthContext.Provider>
+		</SessionContext.Provider>
 	)
 }

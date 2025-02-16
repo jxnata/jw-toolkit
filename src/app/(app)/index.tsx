@@ -2,13 +2,13 @@ import { useSession } from '@contexts/Auth'
 import { Redirect, Slot } from 'expo-router'
 
 export default function App() {
-	const { session } = useSession()
+	const { type } = useSession()
 
-	if (session.type === 'publisher') {
+	if (type === 'publisher') {
 		return <Redirect href='/publisher' />
 	}
 
-	if (session.type === 'admin') {
+	if (type === 'admin') {
 		return <Redirect href='/admin' />
 	}
 

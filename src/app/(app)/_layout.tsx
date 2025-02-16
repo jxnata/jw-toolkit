@@ -9,14 +9,15 @@ import { OneSignal } from 'react-native-onesignal'
 
 export default function Layout() {
 	const scheme = useColorScheme()
-	const { session } = useSession()
+	const { current } = useSession()
+	console.log(current)
 	const [status] = useForegroundPermissions()
 
 	useEffect(() => {
-		if (session) OneSignal.login(session.data._id)
-	}, [session])
+		if (current) OneSignal.login(current.$id)
+	}, [current])
 
-	if (!session) {
+	if (!current) {
 		return <Redirect href='/sign-in' />
 	}
 

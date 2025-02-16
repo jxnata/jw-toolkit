@@ -6,6 +6,10 @@ export const storage = new MMKV({
 	encryptionKey: ENCRYPT_STORAGE,
 })
 
+export const old_cache = new MMKV({
+	id: 'cache_storage',
+})
+
 export const cache = new MMKV({
 	id: 'cache_storage',
 })

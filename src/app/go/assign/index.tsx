@@ -9,7 +9,7 @@ import { accept } from '@services/assignments/accept'
 import * as S from './styles'
 
 const LaunchAcceptAssignment = () => {
-	const { session } = useSession()
+	const { type, current } = useSession()
 	const [error, setError] = useState(false)
 	const url = useURL()
 	const router = useRouter()
@@ -41,8 +41,8 @@ const LaunchAcceptAssignment = () => {
 
 	useEffect(() => {
 		if (!url) return
-		if (!session) back()
-		if (session.type === 'admin') back()
+		if (!current) back()
+		if (type === 'admin') back()
 
 		const { queryParams } = parse(url)
 		const link = queryParams as AcceptAssignmentQuery
@@ -58,7 +58,7 @@ const LaunchAcceptAssignment = () => {
 		}
 
 		acceptAssignment(link)
-	}, [acceptAssignment, back, session, url])
+	}, [acceptAssignment, back, current, url])
 
 	return (
 		<S.Container>

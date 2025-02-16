@@ -8,7 +8,7 @@ import * as S from './styles'
 
 const Admin = () => {
 	const router = useRouter()
-	const { session } = useSession()
+	const { congregation } = useSession()
 	const { resume, mutate, loading } = useResume()
 
 	const HeaderRight = useCallback(
@@ -22,9 +22,11 @@ const Admin = () => {
 		[router]
 	)
 
+	if (!congregation) return null
+
 	return (
 		<S.Container>
-			<Stack.Screen options={{ title: session.data.congregation.name, headerRight: HeaderRight }} />
+			<Stack.Screen options={{ title: congregation.name, headerRight: HeaderRight }} />
 			<S.Content refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}>
 				<Link href='/admin/publishers' asChild>
 					<S.MenuItem>

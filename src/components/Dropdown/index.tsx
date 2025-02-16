@@ -4,14 +4,15 @@ import { Modal } from 'react-native'
 import * as S from './styles'
 
 type Props = {
-	selectedValue: string
+	selectedValue: string | undefined
 	options: { label: string; value: string }[]
+	label?: string
 	placeholder: string
 	disabled?: boolean
-	onValueChange: (any) => void
+	onValueChange: (value: any) => void
 }
 
-const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onValueChange }: Props) => {
+const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false, onValueChange }: Props) => {
 	const [open, setOpen] = useState(false)
 
 	const toggle = () => {
@@ -37,6 +38,7 @@ const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onVal
 
 	return (
 		<S.DropdowContainer>
+			{!!label && <S.Label>{label}</S.Label>}
 			<S.Input aria-disabled={disabled} onPress={toggle} disabled={disabled}>
 				<S.Placeholder>{selectedLabel || placeholder}</S.Placeholder>
 				<S.Ionicon name='chevron-down' />
@@ -53,7 +55,7 @@ const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onVal
 									) : (
 										<S.Ionicon name='ellipse-outline' />
 									)}
-									<S.Label>{item.label}</S.Label>
+									<S.ItemLabel>{item.label}</S.ItemLabel>
 								</S.Item>
 							)}
 							keyExtractor={item => item.label}
