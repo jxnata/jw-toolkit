@@ -31,15 +31,17 @@ export const MenuItem = styled.Pressable`
 	gap: 5px;
 `
 export const MenuContent = styled.View`
-	flex-direction: column;
+	flex-direction: row;
 	padding-left: 10px;
-	align-items: flex-start;
-	gap: 2px;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	flex: 1;
 `
 export const BadgeContainer = styled.View`
 	flex-direction: row;
 	align-items: center;
-	gap: 2px;
+	gap: 10px;
 `
 export const MenuTitle = styled.Text`
 	font-size: 15px;
@@ -72,7 +74,11 @@ export const IconContainer = styled.View`
 	border-radius: 8px;
 	background: ${({ theme }) => theme.background};
 `
-export const IconButton = styled.Pressable``
+export const IconButton = styled.TouchableOpacity`
+	background-color: ${({ theme }) => theme.background};
+	padding: 5px;
+	border-radius: 4px;
+`
 export const RefreshControl = styled.RefreshControl``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,

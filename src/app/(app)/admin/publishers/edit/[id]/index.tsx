@@ -13,15 +13,15 @@ import Dropdown from '@components/Dropdown'
 
 import * as S from './styles'
 import { database } from '@services/appwrite'
+import { Models } from 'react-native-appwrite'
 
 const EditPublisher = () => {
-	const { id, item } = useLocalSearchParams<{ id: string; item: string }>()
-	const initialData = JSON.parse(item || '{}')
+	const params = useLocalSearchParams<Models.Document>()
 	const { mutate } = usePublishers({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
 		defaultValues: {
-			name: initialData.name,
-			level: initialData.level ? initialData.level.toString() : '3',
+			name: params.name,
+			level: params.level ? params.level.toString() : '3',
 		},
 	})
 
@@ -35,7 +35,7 @@ const EditPublisher = () => {
 		if (!data.name) return
 
 		try {
-			await database.updateDocument('production', 'publishers', id, {
+			await database.updateDocument('production', 'publishers', params.$id, {
 				name: data.name,
 				level: parseInt(data.level || '3'),
 			})
@@ -49,7 +49,7 @@ const EditPublisher = () => {
 
 	const deletePublisher = async () => {
 		try {
-			await database.deleteDocument('production', 'publishers', id)
+			await database.deleteDocument('production', 'publishers', params.$id)
 
 			removeSuccess('publicador')
 			mutate()

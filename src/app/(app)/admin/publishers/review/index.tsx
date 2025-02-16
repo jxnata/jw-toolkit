@@ -49,7 +49,7 @@ const Publishers = () => {
 			<Stack.Screen options={{ title: 'Solicitações' }} />
 			<S.Content>
 				<FlatList
-					data={publishers}
+					data={list}
 					keyExtractor={item => item.$id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
