@@ -33,14 +33,14 @@ const AllMaps = () => {
 					<S.Map showsUserLocation region={location}>
 						{maps.map(map => (
 							<Marker
-								key={map._id}
+								key={map.$id}
 								coordinate={getMarkerCoordinate(map.coordinates)}
 								title={map.name}
 								description={map.address}
 								pinColor={getPinColor(map.assigned)}
 							>
 								<S.MarkerCallout tooltip>
-									<Link href={{ pathname: `/admin/maps/${map._id}`, params: map }} asChild>
+									<Link href={{ pathname: `/admin/maps/${map.$id}`, params: map }} asChild>
 										<S.IconButton hitSlop={50}>
 											<S.EditIcon name='eye-outline' />
 										</S.IconButton>
@@ -54,7 +54,7 @@ const AllMaps = () => {
 											<S.Small>Mapa designado</S.Small>
 										) : (
 											<Link
-												href={{ pathname: '/admin/assignments/add', params: { map: map._id } }}
+												href={{ pathname: '/admin/assignments/add', params: { map: map.$id } }}
 											>
 												<S.AssignLink>DESIGNAR</S.AssignLink>
 											</Link>

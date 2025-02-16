@@ -16,7 +16,7 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const { mutate } = useMyAssignments()
 
 	const save = async (found: boolean) => {
-		const result = await finish(assignment._id, { found })
+		const result = await finish(assignment.$id, { found })
 
 		if (result) {
 			success('designação')

@@ -12,10 +12,10 @@ import * as S from './styles'
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
 	const { maps, loading } = useAllMaps()
-	const { session } = useSession()
+	const { congregation } = useSession()
 
 	const generatePDF = async () => {
-		if (!session) return
+		if (!congregation) return
 
 		setGenerating(true)
 
@@ -114,7 +114,7 @@ const ExportMaps = () => {
 		try {
 			const file = await RNHTMLtoPDF.convert({
 				html: htmlContent,
-				fileName: `Mapas da congregação ${session.data.congregation.name}`,
+				fileName: `Mapas da congregação ${congregation.name}`,
 				base64: true,
 			})
 

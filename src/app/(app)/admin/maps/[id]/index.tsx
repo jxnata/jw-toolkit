@@ -39,17 +39,17 @@ const ViewMap = () => {
 	const { publishers } = usePublishers({ all: true })
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: id } })
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
+	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
 	const region = getMapRegion(map ? map.coordinates : [0, 0], 0.01)
 	const marker = getMarkerCoordinate(map ? map.coordinates : [0, 0])
 
 	const generateQR = useCallback(async () => {
 		const expiration = getExpiration(10)
 
-		const qrMessage = getAssignmentMessage(id, session.data._id, expiration.toString())
+		const qrMessage = getAssignmentMessage(id, session.data.$id, expiration.toString())
 
 		const signature = await signMessage(qrMessage, session.private_key)
-		const qrCodeUrl = `${JW_TOOLKIT_API}/go/assign?u=${session.data._id}&m=${id}&e=${expiration}&s=${signature}`
+		const qrCodeUrl = `${JW_TOOLKIT_API}/go/assign?u=${session.data.$id}&m=${id}&e=${expiration}&s=${signature}`
 
 		setQr(qrCodeUrl)
 	}, [session, id])
@@ -191,7 +191,7 @@ const ViewMap = () => {
 				{!!map && (
 					<S.MapContainer>
 						<S.Map region={region}>
-							<Marker key={map._id} coordinate={marker} title={map.name} description={map.address} />
+							<Marker key={map.$id} coordinate={marker} title={map.name} description={map.address} />
 						</S.Map>
 					</S.MapContainer>
 				)}

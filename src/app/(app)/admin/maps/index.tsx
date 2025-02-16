@@ -11,6 +11,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { FlatList } from 'react-native'
 
 import * as S from './styles'
+import React from 'react'
 
 const Maps = () => {
 	const router = useRouter()
@@ -19,17 +20,18 @@ const Maps = () => {
 	const [searchDistrict, setSearchDistrict] = useState('')
 	const [status, setStatus] = useState('')
 	const [showFilter, setFilter] = useState(false)
-	const { maps, loading, mutate, next } = useMaps({
-		search: searchCity || searchTerm,
+	const { maps, loading, mutate } = useMaps({
+		search: searchTerm,
+		city: searchCity,
 		district: searchDistrict,
 		status,
 	})
-	const { list } = useDistricts(searchCity || undefined)
+	const { list } = useDistricts(maps)
 	const { cities } = useCities()
 	const { location } = useLocation()
 
 	const citiesList = useMemo(
-		() => [{ label: 'Todos', value: null }, ...cities.map(c => ({ label: c.name, value: c._id }))],
+		() => [{ label: 'Todos', value: '' }, ...cities.map(c => ({ label: c.name, value: c.$id }))],
 		[cities]
 	)
 
@@ -54,13 +56,13 @@ const Maps = () => {
 		setSearchTerm(term)
 	}, 500)
 
-	const filterCity = city => {
+	const filterCity = (city: string) => {
 		setSearchTerm('')
 		setSearchDistrict('')
 		setSearchCity(city)
 	}
 
-	const filterDistrict = district => {
+	const filterDistrict = (district: string) => {
 		setSearchTerm('')
 		setSearchDistrict(district)
 	}
@@ -125,19 +127,18 @@ const Maps = () => {
 						</>
 					}
 					data={maps}
-					keyExtractor={item => item._id}
+					keyExtractor={item => item.$id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
 						<S.ListContainer>
 							<MapItem
-								key={item._id}
+								key={item.$id}
 								map={item}
 								location={location}
-								onPress={() => router.push({ pathname: `/admin/maps/${item._id}`, params: item })}
+								onPress={() => router.push({ pathname: `/admin/maps/${item.$id}`, params: item })}
 							/>
 						</S.ListContainer>
 					)}
-					onEndReached={next}
 					stickyHeaderIndices={[0]}
 				/>
 			</S.Content>

@@ -22,14 +22,14 @@ import * as S from './styles'
 
 const EditAssignment = () => {
 	const params: Partial<IAssignment> = useLocalSearchParams()
-	const { map } = useMap(typeof params.map === 'object' ? params.map._id : params.map)
+	const { map } = useMap(typeof params.map === 'object' ? params.map.$id : params.map)
 	const { publishers } = usePublishers({ all: true })
 	const { mutate } = useAssignments({ search: '' })
 
 	const defaultValues: EditAssignmentReq = useMemo(
 		() => ({
-			map: typeof params.map === 'object' ? params.map._id : params.map,
-			publisher: typeof params.publisher === 'object' ? params.publisher._id : params.publisher,
+			map: typeof params.map === 'object' ? params.map.$id : params.map,
+			publisher: typeof params.publisher === 'object' ? params.publisher.$id : params.publisher,
 			details: params.details,
 			permanent: params.permanent,
 		}),
@@ -38,10 +38,10 @@ const EditAssignment = () => {
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
+	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
 
 	const save: SubmitHandler<EditAssignmentReq> = async data => {
-		const result = await edit(params._id, data)
+		const result = await edit(params.$id, data)
 
 		if (result) {
 			success('designação')
@@ -54,7 +54,7 @@ const EditAssignment = () => {
 	}
 
 	const deleteAssignment = async () => {
-		const result = await remove(params._id)
+		const result = await remove(params.$id)
 
 		if (result) {
 			removeSuccess('designação')

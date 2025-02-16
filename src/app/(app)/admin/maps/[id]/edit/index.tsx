@@ -25,7 +25,7 @@ const EditMap = () => {
 	const { mutate: mutateMaps } = useMaps({ search: '' })
 	const { cities } = useCities()
 
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c._id })), [cities])
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
 	const defaultValues: EditMapReq = useMemo(
 		() => ({
@@ -33,10 +33,10 @@ const EditMap = () => {
 			address: map.address,
 			district: map.district,
 			details: map.details,
-			city: map.city._id,
+			city: map.city.$id,
 			coordinates: getCoordinates(map.coordinates),
 		}),
-		[map.address, map.city._id, map.coordinates, map.details, map.district, map.name]
+		[map.address, map.city.$id, map.coordinates, map.details, map.district, map.name]
 	)
 
 	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })

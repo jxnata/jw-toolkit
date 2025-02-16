@@ -7,13 +7,14 @@ type Props = {
 	search?: string
 }
 
-const useCities = ({ search }: Props = { search: '' }) => {
+const useRequestPublishers = ({ search }: Props = { search: '' }) => {
 	const congregation = storage.getString('congregation.id')
 
-	const { data: cities, loading, error, mutate } = useDocuments({
-		queryKey: ['cities', search, congregation],
+	const { data: publishers, loading, error, mutate } = useDocuments({
+		queryKey: ['request-publishers', search, congregation],
 		queryFn: () => {
 			const queries = [
+				Query.equal('approved', false),
 				Query.equal('congregation', congregation!),
 				Query.limit(1000),
 			]
@@ -22,18 +23,18 @@ const useCities = ({ search }: Props = { search: '' }) => {
 				queries.push(Query.search('name', search))
 			}
 
-			return database.listDocuments('production', 'cities', queries)
+			return database.listDocuments('production', 'publishers', queries)
 		},
 		initialData: [],
 		enabled: !!congregation
 	})
 
 	return {
-		cities,
+		publishers,
 		loading,
 		error,
 		mutate,
 	}
 }
 
-export default useCities
+export default useRequestPublishers

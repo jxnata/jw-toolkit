@@ -1,18 +1,21 @@
-import { ICongregation } from '@interfaces/models/Congregation'
-import get from 'lodash/get'
-import { api } from '@services/api/main'
-import useSWR from 'swr'
-
-const fetcher = (url: string) => api.get(url).then(res => res.data)
+import { useDocuments } from '@hooks/documents'
+import { database } from '@services/appwrite'
+import { Query } from 'react-native-appwrite'
 
 const useCongregations = () => {
-	const { data, error, mutate } = useSWR('/congregations', fetcher)
 
-	const congregations: ICongregation[] = get(data, 'congregations', [])
+	const { data: congregations, loading, error, mutate } = useDocuments({
+		queryKey: ['congregations'],
+		queryFn: () =>
+			database.listDocuments('production', 'congregations', [
+				Query.equal('enabled', true)
+			]),
+		initialData: [],
+	})
 
 	return {
 		congregations,
-		loading: !error && !data,
+		loading,
 		error,
 		mutate,
 	}

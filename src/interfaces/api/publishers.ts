@@ -1,6 +1,5 @@
 export type AddPublisherReq = {
 	name: string
-	privileges: string[]
 }
 
 export type AddPublisherRes = {
@@ -10,7 +9,7 @@ export type AddPublisherRes = {
 
 export type EditPublisherReq = {
 	name: string
-	privileges: string[]
+	level: string
 }
 
 export type EditPublisherRes = {

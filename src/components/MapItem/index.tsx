@@ -1,4 +1,3 @@
-import { IMap } from '@interfaces/models/Map'
 import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
 import { formatDate } from '@utils/date-format'
@@ -6,9 +5,10 @@ import { getLocationDistance } from '@utils/get-location-distance'
 import { mapImage } from '@utils/map-image'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
 
 interface MapProps {
-	map: IMap
+	map: Models.Document
 	location: LocationObjectCoords
 	onPress: () => void
 }
@@ -52,7 +52,7 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
 					<S.Column>
 						<S.Small>
-							{map.last_visited_by.name} em {formatDate(map.last_visited)}
+							{map.last_visited_by.name} em {formatDate(map.visited)}
 						</S.Small>
 						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
 					</S.Column>

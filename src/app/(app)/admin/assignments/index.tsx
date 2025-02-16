@@ -67,22 +67,22 @@ const Assignments = () => {
 						/>
 					}
 					data={assignments}
-					keyExtractor={item => item._id}
+					keyExtractor={item => item.$id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
 						<AssignmentItem
-							key={item._id}
+							key={item.$id}
 							assignment={item}
 							location={location}
 							showPublisher
 							onPress={() =>
 								router.push({
-									pathname: `/admin/assignments/edit/${item._id}`,
+									pathname: `/admin/assignments/edit/${item.$id}`,
 									params: {
 										...item,
-										map: typeof item.map === 'object' ? item.map._id : item.map,
+										map: typeof item.map === 'object' ? item.map.$id : item.map,
 										publisher:
-											typeof item.publisher === 'object' ? item.publisher?._id : item.publisher,
+											typeof item.publisher === 'object' ? item.publisher?.$id : item.publisher,
 									},
 								})
 							}

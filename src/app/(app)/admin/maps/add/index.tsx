@@ -26,7 +26,7 @@ const AddMap = () => {
 	const defaultValues: Partial<AddMapReq> = { name: `Mapa ${resume.maps + 1}` }
 	const { control, formState, handleSubmit, setValue, getValues } = useForm<AddMapReq>({ defaultValues })
 
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c._id })), [cities])
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
 	const save: SubmitHandler<AddMapReq> = async data => {
 		const [lat, lng] = setCoordinates(data.coordinates)

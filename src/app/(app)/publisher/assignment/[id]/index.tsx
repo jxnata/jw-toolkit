@@ -51,7 +51,7 @@ const AssigmentDetails = () => {
 					<S.Map region={region} onMapReady={onMapReady} showsUserLocation>
 						<Marker
 							ref={markerRef}
-							key={assignment.map._id}
+							key={assignment.map.$id}
 							coordinate={marker}
 							title={assignment.map.name}
 							description={assignment.map.address}

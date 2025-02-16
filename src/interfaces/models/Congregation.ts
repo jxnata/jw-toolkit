@@ -1,5 +1,5 @@
 export type ICongregation = {
-	_id: string
+	$id: string
 	name: string
 	created_at: string
 }

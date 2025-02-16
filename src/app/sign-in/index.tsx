@@ -23,12 +23,12 @@ import { useSession } from '@contexts/Auth'
 
 const Login = () => {
 	const [congregationId, setCongregationId] = useState<string>()
-	const { appleAuthentication, loading } = useSession()
+	const { appleAuthentication } = useSession()
 	const { congregations } = useCongregations()
 	const insets = useSafeAreaInsets()
 	const scheme = useColorScheme()
 
-	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c._id })), [congregations])
+	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c.$id })), [congregations])
 	const lastCongregation = useMemo(() => history.getString(LAST_CONGREGATION), [])
 
 	const handleCongregation = (c: string) => {
@@ -53,7 +53,7 @@ const Login = () => {
 			storage.set('congregation.name', congregation.label)
 			storage.set('congregation.id', congregation.value)
 
-			await appleAuthentication(credential)
+			await appleAuthentication(credential, congregationId)
 		} catch (e: unknown) {
 			if ((e as { code?: string }).code === 'ERR_REQUEST_CANCELED') {
 				// nothing to-do

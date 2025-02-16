@@ -1,7 +1,7 @@
 import { ICongregation } from './Congregation'
 
 export type IPublisher = {
-	_id: string
+	$id: string
 	name: string
 	username: string
 	privileges: string[]
@@ -14,7 +14,7 @@ export type IVinculatedPublisher = IPublisher & {
 }
 
 export type IPublisherParams = {
-	_id: string
+	$id: string
 	name: string
 	username: string
 	privileges: string

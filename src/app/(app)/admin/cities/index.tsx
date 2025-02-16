@@ -11,7 +11,7 @@ import * as S from './styles'
 const Cities = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
-	const { cities, loading, mutate, next } = useCities({ search: searchTerm })
+	const { cities, loading, mutate } = useCities({ search: searchTerm })
 
 	const HeaderRight = useCallback(
 		() => (
@@ -42,23 +42,19 @@ const Cities = () => {
 						/>
 					}
 					data={cities}
-					keyExtractor={item => item._id}
+					keyExtractor={item => item.$id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
 						<S.MenuItem
-							key={item._id}
-							onPress={() => router.push({ pathname: `/admin/cities/edit/${item._id}`, params: item })}
+							key={item.$id}
+							onPress={() => router.push({ pathname: `/admin/cities/edit/${item.$id}`, params: item })}
 						>
 							<S.IconContainer>
 								<S.Icon>{firstLetter(item.name)}</S.Icon>
 							</S.IconContainer>
 							<S.MenuTitle>{item.name}</S.MenuTitle>
-							<S.MapsCount>
-								<S.MapsCountText>{item.maps_count || 0} mapas</S.MapsCountText>
-							</S.MapsCount>
 						</S.MenuItem>
 					)}
-					onEndReached={next}
 				/>
 			</S.Content>
 		</S.Container>

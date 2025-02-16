@@ -5,25 +5,33 @@ import { AddCityReq } from '@interfaces/api/cities'
 import { Stack, router } from 'expo-router'
 import { error, success } from '@messages/add'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { add } from '@services/cities/add'
+import { useSession } from '@contexts/Auth'
+import { database } from '@services/appwrite'
+import { ID } from 'react-native-appwrite'
 
 import * as S from './styles'
 
 const AddCity = () => {
+	const { congregation } = useSession()
 	const { mutate } = useCities({ search: '' })
 	const { control, formState, handleSubmit } = useForm<AddCityReq>()
 
 	const save: SubmitHandler<AddCityReq> = async data => {
-		const result = await add(data)
+		if (!data.name) return
+		if (!congregation) return
 
-		if (result) {
+		try {
+			await database.createDocument('production', 'cities', ID.unique(), {
+				name: data.name,
+				congregation: congregation.id,
+			})
 			success('cidade')
 			mutate()
 			router.back()
-			return
+		} catch (err) {
+			error('cidade')
+			console.error('Failed to create city:', err)
 		}
-
-		error('cidade')
 	}
 
 	return (

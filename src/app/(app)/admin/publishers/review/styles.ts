@@ -36,6 +36,11 @@ export const MenuContent = styled.View`
 	align-items: flex-start;
 	gap: 2px;
 `
+export const BadgeContainer = styled.View`
+	flex-direction: row;
+	align-items: center;
+	gap: 2px;
+`
 export const MenuTitle = styled.Text`
 	font-size: 15px;
 	color: ${({ theme }) => theme.text};

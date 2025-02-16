@@ -11,7 +11,7 @@ type LocalSession = {
 	current: Models.User<Models.Preferences> | null
 	type: 'publisher' | 'admin' | null
 	congregation: { id: string; name: string } | null
-	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential) => Promise<void>
+	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential, cong: string) => Promise<void>
 	// googleAuthentication: (user: User) => Promise<void>
 	logout: () => Promise<void>
 	loading: boolean
@@ -43,12 +43,12 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 	const [congregation, setCongregation] = useState<{ id: string; name: string } | null>(null)
 	const type = useMemo(() => (user ? (user.labels.includes('admin') ? 'admin' : 'publisher') : null), [])
 
-	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential) {
+	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential, cong: string) {
 		try {
 			setLoading(true)
 			const result = await functions.createExecution(
 				'apple-auth',
-				JSON.stringify(appleRequestResponse),
+				JSON.stringify({ ...appleRequestResponse, congregation: cong }),
 				false,
 				undefined,
 				ExecutionMethod.POST

@@ -1,3 +1,3 @@
 export type IDistricts = {
-	[city_id: string]: string[]
+	[city$id: string]: string[]
 }

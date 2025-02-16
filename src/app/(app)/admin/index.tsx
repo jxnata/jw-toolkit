@@ -1,6 +1,5 @@
 import { APP_VERSION } from '@constants/content'
 import { useSession } from '@contexts/Auth/index'
-import useResume from '@hooks/swr/admin/useResume'
 import { Link, Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 
@@ -9,7 +8,6 @@ import * as S from './styles'
 const Admin = () => {
 	const router = useRouter()
 	const { congregation } = useSession()
-	const { resume, mutate, loading } = useResume()
 
 	const HeaderRight = useCallback(
 		() => (
@@ -27,16 +25,14 @@ const Admin = () => {
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: congregation.name, headerRight: HeaderRight }} />
-			<S.Content refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}>
+			<S.Content>
 				<Link href='/admin/publishers' asChild>
 					<S.MenuItem>
 						<S.Column>
 							<S.Icon></S.Icon>
 							<S.MenuTitle>Publicadores</S.MenuTitle>
 						</S.Column>
-						<S.Column>
-							<S.MenuNumber>{resume.publishers || ''}</S.MenuNumber>
-						</S.Column>
+						<S.Column></S.Column>
 					</S.MenuItem>
 				</Link>
 				<Link href='/admin/maps' asChild>
@@ -45,9 +41,7 @@ const Admin = () => {
 							<S.Icon></S.Icon>
 							<S.MenuTitle>Mapas</S.MenuTitle>
 						</S.Column>
-						<S.Column>
-							<S.MenuNumber>{resume.maps || ''}</S.MenuNumber>
-						</S.Column>
+						<S.Column></S.Column>
 					</S.MenuItem>
 				</Link>
 				<Link href='/admin/assignments' asChild>
@@ -56,9 +50,7 @@ const Admin = () => {
 							<S.Icon></S.Icon>
 							<S.MenuTitle>Designações</S.MenuTitle>
 						</S.Column>
-						<S.Column>
-							<S.MenuNumber>{resume.assignments || ''}</S.MenuNumber>
-						</S.Column>
+						<S.Column></S.Column>
 					</S.MenuItem>
 				</Link>
 				<Link href='/admin/cities' asChild>
@@ -67,20 +59,7 @@ const Admin = () => {
 							<S.Icon></S.Icon>
 							<S.MenuTitle>Cidades</S.MenuTitle>
 						</S.Column>
-						<S.Column>
-							<S.MenuNumber>{resume.cities || ''}</S.MenuNumber>
-						</S.Column>
-					</S.MenuItem>
-				</Link>
-				<Link href='/admin/users' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Administradores</S.MenuTitle>
-						</S.Column>
-						<S.Column>
-							<S.MenuNumber>{resume.users || ''}</S.MenuNumber>
-						</S.Column>
+						<S.Column></S.Column>
 					</S.MenuItem>
 				</Link>
 				<Link href='/admin/export' asChild>

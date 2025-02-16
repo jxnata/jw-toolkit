@@ -1,63 +1,53 @@
-import { IMap } from '@interfaces/models/Map'
-import get from 'lodash/get'
-import { api } from '@services/api/main'
-import useSWRInfinite from 'swr/infinite'
+import { storage } from '@database/index'
+import { useDocuments } from '@hooks/documents'
+import { database } from '@services/appwrite'
+import { Query } from 'react-native-appwrite'
 
 type Props = {
 	search?: string
+	city?: string
 	district?: string
 	status?: string
-	all?: boolean
 }
 
-type GetMapsResponse = {
-	maps: IMap[]
-}
+const useMaps = (props: Props = { search: '', district: '', status: '', city: '' }) => {
+	const { search = '', district = '', status = '', city = '' } = props
+	const congregation = storage.getString('congregation.id')
 
-const LIMIT = 20
+	const { data: maps, loading, error, mutate } = useDocuments({
+		queryKey: ['maps', search, district, status, congregation],
+		queryFn: () => {
+			const queries = [
+				Query.equal('congregation', congregation!),
+				Query.limit(1000),
+			]
 
-const fetcher = (url: string) => api.get<GetMapsResponse>(url).then(res => res.data)
+			if (search) {
+				queries.push(Query.search('name', search))
+			}
 
-const defaultProps = { limit: LIMIT, search: '', district: '', status: '', all: false }
+			if (city) {
+				queries.push(Query.equal('city', city))
+			}
 
-const getKey = (page: number, previousPageData: GetMapsResponse, search: string, district: string, status: string) => {
-	if (previousPageData && !previousPageData.maps.length) return null
+			if (district) {
+				queries.push(Query.equal('district', district))
+			}
 
-	const skip = (page || 0) * LIMIT
+			if (status) {
+				queries.push(Query.equal('status', status))
+			}
 
-	return `/maps?skip=${skip}&limit=${LIMIT}&search=${search}&district=${district}&status=${status}`
-}
-
-const useMaps = (props: Props = defaultProps) => {
-	const { search = '', status = '', district = '' } = props
-
-	const { data, error, size, isLoading, mutate, setSize } = useSWRInfinite(
-		(p, prev) => getKey(p, prev, search, district, status),
-		fetcher,
-		{ revalidateAll: true }
-	)
-
-	const maps: IMap[] = []
-
-	if (data) {
-		for (const item of data) {
-			const items: IMap[] = get(item, 'maps', [])
-			maps.push(...items)
-		}
-	}
-
-	const next = () => {
-		if (maps.length >= LIMIT && !isLoading) {
-			setSize(old => old + 1)
-		}
-	}
+			return database.listDocuments('production', 'maps', queries)
+		},
+		initialData: [],
+		enabled: !!congregation
+	})
 
 	return {
 		maps,
-		page: size,
-		loading: !error && !data,
+		loading,
 		error,
-		next,
 		mutate,
 	}
 }

@@ -22,7 +22,7 @@ const AddAssignment = () => {
 	const { mutate: mutateMaps } = useAllMaps()
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: params?.map } })
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
+	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
 
 	const save: SubmitHandler<AddAssignmentReq> = async data => {
 		const result = await add(data)

@@ -1,29 +1,37 @@
-import { IPublisher } from '@interfaces/models/Publisher'
-import get from 'lodash/get'
-import { api } from '@services/api/main'
-import useSWR from 'swr'
-
-const fetcher = (url: string) => api.get(url).then(res => res.data)
+import { storage } from '@database/index'
+import { useDocuments } from '@hooks/documents'
+import { database } from '@services/appwrite'
+import { Query } from 'react-native-appwrite'
 
 type Props = {
-	all?: boolean
 	search?: string
-	limit?: number
-	skip?: number
 }
 
-const defaultProps = { all: true, skip: 0, limit: 10, search: '' }
+const usePublishers = ({ search }: Props = { search: '' }) => {
+	const congregation = storage.getString('congregation.id')
 
-const usePublishers = (props: Props = defaultProps) => {
-	const { all, search } = props
+	const { data: publishers, loading, error, mutate } = useDocuments({
+		queryKey: ['publishers', search, congregation],
+		queryFn: () => {
+			const queries = [
+				Query.equal('approved', true),
+				Query.equal('congregation', congregation!),
+				Query.limit(1000),
+			]
 
-	const { data, error, mutate } = useSWR(`/publishers${all ? '/all' : ''}?search=${search || ''}`, fetcher)
+			if (search) {
+				queries.push(Query.search('name', search))
+			}
 
-	const publishers: IPublisher[] = get(data, 'publishers', [])
+			return database.listDocuments('production', 'publishers', queries)
+		},
+		initialData: [],
+		enabled: !!congregation
+	})
 
 	return {
 		publishers,
-		loading: !error && !data,
+		loading,
 		error,
 		mutate,
 	}

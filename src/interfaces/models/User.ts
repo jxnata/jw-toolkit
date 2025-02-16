@@ -2,7 +2,7 @@ import { ICongregation } from './Congregation'
 import { IPublisher } from './Publisher'
 
 export type IUser = {
-	_id: string
+	$id: string
 	name: string
 	username: string
 	address: string
@@ -13,7 +13,7 @@ export type IUser = {
 }
 
 export type IUserParams = {
-	_id: string
+	$id: string
 	name: string
 	username: string
 	address: string

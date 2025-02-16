@@ -4,7 +4,7 @@ import { ICongregation } from './Congregation'
 import { IPublisher } from './Publisher'
 
 export type IMap = {
-	_id: string
+	$id: string
 	name: string
 	address: string
 	district: string

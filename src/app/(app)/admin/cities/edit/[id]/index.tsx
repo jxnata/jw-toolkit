@@ -2,50 +2,52 @@ import Button from '@components/Button'
 import IconButton from '@components/IconButton'
 import Input from '@components/Input'
 import useCities from '@hooks/swr/admin/useCities'
-import useCity from '@hooks/swr/admin/useCity'
 import { EditCityReq } from '@interfaces/api/cities'
-import { ICity } from '@interfaces/models/City'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error as removeError, success as removeSuccess } from '@messages/delete'
 import { error, success } from '@messages/edit'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
-import { edit } from '@services/cities/edit'
-import { remove } from '@services/cities/remove'
 import { colors } from '@themes/index'
+import { database } from '@services/appwrite'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
 
 const EditCity = () => {
-	const params: Partial<ICity> = useLocalSearchParams()
-	const { city, mutate: mutateCity } = useCity(params._id)
+	const params = useLocalSearchParams<Models.Document>()
 	const { mutate } = useCities({ search: '' })
-	const { control, formState, handleSubmit } = useForm<EditCityReq>({ defaultValues: { name: params.name } })
+	const { control, formState, handleSubmit } = useForm<EditCityReq>({
+		defaultValues: { name: params.name },
+	})
 
 	const save: SubmitHandler<EditCityReq> = async data => {
-		const result = await edit(city._id, data)
+		if (!data.name) return
 
-		if (result) {
+		try {
+			await database.updateDocument('production', 'cities', params.$id, {
+				name: data.name,
+			})
 			success('cidade')
 			mutate()
-			mutateCity()
-			return
+			router.back()
+		} catch (err) {
+			error('cidade')
+			console.error('Failed to update city:', err)
 		}
-
-		error('cidade')
 	}
 
 	const deleteCity = async () => {
-		const result = await remove(city._id)
+		try {
+			await database.deleteDocument('production', 'cities', params.$id)
 
-		if (result) {
 			removeSuccess('cidade')
 			mutate()
 			router.back()
-			return
+		} catch (err) {
+			removeError('cidade')
+			console.error('Failed to delete city:', err)
 		}
-
-		removeError('cidade')
 	}
 
 	const showDeleteAlert = () =>
@@ -78,7 +80,7 @@ const EditCity = () => {
 					)}
 				/>
 				<S.Row>
-					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+					<Button loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 						Atualizar
 					</Button>
 					<IconButton icon='trash-bin-outline' color={colors.error} onPress={showDeleteAlert} />
