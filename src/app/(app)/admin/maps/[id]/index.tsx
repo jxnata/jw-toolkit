@@ -1,16 +1,10 @@
-import AssignmentCode from '@components/AssignmentCode'
 import Button from '@components/Button'
 import Dropdown from '@components/Dropdown'
 import MapViewDetails from '@components/MapViewDetails'
-import { JW_TOOLKIT_API } from '@constants/urls'
-import { useSession } from '@contexts/Auth'
-import useAssignments from '@hooks/swr/admin/useAssignments'
 import useMap from '@hooks/swr/admin/useMap'
 import useMaps from '@hooks/swr/admin/useMaps'
 import usePublishers from '@hooks/swr/admin/usePublishers'
 import { AddAssignmentReq } from '@interfaces/api/assignments'
-import { PageParams } from '@interfaces/app'
-import { IUser } from '@interfaces/models/User'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error, success } from '@messages/add'
 import { error as removeError, success as removeSuccess } from '@messages/delete'
@@ -19,68 +13,56 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
 import { Marker } from 'react-native-maps'
 import { OneSignal } from 'react-native-onesignal'
-import { add } from '@services/assignments/add'
-import { remove } from '@services/maps/remove'
-import { getAssignmentMessage } from '@utils/get-assignment-message'
-import { getExpiration } from '@utils/get-expiration'
 import { getMapRegion } from '@utils/get-map-region'
 import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-import { signMessage } from '@utils/sign-message'
 
 import * as S from './styles'
+import React from 'react'
+import { Models } from 'react-native-appwrite'
+import { database } from '@services/appwrite'
 
 const ViewMap = () => {
-	const [qr, setQr] = useState<string>()
-	const { session } = useSession<IUser>()
-	const { id }: Partial<PageParams> = useLocalSearchParams()
-	const { map, mutate } = useMap(id)
-	const { assignments, mutate: mutateAssignments } = useAssignments({ map: id })
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
+	const { map, mutate } = useMap(params.$id)
 	const { mutate: mutateMaps } = useMaps({ search: '' })
-	const { publishers } = usePublishers({ all: true })
-	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({ defaultValues: { map: id } })
+	const { publishers } = usePublishers()
+	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({
+		defaultValues: { assigned: params.assigned },
+	})
 
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
-	const region = getMapRegion(map ? map.coordinates : [0, 0], 0.01)
-	const marker = getMarkerCoordinate(map ? map.coordinates : [0, 0])
-
-	const generateQR = useCallback(async () => {
-		const expiration = getExpiration(10)
-
-		const qrMessage = getAssignmentMessage(id, session.data.$id, expiration.toString())
-
-		const signature = await signMessage(qrMessage, session.private_key)
-		const qrCodeUrl = `${JW_TOOLKIT_API}/go/assign?u=${session.data.$id}&m=${id}&e=${expiration}&s=${signature}`
-
-		setQr(qrCodeUrl)
-	}, [session, id])
+	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0], 0.01)
+	const marker = getMarkerCoordinate(map ? [map.lat, map.lng] : [0, 0])
 
 	const save: SubmitHandler<AddAssignmentReq> = async data => {
-		const result = await add(data)
+		try {
+			await database.updateDocument('production', 'maps', params.$id, {
+				assigned: data.assigned,
+			})
 
-		if (result) {
 			success('designação')
 			mutate()
 			mutateMaps()
-			mutateAssignments()
-			return
+			router.back()
+		} catch (err) {
+			error('designação')
+			console.error('Failed to update map (assigned):', err)
 		}
-
-		error('designação')
 	}
 
 	const deleteMap = useCallback(async () => {
-		const result = await remove(id)
+		try {
+			await database.deleteDocument('production', 'maps', params.$id)
 
-		if (result) {
-			removeSuccess('mapa')
+			removeSuccess('maps')
 			mutate()
-			mutateMaps()
 			router.back()
-			return
+		} catch (err) {
+			removeError('maps')
+			console.error('Failed to delete map:', err)
 		}
-
-		removeError('mapa')
-	}, [id, mutate, mutateMaps])
+	}, [params.$id, mutate, mutateMaps])
 
 	const showDeleteAlert = useCallback(
 		() =>
@@ -105,7 +87,14 @@ const ViewMap = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.replace(`/admin/maps/${id}/edit`)}>
+				<S.IconButton
+					onPress={() =>
+						router.replace({
+							pathname: `/admin/maps/${params.$id}/edit`,
+							params: { data: JSON.stringify(map) },
+						})
+					}
+				>
 					<S.Ionicon name='create-outline' />
 				</S.IconButton>
 				<S.IconButton onPress={showDeleteAlert}>
@@ -113,22 +102,15 @@ const ViewMap = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[id, showDeleteAlert]
+		[params.$id, showDeleteAlert]
 	)
-
-	useEffect(() => {
-		if (session && id) {
-			generateQR()
-		}
-	}, [session, id, generateQR])
 
 	useEffect(() => {
 		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
 			event.preventDefault()
 			mutate()
-			mutateAssignments()
 		})
-	}, [mutate, mutateAssignments])
+	}, [mutate])
 
 	return (
 		<S.Container>
@@ -137,21 +119,14 @@ const ViewMap = () => {
 				<S.DetailsContainer>
 					{!!map && (
 						<>
-							<S.RowCenter>
-								{assignments.length === 0 && (
-									<S.Columm>
-										<AssignmentCode data={qr} />
-									</S.Columm>
-								)}
-								<MapViewDetails map={map} />
-							</S.RowCenter>
-							{assignments.length === 0 ? (
+							<MapViewDetails map={map} />
+							{!map.assigned ? (
 								<S.Columm>
 									<S.Label>Designar mapa</S.Label>
 									<Controller
 										control={control}
 										rules={{ required: true }}
-										name='publisher'
+										name='assigned'
 										render={({ field: { onChange, onBlur, value } }) => (
 											<Dropdown
 												placeholder='Selecione uma publicador...'
@@ -179,8 +154,8 @@ const ViewMap = () => {
 										<S.Label>Designado para:</S.Label>
 									</S.Columm>
 									<S.Columm>
-										{typeof assignments[0].publisher === 'object' && (
-											<S.ParagraphSpace>{assignments[0].publisher?.name}</S.ParagraphSpace>
+										{typeof map.assigned === 'object' && (
+											<S.ParagraphSpace>{map.assigned.name}</S.ParagraphSpace>
 										)}
 									</S.Columm>
 								</S.Row>

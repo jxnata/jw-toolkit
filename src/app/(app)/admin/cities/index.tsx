@@ -47,7 +47,12 @@ const Cities = () => {
 					renderItem={({ item }) => (
 						<S.MenuItem
 							key={item.$id}
-							onPress={() => router.push({ pathname: `/admin/cities/edit/${item.$id}`, params: item })}
+							onPress={() =>
+								router.push({
+									pathname: `/admin/cities/edit/${item.$id}`,
+									params: { data: JSON.stringify(item) },
+								})
+							}
 						>
 							<S.IconContainer>
 								<S.Icon>{firstLetter(item.name)}</S.Icon>

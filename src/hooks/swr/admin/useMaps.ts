@@ -7,7 +7,7 @@ type Props = {
 	search?: string
 	city?: string
 	district?: string
-	status?: string
+	status?: 'assigned' | 'unassigned' | ''
 }
 
 const useMaps = (props: Props = { search: '', district: '', status: '', city: '' }) => {
@@ -35,7 +35,7 @@ const useMaps = (props: Props = { search: '', district: '', status: '', city: ''
 			}
 
 			if (status) {
-				queries.push(Query.equal('status', status))
+				queries.push(status === 'assigned' ? Query.isNotNull('assigned') : Query.isNull('assigned'))
 			}
 
 			return database.listDocuments('production', 'maps', queries)

@@ -12,31 +12,36 @@ import { error, success } from '@messages/edit'
 import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Modal } from 'react-native'
-import { edit } from '@services/maps/edit'
 import { getCoordinates } from '@utils/get-coordinates'
 import { setCoordinates } from '@utils/set-coordinates'
+import { database } from '@services/appwrite'
+import { Models } from 'react-native-appwrite'
 
 import * as S from './styles'
 
 const EditMap = () => {
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const [modalVisible, setModalVisible] = useState(false)
-	const params: Partial<{ id: string }> = useLocalSearchParams()
-	const { map, mutate } = useMap(params.id)
+	const { mutate } = useMap(params.$id)
 	const { mutate: mutateMaps } = useMaps({ search: '' })
 	const { cities } = useCities()
 
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
-	const defaultValues: EditMapReq = useMemo(
-		() => ({
-			name: map.name,
-			address: map.address,
-			district: map.district,
-			details: map.details,
-			city: map.city.$id,
-			coordinates: getCoordinates(map.coordinates),
-		}),
-		[map.address, map.city.$id, map.coordinates, map.details, map.district, map.name]
+	const defaultValues: EditMapReq | undefined = useMemo(
+		() =>
+			params
+				? {
+						name: params.name,
+						address: params.address,
+						district: params.district,
+						details: params.details,
+						city: params.city.$id,
+						coordinates: getCoordinates([params.lat, params.lng]),
+					}
+				: undefined,
+		[params]
 	)
 
 	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })
@@ -44,22 +49,30 @@ const EditMap = () => {
 	const save: SubmitHandler<EditMapReq> = async data => {
 		const [lat, lng] = setCoordinates(data.coordinates)
 
-		if (lat === 0 && lng === 0) {
+		if (lat === 0 || lng === 0) {
 			error('mapa, coordenadas inválidas')
 			return
 		}
 
-		const result = await edit(params.id, data)
+		try {
+			await database.updateDocument('production', 'maps', params.$id, {
+				name: data.name,
+				address: data.address,
+				district: data.district,
+				details: data.details,
+				city: data.city,
+				lat,
+				lng,
+			})
 
-		if (result) {
 			success('mapa')
 			mutate()
 			mutateMaps()
 			router.back()
-			return
+		} catch (err) {
+			error('mapa')
+			console.error('Failed to update map:', err)
 		}
-
-		error('mapa')
 	}
 
 	const toggleMap = () => {

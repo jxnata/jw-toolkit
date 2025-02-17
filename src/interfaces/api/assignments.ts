@@ -1,7 +1,5 @@
 export type AddAssignmentReq = {
-	publisher: string
-	map: string
-	permanent: boolean
+	assigned: string
 }
 
 export type AddAssignmentRes = {
@@ -9,10 +7,7 @@ export type AddAssignmentRes = {
 }
 
 export type EditAssignmentReq = {
-	publisher: string
-	map: string
-	details: string
-	permanent: boolean
+	assigned: string
 }
 
 export type EditAssignmentRes = {

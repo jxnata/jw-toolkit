@@ -4,8 +4,14 @@ export const setCoordinates = (text: string): [number, number] => {
 	let str = text || '0,0'
 
 	if (str.includes('http')) {
-		const pos = text.indexOf('/@')
-		str = text.substring(pos)
+		const atPos = str.indexOf('/@')
+		const qPos = str.indexOf('?q=')
+
+		if (atPos !== -1) {
+			str = str.substring(atPos)
+		} else if (qPos !== -1) {
+			str = str.substring(qPos + 3)
+		}
 	}
 
 	const cleaned = str.replace(/[^\d,\-.]/g, '')

@@ -48,7 +48,10 @@ const Publishers = () => {
 						<S.MenuItem
 							key={item.$id}
 							onPress={() =>
-								router.push({ pathname: `/admin/publishers/edit/${item.$id}`, params: item })
+								router.push({
+									pathname: `/admin/publishers/edit/${item.$id}`,
+									params: { data: JSON.stringify(item) },
+								})
 							}
 						>
 							<S.IconContainer>

@@ -11,6 +11,7 @@ type LocalSession = {
 	current: Models.User<Models.Preferences> | null
 	type: 'publisher' | 'admin' | null
 	congregation: { id: string; name: string } | null
+	publisher: string | null
 	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential, cong: string) => Promise<void>
 	// googleAuthentication: (user: User) => Promise<void>
 	logout: () => Promise<void>
@@ -23,6 +24,7 @@ const initialState: LocalSession = {
 	current: null,
 	type: null,
 	congregation: null,
+	publisher: null,
 	loading: true,
 	appleAuthentication: async () => {},
 	// googleAuthentication: async () => {},
@@ -40,6 +42,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 	const localSession: AppSession = storedSession ? JSON.parse(storedSession) : null
 	const [loading, setLoading] = useState(!localSession)
 	const [user, setUser] = useState<AppSession>(localSession)
+	const [publisher, setPublisher] = useState<string | null>(null)
 	const [congregation, setCongregation] = useState<{ id: string; name: string } | null>(null)
 	const type = useMemo(() => (user ? (user.labels.includes('admin') ? 'admin' : 'publisher') : null), [])
 
@@ -54,8 +57,10 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				ExecutionMethod.POST
 			)
 			if (result.responseStatusCode !== 200) throw new Error(result.responseBody)
-			const token: Models.Token = JSON.parse(result.responseBody)
+			const token: Models.Token & { publisherId: string } = JSON.parse(result.responseBody)
 			await account.createSession(token.userId, token.secret)
+			storage.set('user.publisher', token.publisherId)
+			console.log({ publisher: token.publisherId })
 			await init()
 		} finally {
 			setLoading(false)
@@ -103,6 +108,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				name: storage.getString('congregation.name') || '',
 				id: storage.getString('congregation.id') || '',
 			})
+			setPublisher(storage.getString('user.publisher') || null)
 
 			storage.set('session', JSON.stringify(loggedIn))
 
@@ -126,6 +132,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				current: user,
 				type,
 				congregation,
+				publisher,
 				loading,
 				appleAuthentication,
 				// googleAuthentication,

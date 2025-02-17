@@ -14,12 +14,12 @@ interface MapProps {
 }
 
 const MapItem = ({ map, location, onPress }: MapProps) => {
-	const distance = getLocationDistance(location, map.coordinates)
+	const distance = getLocationDistance(location, [map.lat, map.lng])
 
 	const found = useMemo(() => {
 		if (map) {
-			if (map.last_assignment) {
-				if (map.last_assignment.found) {
+			if (map.visited) {
+				if (map.found) {
 					return true
 				}
 			}
@@ -40,7 +40,7 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				</S.StatusUnassigned>
 			)}
 			<S.Column>
-				<S.Image resizeMode='contain' source={{ uri: mapImage(map.coordinates) }} />
+				<S.Image resizeMode='contain' source={{ uri: mapImage([map.lat, map.lng]) }} />
 			</S.Column>
 			<S.Column>
 				<S.Paragraph>
@@ -49,11 +49,9 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				<S.Paragraph numberOfLines={2} ellipsizeMode='tail'>
 					{map.address}
 				</S.Paragraph>
-				{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
+				{!!map.visited ? (
 					<S.Column>
-						<S.Small>
-							{map.last_visited_by.name} em {formatDate(map.visited)}
-						</S.Small>
+						<S.Small>Visitado em {formatDate(map.visited)}</S.Small>
 						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
 					</S.Column>
 				) : (

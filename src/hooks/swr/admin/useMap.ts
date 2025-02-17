@@ -1,18 +1,21 @@
-import { IMap } from '@interfaces/models/Map'
-import get from 'lodash/get'
-import { api } from '@services/api/main'
-import useSWR from 'swr'
+import { useDocument } from '@hooks/documents'
+import { database } from '@services/appwrite'
 
-const fetcher = (url: string) => api.get(url).then(res => res.data)
-
-const useMap = (id: string) => {
-	const { data, error, mutate } = useSWR(`/maps/view/${id}`, fetcher)
-
-	const map: IMap = get(data, 'map', undefined)
+const useMap = (id?: string) => {
+	const { data, loading, error, mutate } = useDocument({
+		queryKey: ['map', id],
+		queryFn: () => database.getDocument(
+			'production',
+			'maps',
+			id!
+		),
+		enabled: !!id,
+		initialData: null
+	})
 
 	return {
-		map,
-		loading: !error && !data,
+		map: data,
+		loading,
 		error,
 		mutate,
 	}

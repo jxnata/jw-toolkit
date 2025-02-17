@@ -10,7 +10,6 @@ import { OneSignal } from 'react-native-onesignal'
 export default function Layout() {
 	const scheme = useColorScheme()
 	const { current } = useSession()
-	console.log(current)
 	const [status] = useForegroundPermissions()
 
 	useEffect(() => {
@@ -36,7 +35,7 @@ export default function Layout() {
 				headerShadowVisible: false,
 				headerTintColor: theme[scheme || 'light'].text,
 				headerTitleStyle: { fontFamily: 'urbanist-bold' },
-				headerBackVisible: false,
+				headerBackButtonDisplayMode: 'generic',
 				headerTitleAlign: 'center',
 				contentStyle: { backgroundColor: theme[scheme || 'light'].background },
 			}}

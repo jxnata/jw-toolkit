@@ -1,25 +1,23 @@
 import AssignmentItem from '@components/AssignmentItem'
 import Input from '@components/Input'
-import useAssignments from '@hooks/swr/admin/useAssignments'
 import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { Alert, FlatList } from 'react-native'
-import { restore } from '@services/assignments/restore'
 
 import * as S from './styles'
+import useMaps from '@hooks/swr/admin/useMaps'
 
 const Assignments = () => {
 	const router = useRouter()
-	const [searchTerm, setSearchTerm] = useState('')
-	const { assignments, loading, mutate, next } = useAssignments({ search: searchTerm })
+	const [search, setSearch] = useState('')
+	const { maps, loading, mutate } = useMaps({ status: 'assigned', search })
 	const { location } = useLocation()
-
+	console.log({ maps })
 	const restoreAssignments = useCallback(async () => {
-		const result = await restore()
-
-		if (result) mutate()
+		// const result = await restore()
+		// if (result) mutate()
 	}, [mutate])
 
 	const showDeleteAlert = useCallback(
@@ -50,7 +48,7 @@ const Assignments = () => {
 	)
 
 	const debouncedSearch = debounce(async term => {
-		setSearchTerm(term)
+		setSearch(term)
 	}, 500)
 
 	return (
@@ -66,29 +64,25 @@ const Assignments = () => {
 							clearButtonMode='always'
 						/>
 					}
-					data={assignments}
+					data={maps}
 					keyExtractor={item => item.$id}
 					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 					renderItem={({ item }) => (
 						<AssignmentItem
 							key={item.$id}
-							assignment={item}
+							map={item}
 							location={location}
 							showPublisher
 							onPress={() =>
 								router.push({
 									pathname: `/admin/assignments/edit/${item.$id}`,
 									params: {
-										...item,
-										map: typeof item.map === 'object' ? item.map.$id : item.map,
-										publisher:
-											typeof item.publisher === 'object' ? item.publisher?.$id : item.publisher,
+										data: JSON.stringify({ ...item, search }),
 									},
 								})
 							}
 						/>
 					)}
-					onEndReached={next}
 				/>
 			</S.Content>
 		</S.Container>

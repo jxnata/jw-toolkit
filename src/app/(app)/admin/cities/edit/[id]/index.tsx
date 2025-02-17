@@ -15,7 +15,8 @@ import * as S from './styles'
 import { Models } from 'react-native-appwrite'
 
 const EditCity = () => {
-	const params = useLocalSearchParams<Models.Document>()
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const { mutate } = useCities({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditCityReq>({
 		defaultValues: { name: params.name },

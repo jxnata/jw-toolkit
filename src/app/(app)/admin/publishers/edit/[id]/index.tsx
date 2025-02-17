@@ -16,7 +16,8 @@ import { database } from '@services/appwrite'
 import { Models } from 'react-native-appwrite'
 
 const EditPublisher = () => {
-	const params = useLocalSearchParams<Models.Document>()
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const { mutate } = usePublishers({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
 		defaultValues: {

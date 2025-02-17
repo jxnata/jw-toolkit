@@ -8,13 +8,16 @@ import { getMapRegion } from '@utils/get-map-region'
 import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
+import React from 'react'
 
 const AssigmentDetails = () => {
-	const { id } = useLocalSearchParams()
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const router = useRouter()
 	const markerRef = useRef<MapMarker>(null)
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(id as string)
+	const { assignment } = useAssignment(params.id as string)
 
 	const onMapReady = () => {
 		if (markerRef && markerRef.current && markerRef.current.showCallout) {

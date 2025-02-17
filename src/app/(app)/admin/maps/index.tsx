@@ -18,7 +18,7 @@ const Maps = () => {
 	const [searchTerm, setSearchTerm] = useState('')
 	const [searchCity, setSearchCity] = useState('')
 	const [searchDistrict, setSearchDistrict] = useState('')
-	const [status, setStatus] = useState('')
+	const [status, setStatus] = useState<'assigned' | 'unassigned' | ''>('')
 	const [showFilter, setFilter] = useState(false)
 	const { maps, loading, mutate } = useMaps({
 		search: searchTerm,
@@ -135,7 +135,12 @@ const Maps = () => {
 								key={item.$id}
 								map={item}
 								location={location}
-								onPress={() => router.push({ pathname: `/admin/maps/${item.$id}`, params: item })}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/maps/${item.$id}`,
+										params: { data: JSON.stringify(item) },
+									})
+								}
 							/>
 						</S.ListContainer>
 					)}

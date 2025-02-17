@@ -1,18 +1,21 @@
-import { IPublisher } from '@interfaces/models/Publisher'
-import get from 'lodash/get'
-import { api } from '@services/api/main'
-import useSWR from 'swr'
+import { useDocument } from '@hooks/documents'
+import { database } from '@services/appwrite'
 
-const fetcher = (url: string) => api.get(url).then(res => res.data)
-
-const usePublisher = (id: string) => {
-	const { data, error, mutate } = useSWR(`/publishers/view/${id}`, fetcher)
-
-	const publisher: IPublisher = get(data, 'publisher', undefined)
+const usePublisher = (id?: string) => {
+	const { data, loading, error, mutate } = useDocument({
+		queryKey: ['publisher', id],
+		queryFn: () => database.getDocument(
+			'production',
+			'publishers',
+			id!
+		),
+		enabled: !!id,
+		initialData: null
+	})
 
 	return {
-		publisher,
-		loading: !error && !data,
+		publisher: data,
+		loading,
 		error,
 		mutate,
 	}
