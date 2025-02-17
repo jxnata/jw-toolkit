@@ -8,7 +8,7 @@ const useDistricts = (maps: Models.Document[]) => {
 
 	return {
 		districts,
-		list,
+		list: list.filter(l => l.label === 'Todos' || (l.value && !!l.value.trim())),
 	}
 }
 
