@@ -14,38 +14,6 @@ const Assignments = () => {
 	const [search, setSearch] = useState('')
 	const { maps, loading, mutate } = useMaps({ status: 'assigned', search })
 	const { location } = useLocation()
-	console.log({ maps })
-	const restoreAssignments = useCallback(async () => {
-		// const result = await restore()
-		// if (result) mutate()
-	}, [mutate])
-
-	const showDeleteAlert = useCallback(
-		() =>
-			Alert.alert('Restaurar', 'Deseja restaurar todas as designações? Essa opção não pode ser revertida.', [
-				{
-					text: 'Cancelar',
-					style: 'cancel',
-				},
-				{
-					text: 'Sim',
-					onPress: restoreAssignments,
-					style: 'default',
-				},
-			]),
-		[restoreAssignments]
-	)
-
-	const HeaderRight = useCallback(
-		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={showDeleteAlert}>
-					<S.IoniconWarning name='backspace-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
-		),
-		[showDeleteAlert]
-	)
 
 	const debouncedSearch = debounce(async term => {
 		setSearch(term)
@@ -53,7 +21,7 @@ const Assignments = () => {
 
 	return (
 		<S.Container>
-			<Stack.Screen options={{ title: 'Designações', headerRight: HeaderRight }} />
+			<Stack.Screen options={{ title: 'Designações' }} />
 			<S.Content>
 				<FlatList
 					ListHeaderComponent={

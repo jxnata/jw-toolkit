@@ -1,15 +1,18 @@
 import { Stack, useRouter } from 'expo-router'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FlatList } from 'react-native'
 import { firstLetter } from '@utils/first-letter'
 import { database } from '@services/appwrite'
 import useRequestPublishers from '@hooks/swr/admin/useRequestPublishers'
+import { useFocusEffect } from '@react-navigation/native'
 
 import * as S from './styles'
+import usePublishers from '@hooks/swr/admin/usePublishers'
 
 const Publishers = () => {
 	const router = useRouter()
 	const { publishers, loading, mutate } = useRequestPublishers()
+	const { mutate: mutatePublishers } = usePublishers()
 	const [list, setList] = useState(publishers)
 
 	const approve = useCallback(
@@ -43,6 +46,12 @@ const Publishers = () => {
 		},
 		[publishers, mutate]
 	)
+
+	useEffect(() => {
+		return () => {
+			mutatePublishers()
+		}
+	}, [])
 
 	return (
 		<S.Container>

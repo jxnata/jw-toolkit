@@ -16,7 +16,7 @@ import { getCoordinates } from '@utils/get-coordinates'
 import { setCoordinates } from '@utils/set-coordinates'
 import { useSession } from '@contexts/Auth'
 import { database } from '@services/appwrite'
-import { ID } from 'react-native-appwrite'
+import { ID, Permission, Role } from 'react-native-appwrite'
 
 import * as S from './styles'
 
@@ -39,16 +39,26 @@ const AddMap = () => {
 		}
 
 		try {
-			await database.createDocument('production', 'maps', ID.unique(), {
-				name: data.name,
-				address: data.address,
-				district: data.district,
-				details: data.details,
-				lat,
-				lng,
-				city: data.city,
-				congregation: congregation.id,
-			})
+			await database.createDocument(
+				'production',
+				'maps',
+				ID.unique(),
+				{
+					name: data.name,
+					address: data.address,
+					district: data.district,
+					details: data.details,
+					lat,
+					lng,
+					city: data.city,
+					congregation: congregation.id,
+				},
+				[
+					Permission.read(Role.label(congregation.id)),
+					Permission.update(Role.label(congregation.id)),
+					Permission.delete(Role.label(congregation.id)),
+				]
+			)
 			success('mapa')
 			mutate()
 			router.back()

@@ -7,7 +7,7 @@ import { error, success } from '@messages/add'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useSession } from '@contexts/Auth'
 import { database } from '@services/appwrite'
-import { ID } from 'react-native-appwrite'
+import { ID, Permission, Role } from 'react-native-appwrite'
 
 import * as S from './styles'
 
@@ -21,10 +21,20 @@ const AddCity = () => {
 		if (!congregation) return
 
 		try {
-			await database.createDocument('production', 'cities', ID.unique(), {
-				name: data.name,
-				congregation: congregation.id,
-			})
+			await database.createDocument(
+				'production',
+				'cities',
+				ID.unique(),
+				{
+					name: data.name,
+					congregation: congregation.id,
+				},
+				[
+					Permission.read(Role.label(congregation.id)),
+					Permission.update(Role.label(congregation.id)),
+					Permission.delete(Role.label(congregation.id)),
+				]
+			)
 			success('cidade')
 			mutate()
 			router.back()

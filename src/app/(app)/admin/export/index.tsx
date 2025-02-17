@@ -1,6 +1,6 @@
 import Button from '@components/Button'
 import { useSession } from '@contexts/Auth'
-import useAllMaps from '@hooks/swr/admin/useAllMaps'
+import useMaps from '@hooks/swr/admin/useMaps'
 import { IMap } from '@interfaces/models/Map'
 import { Stack } from 'expo-router'
 import { useState } from 'react'
@@ -8,10 +8,11 @@ import { Platform, Share } from 'react-native'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
-	const { maps, loading } = useAllMaps()
+	const { maps, loading } = useMaps()
 	const { congregation } = useSession()
 
 	const generatePDF = async () => {
@@ -19,12 +20,15 @@ const ExportMaps = () => {
 
 		setGenerating(true)
 
-		const groupedMaps: Record<string, IMap[]> = maps.reduce((acc, map) => {
-			const city = map.city.name
-			if (!acc[city]) acc[city] = []
-			acc[city].push(map)
-			return acc
-		}, {})
+		const groupedMaps: Record<string, Models.Document[]> = maps.reduce(
+			(acc, map) => {
+				const city = map.city.name
+				if (!acc[city]) acc[city] = []
+				acc[city].push(map)
+				return acc
+			},
+			{} as Record<string, Models.Document[]>
+		)
 
 		let mapIndex = 1
 
@@ -97,6 +101,7 @@ const ExportMaps = () => {
 									<span class="index">${mapIndex++}</span> <!-- Número do mapa -->
 									<h3>${map.name || ''}</h3>
 									<p>Endereço: ${map.address || ''}</p>
+									<p>Bairro: ${map.district || ''}</p>
 									<p>Observações: ${map.details || ''}</p>
 									${googleMapsLink ? `<a href="${googleMapsLink}" target="_blank">${googleMapsLink}</a>` : ''}
 								</div>
@@ -121,7 +126,7 @@ const ExportMaps = () => {
 			await Share.share({
 				url: Platform.OS === 'ios' ? file.filePath : `file://${file.filePath}`,
 				title: 'Compartilhar PDF',
-				message: `Mapas da congregação ${session.data.congregation.name}`,
+				message: `Mapas da congregação ${congregation.name}`,
 			})
 		} catch (error) {
 			console.error('Erro ao gerar PDF:', error)
