@@ -1,11 +1,11 @@
-import Button from 'components/Button'
+import Button from '@components/Button'
+import useCheckbox from '@hooks/useCheckbox'
 import { getCurrentPositionAsync } from 'expo-location'
-import useCheckbox from 'hooks/useCheckbox'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import MapView, { LatLng, MapMarker, MapPressEvent, MapType, Marker, Region } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
-import { validCoordinates } from 'utils/valid-coordinates'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { validCoordinates } from '@utils/valid-coordinates'
 
 import * as S from './styles'
 

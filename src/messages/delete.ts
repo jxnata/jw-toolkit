@@ -1,5 +1,5 @@
 import Toast from 'react-native-toast-message'
-import { firstUpper } from 'utils/first-upper'
+import { firstUpper } from '@utils/first-upper'
 
 export const success = (model: string) => {
 	Toast.show({

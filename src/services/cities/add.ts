@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { AddCityReq, AddCityRes } from 'types/api/cities'
+import { AddCityReq, AddCityRes } from '@interfaces/api/cities'
+import { api } from '@services/api/main'
 
 export const add = async (req: AddCityReq) => {
 	try {

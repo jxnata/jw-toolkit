@@ -1,34 +1,36 @@
-import Button from 'components/Button'
-import Dropdown from 'components/Dropdown'
-import IconButton from 'components/IconButton'
-import Input from 'components/Input'
-import SelectLocation from 'components/SelectLocation'
+import Button from '@components/Button'
+import Dropdown from '@components/Dropdown'
+import IconButton from '@components/IconButton'
+import Input from '@components/Input'
+import SelectLocation from '@components/SelectLocation'
+import useCities from '@hooks/swr/admin/useCities'
+import useMaps from '@hooks/swr/admin/useMaps'
+import useResume from '@hooks/swr/admin/useResume'
+import { AddMapReq } from '@interfaces/api/maps'
 import { Stack, router } from 'expo-router'
-import useCities from 'hooks/swr/admin/useCities'
-import useMaps from 'hooks/swr/admin/useMaps'
-import useResume from 'hooks/swr/admin/useResume'
-import { error, success } from 'messages/add'
+import { error, success } from '@messages/add'
 import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Modal } from 'react-native'
-import { add } from 'services/maps/add'
-import { AddMapReq } from 'types/api/maps'
-import { getCoordinates } from 'utils/get-coordinates'
-import { setCoordinates } from 'utils/set-coordinates'
+import { getCoordinates } from '@utils/get-coordinates'
+import { setCoordinates } from '@utils/set-coordinates'
+import { useSession } from '@contexts/Auth'
+import { database } from '@services/appwrite'
+import { ID, Permission, Role } from 'react-native-appwrite'
 
 import * as S from './styles'
 
 const AddMap = () => {
 	const [modalVisible, setModalVisible] = useState(false)
 	const { cities } = useCities()
-	const { mutate } = useMaps({ search: '' })
-	const { resume } = useResume()
-	const defaultValues: Partial<AddMapReq> = { name: `Mapa ${resume.maps + 1}` }
-	const { control, formState, handleSubmit, setValue, getValues } = useForm<AddMapReq>({ defaultValues })
+	const { mutate } = useMaps()
+	const { congregation } = useSession()
+	const { control, formState, handleSubmit, setValue, getValues } = useForm<AddMapReq>()
 
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c._id })), [cities])
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
 	const save: SubmitHandler<AddMapReq> = async data => {
+		if (!congregation) return
 		const [lat, lng] = setCoordinates(data.coordinates)
 
 		if (lat === 0 && lng === 0) {
@@ -36,16 +38,34 @@ const AddMap = () => {
 			return
 		}
 
-		const result = await add(data)
-
-		if (result) {
+		try {
+			await database.createDocument(
+				'production',
+				'maps',
+				ID.unique(),
+				{
+					name: data.name,
+					address: data.address,
+					district: data.district,
+					details: data.details,
+					lat,
+					lng,
+					city: data.city,
+					congregation: congregation.id,
+				},
+				[
+					Permission.read(Role.label(congregation.id)),
+					Permission.update(Role.label(congregation.id)),
+					Permission.delete(Role.label(congregation.id)),
+				]
+			)
 			success('mapa')
 			mutate()
 			router.back()
-			return
+		} catch (err) {
+			error('mapa')
+			console.error('Failed to create map:', err)
 		}
-
-		error('mapa')
 	}
 
 	const toggleMap = () => {

@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { RemoveAssignmentReq, RemoveAssignmentRes } from 'types/api/assignments'
+import { RemoveAssignmentReq, RemoveAssignmentRes } from '@interfaces/api/assignments'
+import { api } from '@services/api/main'
 
 export const remove = async (id: RemoveAssignmentReq) => {
 	try {

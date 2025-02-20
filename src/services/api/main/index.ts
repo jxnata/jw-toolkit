@@ -1,5 +1,5 @@
+import { JW_TOOLKIT_API } from '@constants/urls'
 import axios from 'axios'
-import { JW_TOOLKIT_API } from 'constants/urls'
 
 import { interceptor } from './interceptor'
 

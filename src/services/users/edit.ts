@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { EditUserReq, EditUserRes } from 'types/api/users'
+import { EditUserReq, EditUserRes } from '@interfaces/api/users'
+import { api } from '@services/api/main'
 
 export const edit = async (id: string, body: EditUserReq) => {
 	try {

@@ -1,8 +1,8 @@
+import useMyAssignments from '@hooks/swr/publisher/useMyAssignments'
+import { IAssignment } from '@interfaces/models/Assignment'
 import { useRouter } from 'expo-router'
-import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
-import { error, success } from 'messages/edit'
-import { finish } from 'services/assignments/finish'
-import { IAssignment } from 'types/models/Assignment'
+import { error, success } from '@messages/edit'
+import { finish } from '@services/assignments/finish'
 
 import * as S from './styles'
 
@@ -16,7 +16,7 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const { mutate } = useMyAssignments()
 
 	const save = async (found: boolean) => {
-		const result = await finish(assignment._id, { found })
+		const result = await finish(assignment.$id, { found })
 
 		if (result) {
 			success('designação')

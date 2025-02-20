@@ -14,7 +14,7 @@ export const Input = styled.Pressable`
 	width: 100%;
 	height: 50px;
 	padding: 14px 16px;
-	border-radius: 12px;
+	border-radius: 8px;
 	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.backgroundAlt};
 	opacity: ${props => (props['aria-disabled'] ? 0.5 : 1)};
@@ -49,6 +49,13 @@ export const Item = styled.Pressable`
 	gap: 10px;
 `
 export const Label = styled.Text`
+	color: ${({ theme }) => theme.text};
+	font-size: 12px;
+	font-family: 'urbanist-medium';
+	margin-bottom: 5px;
+	margin-left: 2px;
+`
+export const ItemLabel = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-size: 16px;
 	font-family: 'urbanist-medium';

@@ -20,7 +20,7 @@ export const AssignLink = styled.Text`
 	flex-wrap: wrap;
 	align-self: center;
 	text-align: center;
-	padding: 5px;
+	padding: 10px;
 	flex: 1;
 `
 export const Columm = styled.View`

@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { VinculateUserReq, VinculateUserRes } from 'types/api/users'
+import { VinculateUserReq, VinculateUserRes } from '@interfaces/api/users'
+import { api } from '@services/api/main'
 
 export const vinculate = async (publisher: string) => {
 	try {

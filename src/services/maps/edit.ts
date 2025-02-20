@@ -1,6 +1,6 @@
-import { api } from 'services/api/main'
-import { EditMapReq, EditMapRes } from 'types/api/maps'
-import { setCoordinates } from 'utils/set-coordinates'
+import { EditMapReq, EditMapRes } from '@interfaces/api/maps'
+import { api } from '@services/api/main'
+import { setCoordinates } from '@utils/set-coordinates'
 
 export const edit = async (id: string, body: EditMapReq) => {
 	try {

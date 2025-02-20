@@ -1,7 +1,7 @@
+import { AdminAuthRequest } from '@interfaces/auth/admin'
+import { IUser } from '@interfaces/models/User'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
-import { AdminAuthRequest } from 'types/auth/admin'
-import { IUser } from 'types/models/User'
+import { api } from '@services/api/main'
 
 import { normalizeUsername } from './normalize-username'
 

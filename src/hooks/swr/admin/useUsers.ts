@@ -1,7 +1,7 @@
+import { IUser } from '@interfaces/models/User'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
+import { api } from '@services/api/main'
 import useSWRInfinite from 'swr/infinite'
-import { IUser } from 'types/models/User'
 
 type GetUsersResponse = {
 	users: IUser[]

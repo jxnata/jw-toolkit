@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { RemoveMapReq, RemoveMapRes } from 'types/api/maps'
+import { RemoveMapReq, RemoveMapRes } from '@interfaces/api/maps'
+import { api } from '@services/api/main'
 
 export const remove = async (id: RemoveMapReq) => {
 	try {

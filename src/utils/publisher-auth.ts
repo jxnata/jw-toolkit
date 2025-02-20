@@ -1,7 +1,7 @@
+import { PublisherAuthRequest } from '@interfaces/auth/publisher'
+import { IPublisher } from '@interfaces/models/Publisher'
 import get from 'lodash/get'
-import { api } from 'services/api/main'
-import { PublisherAuthRequest } from 'types/auth/publisher'
-import { IPublisher } from 'types/models/Publisher'
+import { api } from '@services/api/main'
 
 import { normalizeUsername } from './normalize-username'
 

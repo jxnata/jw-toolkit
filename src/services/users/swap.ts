@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { SwapAdminRes } from 'types/auth/admin'
+import { SwapAdminRes } from '@interfaces/auth/admin'
+import { api } from '@services/api/main'
 
 export const swap = async () => {
 	try {

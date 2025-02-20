@@ -1,20 +1,23 @@
-import AssignmentControls from 'components/AssignmentControls'
-import AssignmentMapCard from 'components/AssignmentMapCard'
+import AssignmentControls from '@components/AssignmentControls'
+import AssignmentMapCard from '@components/AssignmentMapCard'
+import useAssignment from '@hooks/swr/admin/useAssignment'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import useAssignment from 'hooks/swr/admin/useAssignment'
 import { useRef, useState } from 'react'
 import { MapMarker, Marker } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
+import React from 'react'
 
 const AssigmentDetails = () => {
-	const { id } = useLocalSearchParams()
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const router = useRouter()
 	const markerRef = useRef<MapMarker>(null)
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(id as string)
+	const { assignment } = useAssignment(params.id as string)
 
 	const onMapReady = () => {
 		if (markerRef && markerRef.current && markerRef.current.showCallout) {
@@ -51,7 +54,7 @@ const AssigmentDetails = () => {
 					<S.Map region={region} onMapReady={onMapReady} showsUserLocation>
 						<Marker
 							ref={markerRef}
-							key={assignment.map._id}
+							key={assignment.map.$id}
 							coordinate={marker}
 							title={assignment.map.name}
 							description={assignment.map.address}

@@ -1,17 +1,17 @@
 import * as Location from 'expo-location'
 import { Link, Stack } from 'expo-router'
-import useAllMaps from 'hooks/swr/admin/useAllMaps'
 import { useCallback, useEffect, useState } from 'react'
-import { Marker } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
-import { getPinColor } from 'utils/get-pin-color'
+import { Marker, Region } from 'react-native-maps'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { getPinColor } from '@utils/get-pin-color'
 
 import * as S from './styles'
+import useMaps from '@hooks/swr/admin/useMaps'
 
 const AllMaps = () => {
-	const [location, setLocation] = useState(null)
-	const { maps, loading } = useAllMaps()
+	const [location, setLocation] = useState<Region>()
+	const { maps, loading } = useMaps()
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
@@ -33,18 +33,13 @@ const AllMaps = () => {
 					<S.Map showsUserLocation region={location}>
 						{maps.map(map => (
 							<Marker
-								key={map._id}
-								coordinate={getMarkerCoordinate(map.coordinates)}
+								key={map.$id}
+								coordinate={getMarkerCoordinate([map.lat, map.lng])}
 								title={map.name}
 								description={map.address}
 								pinColor={getPinColor(map.assigned)}
 							>
 								<S.MarkerCallout tooltip>
-									<Link href={{ pathname: `/admin/maps/${map._id}`, params: map }} asChild>
-										<S.IconButton hitSlop={50}>
-											<S.EditIcon name='eye-outline' />
-										</S.IconButton>
-									</Link>
 									<S.Columm>
 										<S.Paragraph>{map.name}</S.Paragraph>
 										<S.ParagraphWrap numberOfLines={3} ellipsizeMode='tail'>
@@ -54,7 +49,10 @@ const AllMaps = () => {
 											<S.Small>Mapa designado</S.Small>
 										) : (
 											<Link
-												href={{ pathname: '/admin/assignments/add', params: { map: map._id } }}
+												href={{
+													pathname: `/admin/maps/${map.$id}`,
+													params: { data: JSON.stringify(map) },
+												}}
 											>
 												<S.AssignLink>DESIGNAR</S.AssignLink>
 											</Link>

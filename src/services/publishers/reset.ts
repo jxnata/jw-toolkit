@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { ResetPublisherReq, ResetPublisherRes } from 'types/api/publishers'
+import { ResetPublisherReq, ResetPublisherRes } from '@interfaces/api/publishers'
+import { api } from '@services/api/main'
 
 export const reset = async (id: ResetPublisherReq) => {
 	try {

@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { RemoveCityReq, RemoveCityRes } from 'types/api/cities'
+import { RemoveCityReq, RemoveCityRes } from '@interfaces/api/cities'
+import { api } from '@services/api/main'
 
 export const remove = async (id: RemoveCityReq) => {
 	try {

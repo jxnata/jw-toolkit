@@ -1,5 +1,5 @@
+import { TOMTOM_MAPS_API } from '@constants/urls'
 import axios from 'axios'
-import { TOMTOM_MAPS_API } from 'constants/urls'
 
 import { tomtomInterceptor } from './interceptor'
 

@@ -1,7 +1,7 @@
-import AssignmentItem from 'components/AssignmentItem'
+import AssignmentItem from '@components/AssignmentItem'
+import useMyAssignments from '@hooks/swr/publisher/useMyAssignments'
+import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
-import useMyAssignments from 'hooks/swr/publisher/useMyAssignments'
-import { useLocation } from 'hooks/useLocation'
 import { useCallback, useEffect } from 'react'
 import { OneSignal } from 'react-native-onesignal'
 
@@ -41,10 +41,10 @@ const PublisherHome = () => {
 				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
 				{assigments.map(assignment => (
 					<AssignmentItem
-						key={assignment._id}
+						key={assignment.$id}
 						assignment={assignment}
 						location={location}
-						onPress={() => router.push(`/publisher/assignment/${assignment._id}`)}
+						onPress={() => router.push(`/publisher/assignment/${assignment.$id}`)}
 					/>
 				))}
 				{!assigments.length && !loading && <S.Paragraph>Nenhuma designação</S.Paragraph>}

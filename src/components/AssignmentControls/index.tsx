@@ -1,5 +1,5 @@
+import { IAssignment } from '@interfaces/models/Assignment'
 import { Linking, Platform } from 'react-native'
-import { IAssignment } from 'types/models/Assignment'
 
 import * as S from './styles'
 

@@ -6,7 +6,8 @@ export const Container = styled.View`
 `
 export const Content = styled.View`
 	display: flex;
-	padding: 15px;
+	height: 100%;
+	justify-content: flex-end;
 `
 export const Mask = styled.View`
 	position: absolute;
@@ -16,7 +17,7 @@ export const Mask = styled.View`
 	width: 100%;
 	height: 100%;
 	background-color: ${({ theme }) => theme.background};
-	opacity: 0.9;
+	opacity: 0.7;
 `
 export const Accent = styled.Text`
 	text-align: center;
@@ -33,21 +34,29 @@ export const Title = styled.Text`
 `
 export const Small = styled.Text`
 	text-align: center;
-	font-size: 12px;
+	font-size: 14px;
 	color: ${({ theme }) => theme.textAlt};
 	font-family: 'urbanist-regular';
 `
 export const Version = styled(Small)`
-	position: absolute;
-	bottom: 50px;
+	margin-top: 20px;
 	align-self: center;
 `
 export const TitleContainer = styled.View`
-	flex-direction: row;
+	flex-direction: column;
 	text-align: center;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 15px;
+	margin-bottom: 25px;
+	gap: 10px;
+`
+export const Panel = styled.View`
+	display: flex;
+	background-color: ${({ theme }) => theme.background};
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 25px;
+	border-radius: 12px;
+	opacity: 0.9;
 `
 export const Row = styled.View`
 	gap: 5px;

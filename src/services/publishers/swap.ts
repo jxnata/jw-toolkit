@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { SwapPublisherRes } from 'types/auth/publisher'
+import { SwapPublisherRes } from '@interfaces/auth/publisher'
+import { api } from '@services/api/main'
 
 export const swap = async () => {
 	try {

@@ -1,4 +1,5 @@
 import { Dimensions } from 'react-native'
+import { Region } from 'react-native-maps'
 const { height, width } = Dimensions.get('window')
 
 export const getMapRegion = (coordinates: [number, number], delta?: number) => {
@@ -17,5 +18,5 @@ export const getMapRegion = (coordinates: [number, number], delta?: number) => {
 		longitude: coordinates[1],
 		latitudeDelta: delta,
 		longitudeDelta: delta * (width / height),
-	}
+	} as Region
 }

@@ -1,7 +1,7 @@
-import { authStorage } from 'database/auth'
+import { authStorage } from '@database/auth'
+import { IUser } from '@interfaces/models/User'
 import get from 'lodash/get'
-import { swap } from 'services/publishers/swap'
-import { IUser } from 'types/models/User'
+import { swap } from '@services/publishers/swap'
 
 import { ISession } from '../types'
 

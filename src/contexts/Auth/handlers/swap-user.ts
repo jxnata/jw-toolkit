@@ -1,7 +1,7 @@
-import { authStorage } from 'database/auth'
+import { authStorage } from '@database/auth'
+import { IPublisher, IVinculatedPublisher } from '@interfaces/models/Publisher'
 import get from 'lodash/get'
-import { swap } from 'services/users/swap'
-import { IPublisher, IVinculatedPublisher } from 'types/models/Publisher'
+import { swap } from '@services/users/swap'
 
 import { ISession } from '../types'
 

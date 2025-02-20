@@ -1,5 +1,5 @@
-import { api } from 'services/api/main'
-import { AcceptAssignmentReq, AcceptAssignmentRes } from 'types/api/assignments'
+import { AcceptAssignmentReq, AcceptAssignmentRes } from '@interfaces/api/assignments'
+import { api } from '@services/api/main'
 
 export const accept = async (body: AcceptAssignmentReq) => {
 	try {

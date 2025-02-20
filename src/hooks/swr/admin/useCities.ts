@@ -1,60 +1,37 @@
-import get from 'lodash/get'
-import { api } from 'services/api/main'
-import useSWRInfinite from 'swr/infinite'
-import { ICityListItem } from 'types/models/City'
+import { storage } from '@database/index'
+import { useDocuments } from '@hooks/documents'
+import { database } from '@services/appwrite'
+import { Query } from 'react-native-appwrite'
 
 type Props = {
 	search?: string
 }
 
-type GetCitiesResponse = {
-	cities: ICityListItem[]
-}
+const useCities = ({ search }: Props = { search: '' }) => {
+	const congregation = storage.getString('congregation.id')
 
-const LIMIT = 20
+	const { data: cities, loading, error, mutate } = useDocuments({
+		queryKey: ['cities', search, congregation],
+		queryFn: () => {
+			const queries = [
+				Query.equal('congregation', congregation!),
+				Query.limit(1000),
+			]
 
-const fetcher = (url: string) => api.get<GetCitiesResponse>(url).then(res => res.data)
+			if (search) {
+				queries.push(Query.search('name', search))
+			}
 
-const getKey = (page: number, previousPageData: GetCitiesResponse, search: string) => {
-	if (previousPageData && !previousPageData.cities.length) return null
-
-	const skip = (page || 0) * LIMIT
-
-	return `/cities?skip=${skip}&limit=${LIMIT}&search=${search}`
-}
-
-const defaultProps = { skip: 0, limit: LIMIT, search: '' }
-
-const useCities = (props: Props = defaultProps) => {
-	const { search } = props
-
-	const { data, error, size, isLoading, mutate, setSize } = useSWRInfinite(
-		(p, prev) => getKey(p, prev, search),
-		fetcher,
-		{ revalidateAll: true }
-	)
-
-	const cities: ICityListItem[] = []
-
-	if (data) {
-		for (const item of data) {
-			const items: ICityListItem[] = get(item, 'cities', [])
-			cities.push(...items)
-		}
-	}
-
-	const next = () => {
-		if (cities.length >= LIMIT && !isLoading) {
-			setSize(old => old + 1)
-		}
-	}
+			return database.listDocuments('production', 'cities', queries)
+		},
+		initialData: [],
+		enabled: !!congregation
+	})
 
 	return {
 		cities,
-		page: size,
-		loading: !error && !data,
+		loading,
 		error,
-		next,
 		mutate,
 	}
 }
