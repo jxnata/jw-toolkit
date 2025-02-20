@@ -94,6 +94,7 @@ const ViewMap = () => {
 							params: { data: JSON.stringify(map) },
 						})
 					}
+					disabled={!map}
 				>
 					<S.Ionicon name='create-outline' />
 				</S.IconButton>
@@ -102,7 +103,7 @@ const ViewMap = () => {
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[params.$id, showDeleteAlert]
+		[params.$id, showDeleteAlert, map]
 	)
 
 	useEffect(() => {

@@ -6,6 +6,7 @@ import { OneSignal } from 'react-native-onesignal'
 import { account, functions } from '@services/appwrite'
 import { storage } from '@database/index'
 import { router } from 'expo-router'
+import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 
 type LocalSession = {
 	current: Models.User<Models.Preferences> | null
@@ -13,7 +14,7 @@ type LocalSession = {
 	congregation: { id: string; name: string } | null
 	publisher: string | null
 	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential, cong: string) => Promise<void>
-	// googleAuthentication: (user: User) => Promise<void>
+	googleAuthentication: (user: User, cong: string) => Promise<void>
 	logout: () => Promise<void>
 	loading: boolean
 }
@@ -27,7 +28,7 @@ const initialState: LocalSession = {
 	publisher: null,
 	loading: true,
 	appleAuthentication: async () => {},
-	// googleAuthentication: async () => {},
+	googleAuthentication: async () => {},
 	logout: async () => {},
 }
 
@@ -50,8 +51,8 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		try {
 			setLoading(true)
 			const result = await functions.createExecution(
-				'apple-auth',
-				JSON.stringify({ ...appleRequestResponse, congregation: cong }),
+				'oauth',
+				JSON.stringify({ ...appleRequestResponse, provider: 'apple', congregation: cong }),
 				false,
 				undefined,
 				ExecutionMethod.POST
@@ -67,29 +68,29 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		}
 	}
 
-	// async function googleAuthentication(user: User) {
-	// 	try {
-	// 		setLoading(true)
-	// 		const result = await functions.createExecution(
-	// 			'google-auth',
-	// 			JSON.stringify({ idToken: user.idToken }),
-	// 			false,
-	// 			undefined,
-	// 			ExecutionMethod.POST
-	// 		)
-	// 		if (result.responseStatusCode !== 200) throw new Error(result.responseBody)
-	// 		const token: Models.Token = JSON.parse(result.responseBody)
-	// 		await account.createSession(token.userId, token.secret)
-	// 		await init()
-	// 	} finally {
-	// 		setLoading(false)
-	// 	}
-	// }
+	async function googleAuthentication(user: User, cong: string) {
+		try {
+			setLoading(true)
+			const result = await functions.createExecution(
+				'oauth',
+				JSON.stringify({ idToken: user.idToken, provider: 'google', congregation: cong }),
+				false,
+				undefined,
+				ExecutionMethod.POST
+			)
+			if (result.responseStatusCode !== 200) throw new Error(result.responseBody)
+			const token: Models.Token = JSON.parse(result.responseBody)
+			await account.createSession(token.userId, token.secret)
+			await init()
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	async function logout() {
-		// if (Platform.OS === 'android') {
-		// 	await GoogleSignin.signOut()
-		// }
+		if (Platform.OS === 'android') {
+			await GoogleSignin.signOut()
+		}
 		await account.deleteSession('current')
 		storage.delete('congregation.name')
 		storage.delete('congregation.id')
@@ -99,6 +100,8 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 
 	async function init() {
 		try {
+			setLoading(true)
+
 			const loggedIn = await account.get()
 
 			const userType = loggedIn.labels.includes('admin') ? 'admin' : 'publisher'
@@ -135,7 +138,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				publisher,
 				loading,
 				appleAuthentication,
-				// googleAuthentication,
+				googleAuthentication,
 				logout,
 			}}
 		>

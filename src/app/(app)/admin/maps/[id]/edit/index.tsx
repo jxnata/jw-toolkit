@@ -22,6 +22,7 @@ import * as S from './styles'
 const EditMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Models.Document
+	console.log(params)
 	const [modalVisible, setModalVisible] = useState(false)
 	const { mutate } = useMap(params.$id)
 	const { mutate: mutateMaps } = useMaps({ search: '' })

@@ -80,7 +80,7 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 15px;
 `
-export const IconButton = styled.Pressable``
+export const IconButton = styled.TouchableOpacity``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`

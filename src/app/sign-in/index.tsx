@@ -6,6 +6,7 @@ import {
 	AppleAuthenticationScope,
 	signInAsync,
 } from 'expo-apple-authentication'
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import { APP_VERSION } from '@constants/content'
 // import { useSession } from '@contexts/Auth'
 import { history, storage } from '@database/index'
@@ -23,7 +24,7 @@ import { useSession } from '@contexts/Auth'
 
 const Login = () => {
 	const [congregationId, setCongregationId] = useState<string>()
-	const { appleAuthentication } = useSession()
+	const { appleAuthentication, googleAuthentication, loading } = useSession()
 	const { congregations } = useCongregations()
 	const insets = useSafeAreaInsets()
 	const scheme = useColorScheme()
@@ -65,6 +66,34 @@ const Login = () => {
 		}
 	}
 
+	const googleSign = async () => {
+		try {
+			if (!congregationId) {
+				Alert.alert('Congregação', 'Selecione uma congregação')
+				return
+			}
+
+			const congregation = congregationsList.find(c => c.value === congregationId)
+
+			if (!congregation) return
+
+			if (Platform.OS === 'android') {
+				await GoogleSignin.hasPlayServices()
+			}
+			const userInfo = await GoogleSignin.signIn()
+
+			if (!userInfo.data) throw new Error('login failed: no user data')
+
+			storage.set('congregation.name', congregation.label)
+			storage.set('congregation.id', congregation.value)
+
+			await googleAuthentication(userInfo.data, congregationId)
+		} catch (e) {
+			console.log(e)
+			Alert.alert('Erro', 'Ocorreu um erro ao fazer login...')
+		}
+	}
+
 	useEffect(() => {
 		if (congregationsList.length) {
 			if (lastCongregation) {
@@ -94,21 +123,27 @@ const Login = () => {
 							selectedValue={congregationId}
 							onValueChange={handleCongregation}
 						/>
-						{Platform.OS === 'ios' ? (
-							<AppleAuthenticationButton
-								buttonType={AppleAuthenticationButtonType.SIGN_IN}
-								buttonStyle={
-									scheme === 'dark'
-										? AppleAuthenticationButtonStyle.WHITE
-										: AppleAuthenticationButtonStyle.BLACK
-								}
-								cornerRadius={5}
-								style={{ width: 'auto', height: 50 }}
-								onPress={appleAuth}
-							/>
-						) : (
-							<></>
-						)}
+						{/* {Platform.OS === 'ios' ? ( */}
+						<AppleAuthenticationButton
+							buttonType={AppleAuthenticationButtonType.SIGN_IN}
+							buttonStyle={
+								scheme === 'dark'
+									? AppleAuthenticationButtonStyle.WHITE
+									: AppleAuthenticationButtonStyle.BLACK
+							}
+							cornerRadius={5}
+							style={{ width: 'auto', height: 50 }}
+							onPress={appleAuth}
+						/>
+						{/* ) : ( */}
+						<GoogleSigninButton
+							size={GoogleSigninButton.Size.Wide}
+							color={scheme === 'dark' ? GoogleSigninButton.Color.Light : GoogleSigninButton.Color.Dark}
+							style={{ width: 'auto', marginVertical: 5 }}
+							onPress={googleSign}
+							disabled={loading}
+						/>
+						{/* )} */}
 						<S.Version>Versão: {APP_VERSION}</S.Version>
 					</S.Panel>
 				</S.Content>

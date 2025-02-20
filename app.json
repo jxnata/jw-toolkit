@@ -17,6 +17,7 @@
 			"supportsTablet": true,
 			"bundleIdentifier": "dev.jxnata.jwtoolkit",
 			"usesAppleSignIn": true,
+			"googleServicesFile": "./GoogleService-Info.plist",
 			"infoPlist": {
 				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada."
 			}
@@ -27,6 +28,7 @@
 				"backgroundColor": "#D08129"
 			},
 			"package": "dev.jxnata.jwmaps",
+			"googleServicesFile": "./google-services.json",
 			"permissions": [
 				"android.permission.INTERNET",
 				"android.permission.READ_EXTERNAL_STORAGE",
@@ -44,6 +46,12 @@
 			"expo-router",
 			"expo-font",
 			"expo-apple-authentication",
+			[
+				"@react-native-google-signin/google-signin",
+				{
+					"iosUrlScheme": "com.googleusercontent.apps.561014260561-au4cn876vvjtjqhugoakvbiebsmpnlj1"
+				}
+			],
 			[
 				"onesignal-expo-plugin",
 				{

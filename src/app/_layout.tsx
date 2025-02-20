@@ -9,7 +9,7 @@ import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect } from 'react'
-import { useColorScheme } from 'react-native'
+import { Platform, useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
@@ -19,6 +19,7 @@ import { SWRConfig } from 'swr'
 import theme from '@themes/index'
 import { QueryClient } from '@tanstack/react-query'
 import { clientPersister } from '@database/cache/provider'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 if (__DEV__) require('../../reactotron')
 
@@ -38,6 +39,9 @@ export default function Layout() {
 	useEffect(() => {
 		OneSignal.initialize(ONESIGNAL_APP_ID)
 		OneSignal.Notifications.requestPermission(true)
+		// if (Platform.OS === 'android') {
+		GoogleSignin.configure()
+		// }
 	}, [])
 
 	if (!isLoaded) return null
