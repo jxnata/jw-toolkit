@@ -1,14 +1,14 @@
 import Button from '@components/Button'
 import Dropdown from '@components/Dropdown'
 import MapViewDetails from '@components/MapViewDetails'
-import useMap from '@hooks/swr/admin/useMap'
-import useMaps from '@hooks/swr/admin/useMaps'
-import usePublishers from '@hooks/swr/admin/usePublishers'
+import useMap from '@hooks/useMap'
+import useMaps from '@hooks/useMaps'
+import usePublishers from '@hooks/usePublishers'
 import { AddAssignmentReq } from '@interfaces/api/assignments'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error, success } from '@messages/add'
 import { error as removeError, success as removeSuccess } from '@messages/delete'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
 import { Marker } from 'react-native-maps'
@@ -62,7 +62,7 @@ const ViewMap = () => {
 			removeError('maps')
 			console.error('Failed to delete map:', err)
 		}
-	}, [params.$id, mutate, mutateMaps])
+	}, [params.$id, mutate])
 
 	const showDeleteAlert = useCallback(
 		() =>

@@ -1,5 +1,5 @@
 import { APP_VERSION } from '@constants/content'
-import { useSession } from '@contexts/Auth/index'
+import { useSession } from '@contexts/session'
 import { Link, Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 

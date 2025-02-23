@@ -1,16 +1,25 @@
-import { useSession } from '@contexts/Auth'
-import { Redirect, Slot } from 'expo-router'
+import { useSession } from '@contexts/session'
+import { Redirect, Slot, Stack } from 'expo-router'
+import React from 'react'
+import { ActivityIndicator, View } from 'react-native'
 
 export default function App() {
-	const { type } = useSession()
+	const { type, loading } = useSession()
 
-	if (type === 'publisher') {
-		return <Redirect href='/publisher' />
-	}
-
-	if (type === 'admin') {
-		return <Redirect href='/admin' />
-	}
-
-	return <Slot />
+	return (
+		<>
+			<Stack.Screen options={{ headerShown: false }} />
+			{loading ? (
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<ActivityIndicator size='large' />
+				</View>
+			) : type === 'publisher' ? (
+				<Redirect href='/publisher' />
+			) : type === 'admin' ? (
+				<Redirect href='/admin' />
+			) : (
+				<Slot />
+			)}
+		</>
+	)
 }

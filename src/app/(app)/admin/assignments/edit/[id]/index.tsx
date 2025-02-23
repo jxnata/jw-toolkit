@@ -1,9 +1,8 @@
 import Button from '@components/Button'
 import Dropdown from '@components/Dropdown'
-import IconButton from '@components/IconButton'
 import MapViewDetails from '@components/MapViewDetails'
-import useMap from '@hooks/swr/admin/useMap'
-import usePublishers from '@hooks/swr/admin/usePublishers'
+import useMap from '@hooks/useMap'
+import usePublishers from '@hooks/usePublishers'
 import { EditAssignmentReq } from '@interfaces/api/assignments'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error as removeError, success as removeSuccess } from '@messages/delete'
@@ -11,12 +10,11 @@ import { error, success } from '@messages/edit'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
-import { colors } from '@themes/index'
 
 import * as S from './styles'
 import { Models } from 'react-native-appwrite'
 import { database } from '@services/appwrite'
-import useMaps from '@hooks/swr/admin/useMaps'
+import useMaps from '@hooks/useMaps'
 
 const EditAssignment = () => {
 	const { data } = useLocalSearchParams()
@@ -29,7 +27,7 @@ const EditAssignment = () => {
 		() => ({
 			assigned: typeof params.assigned === 'object' ? params.assigned.$id : params.assigned,
 		}),
-		[params.details, params.map, params.permanent, params.publisher]
+		[params.assigned]
 	)
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
@@ -67,13 +65,13 @@ const EditAssignment = () => {
 	}
 
 	const showDeleteAlert = () =>
-		Alert.alert('Excluir', 'Deseja excluir a designação? Essa opção não pode ser revertida.', [
+		Alert.alert('Remover', 'Deseja remover a designação? Essa opção não pode ser revertida.', [
 			{
 				text: 'Cancelar',
 				style: 'cancel',
 			},
 			{
-				text: 'Sim, excluir',
+				text: 'Sim, remover',
 				onPress: () => deleteAssignment(),
 				style: 'default',
 			},
@@ -102,7 +100,9 @@ const EditAssignment = () => {
 					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 						Atualizar
 					</Button>
-					<IconButton icon='trash-bin-outline' color={colors.error} onPress={showDeleteAlert} />
+					<S.ButtonOutline onPress={showDeleteAlert} disabled={formState.isSubmitting}>
+						<S.ButtonOutlineText>Remover designação</S.ButtonOutlineText>
+					</S.ButtonOutline>
 				</S.Row>
 			</S.Content>
 		</S.Container>

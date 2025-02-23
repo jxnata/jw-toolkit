@@ -1,7 +1,7 @@
 import Button from '@components/Button'
 import IconButton from '@components/IconButton'
 import Input from '@components/Input'
-import useCities from '@hooks/swr/admin/useCities'
+import useCities from '@hooks/useCities'
 import { EditCityReq } from '@interfaces/api/cities'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error as removeError, success as removeSuccess } from '@messages/delete'

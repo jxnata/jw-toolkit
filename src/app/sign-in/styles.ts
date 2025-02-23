@@ -76,3 +76,8 @@ export const Background = styled.ImageBackground.attrs(({ theme }) => ({
 	width: 100%;
 	height: 100%;
 `
+export const LoadingContainer = styled.View`
+	height: 100px;
+	justify-content: center;
+	align-items: center;
+`

@@ -17,7 +17,7 @@ const useCheckbox = (options: string[], initialSelected?: string[], unique?: boo
 	)
 
 	const onChangeSelected = useCallback(
-		(value, callback) => {
+		(value: string, callback?: (values: string[]) => void) => {
 			if (unique) {
 				setSelectedValues([value])
 				if (callback) callback([value])

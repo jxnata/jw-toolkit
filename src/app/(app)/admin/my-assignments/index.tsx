@@ -7,7 +7,7 @@ import { OneSignal } from 'react-native-onesignal'
 
 import * as S from './styles'
 
-const PublisherHome = () => {
+const MyAssignments = () => {
 	const router = useRouter()
 	const { location } = useLocation()
 	const { assignments, loading, mutate } = useMyAssignments()
@@ -46,4 +46,4 @@ const PublisherHome = () => {
 	)
 }
 
-export default PublisherHome
+export default MyAssignments

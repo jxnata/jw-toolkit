@@ -7,7 +7,7 @@ import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
 import { getPinColor } from '@utils/get-pin-color'
 
 import * as S from './styles'
-import useMaps from '@hooks/swr/admin/useMaps'
+import useMaps from '@hooks/useMaps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<Region>()

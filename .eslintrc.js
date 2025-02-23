@@ -1,6 +1,6 @@
 module.exports = {
 	extends: ['expo', 'prettier'],
-	plugins: ['prettier', '@typescript-eslint/tslint'],
+	plugins: ['prettier'],
 	rules: {
 		'prettier/prettier': 'error',
 	},

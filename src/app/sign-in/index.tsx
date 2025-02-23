@@ -8,10 +8,9 @@ import {
 } from 'expo-apple-authentication'
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import { APP_VERSION } from '@constants/content'
-// import { useSession } from '@contexts/Auth'
 import { history, storage } from '@database/index'
-import { LAST_CONGREGATION, LAST_TYPE, LAST_USER } from '@database/types/keys'
-import useCongregations from '@hooks/swr/general/useCongregations'
+import { LAST_CONGREGATION } from '@database/types/keys'
+import useCongregations from '@hooks/useCongregations'
 import { Stack } from 'expo-router/stack'
 import { useEffect, useMemo, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -20,7 +19,8 @@ import * as S from './styles'
 import { Alert, Platform, useColorScheme } from 'react-native'
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { useSession } from '@contexts/Auth'
+import { useSession } from '@contexts/session'
+import { ActivityIndicator } from 'react-native'
 
 const Login = () => {
 	const [congregationId, setCongregationId] = useState<string>()
@@ -123,27 +123,36 @@ const Login = () => {
 							selectedValue={congregationId}
 							onValueChange={handleCongregation}
 						/>
-						{/* {Platform.OS === 'ios' ? ( */}
-						<AppleAuthenticationButton
-							buttonType={AppleAuthenticationButtonType.SIGN_IN}
-							buttonStyle={
-								scheme === 'dark'
-									? AppleAuthenticationButtonStyle.WHITE
-									: AppleAuthenticationButtonStyle.BLACK
-							}
-							cornerRadius={5}
-							style={{ width: 'auto', height: 50 }}
-							onPress={appleAuth}
-						/>
-						{/* ) : ( */}
-						<GoogleSigninButton
-							size={GoogleSigninButton.Size.Wide}
-							color={scheme === 'dark' ? GoogleSigninButton.Color.Light : GoogleSigninButton.Color.Dark}
-							style={{ width: 'auto', marginVertical: 5 }}
-							onPress={googleSign}
-							disabled={loading}
-						/>
-						{/* )} */}
+						{loading ? (
+							<S.LoadingContainer>
+								<ActivityIndicator size='large' />
+							</S.LoadingContainer>
+						) : (
+							<>
+								<AppleAuthenticationButton
+									buttonType={AppleAuthenticationButtonType.SIGN_IN}
+									buttonStyle={
+										scheme === 'dark'
+											? AppleAuthenticationButtonStyle.WHITE
+											: AppleAuthenticationButtonStyle.BLACK
+									}
+									cornerRadius={5}
+									style={{ width: 'auto', height: 50 }}
+									onPress={appleAuth}
+								/>
+								<GoogleSigninButton
+									size={GoogleSigninButton.Size.Wide}
+									color={
+										scheme === 'dark'
+											? GoogleSigninButton.Color.Light
+											: GoogleSigninButton.Color.Dark
+									}
+									style={{ width: 'auto', marginVertical: 5 }}
+									onPress={googleSign}
+									disabled={loading}
+								/>
+							</>
+						)}
 						<S.Version>Versão: {APP_VERSION}</S.Version>
 					</S.Panel>
 				</S.Content>

@@ -1,5 +1,5 @@
 import Input from '@components/Input'
-import useCities from '@hooks/swr/admin/useCities'
+import useCities from '@hooks/useCities'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'

@@ -1,50 +1,62 @@
-import useMyAssignments from '@hooks/swr/publisher/useMyAssignments'
-import { IAssignment } from '@interfaces/models/Assignment'
+import useMyAssignments from '@hooks/useMyAssignments'
 import { useRouter } from 'expo-router'
 import { error, success } from '@messages/edit'
-import { finish } from '@services/assignments/finish'
+import { useState } from 'react'
 
 import * as S from './styles'
+import { ExecutionMethod, Models } from 'react-native-appwrite'
+import { functions } from '@services/appwrite'
 
 interface AssignmentProps {
-	assignment: IAssignment
+	assignment: Models.Document
 	onCancel: () => void
 }
 
 const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const router = useRouter()
 	const { mutate } = useMyAssignments()
+	const [loading, setLoading] = useState(false)
 
 	const save = async (found: boolean) => {
-		const result = await finish(assignment.$id, { found })
+		setLoading(true)
+		try {
+			const result = await functions.createExecution(
+				'finish-map',
+				JSON.stringify({ $id: assignment.$id, found }),
+				false,
+				undefined,
+				ExecutionMethod.POST
+			)
 
-		if (result) {
+			if (result.responseStatusCode !== 200) {
+				error('designação')
+				return
+			}
+
 			success('designação')
 			mutate()
 			router.back()
-			return
+		} finally {
+			setLoading(false)
 		}
-
-		error('designação')
 	}
 
 	const saveFound = () => save(true)
-	const saveNotFound = () => save(true)
+	const saveNotFound = () => save(false)
 
 	return (
 		<S.Container>
 			<S.Content>
-				<S.CloseButton onPress={onCancel}>
+				<S.CloseButton onPress={onCancel} disabled={loading}>
 					<S.Ionicon name='close-circle-outline' />
 				</S.CloseButton>
 				<S.Title>Encontrou alguém?</S.Title>
-				<S.Paragraph>Ao escolher uma opção, você termina sua designação.</S.Paragraph>
 				<S.ButtonGroup>
-					<S.ButtonPositive onPress={saveFound}>
-						<S.ButtonTitlePositive>Sim</S.ButtonTitlePositive>
+					<S.ButtonPositive onPress={saveFound} disabled={loading}>
+						<S.ButtonTitlePositive>{loading ? 'Salvando...' : 'Sim'}</S.ButtonTitlePositive>
 					</S.ButtonPositive>
-					<S.ButtonNegative onPress={saveNotFound}>
-						<S.ButtonTitleNegative>Não</S.ButtonTitleNegative>
+					<S.ButtonNegative onPress={saveNotFound} disabled={loading}>
+						<S.ButtonTitleNegative>{loading ? 'Salvando...' : 'Não'}</S.ButtonTitleNegative>
 					</S.ButtonNegative>
 				</S.ButtonGroup>
 			</S.Content>

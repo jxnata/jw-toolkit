@@ -1,5 +1,5 @@
 import LocationRequest from '@components/LocationRequest'
-import { useSession } from '@contexts/Auth'
+import { useSession } from '@contexts/session'
 import theme from '@themes/index'
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect, Stack } from 'expo-router'
@@ -42,7 +42,6 @@ export default function Layout() {
 		>
 			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
-			<Stack.Screen name='publisher/history/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen
 				name='publisher/assignment/[id]/index'
 				options={{ presentation: 'modal', headerShown: false }}

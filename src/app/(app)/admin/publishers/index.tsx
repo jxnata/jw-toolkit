@@ -1,5 +1,5 @@
 import Input from '@components/Input'
-import usePublishers from '@hooks/swr/admin/usePublishers'
+import usePublishers from '@hooks/usePublishers'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
@@ -7,11 +7,14 @@ import { FlatList } from 'react-native'
 import { firstLetter } from '@utils/first-letter'
 
 import * as S from './styles'
+import useRequestPublishers from '@hooks/useRequestPublishers'
+import React from 'react'
 
 const Publishers = () => {
 	const router = useRouter()
 	const [search, setSearch] = useState('')
 	const { publishers, loading, mutate } = usePublishers({ search: search })
+	const { publishers: requestPublishers } = useRequestPublishers()
 
 	const HeaderRight = useCallback(
 		() => (
@@ -34,12 +37,21 @@ const Publishers = () => {
 			<S.Content>
 				<FlatList
 					ListHeaderComponent={
-						<Input
-							autoCorrect={false}
-							placeholder='Buscar um publicador...'
-							onChangeText={debouncedSearch}
-							clearButtonMode='always'
-						/>
+						<>
+							<Input
+								autoCorrect={false}
+								placeholder='Buscar um publicador...'
+								onChangeText={debouncedSearch}
+								clearButtonMode='always'
+							/>
+							{requestPublishers?.length > 0 && (
+								<S.WarningButton onPress={() => router.push('/admin/publishers/review')}>
+									<S.WarningText>
+										{requestPublishers.length} solicitação(ões) pendente(s) para aprovação
+									</S.WarningText>
+								</S.WarningButton>
+							)}
+						</>
 					}
 					data={publishers}
 					keyExtractor={item => item.$id}

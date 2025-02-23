@@ -5,9 +5,8 @@ import {
 	requestForegroundPermissionsAsync,
 } from 'expo-location'
 import { useCallback, useEffect, useState } from 'react'
-
 export const useLocation = () => {
-	const [location, setLocation] = useState<LocationObjectCoords>(null)
+	const [location, setLocation] = useState<LocationObjectCoords | null>(null)
 
 	const getLocation = useCallback(async () => {
 		const { status } = await requestForegroundPermissionsAsync()

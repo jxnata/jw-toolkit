@@ -3,7 +3,7 @@ import getDistance from 'geolib/es/getDistance'
 
 import { getMarkerCoordinate } from './get-marker-coordinate'
 
-export const getLocationDistance = (from: LocationObjectCoords, to: [number, number]) => {
+export const getLocationDistance = (from: LocationObjectCoords | null, to: [number, number]) => {
 	if (!to) return
 	if (to.length < 2) return
 	if (!from) return

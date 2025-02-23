@@ -3,11 +3,11 @@ import Input from '@components/Input'
 import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
-import { useCallback, useState } from 'react'
-import { Alert, FlatList } from 'react-native'
+import { useState } from 'react'
+import { FlatList } from 'react-native'
 
 import * as S from './styles'
-import useMaps from '@hooks/swr/admin/useMaps'
+import useMaps from '@hooks/useMaps'
 
 const Assignments = () => {
 	const router = useRouter()

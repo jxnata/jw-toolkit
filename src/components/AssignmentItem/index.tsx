@@ -7,12 +7,12 @@ import { Models } from 'react-native-appwrite'
 
 interface AssignmentProps {
 	map: Models.Document
-	location: LocationObjectCoords
+	location: LocationObjectCoords | null
 	onPress?: () => void
 	showPublisher?: boolean
 }
 
-const AssignmentItem = ({ map, showPublisher, location, onPress }: AssignmentProps) => {
+const AssignmentItem = ({ map, location, onPress }: AssignmentProps) => {
 	const coordinates: [number, number] = [map.lat, map.lng]
 	const distance = getLocationDistance(location, coordinates)
 

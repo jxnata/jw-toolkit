@@ -1,13 +1,12 @@
 import { Stack, useRouter } from 'expo-router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FlatList } from 'react-native'
 import { firstLetter } from '@utils/first-letter'
 import { database } from '@services/appwrite'
-import useRequestPublishers from '@hooks/swr/admin/useRequestPublishers'
-import { useFocusEffect } from '@react-navigation/native'
+import useRequestPublishers from '@hooks/useRequestPublishers'
+import usePublishers from '@hooks/usePublishers'
 
 import * as S from './styles'
-import usePublishers from '@hooks/swr/admin/usePublishers'
 
 const Publishers = () => {
 	const router = useRouter()
@@ -28,7 +27,7 @@ const Publishers = () => {
 				mutate()
 			}
 		},
-		[publishers, mutate]
+		[list, mutate]
 	)
 
 	const deny = useCallback(
@@ -44,14 +43,14 @@ const Publishers = () => {
 				mutate()
 			}
 		},
-		[publishers, mutate]
+		[list, mutate]
 	)
 
 	useEffect(() => {
 		return () => {
 			mutatePublishers()
 		}
-	}, [])
+	}, [mutatePublishers])
 
 	return (
 		<S.Container>

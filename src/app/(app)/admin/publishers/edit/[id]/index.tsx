@@ -1,7 +1,7 @@
 import Button from '@components/Button'
 import IconButton from '@components/IconButton'
 import Input from '@components/Input'
-import usePublishers from '@hooks/swr/admin/usePublishers'
+import usePublishers from '@hooks/usePublishers'
 import { EditPublisherReq } from '@interfaces/api/publishers'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error as removeError, success as removeSuccess } from '@messages/delete'

@@ -1,4 +1,4 @@
-import { PressableProps, TouchableOpacityProps } from 'react-native'
+import { TouchableOpacityProps } from 'react-native'
 
 import * as S from './styles'
 

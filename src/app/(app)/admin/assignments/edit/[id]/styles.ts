@@ -34,3 +34,20 @@ export const Label = styled.Text`
 	color: ${({ theme }) => theme.text};
 	font-family: 'urbanist-bold';
 `
+export const ButtonOutline = styled.Pressable`
+	gap: 5px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 20px;
+	border-radius: 8px;
+	background: ${({ theme }) => theme.backgroundAlt};
+	font-size: 15px;
+	height: 50px;
+`
+export const ButtonOutlineText = styled.Text`
+	font-size: 15px;
+	color: ${({ theme }) => theme.text};
+	font-family: 'urbanist-bold';
+`

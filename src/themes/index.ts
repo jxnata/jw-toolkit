@@ -1,4 +1,6 @@
-export const colors = {
+import { DefaultTheme } from 'styled-components/native'
+
+export const colors: DefaultTheme = {
 	success: '#63b26b',
 	warning: '#b2b26b',
 	error: '#b26b6b',
@@ -24,7 +26,7 @@ export const light = {
 	errorAlt: colors.error,
 }
 
-export const dark = {
+export const dark: DefaultTheme = {
 	background: '#1e1e1d',
 	border: '#5b5a52',
 	backgroundAlt: '#302f2e',
