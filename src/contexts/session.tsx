@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Platform } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import { account, functions } from '@services/appwrite'
-import { storage } from '@database/index'
+import { history, storage } from '@database/index'
 import { router } from 'expo-router'
 import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 
@@ -78,8 +78,9 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				ExecutionMethod.POST
 			)
 			if (result.responseStatusCode !== 200) throw new Error(result.responseBody)
-			const token: Models.Token = JSON.parse(result.responseBody)
+			const token: Models.Token & { publisherId: string } = JSON.parse(result.responseBody)
 			await account.createSession(token.userId, token.secret)
+			storage.set('user.publisher', token.publisherId)
 			await init()
 		} finally {
 			setLoading(false)
@@ -93,7 +94,9 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		await account.deleteSession('current')
 		storage.delete('congregation.name')
 		storage.delete('congregation.id')
+		storage.delete('user.publisher')
 		setUser(null)
+		setPublisher(null)
 		setCongregation(null)
 	}
 
@@ -113,6 +116,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			setPublisher(storage.getString('user.publisher') || null)
 
 			storage.set('session', JSON.stringify(loggedIn))
+			history.set('last.congregation', storage.getString('congregation.id') || '')
 
 			OneSignal.login(loggedIn.$id)
 			OneSignal.User.addEmail(loggedIn.email)

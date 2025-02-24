@@ -4,7 +4,7 @@ import styled from 'styled-components/native'
 export const Container = styled.View`
 	display: flex;
 `
-export const Content = styled.ScrollView`
+export const Content = styled.View`
 	display: flex;
 	padding: 10px;
 	width: 100%;

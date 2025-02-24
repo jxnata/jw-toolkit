@@ -3,18 +3,23 @@ import { useMemo } from 'react'
 import { formatDate } from '@utils/date-format'
 import { getLocationDistance } from '@utils/get-location-distance'
 import { mapImage } from '@utils/map-image'
+import { useQuery } from '@tanstack/react-query'
 
 import * as S from './styles'
 import { Models } from 'react-native-appwrite'
 
 interface MapProps {
 	map: Models.Document
-	location: LocationObjectCoords
+	location: LocationObjectCoords | null
 	onPress: () => void
 }
 
 const MapItem = ({ map, location, onPress }: MapProps) => {
-	const distance = getLocationDistance(location, [map.lat, map.lng])
+	const { data: distance } = useQuery({
+		queryKey: ['distance', location?.latitude, location?.longitude, map.lat, map.lng],
+		queryFn: () => getLocationDistance(location, [map.lat, map.lng]),
+		enabled: !!location,
+	})
 
 	const found = useMemo(() => {
 		if (map) {

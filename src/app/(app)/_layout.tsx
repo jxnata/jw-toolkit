@@ -29,9 +29,7 @@ export default function Layout() {
 	return (
 		<Stack
 			screenOptions={{
-				headerStyle: {
-					backgroundColor: theme[scheme || 'light'].background,
-				},
+				headerStyle: { backgroundColor: theme[scheme || 'light'].background },
 				headerShadowVisible: false,
 				headerTintColor: theme[scheme || 'light'].text,
 				headerTitleStyle: { fontFamily: 'urbanist-bold' },
@@ -44,6 +42,10 @@ export default function Layout() {
 			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen
 				name='publisher/assignment/[id]/index'
+				options={{ presentation: 'modal', headerShown: false }}
+			/>
+			<Stack.Screen
+				name='admin/my-assignments/view/[id]/index'
 				options={{ presentation: 'modal', headerShown: false }}
 			/>
 		</Stack>

@@ -18,5 +18,8 @@
 			"@utils/*": ["src/utils/*"]
 		}
 	},
-	"include": ["**/*.ts", "**/*.tsx"]
+	"exclude": ["node_modules"],
+	"include": ["src/**/*"],
+	"files": [],
+	"overrides": [{ "files": ["**/*styles.ts"], "rules": { "@typescript-eslint/no-implicit-any": "off" } }]
 }

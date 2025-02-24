@@ -4,8 +4,11 @@ import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { OneSignal } from 'react-native-onesignal'
+import { FlatList } from 'react-native'
+import SkeletonItem from '@components/SkeletonItem'
 
 import * as S from './styles'
+import React from 'react'
 
 const MyAssignments = () => {
 	const router = useRouter()
@@ -24,23 +27,33 @@ const MyAssignments = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Minhas designações' }} />
 			<S.Content>
-				<S.RefreshControl onRefresh={mutate} refreshing={loading} />
-				{assignments.map(assignment => (
-					<AssignmentItem
-						key={assignment.$id}
-						map={assignment}
-						location={location}
-						onPress={() =>
-							router.push({
-								pathname: `/admin/my-assignments/view/${assignment.$id}`,
-								params: {
-									data: JSON.stringify({ ...assignment }),
-								},
-							})
-						}
+				{loading && !assignments.length ? (
+					<FlatList
+						data={Array.from({ length: 8 }, (_, index) => index + 1)}
+						keyExtractor={item => String(item)}
+						renderItem={() => <SkeletonItem height={100} />}
 					/>
-				))}
-				{!assignments.length && !loading && <S.Paragraph>Nenhuma designação</S.Paragraph>}
+				) : (
+					<FlatList
+						data={assignments}
+						keyExtractor={item => item.$id}
+						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						renderItem={({ item: assignment }) => (
+							<AssignmentItem
+								key={assignment.$id}
+								map={assignment}
+								location={location}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/my-assignments/view/${assignment.$id}`,
+										params: { data: JSON.stringify({ ...assignment }) },
+									})
+								}
+							/>
+						)}
+						ListEmptyComponent={<S.Paragraph>Nenhuma designação</S.Paragraph>}
+					/>
+				)}
 			</S.Content>
 		</S.Container>
 	)

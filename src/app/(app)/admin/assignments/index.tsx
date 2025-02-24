@@ -5,9 +5,10 @@ import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useState } from 'react'
 import { FlatList } from 'react-native'
+import useMaps from '@hooks/useMaps'
+import SkeletonItem from '@components/SkeletonItem'
 
 import * as S from './styles'
-import useMaps from '@hooks/useMaps'
 
 const Assignments = () => {
 	const router = useRouter()
@@ -19,39 +20,49 @@ const Assignments = () => {
 		setSearch(term)
 	}, 500)
 
+	const ListHeaderComponent = () => {
+		return (
+			<Input
+				autoCorrect={false}
+				placeholder='Buscar uma designação...'
+				onChangeText={debouncedSearch}
+				clearButtonMode='always'
+			/>
+		)
+	}
+
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: 'Designações' }} />
 			<S.Content>
-				<FlatList
-					ListHeaderComponent={
-						<Input
-							autoCorrect={false}
-							placeholder='Buscar uma designação...'
-							onChangeText={debouncedSearch}
-							clearButtonMode='always'
-						/>
-					}
-					data={maps}
-					keyExtractor={item => item.$id}
-					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
-					renderItem={({ item }) => (
-						<AssignmentItem
-							key={item.$id}
-							map={item}
-							location={location}
-							showPublisher
-							onPress={() =>
-								router.push({
-									pathname: `/admin/assignments/edit/${item.$id}`,
-									params: {
-										data: JSON.stringify({ ...item, search }),
-									},
-								})
-							}
-						/>
-					)}
-				/>
+				{loading && !maps.length ? (
+					<FlatList
+						data={Array.from({ length: 8 }, (_, index) => index + 1)}
+						keyExtractor={item => String(item)}
+						ListHeaderComponent={<ListHeaderComponent />}
+						renderItem={() => <SkeletonItem />}
+					/>
+				) : (
+					<FlatList
+						data={maps}
+						ListHeaderComponent={<ListHeaderComponent />}
+						keyExtractor={item => item.$id}
+						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						renderItem={({ item }) => (
+							<AssignmentItem
+								key={item.$id}
+								map={item}
+								location={location}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/assignments/edit/${item.$id}`,
+										params: { data: JSON.stringify({ ...item, search }) },
+									})
+								}
+							/>
+						)}
+					/>
+				)}
 			</S.Content>
 		</S.Container>
 	)

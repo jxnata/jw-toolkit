@@ -20,15 +20,12 @@ const EditPublisher = () => {
 	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const { mutate } = usePublishers({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
-		defaultValues: {
-			name: params.name,
-			level: params.level ? params.level.toString() : '3',
-		},
+		defaultValues: { name: params.name, level: params.level ? params.level.toString() : '3' },
 	})
 
 	const levelOptions = [
 		{ label: 'Admin', value: '1' },
-		{ label: 'Editor', value: '2' },
+		// { label: 'Editor', value: '2' },
 		{ label: 'Publicador', value: '3' },
 	]
 
@@ -66,15 +63,8 @@ const EditPublisher = () => {
 			'Excluir',
 			'Deseja excluir o publicador e todas as suas designações? Essa opção não pode ser revertida.',
 			[
-				{
-					text: 'Cancelar',
-					style: 'cancel',
-				},
-				{
-					text: 'Sim, excluir',
-					onPress: () => deletePublisher(),
-					style: 'default',
-				},
+				{ text: 'Cancelar', style: 'cancel' },
+				{ text: 'Sim, excluir', onPress: () => deletePublisher(), style: 'default' },
 			]
 		)
 

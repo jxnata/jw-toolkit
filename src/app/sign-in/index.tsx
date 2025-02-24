@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import * as S from './styles'
-import { Alert, Platform, useColorScheme } from 'react-native'
+import { Alert, Linking, Platform, useColorScheme } from 'react-native'
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useSession } from '@contexts/session'
@@ -34,6 +34,12 @@ const Login = () => {
 
 	const handleCongregation = (c: string) => {
 		setCongregationId(c)
+	}
+
+	const handleAddCongregation = async () => {
+		const url =
+			'https://docs.google.com/forms/d/e/1FAIpQLSfxl3tz6ZnXewMWlxAeEW5DP0xUkO_ymfehvl-BqYRg9bQKjQ/viewform'
+		Linking.openURL(url)
 	}
 
 	const appleAuth = async () => {
@@ -122,6 +128,13 @@ const Login = () => {
 							options={congregationsList}
 							selectedValue={congregationId}
 							onValueChange={handleCongregation}
+							footerComponent={
+								<S.Row>
+									<S.IconButton onPress={handleAddCongregation}>
+										<S.Accent>Adicionar congregação</S.Accent>
+									</S.IconButton>
+								</S.Row>
+							}
 						/>
 						{loading ? (
 							<S.LoadingContainer>
@@ -129,28 +142,31 @@ const Login = () => {
 							</S.LoadingContainer>
 						) : (
 							<>
-								<AppleAuthenticationButton
-									buttonType={AppleAuthenticationButtonType.SIGN_IN}
-									buttonStyle={
-										scheme === 'dark'
-											? AppleAuthenticationButtonStyle.WHITE
-											: AppleAuthenticationButtonStyle.BLACK
-									}
-									cornerRadius={5}
-									style={{ width: 'auto', height: 50 }}
-									onPress={appleAuth}
-								/>
-								<GoogleSigninButton
-									size={GoogleSigninButton.Size.Wide}
-									color={
-										scheme === 'dark'
-											? GoogleSigninButton.Color.Light
-											: GoogleSigninButton.Color.Dark
-									}
-									style={{ width: 'auto', marginVertical: 5 }}
-									onPress={googleSign}
-									disabled={loading}
-								/>
+								{Platform.OS === 'ios' ? (
+									<AppleAuthenticationButton
+										buttonType={AppleAuthenticationButtonType.SIGN_IN}
+										buttonStyle={
+											scheme === 'dark'
+												? AppleAuthenticationButtonStyle.WHITE
+												: AppleAuthenticationButtonStyle.BLACK
+										}
+										cornerRadius={5}
+										style={{ width: 'auto', height: 50 }}
+										onPress={appleAuth}
+									/>
+								) : (
+									<GoogleSigninButton
+										size={GoogleSigninButton.Size.Wide}
+										color={
+											scheme === 'dark'
+												? GoogleSigninButton.Color.Light
+												: GoogleSigninButton.Color.Dark
+										}
+										style={{ width: 'auto', marginVertical: 5 }}
+										onPress={googleSign}
+										disabled={loading}
+									/>
+								)}
 							</>
 						)}
 						<S.Version>Versão: {APP_VERSION}</S.Version>

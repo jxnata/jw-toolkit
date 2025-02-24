@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Modal } from 'react-native'
 
 import * as S from './styles'
+import React from 'react'
 
 type Props = {
 	selectedValue: string | undefined
@@ -10,9 +11,18 @@ type Props = {
 	placeholder: string
 	disabled?: boolean
 	onValueChange: (value: any) => void
+	footerComponent?: React.ReactNode
 }
 
-const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false, onValueChange }: Props) => {
+const Dropdown = ({
+	selectedValue,
+	options,
+	label,
+	placeholder,
+	disabled = false,
+	onValueChange,
+	footerComponent,
+}: Props) => {
 	const [open, setOpen] = useState(false)
 
 	const toggle = () => {
@@ -44,8 +54,11 @@ const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false
 				<S.Ionicon name='chevron-down' />
 			</S.Input>
 			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
-				<S.Container onPress={toggle}>
+				<S.Container>
 					<S.Content>
+						<S.CloseButton onPress={toggle}>
+							<S.Ionicon name='close' />
+						</S.CloseButton>
 						<S.List
 							data={options}
 							renderItem={({ item }) => (
@@ -59,7 +72,13 @@ const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false
 								</S.Item>
 							)}
 							keyExtractor={item => item.label}
-							ListFooterComponent={<S.Space />}
+							ListFooterComponent={
+								<>
+									<S.Space />
+									{footerComponent}
+									<S.Space />
+								</>
+							}
 						/>
 					</S.Content>
 				</S.Container>

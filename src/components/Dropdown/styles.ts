@@ -24,7 +24,7 @@ export const Placeholder = styled.Text`
 	font-size: 15px;
 	font-family: 'urbanist-medium';
 `
-export const Container = styled.Pressable`
+export const Container = styled.View`
 	display: flex;
 	justify-content: flex-end;
 	width: 100%;
@@ -71,4 +71,13 @@ export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 20,
 }))`
 	color: ${({ theme }) => theme.textAlt};
+`
+export const CloseButton = styled.TouchableOpacity`
+	position: absolute;
+	top: -45px;
+	right: 10px;
+	background-color: ${({ theme }) => theme.backgroundAlt};
+	padding: 8px;
+	border-radius: 8px;
+	z-index: 1;
 `

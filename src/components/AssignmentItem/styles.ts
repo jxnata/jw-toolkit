@@ -33,12 +33,20 @@ export const ParagraphAddress = styled(Paragraph)`
 	width: ${screenWidth - 10 - 10 - 10 - 80 - 20}px;
 `
 export const Small = styled.Text`
-	position: absolute;
-	top: 10px;
-	right: 10px;
 	color: ${({ theme }) => theme.textAlt};
 	font-size: 12px;
 	font-family: 'urbanist-regular';
+	padding-top: 5px;
+`
+export const Found = styled(Small)`
+	font-family: 'urbanist-semibold';
+	color: ${({ theme }) => theme.success};
+	padding-top: 0px;
+`
+export const NotFound = styled(Small)`
+	font-family: 'urbanist-semibold';
+	color: ${({ theme }) => theme.warning};
+	padding-top: 0px;
 `
 export const Distance = styled.View`
 	position: absolute;

@@ -9,6 +9,7 @@ import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useMemo, useState } from 'react'
 import { FlatList } from 'react-native'
+import SkeletonItem from '@components/SkeletonItem'
 
 import * as S from './styles'
 import React from 'react'
@@ -52,6 +53,58 @@ const Maps = () => {
 		[router]
 	)
 
+	const ListHeaderComponent = () => {
+		return (
+			<>
+				{showFilter && (
+					<>
+						<S.FilterContainer>
+							<S.FilterItemsContainer>
+								<Dropdown
+									placeholder='Todos'
+									options={[
+										{ label: 'Todos', value: '' },
+										{ label: 'Designados', value: 'assigned' },
+										{ label: 'Livres', value: 'unassigned' },
+									]}
+									selectedValue={status}
+									onValueChange={setStatus}
+								/>
+							</S.FilterItemsContainer>
+							<S.FilterItemsContainer>
+								<Input
+									autoCorrect={false}
+									placeholder='Buscar um mapa...'
+									onChangeText={debouncedSearch}
+									clearButtonMode='always'
+								/>
+							</S.FilterItemsContainer>
+						</S.FilterContainer>
+
+						<S.FilterContainer>
+							<S.FilterItemsContainer>
+								<Dropdown
+									placeholder='Cidade'
+									options={citiesList}
+									selectedValue={searchCity}
+									onValueChange={filterCity}
+								/>
+							</S.FilterItemsContainer>
+							<S.FilterItemsContainer>
+								<Dropdown
+									placeholder='Bairro'
+									options={list}
+									selectedValue={searchDistrict}
+									onValueChange={filterDistrict}
+									disabled={!searchCity}
+								/>
+							</S.FilterItemsContainer>
+						</S.FilterContainer>
+					</>
+				)}
+			</>
+		)
+	}
 	const debouncedSearch = debounce(async term => {
 		setSearchTerm(term)
 	}, 500)
@@ -75,77 +128,38 @@ const Maps = () => {
 		<S.Container>
 			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
 			<S.Content>
-				<FlatList
-					ListHeaderComponent={
-						<>
-							{showFilter && (
-								<>
-									<S.FilterContainer>
-										<S.FilterItemsContainer>
-											<Dropdown
-												placeholder='Todos'
-												options={[
-													{ label: 'Todos', value: '' },
-													{ label: 'Designados', value: 'assigned' },
-													{ label: 'Livres', value: 'unassigned' },
-												]}
-												selectedValue={status}
-												onValueChange={setStatus}
-											/>
-										</S.FilterItemsContainer>
-										<S.FilterItemsContainer>
-											<Input
-												autoCorrect={false}
-												placeholder='Buscar um mapa...'
-												onChangeText={debouncedSearch}
-												clearButtonMode='always'
-											/>
-										</S.FilterItemsContainer>
-									</S.FilterContainer>
-
-									<S.FilterContainer>
-										<S.FilterItemsContainer>
-											<Dropdown
-												placeholder='Cidade'
-												options={citiesList}
-												selectedValue={searchCity}
-												onValueChange={filterCity}
-											/>
-										</S.FilterItemsContainer>
-										<S.FilterItemsContainer>
-											<Dropdown
-												placeholder='Bairro'
-												options={list}
-												selectedValue={searchDistrict}
-												onValueChange={filterDistrict}
-												disabled={!searchCity}
-											/>
-										</S.FilterItemsContainer>
-									</S.FilterContainer>
-								</>
-							)}
-						</>
-					}
-					data={maps}
-					keyExtractor={item => item.$id}
-					refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
-					renderItem={({ item }) => (
-						<S.ListContainer>
-							<MapItem
-								key={item.$id}
-								map={item}
-								location={location}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/maps/${item.$id}`,
-										params: { data: JSON.stringify(item) },
-									})
-								}
-							/>
-						</S.ListContainer>
-					)}
-					stickyHeaderIndices={[0]}
-				/>
+				{loading && !maps.length ? (
+					<FlatList
+						data={Array.from({ length: 8 }, (_, index) => index + 1)}
+						keyExtractor={item => String(item)}
+						ListHeaderComponent={<ListHeaderComponent />}
+						renderItem={() => <SkeletonItem height={100} />}
+						stickyHeaderIndices={[0]}
+					/>
+				) : (
+					<FlatList
+						ListHeaderComponent={<ListHeaderComponent />}
+						data={maps}
+						keyExtractor={item => item.$id}
+						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						renderItem={({ item }) => (
+							<S.ListContainer>
+								<MapItem
+									key={item.$id}
+									map={item}
+									location={location}
+									onPress={() =>
+										router.push({
+											pathname: `/admin/maps/${item.$id}`,
+											params: { data: JSON.stringify(item) },
+										})
+									}
+								/>
+							</S.ListContainer>
+						)}
+						stickyHeaderIndices={[0]}
+					/>
+				)}
 			</S.Content>
 		</S.Container>
 	)
