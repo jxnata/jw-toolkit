@@ -3,7 +3,7 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.0.21",
+		"version": "1.0.23",
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
@@ -14,12 +14,13 @@
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
-			"supportsTablet": true,
+			"supportsTablet": false,
 			"bundleIdentifier": "dev.jxnata.jwtoolkit",
 			"usesAppleSignIn": true,
 			"googleServicesFile": "./GoogleService-Info.plist",
 			"infoPlist": {
-				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada."
+				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada.",
+				"ITSAppUsesNonExemptEncryption": false
 			},
 			"appleTeamId": "N9G6UA9982"
 		},
