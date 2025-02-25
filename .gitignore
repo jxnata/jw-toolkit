@@ -39,4 +39,5 @@ android/
 ios/
 
 # Environment variables
+.env
 .env.*
