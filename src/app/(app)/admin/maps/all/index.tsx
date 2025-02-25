@@ -1,70 +1,78 @@
 import * as Location from 'expo-location'
-import { Link, Stack } from 'expo-router'
-import useAllMaps from 'hooks/swr/admin/useAllMaps'
+import { router, Stack } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { Marker } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
-import { getPinColor } from 'utils/get-pin-color'
+import { Platform } from 'react-native'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { getPinColor } from '@utils/get-pin-color'
 
 import * as S from './styles'
+import useMaps from '@hooks/useMaps'
 
 const AllMaps = () => {
-	const [location, setLocation] = useState(null)
-	const { maps, loading } = useAllMaps()
+	const [location, setLocation] = useState<any>()
+	const { maps, loading } = useMaps()
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
 		if (status !== 'granted') return
 
 		const { coords } = await Location.getCurrentPositionAsync({})
-		setLocation(getMapRegion([coords.latitude, coords.longitude], 0.5))
+		setLocation(getMapRegion([coords.latitude, coords.longitude]))
 	}, [])
 
 	useEffect(() => {
 		getLocation()
 	}, [getLocation])
 
+	const renderMap = () => {
+		if (!location) return null
+
+		const markers = maps.map(map => ({
+			coordinates: getMarkerCoordinate([map.lat, map.lng]),
+			title: map.name,
+			description: map.address,
+			tintColor: getPinColor(map.assigned),
+			onCalloutPress: () => {
+				if (!map.last_assignment?.finished) {
+					router.push({
+						pathname: `/admin/maps/${map.$id}`,
+						params: { data: JSON.stringify(map) },
+					})
+				}
+			},
+			callout: {
+				title: map.name,
+				description: `${map.address}, ${map.city.name}`,
+				actions: map.last_assignment?.finished ? [] : [{ title: 'DESIGNAR' }],
+			},
+		}))
+
+		if (Platform.OS === 'ios') {
+			return (
+				<AppleMaps.View cameraPosition={location} style={{ width: '100%', height: '100%' }} markers={markers} />
+			)
+		}
+
+		return (
+			<GoogleMaps.View
+				userLocation={{
+					followUserLocation: true,
+					coordinates: { latitude: location.latitude, longitude: location.longitude },
+				}}
+				cameraPosition={location}
+				style={{ width: '100%', height: '100%' }}
+				markers={markers}
+			/>
+		)
+	}
+
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: 'Mapas da congregação' }} />
 			<S.Content>
-				<S.MapContainer>
-					<S.Map showsUserLocation region={location}>
-						{maps.map(map => (
-							<Marker
-								key={map._id}
-								coordinate={getMarkerCoordinate(map.coordinates)}
-								title={map.name}
-								description={map.address}
-								pinColor={getPinColor(map.assigned)}
-							>
-								<S.MarkerCallout tooltip>
-									<Link href={{ pathname: `/admin/maps/${map._id}`, params: map }} asChild>
-										<S.IconButton hitSlop={50}>
-											<S.EditIcon name='eye-outline' />
-										</S.IconButton>
-									</Link>
-									<S.Columm>
-										<S.Paragraph>{map.name}</S.Paragraph>
-										<S.ParagraphWrap numberOfLines={3} ellipsizeMode='tail'>
-											{map.address}, {map.city.name}
-										</S.ParagraphWrap>
-										{map.last_assignment?.finished ? (
-											<S.Small>Mapa designado</S.Small>
-										) : (
-											<Link
-												href={{ pathname: '/admin/assignments/add', params: { map: map._id } }}
-											>
-												<S.AssignLink>DESIGNAR</S.AssignLink>
-											</Link>
-										)}
-									</S.Columm>
-								</S.MarkerCallout>
-							</Marker>
-						))}
-					</S.Map>
-				</S.MapContainer>
+				<S.MapContainer>{renderMap()}</S.MapContainer>
 				{loading && (
 					<S.LoadingContainer>
 						<S.LoadingContent>

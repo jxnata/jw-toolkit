@@ -1,14 +1,17 @@
-import { cache } from 'database'
-import { CACHE } from 'database/types/keys'
-import { Cache } from 'swr'
+import { cache } from '@database/index'
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 
-const map = new Map(JSON.parse(cache.getString(CACHE) || '[]'))
-
-export function populateCache() {
-	const appCache = JSON.stringify(Array.from(map.entries()))
-	cache.set(CACHE, appCache)
+const clientStorage = {
+	setItem: (key: string, value: boolean | string | number | Uint8Array<ArrayBufferLike>) => {
+		cache.set(key, value)
+	},
+	getItem: (key: string) => {
+		const value = cache.getString(key)
+		return value === undefined ? null : value
+	},
+	removeItem: (key: string) => {
+		cache.delete(key)
+	},
 }
 
-export function cacheProvider() {
-	return map as Cache
-}
+export const clientPersister = createSyncStoragePersister({ storage: clientStorage })

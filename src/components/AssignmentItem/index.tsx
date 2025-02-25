@@ -1,43 +1,60 @@
 import { LocationObjectCoords } from 'expo-location'
-import { IAssignment } from 'types/models/Assignment'
-import { formatDate } from 'utils/date-format'
-import { getLocationDistance } from 'utils/get-location-distance'
-import { mapImage } from 'utils/map-image'
+import { getLocationDistance } from '@utils/get-location-distance'
+import { mapImage } from '@utils/map-image'
+import { useQuery } from '@tanstack/react-query'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
+import { useMemo } from 'react'
+import { formatDate } from '@utils/date-format'
 
 interface AssignmentProps {
-	assignment: IAssignment
-	location: LocationObjectCoords
+	map: Models.Document
+	location: LocationObjectCoords | null
 	onPress?: () => void
-	showPublisher?: boolean
+	hidePublisher?: boolean
 }
 
-const AssignmentItem = ({ assignment, showPublisher, location, onPress }: AssignmentProps) => {
-	const coordinates: [number, number] = typeof assignment.map !== 'string' ? assignment.map.coordinates : [0, 0]
-	const distance = getLocationDistance(location, coordinates)
+const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentProps) => {
+	const coordinates: [number, number] = [map.lat, map.lng]
+
+	const found = useMemo(() => {
+		if (map) {
+			if (map.visited) {
+				if (map.found) {
+					return true
+				}
+			}
+		}
+
+		return false
+	}, [map])
+
+	const { data: distance } = useQuery({
+		queryKey: ['distance', location?.latitude, location?.longitude, coordinates[0], coordinates[1]],
+		queryFn: () => getLocationDistance(location, coordinates),
+		enabled: !!location,
+	})
 
 	return (
 		<S.Container onPress={onPress}>
-			{assignment.permanent ? (
-				<S.Small>Permanente</S.Small>
-			) : (
-				<S.Small>{formatDate(assignment.created_at)}</S.Small>
-			)}
 			<S.Column>
 				<S.Image resizeMode='contain' source={{ uri: mapImage(coordinates) }} />
 			</S.Column>
-			{typeof assignment.map !== 'string' && (
-				<S.Column>
-					<S.Paragraph>{assignment.map.name}</S.Paragraph>
-					<S.ParagraphAddress>
-						{assignment.map.address}, {assignment.map.city.name}
-					</S.ParagraphAddress>
-					{showPublisher && typeof assignment.publisher === 'object' && (
-						<S.ParagraphAlt>Designado para {assignment.publisher.name}</S.ParagraphAlt>
-					)}
-				</S.Column>
-			)}
+			<S.Column>
+				{map.assigned && !hidePublisher && <S.Paragraph>{map.assigned.name}</S.Paragraph>}
+				<S.ParagraphAddress>
+					{map.name} - {map.address}, {map.city.name}
+				</S.ParagraphAddress>
+				{!!map.visited ? (
+					<S.Column>
+						<S.Small>Visitado em {formatDate(map.visited)}</S.Small>
+						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
+					</S.Column>
+				) : (
+					<S.Small>Ainda não visitado</S.Small>
+				)}
+			</S.Column>
 			<S.Distance>
 				<S.DistanceText>{distance}</S.DistanceText>
 			</S.Distance>

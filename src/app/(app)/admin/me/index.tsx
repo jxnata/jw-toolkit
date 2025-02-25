@@ -1,42 +1,45 @@
-import Button from 'components/Button'
-import { APP_VERSION } from 'constants/content'
-import { useSession } from 'contexts/Auth'
-import { Stack, useRouter } from 'expo-router'
-import { useCallback } from 'react'
-import { IUser } from 'types/models/User'
+import { APP_VERSION } from '@constants/content'
+import { useSession } from '@contexts/session'
+import { Link, Stack } from 'expo-router'
+import { Alert } from 'react-native'
 
 import * as S from './styles'
+import Button from '@components/Button'
 
 const UserDetails = () => {
-	const { session, loading, signOut, swap } = useSession<IUser>()
-	const router = useRouter()
+	const { current, loading, congregation, logout, type } = useSession()
 
-	const handleSwap = useCallback(async () => {
-		const swapped = await swap()
+	const handleLogout = () => {
+		Alert.alert('Sair', 'Tem certeza que deseja sair?', [
+			{
+				text: 'Cancelar',
+				style: 'cancel',
+			},
+			{
+				text: 'Sim',
+				onPress: logout,
+			},
+		])
+	}
 
-		if (!swapped) return alert('Erro ao trocar para publicador.')
-
-		while (router.canGoBack()) {
-			router.back()
-		}
-		router.replace('/publisher')
-	}, [router, swap])
+	if (!current) return null
+	if (!congregation) return null
 
 	return (
 		<S.Container>
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal' }} />
 			<S.Content>
 				<S.Icon></S.Icon>
-				<S.Title>{session.data.name}</S.Title>
+				<S.Title>{current.name}</S.Title>
 				<S.Label>Congregação</S.Label>
-				<S.Paragraph>{session.data.congregation.name}</S.Paragraph>
+				<S.Paragraph>{congregation.name}</S.Paragraph>
 				<S.ButtonGroup>
-					{!!session.data.publisher && (
-						<Button loading={loading} onPress={handleSwap}>
-							Trocar para publicador
-						</Button>
+					{type === 'admin' && (
+						<Link href='/admin/my-assignments' asChild>
+							<Button onPress={() => {}}>Minhas designações</Button>
+						</Link>
 					)}
-					<S.Button onPress={signOut} disabled={loading}>
+					<S.Button onPress={handleLogout} disabled={loading}>
 						<S.ButtonTitle>Sair</S.ButtonTitle>
 					</S.Button>
 				</S.ButtonGroup>

@@ -1,25 +1,36 @@
-import { useForegroundPermissions } from 'expo-location'
+import { PermissionStatus } from 'expo-location'
 import { Redirect } from 'expo-router'
 import { Linking } from 'react-native'
+import { useEffect, useState } from 'react'
+import { requestPermissionsAsync } from 'expo-maps'
 
 import * as S from './styles'
 
 const LocationRequest = () => {
-	const [status, requestPermission] = useForegroundPermissions()
+	const [status, setStatus] = useState<PermissionStatus | null>(null)
+
+	useEffect(() => {
+		const checkPermissionStatus = async () => {
+			const { status: newStatus } = await requestPermissionsAsync()
+			setStatus(newStatus)
+		}
+		checkPermissionStatus()
+	}, [status])
 
 	if (status) {
-		if (status.granted) {
+		if (status === PermissionStatus.GRANTED) {
 			return <Redirect href='/' />
 		}
 	}
 
 	const requestLocationPermission = async () => {
-		if (status.canAskAgain === false) {
+		if (!status) return
+		if (status === PermissionStatus.DENIED) {
 			Linking.openSettings()
 			return
 		}
 
-		requestPermission()
+		requestPermissionsAsync()
 	}
 
 	return (

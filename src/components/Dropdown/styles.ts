@@ -14,7 +14,7 @@ export const Input = styled.Pressable`
 	width: 100%;
 	height: 50px;
 	padding: 14px 16px;
-	border-radius: 12px;
+	border-radius: 8px;
 	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.backgroundAlt};
 	opacity: ${props => (props['aria-disabled'] ? 0.5 : 1)};
@@ -24,7 +24,7 @@ export const Placeholder = styled.Text`
 	font-size: 15px;
 	font-family: 'urbanist-medium';
 `
-export const Container = styled.Pressable`
+export const Container = styled.View`
 	display: flex;
 	justify-content: flex-end;
 	width: 100%;
@@ -50,6 +50,13 @@ export const Item = styled.Pressable`
 `
 export const Label = styled.Text`
 	color: ${({ theme }) => theme.text};
+	font-size: 12px;
+	font-family: 'urbanist-medium';
+	margin-bottom: 5px;
+	margin-left: 2px;
+`
+export const ItemLabel = styled.Text`
+	color: ${({ theme }) => theme.text};
 	font-size: 16px;
 	font-family: 'urbanist-medium';
 `
@@ -64,4 +71,13 @@ export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 20,
 }))`
 	color: ${({ theme }) => theme.textAlt};
+`
+export const CloseButton = styled.TouchableOpacity`
+	position: absolute;
+	top: -45px;
+	right: 10px;
+	background-color: ${({ theme }) => theme.backgroundAlt};
+	padding: 8px;
+	border-radius: 8px;
+	z-index: 1;
 `

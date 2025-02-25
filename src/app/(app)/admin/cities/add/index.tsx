@@ -1,29 +1,47 @@
-import Button from 'components/Button'
-import Input from 'components/Input'
+import Button from '@components/Button'
+import Input from '@components/Input'
+import useCities from '@hooks/useCities'
+import { AddCityReq } from '@interfaces/api/cities'
 import { Stack, router } from 'expo-router'
-import useCities from 'hooks/swr/admin/useCities'
-import { error, success } from 'messages/add'
+import { error, success } from '@messages/add'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { add } from 'services/cities/add'
-import { AddCityReq } from 'types/api/cities'
+import { useSession } from '@contexts/session'
+import { database } from '@services/appwrite'
+import { ID, Permission, Role } from 'react-native-appwrite'
 
 import * as S from './styles'
 
 const AddCity = () => {
+	const { congregation } = useSession()
 	const { mutate } = useCities({ search: '' })
 	const { control, formState, handleSubmit } = useForm<AddCityReq>()
 
 	const save: SubmitHandler<AddCityReq> = async data => {
-		const result = await add(data)
+		if (!data.name) return
+		if (!congregation) return
 
-		if (result) {
+		try {
+			await database.createDocument(
+				'production',
+				'cities',
+				ID.unique(),
+				{
+					name: data.name,
+					congregation: congregation.id,
+				},
+				[
+					Permission.read(Role.label(congregation.id)),
+					Permission.update(Role.label(congregation.id)),
+					Permission.delete(Role.label(congregation.id)),
+				]
+			)
 			success('cidade')
 			mutate()
 			router.back()
-			return
+		} catch (err) {
+			error('cidade')
+			console.error('Failed to create city:', err)
 		}
-
-		error('cidade')
 	}
 
 	return (

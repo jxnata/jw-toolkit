@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions } from 'react-native'
-import MapView from 'react-native-maps'
+import { AppleMaps as MapView } from 'expo-maps'
 import styled from 'styled-components/native'
 
 const screenWidth = Dimensions.get('screen').width
@@ -80,7 +80,7 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 15px;
 `
-export const IconButton = styled.Pressable``
+export const IconButton = styled.TouchableOpacity``
 export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`

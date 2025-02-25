@@ -1,22 +1,22 @@
-import LocationRequest from 'components/LocationRequest'
-import { useSession } from 'contexts/Auth'
+import LocationRequest from '@components/LocationRequest'
+import { useSession } from '@contexts/session'
+import theme from '@themes/index'
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect, Stack } from 'expo-router'
 import { useEffect } from 'react'
 import { useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
-import theme from 'themes'
 
 export default function Layout() {
 	const scheme = useColorScheme()
-	const { session } = useSession()
+	const { current } = useSession()
 	const [status] = useForegroundPermissions()
 
 	useEffect(() => {
-		if (session) OneSignal.login(session.data._id)
-	}, [session])
+		if (current) OneSignal.login(current.$id)
+	}, [current])
 
-	if (!session) {
+	if (!current) {
 		return <Redirect href='/sign-in' />
 	}
 
@@ -29,22 +29,23 @@ export default function Layout() {
 	return (
 		<Stack
 			screenOptions={{
-				headerStyle: {
-					backgroundColor: theme[scheme].background,
-				},
+				headerStyle: { backgroundColor: theme[scheme || 'light'].background },
 				headerShadowVisible: false,
-				headerTintColor: theme[scheme].text,
+				headerTintColor: theme[scheme || 'light'].text,
 				headerTitleStyle: { fontFamily: 'urbanist-bold' },
-				headerBackTitleVisible: false,
+				headerBackButtonDisplayMode: 'generic',
 				headerTitleAlign: 'center',
-				contentStyle: { backgroundColor: theme[scheme].background },
+				contentStyle: { backgroundColor: theme[scheme || 'light'].background },
 			}}
 		>
 			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
-			<Stack.Screen name='publisher/history/index' options={{ presentation: 'modal' }} />
 			<Stack.Screen
 				name='publisher/assignment/[id]/index'
+				options={{ presentation: 'modal', headerShown: false }}
+			/>
+			<Stack.Screen
+				name='admin/my-assignments/view/[id]/index'
 				options={{ presentation: 'modal', headerShown: false }}
 			/>
 		</Stack>

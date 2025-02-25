@@ -1,6 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions } from 'react-native'
-import MapView, { Callout } from 'react-native-maps'
 import styled from 'styled-components/native'
 
 const screenWidth = Dimensions.get('screen').width
@@ -20,7 +19,7 @@ export const AssignLink = styled.Text`
 	flex-wrap: wrap;
 	align-self: center;
 	text-align: center;
-	padding: 5px;
+	padding: 10px;
 	flex: 1;
 `
 export const Columm = styled.View`
@@ -30,13 +29,6 @@ export const Columm = styled.View`
 export const Row = styled.View`
 	gap: 10px;
 	flex-direction: row;
-`
-export const MarkerCallout = styled(Callout)`
-	padding: 10px;
-	border-radius: 10px;
-	border: solid 1.5px ${({ theme }) => theme.border};
-	background: ${({ theme }) => theme.background};
-	width: ${screenWidth / 2}px;
 `
 export const MapContainer = styled.View`
 	overflow: hidden;
@@ -66,10 +58,6 @@ export const Small = styled.Text`
 	color: ${({ theme }) => theme.textAlt};
 	font-size: 12px;
 	font-family: 'urbanist-regular';
-`
-export const Map = styled(MapView)`
-	width: 100%;
-	height: 100%;
 `
 export const HeaderContainer = styled.View`
 	display: flex;

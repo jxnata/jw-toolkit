@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "561014260561",
+    "project_id": "jw-toolkit",
+    "storage_bucket": "jw-toolkit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561014260561:android:cc6f79b9df87c2592a4970",
+        "android_client_info": {
+          "package_name": "dev.jxnata.jwmaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561014260561-4oe717mc2unpfo0k6q917s9vkcsljekm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.jxnata.jwmaps",
+            "certificate_hash": "e8f4d7e5443244690b3da68faad381ec19df5946"
+          }
+        },
+        {
+          "client_id": "561014260561-4tn4d6v1dljdcrtbefqppfcl9fcao1fq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.jxnata.jwmaps",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "561014260561-f1n05qvv81k2mmresb9272kb5bflfbkg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.jxnata.jwmaps",
+            "certificate_hash": "f076a62cc9acab5dc324dac2384180dccc041ae3"
+          }
+        },
+        {
+          "client_id": "561014260561-gu2qdme5435fo7na5ca195pqkkhv5sbv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.jxnata.jwmaps",
+            "certificate_hash": "d714368ba03f486e67c7ab3f0ab614292b89b555"
+          }
+        },
+        {
+          "client_id": "561014260561-qdn5j9839j4kvao78qmd6flj1nfh4c8n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.jxnata.jwmaps",
+            "certificate_hash": "504f0232ecedb49c7457e540271af2277095d019"
+          }
+        },
+        {
+          "client_id": "561014260561-1hiq7gqjerul4lmhdl8lqpth3bs50ktk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfF5Nt2DJeZHnQLEH-5EGJbDhxgRoP20o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561014260561-1hiq7gqjerul4lmhdl8lqpth3bs50ktk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "561014260561-au4cn876vvjtjqhugoakvbiebsmpnlj1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dev.jxnata.jwtoolkit",
+                "app_store_id": "6478899478"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

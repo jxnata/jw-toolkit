@@ -1,26 +1,24 @@
-import AssignmentControls from 'components/AssignmentControls'
-import AssignmentMapCard from 'components/AssignmentMapCard'
+import AssignmentControls from '@components/AssignmentControls'
+import AssignmentMapCard from '@components/AssignmentMapCard'
+import useAssignment from '@hooks/useAssignment'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import useAssignment from 'hooks/swr/admin/useAssignment'
-import { useRef, useState } from 'react'
-import { MapMarker, Marker } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
+import { useState } from 'react'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
+import React from 'react'
+import { Platform } from 'react-native'
 
 const AssigmentDetails = () => {
-	const { id } = useLocalSearchParams()
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const router = useRouter()
-	const markerRef = useRef<MapMarker>(null)
-	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(id as string)
 
-	const onMapReady = () => {
-		if (markerRef && markerRef.current && markerRef.current.showCallout) {
-			setTimeout(markerRef.current.showCallout, 1000)
-		}
-	}
+	const [showFinish, setShowFinish] = useState(false)
+	const { assignment } = useAssignment(params.id as string, params as Models.Document)
 
 	const toggleModal = () => {
 		setShowFinish(old => !old)
@@ -37,8 +35,8 @@ const AssigmentDetails = () => {
 		)
 	}
 
-	const region = typeof assignment.map === 'string' ? undefined : getMapRegion(assignment.map.coordinates)
-	const marker = typeof assignment.map === 'string' ? undefined : getMarkerCoordinate(assignment.map.coordinates)
+	const region = getMapRegion([assignment.lat, assignment.lng])
+	const marker = getMarkerCoordinate([assignment.lat, assignment.lng])
 
 	return (
 		<S.Container>
@@ -48,23 +46,35 @@ const AssigmentDetails = () => {
 					<S.CloseButton onPress={router.back}>
 						<S.Icon name='arrow-back' />
 					</S.CloseButton>
-					<S.Map region={region} onMapReady={onMapReady} showsUserLocation>
-						<Marker
-							ref={markerRef}
-							key={assignment.map._id}
-							coordinate={marker}
-							title={assignment.map.name}
-							description={assignment.map.address}
+					{Platform.OS === 'ios' ? (
+						<AppleMaps.View
+							cameraPosition={region}
+							style={{ width: '100%', height: '100%' }}
+							markers={[{ coordinates: marker, title: assignment.name }]}
 						/>
-					</S.Map>
-					{!assignment.finished && (
-						<>
-							{showFinish ? (
-								<AssignmentMapCard assignment={assignment} onCancel={toggleModal} />
-							) : (
-								<AssignmentControls assignment={assignment} onFinish={toggleModal} />
-							)}
-						</>
+					) : (
+						<GoogleMaps.View
+							cameraPosition={region}
+							style={{ width: '100%', height: '100%' }}
+							markers={[
+								{
+									coordinates: marker,
+									title: assignment.name,
+									snippet: assignment.address,
+									showCallout: true,
+								},
+							]}
+							userLocation={{
+								followUserLocation: true,
+								coordinates: { latitude: assignment.lat, longitude: assignment.lng },
+							}}
+						/>
+					)}
+
+					{showFinish ? (
+						<AssignmentMapCard assignment={assignment} onCancel={toggleModal} />
+					) : (
+						<AssignmentControls assignment={assignment} onFinish={toggleModal} />
 					)}
 				</S.Content>
 			)}

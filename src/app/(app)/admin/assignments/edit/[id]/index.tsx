@@ -1,79 +1,77 @@
-import Button from 'components/Button'
-import Dropdown from 'components/Dropdown'
-import IconButton from 'components/IconButton'
-import Input from 'components/Input'
-import MapViewDetails from 'components/MapViewDetails'
+import Button from '@components/Button'
+import Dropdown from '@components/Dropdown'
+import MapViewDetails from '@components/MapViewDetails'
+import useMap from '@hooks/useMap'
+import usePublishers from '@hooks/usePublishers'
+import { EditAssignmentReq } from '@interfaces/api/assignments'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import useAssignments from 'hooks/swr/admin/useAssignments'
-import useMap from 'hooks/swr/admin/useMap'
-import usePublishers from 'hooks/swr/admin/usePublishers'
-import { error as removeError, success as removeSuccess } from 'messages/delete'
-import { error, success } from 'messages/edit'
+import { error as removeError, success as removeSuccess } from '@messages/delete'
+import { error, success } from '@messages/edit'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
-import { edit } from 'services/assignments/edit'
-import { remove } from 'services/assignments/remove'
-import { colors } from 'themes'
-import { EditAssignmentReq } from 'types/api/assignments'
-import { IAssignment } from 'types/models/Assignment'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
+import { database } from '@services/appwrite'
+import useMaps from '@hooks/useMaps'
 
 const EditAssignment = () => {
-	const params: Partial<IAssignment> = useLocalSearchParams()
-	const { map } = useMap(typeof params.map === 'object' ? params.map._id : params.map)
-	const { publishers } = usePublishers({ all: true })
-	const { mutate } = useAssignments({ search: '' })
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Models.Document
+	const { map } = useMap(params.$id)
+	const { publishers } = usePublishers()
+	const { mutate } = useMaps({ status: 'assigned', search: params.search || '' })
 
 	const defaultValues: EditAssignmentReq = useMemo(
 		() => ({
-			map: typeof params.map === 'object' ? params.map._id : params.map,
-			publisher: typeof params.publisher === 'object' ? params.publisher._id : params.publisher,
-			details: params.details,
-			permanent: params.permanent,
+			assigned: typeof params.assigned === 'object' ? params.assigned.$id : params.assigned,
 		}),
-		[params.details, params.map, params.permanent, params.publisher]
+		[params.assigned]
 	)
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p._id })), [publishers])
+	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
 
 	const save: SubmitHandler<EditAssignmentReq> = async data => {
-		const result = await edit(params._id, data)
+		try {
+			await database.updateDocument('production', 'maps', params.$id!, {
+				assigned: data.assigned,
+			})
 
-		if (result) {
 			success('designação')
 			mutate()
 			router.back()
-			return
+		} catch (err) {
+			error('designação')
+			console.error('Failed to update map (assigned):', err)
 		}
-
-		error('designação')
 	}
 
 	const deleteAssignment = async () => {
-		const result = await remove(params._id)
+		try {
+			await database.updateDocument('production', 'maps', params.$id!, {
+				assigned: null,
+			})
 
-		if (result) {
 			removeSuccess('designação')
 			mutate()
 			router.back()
-			return
+		} catch (err) {
+			removeError('designação')
+			console.error('Failed to update map (assigned):', err)
 		}
-
-		removeError('designação')
 	}
 
 	const showDeleteAlert = () =>
-		Alert.alert('Excluir', 'Deseja excluir a designação? Essa opção não pode ser revertida.', [
+		Alert.alert('Remover', 'Deseja remover a designação? Essa opção não pode ser revertida.', [
 			{
 				text: 'Cancelar',
 				style: 'cancel',
 			},
 			{
-				text: 'Sim, excluir',
+				text: 'Sim, remover',
 				onPress: () => deleteAssignment(),
 				style: 'default',
 			},
@@ -87,9 +85,10 @@ const EditAssignment = () => {
 				<Controller
 					control={control}
 					rules={{ required: true }}
-					name='publisher'
+					name='assigned'
 					render={({ field: { onChange, value } }) => (
 						<Dropdown
+							label='Designado para'
 							placeholder='Selecione um publicador...'
 							options={publisherList}
 							selectedValue={value}
@@ -97,35 +96,13 @@ const EditAssignment = () => {
 						/>
 					)}
 				/>
-				<Controller
-					control={control}
-					rules={{ required: true }}
-					name='permanent'
-					render={({ field: { onChange, value } }) => (
-						<Dropdown
-							placeholder='Designação Permanente'
-							options={[
-								{ label: 'Permanente', value: 'true' },
-								{ label: 'Temporária', value: 'false' },
-							]}
-							selectedValue={value ? value.toString() : 'false'}
-							onValueChange={onChange}
-						/>
-					)}
-				/>
-				<Controller
-					control={control}
-					rules={{ required: false }}
-					name='details'
-					render={({ field: { onChange, onBlur, value } }) => (
-						<Input placeholder='Observações' onBlur={onBlur} onChangeText={onChange} value={value} />
-					)}
-				/>
 				<S.Row>
 					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 						Atualizar
 					</Button>
-					<IconButton icon='trash-bin-outline' color={colors.error} onPress={showDeleteAlert} />
+					<S.ButtonOutline onPress={showDeleteAlert} disabled={formState.isSubmitting}>
+						<S.ButtonOutlineText>Remover designação</S.ButtonOutlineText>
+					</S.ButtonOutline>
 				</S.Row>
 			</S.Content>
 		</S.Container>

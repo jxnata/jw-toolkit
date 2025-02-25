@@ -34,7 +34,7 @@ export const ButtonGroup = styled.View`
 	gap: 10px;
 	margin-top: 10px;
 `
-export const Button = styled.Pressable`
+export const Button = styled.TouchableOpacity`
 	gap: 5px;
 	display: flex;
 	flex-direction: row;

@@ -1,20 +1,20 @@
 import { useMemo } from 'react'
-import { IMap } from 'types/models/Map'
-import { formatDate } from 'utils/date-format'
-import { mapImage } from 'utils/map-image'
+import { formatDate } from '@utils/date-format'
+import { mapImage } from '@utils/map-image'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
 
 interface MapProps {
-	map: IMap
+	map: Models.Document
 	showImage?: boolean
 }
 
 const MapViewDetails = ({ map, showImage }: MapProps) => {
 	const found = useMemo(() => {
 		if (map) {
-			if (map.last_assignment) {
-				if (map.last_assignment.found) {
+			if (map.visited) {
+				if (map.found) {
 					return true
 				}
 			}
@@ -37,12 +37,13 @@ const MapViewDetails = ({ map, showImage }: MapProps) => {
 				<S.Paragraph numberOfLines={2} ellipsizeMode='tail'>
 					{map.address}
 				</S.Paragraph>
+				<S.Paragraph numberOfLines={1} ellipsizeMode='tail'>
+					{map.district}
+				</S.Paragraph>
 				{!!map.details && <S.Paragraph>{map.details}</S.Paragraph>}
-				{!!map.last_visited_by && typeof map.last_visited_by === 'object' ? (
+				{!!map.visited ? (
 					<S.Column>
-						<S.Small>
-							{map.last_visited_by.name} em {formatDate(map.last_visited)}
-						</S.Small>
+						<S.Small>Visitado em {formatDate(map.visited)}</S.Small>
 						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
 					</S.Column>
 				) : (

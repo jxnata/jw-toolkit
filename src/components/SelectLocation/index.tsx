@@ -1,61 +1,55 @@
-import Button from 'components/Button'
-import { getCurrentPositionAsync } from 'expo-location'
-import useCheckbox from 'hooks/useCheckbox'
+import Button from '@components/Button'
+import useCheckbox from '@hooks/useCheckbox'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import MapView, { LatLng, MapMarker, MapPressEvent, MapType, Marker, Region } from 'react-native-maps'
-import { getMapRegion } from 'utils/get-map-region'
-import { getMarkerCoordinate } from 'utils/get-marker-coordinate'
-import { validCoordinates } from 'utils/valid-coordinates'
+import { AppleMaps, Coordinates, GoogleMaps } from 'expo-maps'
+import { getMapRegion } from '@utils/get-map-region'
+import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { validCoordinates } from '@utils/valid-coordinates'
 
 import * as S from './styles'
+import React from 'react'
+import { Platform } from 'react-native'
 
 type Props = {
 	onSelect: (coord: [number, number]) => void
 	onClose: () => void
-	initial?: [number, number]
+	initial?: AppleMaps.CameraPosition | GoogleMaps.CameraPosition
 }
 
-const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
-	const markerRef = useRef<MapMarker>(null)
-	const mapRef = useRef<MapView>(null)
-	const [pin, setPin] = useState<[number, number]>(validCoordinates(initial))
-	const [initialLocation, setInitialLocation] = useState<Region>()
-	const { CheckboxComponent: MapOptions, selectedValues } = useCheckbox(['standard', 'satellite'], ['standard'], true)
+const mapTypes =
+	Platform.OS === 'ios'
+		? [AppleMaps.MapType.HYBRID, AppleMaps.MapType.STANDARD, AppleMaps.MapType.IMAGERY]
+		: [
+				GoogleMaps.MapType.HYBRID,
+				GoogleMaps.MapType.NORMAL,
+				GoogleMaps.MapType.SATELLITE,
+				GoogleMaps.MapType.TERRAIN,
+			]
 
-	const mapType: MapType = useMemo(() => selectedValues[0], [selectedValues]) as 'standard' | 'satellite'
-	const marker: LatLng = useMemo(() => getMarkerCoordinate(pin), [pin])
+const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
+	const mapRef = useRef<AppleMaps.MapView | GoogleMaps.MapView>(null)
+	const [pin, setPin] = useState<[number, number]>(
+		validCoordinates([initial?.coordinates?.latitude || 0, initial?.coordinates?.longitude || 0]) || [0, 0]
+	)
+	const { CheckboxComponent: MapOptions, selectedValues } = useCheckbox(mapTypes, ['HYBRID'], true)
+
+	const mapType = useMemo(() => selectedValues[0], [selectedValues])
+	const marker = useMemo(() => getMarkerCoordinate(pin), [pin])
 
 	const onSelectLocation = useCallback(
-		(e: MapPressEvent) => {
-			const coordinates: [number, number] = [
-				e.nativeEvent.coordinate.latitude,
-				e.nativeEvent.coordinate.longitude,
-			]
-			setPin(coordinates)
+		(e: { coordinates: Coordinates }) => {
+			const coordinates: [number, number] = [e.coordinates.latitude || 0, e.coordinates.longitude || 0]
+			setPin([e.coordinates.latitude || 0, e.coordinates.longitude || 0])
 			onSelect(coordinates)
 		},
 		[onSelect]
 	)
 
-	const getInitialLocation = useCallback(async () => {
-		if (pin) {
-			setInitialLocation(getMapRegion(pin, 0.001))
-			return
-		}
-		const location = await getCurrentPositionAsync()
-		const region = getMapRegion([location.coords.latitude, location.coords.longitude])
-		setInitialLocation(region)
-	}, [pin])
-
-	useEffect(() => {
-		getInitialLocation()
-	}, [getInitialLocation])
-
 	useEffect(() => {
 		if (!pin) return
 		if (!mapRef.current) return
 
-		mapRef.current.animateToRegion(getMapRegion(pin, 0.001), 500)
+		mapRef.current.setCameraPosition({ coordinates: getMapRegion(pin) as Coordinates, duration: 500, zoom: 17 })
 	}, [pin, mapRef])
 
 	return (
@@ -67,16 +61,26 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 				<S.CloseButton onPress={onClose}>
 					<S.Icon name='close-outline' />
 				</S.CloseButton>
-				{initialLocation ? (
-					<S.Map
-						ref={mapRef}
-						initialRegion={initialLocation}
-						onPress={onSelectLocation}
-						mapType={mapType}
-						showsUserLocation
-					>
-						<Marker ref={markerRef} coordinate={marker} />
-					</S.Map>
+				{initial ? (
+					<>
+						{Platform.OS === 'ios' ? (
+							<AppleMaps.View
+								cameraPosition={initial}
+								style={{ width: '100%', height: '100%' }}
+								markers={[{ coordinates: marker }]}
+								onMapClick={onSelectLocation}
+								properties={{ mapType: mapType as AppleMaps.MapType }}
+							/>
+						) : (
+							<GoogleMaps.View
+								cameraPosition={initial}
+								style={{ width: '100%', height: '100%' }}
+								markers={[{ coordinates: marker }]}
+								onMapClick={onSelectLocation}
+								properties={{ mapType: mapType as GoogleMaps.MapType }}
+							/>
+						)}
+					</>
 				) : (
 					<S.LoadingContainer>
 						<S.Loading />

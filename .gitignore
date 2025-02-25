@@ -34,8 +34,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# env
-.env
+# native
+android/
+ios/
 
-# android
-jxnata.keystore
+# Environment variables
+.env
+.env.*

@@ -2,16 +2,27 @@ import { useMemo, useState } from 'react'
 import { Modal } from 'react-native'
 
 import * as S from './styles'
+import React from 'react'
 
 type Props = {
-	selectedValue: string
+	selectedValue: string | undefined
 	options: { label: string; value: string }[]
+	label?: string
 	placeholder: string
 	disabled?: boolean
-	onValueChange: (any) => void
+	onValueChange: (value: any) => void
+	footerComponent?: React.ReactNode
 }
 
-const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onValueChange }: Props) => {
+const Dropdown = ({
+	selectedValue,
+	options,
+	label,
+	placeholder,
+	disabled = false,
+	onValueChange,
+	footerComponent,
+}: Props) => {
 	const [open, setOpen] = useState(false)
 
 	const toggle = () => {
@@ -37,13 +48,17 @@ const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onVal
 
 	return (
 		<S.DropdowContainer>
+			{!!label && <S.Label>{label}</S.Label>}
 			<S.Input aria-disabled={disabled} onPress={toggle} disabled={disabled}>
 				<S.Placeholder>{selectedLabel || placeholder}</S.Placeholder>
 				<S.Ionicon name='chevron-down' />
 			</S.Input>
 			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
-				<S.Container onPress={toggle}>
+				<S.Container>
 					<S.Content>
+						<S.CloseButton onPress={toggle}>
+							<S.Ionicon name='close' />
+						</S.CloseButton>
 						<S.List
 							data={options}
 							renderItem={({ item }) => (
@@ -53,11 +68,17 @@ const Dropdown = ({ selectedValue, options, placeholder, disabled = false, onVal
 									) : (
 										<S.Ionicon name='ellipse-outline' />
 									)}
-									<S.Label>{item.label}</S.Label>
+									<S.ItemLabel>{item.label}</S.ItemLabel>
 								</S.Item>
 							)}
 							keyExtractor={item => item.label}
-							ListFooterComponent={<S.Space />}
+							ListFooterComponent={
+								<>
+									<S.Space />
+									{footerComponent}
+									<S.Space />
+								</>
+							}
 						/>
 					</S.Content>
 				</S.Container>

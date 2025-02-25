@@ -1,18 +1,26 @@
 import { Linking, Platform } from 'react-native'
-import { IAssignment } from 'types/models/Assignment'
+import { useNavigation } from 'expo-router'
+import React from 'react'
 
 import * as S from './styles'
+import { Models } from 'react-native-appwrite'
 
 interface AssignmentProps {
-	assignment: IAssignment
+	assignment: Models.Document
 	onFinish: () => void
 }
 
 const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
-	const navigate = async () => {
-		if (typeof assignment.map !== 'object') return
+	const navigation = useNavigation()
 
-		const destination = `${assignment.map.coordinates[0]},${assignment.map.coordinates[1]}`
+	React.useEffect(() => {
+		navigation.setOptions({
+			title: assignment.name,
+		})
+	}, [assignment.name, navigation])
+
+	const navigate = async () => {
+		const destination = `${assignment.lat},${assignment.lng}`
 
 		if (Platform.OS === 'ios' || Platform.OS === 'macos') {
 			Linking.openURL(`http://maps.apple.com/?t=r&daddr=${destination}&dirflg=d&t=m`)
@@ -25,28 +33,22 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 
 	return (
 		<S.Container>
-			{typeof assignment.map === 'object' && (
-				<S.Content>
-					<S.Title>Endereço</S.Title>
-					{typeof assignment.map.city !== 'string' && (
-						<>
-							<S.Paragraph>
-								{assignment.map.address} - {assignment.map.city.name}
-							</S.Paragraph>
-							{!!assignment.map.details && <S.Paragraph>{assignment.map.details}</S.Paragraph>}
-						</>
-					)}
-					<S.ButtonGroup>
-						<S.ButtonPrimary onPress={navigate}>
-							<S.Ionicon name='navigate-circle-outline' />
-							<S.ButtonTitlePrimary>Ir para</S.ButtonTitlePrimary>
-						</S.ButtonPrimary>
-						<S.ButtonSecondary onPress={onFinish}>
-							<S.ButtonTitleSecondary>Finalizar</S.ButtonTitleSecondary>
-						</S.ButtonSecondary>
-					</S.ButtonGroup>
-				</S.Content>
-			)}
+			<S.Content>
+				<S.Title>Endereço</S.Title>
+				<S.Paragraph>
+					{assignment.address} - {assignment.city.name}
+				</S.Paragraph>
+				{!!assignment.details && <S.Paragraph>{assignment.details}</S.Paragraph>}
+				<S.ButtonGroup>
+					<S.ButtonPrimary onPress={navigate}>
+						<S.Ionicon name='navigate-circle-outline' />
+						<S.ButtonTitlePrimary>Ir para</S.ButtonTitlePrimary>
+					</S.ButtonPrimary>
+					<S.ButtonSecondary onPress={onFinish}>
+						<S.ButtonTitleSecondary>Finalizar</S.ButtonTitleSecondary>
+					</S.ButtonSecondary>
+				</S.ButtonGroup>
+			</S.Content>
 		</S.Container>
 	)
 }

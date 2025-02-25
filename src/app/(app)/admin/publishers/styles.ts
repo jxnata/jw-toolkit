@@ -18,8 +18,7 @@ export const HeaderContainer = styled.View`
 	align-items: center;
 	gap: 15px;
 `
-export const MenuItem = styled.Pressable`
-	display: flex;
+export const MenuItem = styled.TouchableOpacity`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -71,6 +70,18 @@ export const IconContainer = styled.View`
 	justify-content: center;
 	border-radius: 8px;
 	background: ${({ theme }) => theme.background};
+`
+export const WarningButton = styled.Pressable`
+	background-color: ${({ theme }) => theme.warning}20;
+	padding: 10px;
+	border-radius: 8px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+`
+export const WarningText = styled.Text`
+	color: ${({ theme }) => theme.warning};
+	font-family: 'urbanist-medium';
+	text-align: center;
 `
 export const IconButton = styled.Pressable``
 export const RefreshControl = styled.RefreshControl``
