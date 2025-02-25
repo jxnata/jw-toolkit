@@ -20,7 +20,8 @@
 			"googleServicesFile": "./GoogleService-Info.plist",
 			"infoPlist": {
 				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada."
-			}
+			},
+			"appleTeamId": "N9G6UA9982"
 		},
 		"android": {
 			"adaptiveIcon": {
@@ -37,7 +38,12 @@
 				"android.permission.WRITE_EXTERNAL_STORAGE",
 				"android.permission.ACCESS_FINE_LOCATION",
 				"android.permission.ACCESS_COARSE_LOCATION"
-			]
+			],
+			"config": {
+				"googleMaps": {
+					"apiKey": "AIzaSyBJJ6XnME22X2XA14CeyigGChZpijG15b0"
+				}
+			}
 		},
 		"web": {
 			"favicon": "./src/assets/favicon.png"

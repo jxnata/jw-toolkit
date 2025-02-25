@@ -16,6 +16,16 @@
 		}
 	},
 	"submit": {
-		"production": {}
+		"production": {
+			"android": {
+				"serviceAccountKeyPath": "../path/to/api-xxx-yyy-zzz.json",
+				"track": "internal"
+			},
+			"ios": {
+				"appleId": "jxnata@icloud.com",
+				"ascAppId": "6478899478",
+				"appleTeamId": "N9G6UA9982"
+			}
+		}
 	}
 }

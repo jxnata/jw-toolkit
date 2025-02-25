@@ -8,7 +8,7 @@ import useMaps from '@hooks/useMaps'
 import { AddMapReq } from '@interfaces/api/maps'
 import { Stack, router } from 'expo-router'
 import { error, success } from '@messages/add'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Modal } from 'react-native'
 import { getCoordinates } from '@utils/get-coordinates'
@@ -18,13 +18,16 @@ import { database } from '@services/appwrite'
 import { ID, Permission, Role } from 'react-native-appwrite'
 
 import * as S from './styles'
+import { getMapRegion } from '@utils/get-map-region'
+import { useLocation } from '@hooks/useLocation'
 
 const AddMap = () => {
 	const [modalVisible, setModalVisible] = useState(false)
 	const { cities } = useCities()
 	const { mutate } = useMaps()
 	const { congregation } = useSession()
-	const { control, formState, handleSubmit, setValue, getValues } = useForm<AddMapReq>()
+	const { location } = useLocation()
+	const { control, formState, handleSubmit, setValue, getValues, watch } = useForm<AddMapReq>()
 
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
@@ -148,7 +151,7 @@ const AddMap = () => {
 							)}
 						/>
 					</S.MaxWidth>
-					<IconButton icon='locate-outline' onPress={toggleMap} />
+					{/* <IconButton icon='locate-outline' onPress={toggleMap} /> */}
 				</S.Row>
 				<Controller
 					control={control}
@@ -163,13 +166,13 @@ const AddMap = () => {
 						/>
 					)}
 				/>
-				<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
+				{/* <Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}
-						initial={setCoordinates(getValues('coordinates'))}
+						initial={getMapRegion(setCoordinates(getValues('coordinates')))}
 					/>
-				</Modal>
+				</Modal> */}
 				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 					Salvar
 				</Button>

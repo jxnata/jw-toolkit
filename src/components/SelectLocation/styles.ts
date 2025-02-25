@@ -1,6 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions } from 'react-native'
-import MapView from 'react-native-maps'
 import styled from 'styled-components/native'
 
 const { height } = Dimensions.get('window')
@@ -59,10 +58,6 @@ export const MapType = styled.View`
 	align-items: center;
 	padding: 5px;
 	z-index: 10;
-`
-export const Map = styled(MapView)`
-	width: 100%;
-	height: 100%;
 `
 export const ButtonContainer = styled.View`
 	position: absolute;

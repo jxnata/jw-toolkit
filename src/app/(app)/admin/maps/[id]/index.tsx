@@ -10,8 +10,8 @@ import { error, success } from '@messages/add'
 import { error as removeError, success as removeSuccess } from '@messages/delete'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert } from 'react-native'
-import { Marker } from 'react-native-maps'
+import { Alert, Platform } from 'react-native'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { OneSignal } from 'react-native-onesignal'
 import { getMapRegion } from '@utils/get-map-region'
 import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
@@ -32,7 +32,7 @@ const ViewMap = () => {
 	})
 
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
-	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0], 0.01)
+	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
 	const marker = getMarkerCoordinate(map ? [map.lat, map.lng] : [0, 0])
 
 	const save: SubmitHandler<AddAssignmentReq> = async data => {
@@ -166,9 +166,19 @@ const ViewMap = () => {
 				</S.DetailsContainer>
 				{!!map && (
 					<S.MapContainer>
-						<S.Map region={region}>
-							<Marker key={map.$id} coordinate={marker} title={map.name} description={map.address} />
-						</S.Map>
+						{Platform.OS === 'ios' ? (
+							<AppleMaps.View
+								cameraPosition={region}
+								style={{ width: '100%', height: '100%' }}
+								markers={[{ coordinates: marker, title: map.name }]}
+							/>
+						) : (
+							<GoogleMaps.View
+								cameraPosition={region}
+								style={{ width: '100%', height: '100%' }}
+								markers={[{ coordinates: marker, title: map.name }]}
+							/>
+						)}
 					</S.MapContainer>
 				)}
 			</S.Content>

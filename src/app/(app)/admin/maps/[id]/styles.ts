@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Dimensions } from 'react-native'
-import MapView from 'react-native-maps'
+import { AppleMaps as MapView } from 'expo-maps'
 import styled from 'styled-components/native'
 
 const screenWidth = Dimensions.get('screen').width

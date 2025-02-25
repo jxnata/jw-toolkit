@@ -157,7 +157,7 @@ const EditMap = () => {
 							)}
 						/>
 					</S.MaxWidth>
-					<IconButton icon='locate-outline' onPress={toggleMap} />
+					{/* <IconButton icon='locate-outline' onPress={toggleMap} /> */}
 				</S.Row>
 				<Controller
 					control={control}
@@ -172,13 +172,13 @@ const EditMap = () => {
 						/>
 					)}
 				/>
-				<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
+				{/* <Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}
 						initial={setCoordinates(getValues('coordinates'))}
 					/>
-				</Modal>
+				</Modal> */}
 				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 					Salvar
 				</Button>

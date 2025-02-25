@@ -9,7 +9,7 @@ import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect } from 'react'
-import { useColorScheme } from 'react-native'
+import { Platform, useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
@@ -39,9 +39,12 @@ export default function Layout() {
 	useEffect(() => {
 		OneSignal.initialize(ONESIGNAL_APP_ID)
 		OneSignal.Notifications.requestPermission(true)
-		// if (Platform.OS === 'android') {
-		GoogleSignin.configure()
-		// }
+		if (Platform.OS === 'android') {
+			GoogleSignin.configure({
+				webClientId: '561014260561-1hiq7gqjerul4lmhdl8lqpth3bs50ktk.apps.googleusercontent.com',
+				offlineAccess: true,
+			})
+		}
 	}, [])
 
 	if (!isLoaded) return null
