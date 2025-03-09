@@ -44,7 +44,10 @@ const MapViewDetails = ({ map, showImage }: MapProps) => {
 				{!!map.details && <S.Paragraph>{map.details}</S.Paragraph>}
 				{!!map.visited ? (
 					<S.Column>
-						Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
+						<S.Small>
+							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
+							{formatDate(map.visited)}
+						</S.Small>
 						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
 					</S.Column>
 				) : (

@@ -21,6 +21,7 @@ const usePublishers = ({ search }: Props = { search: '' }) => {
 			const queries = [
 				Query.equal('approved', true),
 				Query.equal('congregation', congregation!),
+				Query.orderAsc('name'),
 				Query.limit(1000),
 			]
 
