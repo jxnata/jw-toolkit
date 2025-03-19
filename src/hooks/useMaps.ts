@@ -20,7 +20,7 @@ const useMaps = (props: Props = { search: '', district: '', status: '', city: ''
 		error,
 		mutate,
 	} = useDocuments({
-		queryKey: ['maps', search, district, status, congregation],
+		queryKey: ['maps', search, city, district, status, congregation],
 		queryFn: () => {
 			const queries = [Query.equal('congregation', congregation!), Query.limit(1000)]
 
@@ -33,7 +33,7 @@ const useMaps = (props: Props = { search: '', district: '', status: '', city: ''
 			}
 
 			if (district) {
-				queries.push(Query.equal('district', district))
+				queries.push(Query.search('district', district))
 			}
 
 			if (status) {

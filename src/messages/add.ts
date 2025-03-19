@@ -1,11 +1,11 @@
+import { upperFirst } from 'lodash'
 import Toast from 'react-native-toast-message'
-import { firstUpper } from '@utils/first-upper'
 
 export const success = (model: string) => {
 	Toast.show({
 		type: 'success',
 		text1: 'Sucesso',
-		text2: `${firstUpper(model)} adicionado com sucesso`,
+		text2: `${upperFirst(model)} adicionado com sucesso`,
 	})
 }
 

@@ -1,9 +1,19 @@
+import { toLower, trim, upperFirst } from 'lodash'
 import { Models } from 'react-native-appwrite'
 
 const useDistricts = (maps: Models.Document[]) => {
-	const districts: string[] = [...new Set(maps.map(map => map.district))].sort()
+	const districts: string[] = [...new Set(maps.map(map => toLower(trim(map.district))))].sort()
 
-	const list = [{ label: 'Todos', value: '' }, ...districts.map(d => ({ label: d, value: d }))]
+	const list = [
+		{ label: 'Todos', value: '' },
+		...districts.map(d => ({
+			label: d
+				.split(' ')
+				.map(word => upperFirst(word))
+				.join(' '),
+			value: d,
+		})),
+	]
 
 	return {
 		districts,

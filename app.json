@@ -3,7 +3,7 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.0.24",
+		"version": "1.0.26",
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
