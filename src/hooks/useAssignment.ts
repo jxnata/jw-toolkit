@@ -14,7 +14,7 @@ const useAssignment = (id: string, initialData?: Models.Document) => {
 	} = useDocument({
 		queryKey: ['assignment', id, congregation],
 		queryFn: () => {
-			return database.getDocument('production', 'assignments', id)
+			return database.getDocument('production', 'maps', id)
 		},
 		enabled: !!id && !!congregation,
 		initialData: initialData,

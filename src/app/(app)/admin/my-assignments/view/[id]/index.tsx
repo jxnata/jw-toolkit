@@ -1,23 +1,23 @@
 import AssignmentControls from '@components/AssignmentControls'
 import AssignmentMapCard from '@components/AssignmentMapCard'
 import useAssignment from '@hooks/useAssignment'
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { getMapRegion } from '@utils/get-map-region'
 import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
+import { useState } from 'react'
 
-import * as S from './styles'
-import { Models } from 'react-native-appwrite'
+import { useLocation } from '@hooks/useLocation'
 import React from 'react'
 import { Platform } from 'react-native'
-import { useLocation } from '@hooks/useLocation'
+import { Models } from 'react-native-appwrite'
+import * as S from './styles'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(params.id as string, params as Models.Document)
+	const { assignment } = useAssignment(params.$id as string, params as Models.Document)
 	const router = useRouter()
 	const { location } = useLocation()
 

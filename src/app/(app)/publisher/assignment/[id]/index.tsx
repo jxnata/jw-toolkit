@@ -1,16 +1,15 @@
 import AssignmentControls from '@components/AssignmentControls'
 import AssignmentMapCard from '@components/AssignmentMapCard'
 import useAssignment from '@hooks/useAssignment'
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { getMapRegion } from '@utils/get-map-region'
 import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
+import React, { useState } from 'react'
+import { Platform } from 'react-native'
+import { Models } from 'react-native-appwrite'
 
 import * as S from './styles'
-import { Models } from 'react-native-appwrite'
-import React from 'react'
-import { Platform } from 'react-native'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
@@ -18,7 +17,7 @@ const AssigmentDetails = () => {
 	const router = useRouter()
 
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(params.id as string, params as Models.Document)
+	const { assignment } = useAssignment(params.$id as string, params as Models.Document)
 
 	const toggleModal = () => {
 		setShowFinish(old => !old)
