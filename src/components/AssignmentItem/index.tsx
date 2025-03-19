@@ -1,12 +1,13 @@
-import { LocationObjectCoords } from 'expo-location'
+import { useQuery } from '@tanstack/react-query'
 import { getLocationDistance } from '@utils/get-location-distance'
 import { mapImage } from '@utils/map-image'
-import { useQuery } from '@tanstack/react-query'
+import { LocationObjectCoords } from 'expo-location'
 
-import * as S from './styles'
-import { Models } from 'react-native-appwrite'
-import { useMemo } from 'react'
 import { formatDate } from '@utils/date-format'
+import { firstName } from '@utils/first-name'
+import { useMemo } from 'react'
+import { Models } from 'react-native-appwrite'
+import * as S from './styles'
 
 interface AssignmentProps {
 	map: Models.Document
@@ -48,7 +49,10 @@ const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentPro
 				</S.ParagraphAddress>
 				{!!map.visited ? (
 					<S.Column>
-						<S.Small>Visitado em {formatDate(map.visited)}</S.Small>
+						<S.Small>
+							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
+							{formatDate(map.visited)}
+						</S.Small>
 						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
 					</S.Column>
 				) : (

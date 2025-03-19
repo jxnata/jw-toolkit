@@ -1,12 +1,13 @@
-import { LocationObjectCoords } from 'expo-location'
-import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { formatDate } from '@utils/date-format'
 import { getLocationDistance } from '@utils/get-location-distance'
 import { mapImage } from '@utils/map-image'
-import { useQuery } from '@tanstack/react-query'
+import { LocationObjectCoords } from 'expo-location'
+import { useMemo } from 'react'
 
-import * as S from './styles'
+import { firstName } from '@utils/first-name'
 import { Models } from 'react-native-appwrite'
+import * as S from './styles'
 
 interface MapProps {
 	map: Models.Document
@@ -56,7 +57,10 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				</S.Paragraph>
 				{!!map.visited ? (
 					<S.Column>
-						<S.Small>Visitado em {formatDate(map.visited)}</S.Small>
+						<S.Small>
+							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
+							{formatDate(map.visited)}
+						</S.Small>
 						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
 					</S.Column>
 				) : (
