@@ -73,6 +73,7 @@
 			"router": {
 				"origin": false
 			},
+			"oneSignalAppId": "afb7a092-f7d7-4f17-bfd9-6ac8f5bafc95",
 			"eas": {
 				"build": {
 					"experimental": {
