@@ -1,9 +1,14 @@
 import '../../polyfills'
 
-import { ONESIGNAL_APP_ID } from '@constants/env'
 import { fonts } from '@constants/fonts'
 import { configToast } from '@constants/toast'
 import { SessionProvider } from '@contexts/session'
+import { clientPersister } from '@database/cache/provider'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { QueryClient } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import theme from '@themes/index'
+import Constants from 'expo-constants'
 import { useFonts } from 'expo-font'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -13,13 +18,8 @@ import { Platform, useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { ThemeProvider } from 'styled-components/native'
 import { SWRConfig } from 'swr'
-import theme from '@themes/index'
-import { QueryClient } from '@tanstack/react-query'
-import { clientPersister } from '@database/cache/provider'
-import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 if (__DEV__) require('../../reactotron')
 
@@ -37,7 +37,7 @@ export default function Layout() {
 	}, [isLoaded])
 
 	useEffect(() => {
-		OneSignal.initialize(ONESIGNAL_APP_ID)
+		OneSignal.initialize(Constants.expoConfig!.extra!.oneSignalAppId)
 		OneSignal.Notifications.requestPermission(true)
 		if (Platform.OS === 'android') {
 			GoogleSignin.configure({
