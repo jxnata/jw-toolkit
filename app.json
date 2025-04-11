@@ -3,7 +3,7 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.0.26",
+		"version": "1.0.28",
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
@@ -53,6 +53,7 @@
 			"expo-router",
 			"expo-font",
 			"expo-apple-authentication",
+			"@react-native-firebase/app",
 			[
 				"@react-native-google-signin/google-signin",
 				{
@@ -63,6 +64,14 @@
 				"onesignal-expo-plugin",
 				{
 					"mode": "production"
+				}
+			],
+			[
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
 				}
 			]
 		],

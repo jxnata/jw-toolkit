@@ -1,32 +1,25 @@
 import Button from '@components/Button'
 import Dropdown from '@components/Dropdown'
-import IconButton from '@components/IconButton'
 import Input from '@components/Input'
-import SelectLocation from '@components/SelectLocation'
 import useCities from '@hooks/useCities'
-import useMap from '@hooks/useMap'
-import useMaps from '@hooks/useMaps'
 import { EditMapReq } from '@interfaces/api/maps'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error, success } from '@messages/edit'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Modal } from 'react-native'
 import { getCoordinates } from '@utils/get-coordinates'
 import { setCoordinates } from '@utils/set-coordinates'
 import { database } from '@services/appwrite'
 import { Models } from 'react-native-appwrite'
 
 import * as S from './styles'
+import { useQueryClient } from '@tanstack/react-query'
 
 const EditMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Models.Document
-	const [modalVisible, setModalVisible] = useState(false)
-	const { mutate } = useMap(params.$id)
-	const { mutate: mutateMaps } = useMaps({ search: '' })
 	const { cities } = useCities()
-
+	const queryClient = useQueryClient()
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
 	const defaultValues: EditMapReq | undefined = useMemo(
@@ -44,7 +37,7 @@ const EditMap = () => {
 		[params]
 	)
 
-	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })
+	const { control, formState, handleSubmit } = useForm<EditMapReq>({ defaultValues })
 
 	const save: SubmitHandler<EditMapReq> = async data => {
 		const [lat, lng] = setCoordinates(data.coordinates)
@@ -55,7 +48,7 @@ const EditMap = () => {
 		}
 
 		try {
-			await database.updateDocument('production', 'maps', params.$id, {
+			const updatedMap = await database.updateDocument('production', 'maps', params.$id, {
 				name: data.name,
 				address: data.address,
 				district: data.district,
@@ -66,17 +59,14 @@ const EditMap = () => {
 			})
 
 			success('mapa')
-			mutate()
-			mutateMaps()
+
+			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
+
 			router.back()
 		} catch (err) {
 			error('mapa')
 			console.error('Failed to update map:', err)
 		}
-	}
-
-	const toggleMap = () => {
-		setModalVisible(old => !old)
 	}
 
 	return (

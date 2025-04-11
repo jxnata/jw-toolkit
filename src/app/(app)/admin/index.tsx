@@ -4,6 +4,7 @@ import { Link, Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 
 import * as S from './styles'
+import { Alert } from 'react-native'
 
 const Admin = () => {
 	const router = useRouter()
@@ -19,6 +20,17 @@ const Admin = () => {
 		),
 		[router]
 	)
+
+	const confirmExport = () => {
+		Alert.alert(
+			'Exportar mapas',
+			'Exportar os mapas é uma operação custosa, por favor, faça somente quando realmente necessário. Deseja continuar?',
+			[
+				{ text: 'Cancelar', style: 'cancel' },
+				{ text: 'Exportar', onPress: () => router.push('/admin/export') },
+			]
+		)
+	}
 
 	if (!congregation) return null
 
@@ -62,14 +74,12 @@ const Admin = () => {
 						<S.Column></S.Column>
 					</S.MenuItem>
 				</Link>
-				<Link href='/admin/export' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Exportar mapas</S.MenuTitle>
-						</S.Column>
-					</S.MenuItem>
-				</Link>
+				<S.MenuItem onPress={confirmExport}>
+					<S.Column>
+						<S.Icon></S.Icon>
+						<S.MenuTitle>Exportar mapas</S.MenuTitle>
+					</S.Column>
+				</S.MenuItem>
 			</S.Content>
 			<S.Version>Versão: {APP_VERSION}</S.Version>
 		</S.Container>

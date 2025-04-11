@@ -2,33 +2,77 @@ import AssignmentItem from '@components/AssignmentItem'
 import Input from '@components/Input'
 import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
-import debounce from 'lodash/debounce'
 import { useState } from 'react'
-import { FlatList } from 'react-native'
+import { ActivityIndicator, FlatList } from 'react-native'
 import useMaps from '@hooks/useMaps'
 import SkeletonItem from '@components/SkeletonItem'
+import { Controller, useForm } from 'react-hook-form'
 
 import * as S from './styles'
 
 const Assignments = () => {
 	const router = useRouter()
 	const [search, setSearch] = useState('')
-	const { maps, loading, mutate } = useMaps({ status: 'assigned', search })
+	const { maps, loading, mutate, loadMore, loadingMore, hasMore } = useMaps({ status: 'assigned', search })
 	const { location } = useLocation()
+	const { control, handleSubmit, reset } = useForm<{ search: string }>()
 
-	const debouncedSearch = debounce(async term => {
-		setSearch(term)
-	}, 500)
+	const handleSearch = (data: { search: string }) => {
+		setSearch(data.search)
+	}
+
+	const handleClear = () => {
+		setSearch('')
+		reset()
+	}
 
 	const ListHeaderComponent = () => {
 		return (
-			<Input
-				autoCorrect={false}
-				placeholder='Buscar uma designação...'
-				onChangeText={debouncedSearch}
-				clearButtonMode='always'
-			/>
+			<S.FilterContainer>
+				<S.SearchContainer>
+					<Controller
+						control={control}
+						rules={{ required: true }}
+						name='search'
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Input
+								autoCorrect={false}
+								placeholder='Buscar por mapa ou bairro'
+								onChangeText={onChange}
+								onBlur={onBlur}
+								value={value}
+								returnKeyType='search'
+								onSubmitEditing={handleSubmit(handleSearch)}
+								style={{ flex: 1, marginBottom: 0 }}
+							/>
+						)}
+					/>
+					{search && (
+						<S.ClearButton onPress={handleClear}>
+							<S.Ionicon name='close-outline' />
+						</S.ClearButton>
+					)}
+					<S.SearchButton onPress={handleSubmit(handleSearch)}>
+						<S.Ionicon name='search-outline' />
+					</S.SearchButton>
+				</S.SearchContainer>
+			</S.FilterContainer>
 		)
+	}
+
+	const ListFooterComponent = () => {
+		if (!loadingMore) return null
+		return (
+			<S.LoadingContainer>
+				<ActivityIndicator />
+			</S.LoadingContainer>
+		)
+	}
+
+	const handleEndReached = () => {
+		if (hasMore && !loadingMore) {
+			loadMore()
+		}
 	}
 
 	return (
@@ -46,6 +90,7 @@ const Assignments = () => {
 					<FlatList
 						data={maps}
 						ListHeaderComponent={<ListHeaderComponent />}
+						ListFooterComponent={<ListFooterComponent />}
 						keyExtractor={item => item.$id}
 						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item }) => (
@@ -61,6 +106,8 @@ const Assignments = () => {
 								}
 							/>
 						)}
+						onEndReached={handleEndReached}
+						onEndReachedThreshold={0.5}
 					/>
 				)}
 			</S.Content>

@@ -2,55 +2,58 @@ import Dropdown from '@components/Dropdown'
 import Input from '@components/Input'
 import MapItem from '@components/MapItem'
 import useCities from '@hooks/useCities'
-import useDistricts from '@hooks/useDistricts'
 import useMaps from '@hooks/useMaps'
 import { useLocation } from '@hooks/useLocation'
 import { Stack, useRouter } from 'expo-router'
-import debounce from 'lodash/debounce'
-import { useCallback, useMemo, useState } from 'react'
-import { FlatList } from 'react-native'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ActivityIndicator, FlatList } from 'react-native'
 import SkeletonItem from '@components/SkeletonItem'
 
 import * as S from './styles'
 import React from 'react'
+import { Controller, useForm } from 'react-hook-form'
 
 const Maps = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const [searchCity, setSearchCity] = useState('')
-	const [searchDistrict, setSearchDistrict] = useState('')
 	const [status, setStatus] = useState<'assigned' | 'unassigned' | ''>('')
-	const [showFilter, setFilter] = useState(false)
-	const { maps, loading, mutate } = useMaps({
+	const [showFilter, setFilter] = useState(true)
+	const { control, handleSubmit, reset } = useForm<{ search: string }>()
+
+	const { maps, loading, mutate, queryKey, loadMore, loadingMore, hasMore } = useMaps({
 		search: searchTerm,
 		city: searchCity,
-		district: searchDistrict,
 		status,
+		enabled: !!searchCity,
 	})
-	const { list } = useDistricts(maps)
 	const { cities } = useCities()
 	const { location } = useLocation()
 
-	const citiesList = useMemo(
-		() => [{ label: 'Todos', value: '' }, ...cities.map(c => ({ label: c.name, value: c.$id }))],
-		[cities]
-	)
+	const citiesList = useMemo(() => [...cities.map(c => ({ label: c.name, value: c.$id }))], [cities])
+
+	useEffect(() => {
+		if (cities.length > 0 && !searchCity) {
+			setSearchCity(cities[0].$id)
+		}
+	}, [cities, searchCity])
 
 	const HeaderRight = useCallback(
 		() => (
 			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/maps/add')}>
+				<S.IconButton
+					onPress={() =>
+						router.push({ pathname: '/admin/maps/add', params: { query: JSON.stringify(queryKey) } })
+					}
+				>
 					<S.Ionicon name='add-circle-outline' />
-				</S.IconButton>
-				<S.IconButton onPress={() => router.push('/admin/maps/all')}>
-					<S.Ionicon name='map-outline' />
 				</S.IconButton>
 				<S.IconButton onPress={toggleFilter}>
 					<S.Ionicon name='funnel-outline' />
 				</S.IconButton>
 			</S.HeaderContainer>
 		),
-		[router]
+		[queryKey, router]
 	)
 
 	const ListHeaderComponent = () => {
@@ -72,17 +75,6 @@ const Maps = () => {
 								/>
 							</S.FilterItemsContainer>
 							<S.FilterItemsContainer>
-								<Input
-									autoCorrect={false}
-									placeholder='Buscar um mapa...'
-									onChangeText={debouncedSearch}
-									clearButtonMode='always'
-								/>
-							</S.FilterItemsContainer>
-						</S.FilterContainer>
-
-						<S.FilterContainer>
-							<S.FilterItemsContainer>
 								<Dropdown
 									placeholder='Cidade'
 									options={citiesList}
@@ -90,38 +82,74 @@ const Maps = () => {
 									onValueChange={filterCity}
 								/>
 							</S.FilterItemsContainer>
-							<S.FilterItemsContainer>
-								<Dropdown
-									placeholder='Bairro'
-									options={list}
-									selectedValue={searchDistrict}
-									onValueChange={filterDistrict}
-									disabled={!searchCity}
+						</S.FilterContainer>
+
+						<S.FilterContainer>
+							<S.SearchContainer>
+								<Controller
+									control={control}
+									rules={{ required: true }}
+									name='search'
+									render={({ field: { onChange, onBlur, value } }) => (
+										<Input
+											autoCorrect={false}
+											placeholder='Buscar por nome ou bairro'
+											onChangeText={onChange}
+											onBlur={onBlur}
+											value={value}
+											returnKeyType='search'
+											onSubmitEditing={handleSubmit(handleSearch)}
+											style={{ flex: 1, marginBottom: 0 }}
+										/>
+									)}
 								/>
-							</S.FilterItemsContainer>
+								{searchTerm && (
+									<S.ClearButton onPress={handleClear}>
+										<S.Ionicon name='close-outline' />
+									</S.ClearButton>
+								)}
+								<S.SearchButton onPress={handleSubmit(handleSearch)}>
+									<S.Ionicon name='search-outline' />
+								</S.SearchButton>
+							</S.SearchContainer>
 						</S.FilterContainer>
 					</>
 				)}
 			</>
 		)
 	}
-	const debouncedSearch = debounce(async term => {
-		setSearchTerm(term)
-	}, 500)
+
+	const ListFooterComponent = () => {
+		if (!loadingMore) return null
+		return (
+			<S.LoadingContainer>
+				<ActivityIndicator />
+			</S.LoadingContainer>
+		)
+	}
+
+	const handleSearch = (data: { search: string }) => {
+		setSearchTerm(data.search)
+	}
+
+	const handleClear = () => {
+		setSearchTerm('')
+		reset()
+	}
 
 	const filterCity = (city: string) => {
 		setSearchTerm('')
-		setSearchDistrict('')
 		setSearchCity(city)
-	}
-
-	const filterDistrict = (district: string) => {
-		setSearchTerm('')
-		setSearchDistrict(district)
 	}
 
 	const toggleFilter = () => {
 		setFilter(old => !old)
+	}
+
+	const handleEndReached = () => {
+		if (hasMore && !loadingMore) {
+			loadMore()
+		}
 	}
 
 	return (
@@ -139,6 +167,7 @@ const Maps = () => {
 				) : (
 					<FlatList
 						ListHeaderComponent={<ListHeaderComponent />}
+						ListFooterComponent={<ListFooterComponent />}
 						data={maps}
 						keyExtractor={item => item.$id}
 						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
@@ -151,13 +180,15 @@ const Maps = () => {
 									onPress={() =>
 										router.push({
 											pathname: `/admin/maps/${item.$id}`,
-											params: { data: JSON.stringify(item) },
+											params: { data: JSON.stringify(item), query: JSON.stringify(queryKey) },
 										})
 									}
 								/>
 							</S.ListContainer>
 						)}
 						stickyHeaderIndices={[0]}
+						onEndReached={handleEndReached}
+						onEndReachedThreshold={0.5}
 					/>
 				)}
 			</S.Content>

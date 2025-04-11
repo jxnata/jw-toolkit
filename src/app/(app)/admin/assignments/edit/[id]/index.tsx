@@ -14,14 +14,14 @@ import { Alert } from 'react-native'
 import * as S from './styles'
 import { Models } from 'react-native-appwrite'
 import { database } from '@services/appwrite'
-import useMaps from '@hooks/useMaps'
+import { useQueryClient } from '@tanstack/react-query'
 
 const EditAssignment = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const { map } = useMap(params.$id)
 	const { publishers } = usePublishers()
-	const { mutate } = useMaps({ status: 'assigned', search: params.search || '' })
+	const queryClient = useQueryClient()
 
 	const defaultValues: EditAssignmentReq = useMemo(
 		() => ({
@@ -36,12 +36,14 @@ const EditAssignment = () => {
 
 	const save: SubmitHandler<EditAssignmentReq> = async data => {
 		try {
-			await database.updateDocument('production', 'maps', params.$id!, {
+			const updatedMap = await database.updateDocument('production', 'maps', params.$id!, {
 				assigned: data.assigned,
 			})
 
 			success('designação')
-			mutate()
+
+			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
+
 			router.back()
 		} catch (err) {
 			error('designação')
@@ -51,12 +53,14 @@ const EditAssignment = () => {
 
 	const deleteAssignment = async () => {
 		try {
-			await database.updateDocument('production', 'maps', params.$id!, {
+			const updatedMap = await database.updateDocument('production', 'maps', params.$id!, {
 				assigned: null,
 			})
 
 			removeSuccess('designação')
-			mutate()
+
+			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
+
 			router.back()
 		} catch (err) {
 			removeError('designação')

@@ -1,4 +1,5 @@
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { Ionicons } from '@expo/vector-icons'
+import { RefreshControl as RNRefreshControl } from 'react-native'
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
@@ -69,4 +70,32 @@ export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 	size: 24,
 }))`
 	color: ${({ theme }) => theme.text};
+`
+export const LoadingContainer = styled.View`
+	padding: 20px;
+	align-items: center;
+	justify-content: center;
+`
+
+export const SearchContainer = styled.View`
+	flex: 1;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 10px;
+`
+
+export const SearchButton = styled.TouchableOpacity`
+	padding: 10px;
+	background-color: ${({ theme }) => theme.primary};
+	border-radius: 8px;
+	align-items: center;
+	justify-content: center;
+`
+export const ClearButton = styled.TouchableOpacity`
+	padding: 10px;
+	background-color: ${({ theme }) => theme.backgroundAlt};
+	border-radius: 8px;
+	align-items: center;
+	justify-content: center;
 `

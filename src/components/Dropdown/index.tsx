@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Modal } from 'react-native'
+import { Modal, ActivityIndicator } from 'react-native'
 
 import * as S from './styles'
 import React from 'react'
@@ -12,6 +12,7 @@ type Props = {
 	disabled?: boolean
 	onValueChange: (value: any) => void
 	footerComponent?: React.ReactNode
+	onRefresh?: () => Promise<unknown>
 }
 
 const Dropdown = ({
@@ -22,11 +23,23 @@ const Dropdown = ({
 	disabled = false,
 	onValueChange,
 	footerComponent,
+	onRefresh,
 }: Props) => {
 	const [open, setOpen] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 
 	const toggle = () => {
 		setOpen(old => !old)
+	}
+
+	const handleRefresh = async () => {
+		if (!onRefresh || isRefreshing) return
+		setIsRefreshing(true)
+		try {
+			await onRefresh()
+		} finally {
+			setIsRefreshing(false)
+		}
 	}
 
 	const onPress = (item: { value: string; label: string }) => {
@@ -56,9 +69,18 @@ const Dropdown = ({
 			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
 				<S.Container>
 					<S.Content>
-						<S.CloseButton onPress={toggle}>
+						{!!onRefresh && (
+							<S.FloatButtonLeft onPress={handleRefresh} disabled={isRefreshing}>
+								{isRefreshing ? (
+									<ActivityIndicator size='small' color='#D08129' />
+								) : (
+									<S.Ionicon name='refresh' />
+								)}
+							</S.FloatButtonLeft>
+						)}
+						<S.FloatButtonRight onPress={toggle}>
 							<S.Ionicon name='close' />
-						</S.CloseButton>
+						</S.FloatButtonRight>
 						<S.List
 							data={options}
 							renderItem={({ item }) => (

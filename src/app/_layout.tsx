@@ -45,6 +45,9 @@ export default function Layout() {
 				offlineAccess: true,
 			})
 		}
+
+		// @ts-ignore
+		globalThis.RNFB_SILENCE_MODULAR_DEPRECATION_WARNINGS = true
 	}, [])
 
 	if (!isLoaded) return null
