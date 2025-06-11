@@ -1,5 +1,3 @@
-import '../../polyfills'
-
 import { fonts } from '@constants/fonts'
 import { configToast } from '@constants/toast'
 import { SessionProvider } from '@contexts/session'
@@ -19,7 +17,6 @@ import { OneSignal } from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import { ThemeProvider } from 'styled-components/native'
-import { SWRConfig } from 'swr'
 
 if (__DEV__) require('../../reactotron')
 
@@ -58,9 +55,7 @@ export default function Layout() {
 				<SessionProvider>
 					<ThemeProvider theme={theme[scheme || 'light']}>
 						<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-						<SWRConfig>
-							<Slot />
-						</SWRConfig>
+						<Slot />
 					</ThemeProvider>
 				</SessionProvider>
 			</PersistQueryClientProvider>
