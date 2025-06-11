@@ -1,33 +1,28 @@
 import Button from '@components/Button'
 import Dropdown from '@components/Dropdown'
-import IconButton from '@components/IconButton'
 import Input from '@components/Input'
-import SelectLocation from '@components/SelectLocation'
 import useCities from '@hooks/useCities'
-import useMaps from '@hooks/useMaps'
 import { AddMapReq } from '@interfaces/api/maps'
-import { Stack, router } from 'expo-router'
+import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { error, success } from '@messages/add'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Modal } from 'react-native'
-import { getCoordinates } from '@utils/get-coordinates'
 import { setCoordinates } from '@utils/set-coordinates'
 import { useSession } from '@contexts/session'
 import { database } from '@services/appwrite'
 import { ID, Permission, Role } from 'react-native-appwrite'
+import { useQueryClient } from '@tanstack/react-query'
+import { updateMapsCache } from '@utils/update-maps-cache'
 
 import * as S from './styles'
-import { getMapRegion } from '@utils/get-map-region'
-import { useLocation } from '@hooks/useLocation'
 
 const AddMap = () => {
-	const [modalVisible, setModalVisible] = useState(false)
+	const { query } = useLocalSearchParams()
+	const queryKey = JSON.parse((query as string) || '[]')
 	const { cities } = useCities()
-	const { mutate } = useMaps()
 	const { congregation } = useSession()
-	const { location } = useLocation()
-	const { control, formState, handleSubmit, setValue, getValues, watch } = useForm<AddMapReq>()
+	const { control, formState, handleSubmit } = useForm<AddMapReq>()
+	const queryClient = useQueryClient()
 
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
@@ -41,7 +36,7 @@ const AddMap = () => {
 		}
 
 		try {
-			await database.createDocument(
+			const newMap = await database.createDocument(
 				'production',
 				'maps',
 				ID.unique(),
@@ -61,17 +56,16 @@ const AddMap = () => {
 					Permission.delete(Role.label(congregation.id)),
 				]
 			)
+
+			// Update the React Query cache
+			updateMapsCache(queryClient, queryKey, newMap)
+
 			success('mapa')
-			mutate()
 			router.back()
 		} catch (err) {
 			error('mapa')
 			console.error('Failed to create map:', err)
 		}
-	}
-
-	const toggleMap = () => {
-		setModalVisible(old => !old)
 	}
 
 	return (

@@ -1,6 +1,6 @@
 import Button from '@components/Button'
 import { useSession } from '@contexts/session'
-import useMaps from '@hooks/useMaps'
+import useAllMaps from '@hooks/useAllMaps'
 import { Stack } from 'expo-router'
 import { useState } from 'react'
 import { Platform, Share } from 'react-native'
@@ -11,7 +11,7 @@ import { Models } from 'react-native-appwrite'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
-	const { maps, loading } = useMaps()
+	const { maps, loading } = useAllMaps()
 	const { congregation } = useSession()
 
 	const generatePDF = async () => {

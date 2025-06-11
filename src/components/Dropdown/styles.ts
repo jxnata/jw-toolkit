@@ -7,7 +7,7 @@ const { height } = Dimensions.get('window')
 export const DropdowContainer = styled.View`
 	margin-bottom: 10px;
 `
-export const Input = styled.Pressable`
+export const Input = styled.Pressable<{ 'aria-disabled'?: boolean }>`
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
@@ -17,7 +17,7 @@ export const Input = styled.Pressable`
 	border-radius: 8px;
 	border: solid 1.5px ${({ theme }) => theme.border};
 	background: ${({ theme }) => theme.backgroundAlt};
-	opacity: ${props => (props['aria-disabled'] ? 0.5 : 1)};
+	opacity: ${(props: { 'aria-disabled'?: boolean }) => (props['aria-disabled'] ? 0.5 : 1)};
 `
 export const Placeholder = styled.Text`
 	color: ${({ theme }) => theme.text};
@@ -72,12 +72,20 @@ export const Ionicon = styled(Ionicons).attrs(({ theme }) => ({
 }))`
 	color: ${({ theme }) => theme.textAlt};
 `
-export const CloseButton = styled.TouchableOpacity`
+export const FloatButton = styled.TouchableOpacity`
 	position: absolute;
 	top: -45px;
-	right: 10px;
 	background-color: ${({ theme }) => theme.backgroundAlt};
+	border: solid 1px ${({ theme }) => theme.border};
 	padding: 8px;
 	border-radius: 8px;
 	z-index: 1;
+`
+export const FloatButtonLeft = styled(FloatButton)`
+	left: 10px;
+	border: solid 1px ${({ theme }) => theme.success};
+`
+export const FloatButtonRight = styled(FloatButton)`
+	right: 10px;
+	border: solid 1px ${({ theme }) => theme.error};
 `

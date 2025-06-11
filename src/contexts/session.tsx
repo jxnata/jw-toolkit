@@ -116,6 +116,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			setPublisher(storage.getString('user.publisher') || null)
 
 			storage.set('session', JSON.stringify(loggedIn))
+			storage.set('session.user.id', loggedIn.$id)
 			history.set('last.congregation', storage.getString('congregation.id') || '')
 
 			OneSignal.login(loggedIn.$id)

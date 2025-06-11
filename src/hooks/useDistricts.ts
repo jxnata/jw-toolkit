@@ -1,17 +1,31 @@
-import { toLower, trim, upperFirst } from 'lodash'
-import { Models } from 'react-native-appwrite'
+import { upperFirst } from 'lodash'
+import { Query } from 'react-native-appwrite'
+import { useDocuments } from './documents'
+import { database } from '@services/appwrite'
 
-const useDistricts = (maps: Models.Document[]) => {
-	const districts: string[] = [...new Set(maps.map(map => toLower(trim(map.district))))].sort()
+const useDistricts = (city?: string) => {
+	const { data: districts } = useDocuments({
+		queryKey: ['districts', city],
+		queryFn: () => {
+			return database.listDocuments('production', 'districts', [
+				Query.equal('city', city || 'undefined'),
+				Query.limit(100),
+				Query.orderAsc('name'),
+				Query.select(['name', '$id']),
+			])
+		},
+		initialData: [],
+		enabled: !!city,
+	})
 
 	const list = [
 		{ label: 'Todos', value: '' },
 		...districts.map(d => ({
-			label: d
+			label: d.name
 				.split(' ')
-				.map(word => upperFirst(word))
+				.map((word: string) => upperFirst(word))
 				.join(' '),
-			value: d,
+			value: d.name,
 		})),
 	]
 

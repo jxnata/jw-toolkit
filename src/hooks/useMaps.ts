@@ -1,5 +1,5 @@
 import { storage } from '@database/index'
-import { useDocuments } from '@hooks/documents'
+import { useInfinityDocuments } from '@hooks/documents'
 import { database } from '@services/appwrite'
 import { Query } from 'react-native-appwrite'
 
@@ -8,24 +8,35 @@ type Props = {
 	city?: string
 	district?: string
 	status?: 'assigned' | 'unassigned' | ''
+	enabled?: boolean
 }
 
-const useMaps = (props: Props = { search: '', district: '', status: '', city: '' }) => {
-	const { search = '', district = '', status = '', city = '' } = props
+const useMaps = (props: Props = { search: '', district: '', status: '', city: '', enabled: true }) => {
+	const { search = '', district = '', status = '', city = '', enabled = true } = props
 	const congregation = storage.getString('congregation.id')
+	const queryKey = ['infinite-maps', search, city, district, status, congregation]
 
 	const {
 		data: maps,
 		loading,
 		error,
 		mutate,
-	} = useDocuments({
-		queryKey: ['maps', search, city, district, status, congregation],
-		queryFn: () => {
-			const queries = [Query.equal('congregation', congregation!), Query.limit(1000)]
+		loadMore,
+		loadingMore,
+		hasMore,
+		total,
+	} = useInfinityDocuments({
+		queryKey,
+		queryFn: ({ pageParam }) => {
+			const queries = [
+				Query.equal('congregation', congregation!),
+				Query.limit(10),
+				Query.offset(pageParam),
+				Query.orderAsc('visited'),
+			]
 
 			if (search) {
-				queries.push(Query.search('name', search))
+				queries.push(Query.or([Query.search('name', search), Query.search('district', search)]))
 			}
 
 			if (city) {
@@ -42,8 +53,7 @@ const useMaps = (props: Props = { search: '', district: '', status: '', city: ''
 
 			return database.listDocuments('production', 'maps', queries)
 		},
-		initialData: [],
-		enabled: !!congregation,
+		enabled,
 	})
 
 	return {
@@ -51,6 +61,11 @@ const useMaps = (props: Props = { search: '', district: '', status: '', city: ''
 		loading,
 		error,
 		mutate,
+		loadMore,
+		loadingMore,
+		hasMore,
+		total,
+		queryKey,
 	}
 }
 

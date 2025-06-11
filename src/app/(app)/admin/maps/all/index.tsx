@@ -1,5 +1,5 @@
 import * as Location from 'expo-location'
-import { router, Stack } from 'expo-router'
+import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 import { AppleMaps, GoogleMaps } from 'expo-maps'
@@ -8,11 +8,13 @@ import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
 import { getPinColor } from '@utils/get-pin-color'
 
 import * as S from './styles'
-import useMaps from '@hooks/useMaps'
+import useAllMaps from '@hooks/useAllMaps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()
-	const { maps, loading } = useMaps()
+	const params = useLocalSearchParams()
+	const { initialMaps } = JSON.parse((params.maps as string) || '[]')
+	const { maps, loading } = useAllMaps({ initialData: initialMaps })
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
