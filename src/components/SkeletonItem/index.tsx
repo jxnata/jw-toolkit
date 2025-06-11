@@ -1,5 +1,5 @@
 import Skeleton from '@/components/Skeleton'
-import * as S from './styles'
+import { View } from 'react-native'
 
 interface SkeletonItemProps {
 	height?: number
@@ -7,9 +7,9 @@ interface SkeletonItemProps {
 
 const SkeletonItem = ({ height = 70 }: SkeletonItemProps) => {
 	return (
-		<S.Container>
+		<View className='mx-2.5 mb-[5px]'>
 			<Skeleton height={height} />
-		</S.Container>
+		</View>
 	)
 }
 

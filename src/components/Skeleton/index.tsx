@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import { Animated } from 'react-native'
-import * as S from './styles'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { useEffect } from 'react'
+import { Animated, ViewStyle } from 'react-native'
 
 interface SkeletonProps {
 	width?: number | string
@@ -8,18 +8,36 @@ interface SkeletonProps {
 }
 
 const Skeleton = ({ width = '100%', height = 50 }: SkeletonProps) => {
-	const animatedValue = new Animated.Value(0.1)
+	const animatedValue = new Animated.Value(0.3)
+	const { colors } = useThemedColors()
 
 	useEffect(() => {
 		Animated.loop(
 			Animated.sequence([
 				Animated.timing(animatedValue, { toValue: 1, duration: 1000, useNativeDriver: true }),
-				Animated.timing(animatedValue, { toValue: 0.1, duration: 1000, useNativeDriver: true }),
+				Animated.timing(animatedValue, { toValue: 0.3, duration: 1000, useNativeDriver: true }),
 			])
 		).start()
 	}, [])
 
-	return <S.Skeleton style={{ width, height, opacity: animatedValue }} />
+	const dynamicStyle: ViewStyle = {
+		width: width as ViewStyle['width'],
+		height: height as ViewStyle['height'],
+	}
+
+	return (
+		<Animated.View
+			className='rounded-lg border-[1.5px]'
+			style={[
+				{
+					opacity: animatedValue,
+					borderColor: colors.border + '10',
+					backgroundColor: colors.card + '70',
+				},
+				dynamicStyle,
+			]}
+		/>
+	)
 }
 
 export default Skeleton

@@ -1,8 +1,9 @@
-import { Linking, Platform } from 'react-native'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { useNavigation } from 'expo-router'
 import React from 'react'
+import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native'
 
-import * as S from './styles'
 import { Models } from 'react-native-appwrite'
 
 interface AssignmentProps {
@@ -12,6 +13,7 @@ interface AssignmentProps {
 
 const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 	const navigation = useNavigation()
+	const { colors } = useThemedColors()
 
 	React.useEffect(() => {
 		navigation.setOptions({
@@ -32,24 +34,36 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 	}
 
 	return (
-		<S.Container>
-			<S.Content>
-				<S.Title>Endereço</S.Title>
-				<S.Paragraph>
+		<View className='absolute bottom-10 w-full px-2.5'>
+			<View className='px-4 py-2.5 rounded-[10px] bg-card gap-2.5'>
+				<Text className='pt-2.5 text-foreground text-base font-bold'>Endereço</Text>
+				<Text className='text-foreground text-base font-medium'>
 					{assignment.address} - {assignment.city.name}
-				</S.Paragraph>
-				{!!assignment.details && <S.Paragraph>{assignment.details}</S.Paragraph>}
-				<S.ButtonGroup>
-					<S.ButtonPrimary onPress={navigate}>
-						<S.Ionicon name='navigate-circle-outline' />
-						<S.ButtonTitlePrimary>Ir para</S.ButtonTitlePrimary>
-					</S.ButtonPrimary>
-					<S.ButtonSecondary onPress={onFinish}>
-						<S.ButtonTitleSecondary>Finalizar</S.ButtonTitleSecondary>
-					</S.ButtonSecondary>
-				</S.ButtonGroup>
-			</S.Content>
-		</S.Container>
+				</Text>
+				{!!assignment.details && (
+					<Text className='text-foreground text-base font-medium'>{assignment.details}</Text>
+				)}
+				<View className='flex-row gap-2.5 mt-2.5'>
+					<TouchableOpacity
+						onPress={navigate}
+						className='gap-[5px] flex flex-row items-center justify-center flex-1 py-[15px] px-5 rounded-xl bg-primary-600 text-[15px] mb-2.5'
+					>
+						<Ionicons name='navigate-circle-outline' size={24} color='white' />
+						<Text className='text-white text-[15px] font-bold'>Ir para</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						onPress={onFinish}
+						className='gap-[5px] flex flex-row items-center justify-center flex-1 py-[15px] px-5 rounded-xl text-[15px] mb-2.5'
+						style={{ backgroundColor: colors.card }}
+					>
+						<Text className='text-[15px] font-bold' style={{ color: colors.primary[600] }}>
+							Finalizar
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		</View>
 	)
 }
 

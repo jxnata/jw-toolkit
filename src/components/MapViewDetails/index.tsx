@@ -1,10 +1,13 @@
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { formatDate } from '@/utils/date-format'
 import { mapImage } from '@/utils/map-image'
 import { useMemo } from 'react'
+import { Dimensions, Image, Text, View } from 'react-native'
 
 import { firstName } from '@/utils/first-name'
 import { Models } from 'react-native-appwrite'
-import * as S from './styles'
+
+const screenWidth = Dimensions.get('screen').width
 
 interface MapProps {
 	map: Models.Document
@@ -12,6 +15,8 @@ interface MapProps {
 }
 
 const MapViewDetails = ({ map, showImage }: MapProps) => {
+	const { colors } = useThemedColors()
+
 	const found = useMemo(() => {
 		if (map) {
 			if (map.visited) {
@@ -25,36 +30,70 @@ const MapViewDetails = ({ map, showImage }: MapProps) => {
 	}, [map])
 
 	return (
-		<S.Container>
+		<View className='flex flex-row mb-[5px] w-full p-2.5 gap-2.5'>
 			{showImage && (
-				<S.Column>
-					<S.Image resizeMode='contain' source={{ uri: mapImage(map.coordinates) }} />
-				</S.Column>
+				<View className='flex'>
+					<Image
+						resizeMode='contain'
+						source={{ uri: mapImage(map.coordinates) }}
+						className='rounded-[10px] w-20 h-20'
+					/>
+				</View>
 			)}
-			<S.Column>
-				<S.Paragraph>
+			<View className='flex'>
+				<Text
+					className='text-foreground text-[15px] font-medium flex-wrap'
+					style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}
+				>
 					{map.city.name} - {map.name}
-				</S.Paragraph>
-				<S.Paragraph numberOfLines={2} ellipsizeMode='tail'>
+				</Text>
+				<Text
+					numberOfLines={2}
+					ellipsizeMode='tail'
+					className='text-foreground text-[15px] font-medium flex-wrap'
+					style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}
+				>
 					{map.address}
-				</S.Paragraph>
-				<S.Paragraph numberOfLines={1} ellipsizeMode='tail'>
+				</Text>
+				<Text
+					numberOfLines={1}
+					ellipsizeMode='tail'
+					className='text-foreground text-[15px] font-medium flex-wrap'
+					style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}
+				>
 					{map.district}
-				</S.Paragraph>
-				{!!map.details && <S.Paragraph>{map.details}</S.Paragraph>}
+				</Text>
+				{!!map.details && (
+					<Text
+						className='text-foreground text-[15px] font-medium flex-wrap'
+						style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}
+					>
+						{map.details}
+					</Text>
+				)}
 				{!!map.visited ? (
-					<S.Column>
-						<S.Small>
+					<View className='flex'>
+						<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
 							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
 							{formatDate(map.visited)}
-						</S.Small>
-						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
-					</S.Column>
+						</Text>
+						{found ? (
+							<Text className='font-semibold text-xs pt-0' style={{ color: colors.success.DEFAULT }}>
+								Encontrado
+							</Text>
+						) : (
+							<Text className='font-semibold text-xs pt-0' style={{ color: colors.primary[600] }}>
+								Não encontrado
+							</Text>
+						)}
+					</View>
 				) : (
-					<S.Small>Ainda não visitado</S.Small>
+					<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
+						Ainda não visitado
+					</Text>
 				)}
-			</S.Column>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

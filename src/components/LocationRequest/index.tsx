@@ -1,13 +1,13 @@
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { PermissionStatus } from 'expo-location'
-import { Redirect } from 'expo-router'
-import { Linking } from 'react-native'
-import { useEffect, useState } from 'react'
 import { requestPermissionsAsync } from 'expo-maps'
-
-import * as S from './styles'
+import { Redirect } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { Linking, Pressable, SafeAreaView, Text, View } from 'react-native'
 
 const LocationRequest = () => {
 	const [status, setStatus] = useState<PermissionStatus | null>(null)
+	const { colors } = useThemedColors()
 
 	useEffect(() => {
 		const checkPermissionStatus = async () => {
@@ -34,18 +34,21 @@ const LocationRequest = () => {
 	}
 
 	return (
-		<S.Container>
-			<S.Content>
-				<S.Title>Localização</S.Title>
-				<S.Paragraph>
+		<SafeAreaView className='flex w-full h-full bg-background'>
+			<View className='items-center p-2.5'>
+				<Text className='text-[17px] text-foreground py-5 font-bold'>Localização</Text>
+				<Text className='text-[15px] text-foreground pb-5 font-medium'>
 					É preciso permitir a leitura da sua localização para usar o aplicativo. Essa informação não é salva
 					fora desse dispositivo.
-				</S.Paragraph>
-				<S.Button onPress={requestLocationPermission}>
-					<S.ButtonTitle>Continuar</S.ButtonTitle>
-				</S.Button>
-			</S.Content>
-		</S.Container>
+				</Text>
+				<Pressable
+					onPress={requestLocationPermission}
+					className='gap-[5px] flex flex-row items-center justify-center w-full p-5 rounded-xl bg-primary-600 text-[15px] mb-[15px]'
+				>
+					<Text className='text-white text-[15px] font-bold'>Continuar</Text>
+				</Pressable>
+			</View>
+		</SafeAreaView>
 	)
 }
 

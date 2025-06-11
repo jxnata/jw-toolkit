@@ -1,8 +1,19 @@
-import { useMemo, useState } from 'react'
-import { Modal, ActivityIndicator } from 'react-native'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import React, { useMemo, useState } from 'react'
+import {
+	ActivityIndicator,
+	Dimensions,
+	FlatList,
+	Modal,
+	Pressable,
+	SafeAreaView,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native'
 
-import * as S from './styles'
-import React from 'react'
+const { height } = Dimensions.get('window')
 
 type Props = {
 	selectedValue: string | undefined
@@ -27,6 +38,7 @@ const Dropdown = ({
 }: Props) => {
 	const [open, setOpen] = useState(false)
 	const [isRefreshing, setIsRefreshing] = useState(false)
+	const { colors } = useThemedColors()
 
 	const toggle = () => {
 		setOpen(old => !old)
@@ -60,52 +72,74 @@ const Dropdown = ({
 	}, [selectedValue, options])
 
 	return (
-		<S.DropdowContainer>
-			{!!label && <S.Label>{label}</S.Label>}
-			<S.Input aria-disabled={disabled} onPress={toggle} disabled={disabled}>
-				<S.Placeholder>{selectedLabel || placeholder}</S.Placeholder>
-				<S.Ionicon name='chevron-down' />
-			</S.Input>
+		<View className='mb-2.5'>
+			{!!label && <Text className='text-foreground text-xs font-medium mb-[5px] ml-0.5'>{label}</Text>}
+			<Pressable
+				onPress={toggle}
+				disabled={disabled}
+				className={`flex-row justify-between items-center w-full h-[50px] px-4 py-[14px] rounded-lg border-[1.5px] border-border bg-card ${disabled ? 'opacity-50' : ''}`}
+			>
+				<Text className='text-foreground text-[15px] font-medium'>{selectedLabel || placeholder}</Text>
+				<Ionicons name='chevron-down' size={20} color={colors.foreground + '80'} />
+			</Pressable>
+
 			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
-				<S.Container>
-					<S.Content>
+				<View className='flex justify-end w-full h-full' style={{ backgroundColor: colors.background + '90' }}>
+					<SafeAreaView
+						className='flex w-full items-center rounded-[10px] bg-card'
+						style={{ maxHeight: height * 0.6 }}
+					>
 						{!!onRefresh && (
-							<S.FloatButtonLeft onPress={handleRefresh} disabled={isRefreshing}>
+							<TouchableOpacity
+								onPress={handleRefresh}
+								disabled={isRefreshing}
+								className='absolute -top-[45px] left-2.5 bg-card border border-success-DEFAULT p-2 rounded-lg z-10'
+							>
 								{isRefreshing ? (
-									<ActivityIndicator size='small' color='#D08129' />
+									<ActivityIndicator size='small' color={colors.primary[600]} />
 								) : (
-									<S.Ionicon name='refresh' />
+									<Ionicons name='refresh' size={20} color={colors.foreground + '80'} />
 								)}
-							</S.FloatButtonLeft>
+							</TouchableOpacity>
 						)}
-						<S.FloatButtonRight onPress={toggle}>
-							<S.Ionicon name='close' />
-						</S.FloatButtonRight>
-						<S.List
+
+						<TouchableOpacity
+							onPress={toggle}
+							className='absolute -top-[45px] right-2.5 bg-card border border-danger-500 p-2 rounded-lg z-10'
+						>
+							<Ionicons name='close' size={20} color={colors.foreground + '80'} />
+						</TouchableOpacity>
+
+						<FlatList
+							className='w-full px-2.5'
 							data={options}
 							renderItem={({ item }) => (
-								<S.Item onPress={() => onPress(item)}>
+								<Pressable
+									onPress={() => onPress(item)}
+									className='flex-row items-center rounded-xl px-4 py-4 mt-[5px] gap-2.5'
+									style={{ backgroundColor: colors.background + '70' }}
+								>
 									{item.value === selectedValue ? (
-										<S.Ionicon name='checkmark-circle' />
+										<Ionicons name='checkmark-circle' size={20} color={colors.foreground + '80'} />
 									) : (
-										<S.Ionicon name='ellipse-outline' />
+										<Ionicons name='ellipse-outline' size={20} color={colors.foreground + '80'} />
 									)}
-									<S.ItemLabel>{item.label}</S.ItemLabel>
-								</S.Item>
+									<Text className='text-foreground text-base font-medium'>{item.label}</Text>
+								</Pressable>
 							)}
 							keyExtractor={item => item.label}
 							ListFooterComponent={
 								<>
-									<S.Space />
+									<View className='h-[30px]' />
 									{footerComponent}
-									<S.Space />
+									<View className='h-[30px]' />
 								</>
 							}
 						/>
-					</S.Content>
-				</S.Container>
+					</SafeAreaView>
+				</View>
 			</Modal>
-		</S.DropdowContainer>
+		</View>
 	)
 }
 

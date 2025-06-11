@@ -1,18 +1,20 @@
 import Button from '@/components/Button'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import useCheckbox from '@/hooks/useCheckbox'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { validCoordinates } from '@/utils/valid-coordinates'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { AppleMaps, Coordinates, GoogleMaps } from 'expo-maps'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ActivityIndicator, Dimensions, Platform, Pressable, View } from 'react-native'
 
-import { Platform } from 'react-native'
-import * as S from './styles'
+const { height } = Dimensions.get('window')
 
 type Props = {
 	onSelect: (coord: [number, number]) => void
 	onClose: () => void
-	initial?: AppleMaps.CameraPosition | GoogleMaps.CameraPosition
+	initial?: any
 }
 
 const mapTypes =
@@ -27,6 +29,8 @@ const mapTypes =
 
 const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	const mapRef = useRef<AppleMaps.MapView | GoogleMaps.MapView>(null)
+	const { colors } = useThemedColors()
+
 	const [pin, setPin] = useState<[number, number]>(
 		validCoordinates([initial?.coordinates?.latitude || 0, initial?.coordinates?.longitude || 0]) || [0, 0]
 	)
@@ -52,14 +56,23 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	}, [pin, mapRef])
 
 	return (
-		<S.Container>
-			<S.Content>
-				<S.MapType>
+		<View className='flex justify-end w-full h-full'>
+			<View className='flex w-full items-center rounded-[10px] bg-card' style={{ height: height * 0.9 }}>
+				<View
+					className='absolute left-2.5 top-2.5 rounded-[10px] justify-center items-center p-[5px] z-10'
+					style={{ backgroundColor: colors.foreground }}
+				>
 					<MapOptions />
-				</S.MapType>
-				<S.CloseButton onPress={onClose}>
-					<S.Icon name='close-outline' />
-				</S.CloseButton>
+				</View>
+
+				<Pressable
+					onPress={onClose}
+					className='absolute right-2.5 top-2.5 items-center justify-center rounded-[10px] w-10 h-10 z-10'
+					style={{ backgroundColor: colors.foreground }}
+				>
+					<Ionicons name='close-outline' size={24} color={colors.background} />
+				</Pressable>
+
 				{initial ? (
 					<>
 						{Platform.OS === 'ios' ? (
@@ -81,17 +94,18 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 						)}
 					</>
 				) : (
-					<S.LoadingContainer>
-						<S.Loading />
-					</S.LoadingContainer>
+					<View className='flex-1 items-center justify-center'>
+						<ActivityIndicator color={colors.primary[600]} size='large' />
+					</View>
 				)}
+
 				{!!pin && (
-					<S.ButtonContainer>
+					<View className='absolute bottom-[30px] w-full px-2.5'>
 						<Button onPress={onClose}>Confirmar</Button>
-					</S.ButtonContainer>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

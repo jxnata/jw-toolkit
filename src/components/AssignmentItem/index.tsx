@@ -1,13 +1,16 @@
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getLocationDistance } from '@/utils/get-location-distance'
 import { mapImage } from '@/utils/map-image'
 import { useQuery } from '@tanstack/react-query'
 import { LocationObjectCoords } from 'expo-location'
+import { Dimensions, Image, Pressable, Text, View } from 'react-native'
 
 import { formatDate } from '@/utils/date-format'
 import { firstName } from '@/utils/first-name'
 import { useMemo } from 'react'
 import { Models } from 'react-native-appwrite'
-import * as S from './styles'
+
+const screenWidth = Dimensions.get('screen').width
 
 interface AssignmentProps {
 	map: Models.Document
@@ -17,6 +20,7 @@ interface AssignmentProps {
 }
 
 const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentProps) => {
+	const { colors } = useThemedColors()
 	const coordinates: [number, number] = [map.lat, map.lng]
 
 	const found = useMemo(() => {
@@ -38,31 +42,57 @@ const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentPro
 	})
 
 	return (
-		<S.Container onPress={onPress}>
-			<S.Column>
-				<S.Image resizeMode='contain' source={{ uri: mapImage(coordinates) }} />
-			</S.Column>
-			<S.Column>
-				{map.assigned && !hidePublisher && <S.Paragraph>{map.assigned.name}</S.Paragraph>}
-				<S.ParagraphAddress>
+		<Pressable onPress={onPress} className='flex flex-row mb-[5px] w-full rounded-[10px] bg-card p-2.5 gap-2.5'>
+			<View className='flex'>
+				<Image
+					resizeMode='contain'
+					source={{ uri: mapImage(coordinates) }}
+					className='rounded-[10px] w-20 h-20'
+				/>
+			</View>
+
+			<View className='flex'>
+				{map.assigned && !hidePublisher && (
+					<Text className='text-foreground text-[15px] font-medium'>{map.assigned.name}</Text>
+				)}
+				<Text
+					className='text-foreground text-[15px] font-medium'
+					style={{ width: screenWidth - 10 - 10 - 10 - 80 - 20 }}
+				>
 					{map.name} - {map.address}, {map.city.name}
-				</S.ParagraphAddress>
+				</Text>
 				{!!map.visited ? (
-					<S.Column>
-						<S.Small>
+					<View className='flex'>
+						<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
 							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
 							{formatDate(map.visited)}
-						</S.Small>
-						{found ? <S.Found>Encontrado</S.Found> : <S.NotFound>Não encontrado</S.NotFound>}
-					</S.Column>
+						</Text>
+						{found ? (
+							<Text className='font-semibold text-xs pt-0' style={{ color: colors.success.DEFAULT }}>
+								Encontrado
+							</Text>
+						) : (
+							<Text className='font-semibold text-xs pt-0' style={{ color: colors.primary[600] }}>
+								Não encontrado
+							</Text>
+						)}
+					</View>
 				) : (
-					<S.Small>Ainda não visitado</S.Small>
+					<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
+						Ainda não visitado
+					</Text>
 				)}
-			</S.Column>
-			<S.Distance>
-				<S.DistanceText>{distance}</S.DistanceText>
-			</S.Distance>
-		</S.Container>
+			</View>
+
+			<View
+				className='absolute bottom-[5px] right-[5px] px-[5px] py-0.5 rounded-[5px]'
+				style={{ backgroundColor: colors.background }}
+			>
+				<Text className='font-bold text-[10px]' style={{ color: colors.foreground + '80' }}>
+					{distance}
+				</Text>
+			</View>
+		</Pressable>
 	)
 }
 
