@@ -1,5 +1,5 @@
-import LocationRequest from '@components/LocationRequest'
-import { useSession } from '@contexts/session'
+import LocationRequest from '@/components/LocationRequest'
+import { useSession } from '@/contexts/session'
 import theme from '@themes/index'
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect, Stack } from 'expo-router'

@@ -1,12 +1,12 @@
-import { ExecutionMethod, Models } from 'react-native-appwrite'
+import { history, storage } from '@/database/index'
+import { account, functions } from '@/services/appwrite'
+import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 import { AppleAuthenticationCredential } from 'expo-apple-authentication'
+import { router } from 'expo-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Platform } from 'react-native'
+import { ExecutionMethod, Models } from 'react-native-appwrite'
 import { OneSignal } from 'react-native-onesignal'
-import { account, functions } from '@services/appwrite'
-import { history, storage } from '@database/index'
-import { router } from 'expo-router'
-import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 
 type LocalSession = {
 	current: Models.User<Models.Preferences> | null

@@ -1,4 +1,9 @@
-import Dropdown from '@components/Dropdown'
+import Dropdown from '@/components/Dropdown'
+import { APP_VERSION } from '@/constants/content'
+import { history, storage } from '@/database/index'
+import { LAST_CONGREGATION } from '@/database/types/keys'
+import useCongregations from '@/hooks/useCongregations'
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import {
 	AppleAuthenticationButton,
 	AppleAuthenticationButtonStyle,
@@ -6,21 +11,14 @@ import {
 	AppleAuthenticationScope,
 	signInAsync,
 } from 'expo-apple-authentication'
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
-import { APP_VERSION } from '@constants/content'
-import { history, storage } from '@database/index'
-import { LAST_CONGREGATION } from '@database/types/keys'
-import useCongregations from '@hooks/useCongregations'
 import { Stack } from 'expo-router/stack'
 import { useEffect, useMemo, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import * as S from './styles'
-import { Alert, Linking, Platform, useColorScheme } from 'react-native'
-import React from 'react'
+import { useSession } from '@/contexts/session'
 import { StatusBar } from 'expo-status-bar'
-import { useSession } from '@contexts/session'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, Alert, Linking, Platform, useColorScheme } from 'react-native'
+import * as S from './styles'
 
 const Login = () => {
 	const [congregationId, setCongregationId] = useState<string>()

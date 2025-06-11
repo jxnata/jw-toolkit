@@ -1,7 +1,7 @@
-import { useDocuments } from '@hooks/documents'
-import { useSession } from '@contexts/session'
-import { storage } from '@database/index'
-import { database } from '@services/appwrite'
+import { useSession } from '@/contexts/session'
+import { storage } from '@/database/index'
+import { useDocuments } from '@/hooks/documents'
+import { database } from '@/services/appwrite'
 import { Query } from 'react-native-appwrite'
 
 const useMyAssignments = () => {

@@ -1,11 +1,11 @@
-import Input from '@components/Input'
-import useCities from '@hooks/useCities'
+import Input from '@/components/Input'
+import SkeletonItem from '@/components/SkeletonItem'
+import useCities from '@/hooks/useCities'
+import { firstLetter } from '@/utils/first-letter'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { FlatList } from 'react-native'
-import { firstLetter } from '@utils/first-letter'
-import SkeletonItem from '@components/SkeletonItem'
 
 import * as S from './styles'
 

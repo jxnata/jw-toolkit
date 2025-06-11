@@ -1,10 +1,10 @@
-import { APP_VERSION } from '@constants/content'
-import { useSession } from '@contexts/session'
+import { APP_VERSION } from '@/constants/content'
+import { useSession } from '@/contexts/session'
 import { Link, Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 
-import * as S from './styles'
 import { Alert } from 'react-native'
+import * as S from './styles'
 
 const Admin = () => {
 	const router = useRouter()

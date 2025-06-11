@@ -1,4 +1,4 @@
-import { storage } from '@database/index'
+import { storage } from '@/database/index'
 import analytics from '@react-native-firebase/analytics'
 
 type DatabaseOperation = 'create' | 'read' | 'update' | 'delete' | 'list'

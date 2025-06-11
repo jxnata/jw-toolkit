@@ -1,5 +1,5 @@
-import { APP_VERSION } from '@constants/content'
-import { useSession } from '@contexts/session'
+import { APP_VERSION } from '@/constants/content'
+import { useSession } from '@/contexts/session'
 import { Stack } from 'expo-router'
 import { Alert } from 'react-native'
 

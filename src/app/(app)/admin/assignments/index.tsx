@@ -1,12 +1,12 @@
-import AssignmentItem from '@components/AssignmentItem'
-import Input from '@components/Input'
-import { useLocation } from '@hooks/useLocation'
+import AssignmentItem from '@/components/AssignmentItem'
+import Input from '@/components/Input'
+import SkeletonItem from '@/components/SkeletonItem'
+import { useLocation } from '@/hooks/useLocation'
+import useMaps from '@/hooks/useMaps'
 import { Stack, useRouter } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, FlatList } from 'react-native'
-import useMaps from '@hooks/useMaps'
-import SkeletonItem from '@components/SkeletonItem'
 import { Controller, useForm } from 'react-hook-form'
+import { ActivityIndicator, FlatList } from 'react-native'
 
 import * as S from './styles'
 

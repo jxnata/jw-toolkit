@@ -1,11 +1,11 @@
+import { formatDate } from '@/utils/date-format'
+import { getLocationDistance } from '@/utils/get-location-distance'
+import { mapImage } from '@/utils/map-image'
 import { useQuery } from '@tanstack/react-query'
-import { formatDate } from '@utils/date-format'
-import { getLocationDistance } from '@utils/get-location-distance'
-import { mapImage } from '@utils/map-image'
 import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
 
-import { firstName } from '@utils/first-name'
+import { firstName } from '@/utils/first-name'
 import { Models } from 'react-native-appwrite'
 import * as S from './styles'
 

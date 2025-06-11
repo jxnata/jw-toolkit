@@ -1,5 +1,5 @@
-import { useDocument } from '@hooks/documents'
-import { database } from '@services/appwrite'
+import { useDocument } from '@/hooks/documents'
+import { database } from '@/services/appwrite'
 
 const usePublisher = (id?: string) => {
 	const { data, loading, error, mutate } = useDocument({

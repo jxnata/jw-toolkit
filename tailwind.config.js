@@ -67,6 +67,7 @@ module.exports = {
 				bold: ['urbanist-bold'],
 				extrabold: ['urbanist-extrabold'],
 				black: ['urbanist-black'],
+				icons: ['jw-icons'],
 			},
 		},
 	},

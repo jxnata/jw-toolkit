@@ -1,4 +1,4 @@
-import { cache } from '@database/index'
+import { cache } from '@/database/index'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 
 const clientStorage = {

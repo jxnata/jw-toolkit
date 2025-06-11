@@ -1,13 +1,13 @@
-import Button from '@components/Button'
-import { useSession } from '@contexts/session'
-import useAllMaps from '@hooks/useAllMaps'
+import Button from '@/components/Button'
+import { useSession } from '@/contexts/session'
+import useAllMaps from '@/hooks/useAllMaps'
 import { Stack } from 'expo-router'
 import { useState } from 'react'
 import { Platform, Share } from 'react-native'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 
-import * as S from './styles'
 import { Models } from 'react-native-appwrite'
+import * as S from './styles'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)

@@ -1,10 +1,10 @@
+import usePublishers from '@/hooks/usePublishers'
+import useRequestPublishers from '@/hooks/useRequestPublishers'
+import { database } from '@/services/appwrite'
+import { firstLetter } from '@/utils/first-letter'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { FlatList } from 'react-native'
-import { firstLetter } from '@utils/first-letter'
-import { database } from '@services/appwrite'
-import useRequestPublishers from '@hooks/useRequestPublishers'
-import usePublishers from '@hooks/usePublishers'
 
 import * as S from './styles'
 

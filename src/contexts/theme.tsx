@@ -1,4 +1,4 @@
-import { themes } from '@utils/color-theme'
+import { themes } from '@/utils/color-theme'
 import React, { createContext } from 'react'
 import { useColorScheme, View } from 'react-native'
 

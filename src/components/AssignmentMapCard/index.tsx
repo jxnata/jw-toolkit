@@ -1,11 +1,11 @@
-import useMyAssignments from '@hooks/useMyAssignments'
+import useMyAssignments from '@/hooks/useMyAssignments'
+import { error, success } from '@/messages/edit'
 import { useRouter } from 'expo-router'
-import { error, success } from '@messages/edit'
 import { useState } from 'react'
 
-import * as S from './styles'
+import { functions } from '@/services/appwrite'
 import { ExecutionMethod, Models } from 'react-native-appwrite'
-import { functions } from '@services/appwrite'
+import * as S from './styles'
 
 interface AssignmentProps {
 	assignment: Models.Document

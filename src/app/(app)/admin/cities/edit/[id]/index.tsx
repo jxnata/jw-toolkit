@@ -1,18 +1,18 @@
-import Button from '@components/Button'
-import IconButton from '@components/IconButton'
-import Input from '@components/Input'
-import useCities from '@hooks/useCities'
-import { EditCityReq } from '@interfaces/api/cities'
+import Button from '@/components/Button'
+import IconButton from '@/components/IconButton'
+import Input from '@/components/Input'
+import useCities from '@/hooks/useCities'
+import { EditCityReq } from '@/interfaces/api/cities'
+import { error as removeError, success as removeSuccess } from '@/messages/delete'
+import { error, success } from '@/messages/edit'
+import { database } from '@/services/appwrite'
+import { colors } from '@themes/index'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { error as removeError, success as removeSuccess } from '@messages/delete'
-import { error, success } from '@messages/edit'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert } from 'react-native'
-import { colors } from '@themes/index'
-import { database } from '@services/appwrite'
 
-import * as S from './styles'
 import { Models } from 'react-native-appwrite'
+import * as S from './styles'
 
 const EditCity = () => {
 	const { data } = useLocalSearchParams()

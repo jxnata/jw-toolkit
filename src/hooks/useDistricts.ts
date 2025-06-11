@@ -1,7 +1,7 @@
+import { database } from '@/services/appwrite'
 import { upperFirst } from 'lodash'
 import { Query } from 'react-native-appwrite'
 import { useDocuments } from './documents'
-import { database } from '@services/appwrite'
 
 const useDistricts = (city?: string) => {
 	const { data: districts } = useDocuments({

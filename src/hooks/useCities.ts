@@ -1,6 +1,6 @@
-import { storage } from '@database/index'
-import { useDocuments } from '@hooks/documents'
-import { database } from '@services/appwrite'
+import { storage } from '@/database/index'
+import { useDocuments } from '@/hooks/documents'
+import { database } from '@/services/appwrite'
 import { Query } from 'react-native-appwrite'
 
 type Props = {

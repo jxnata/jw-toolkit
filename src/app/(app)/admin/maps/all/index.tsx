@@ -1,14 +1,14 @@
+import { getMapRegion } from '@/utils/get-map-region'
+import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
+import { getPinColor } from '@/utils/get-pin-color'
 import * as Location from 'expo-location'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
-import { getMapRegion } from '@utils/get-map-region'
-import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-import { getPinColor } from '@utils/get-pin-color'
 
+import useAllMaps from '@/hooks/useAllMaps'
 import * as S from './styles'
-import useAllMaps from '@hooks/useAllMaps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()

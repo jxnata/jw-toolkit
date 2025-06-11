@@ -1,8 +1,8 @@
-import { formatDate } from '@utils/date-format'
-import { mapImage } from '@utils/map-image'
+import { formatDate } from '@/utils/date-format'
+import { mapImage } from '@/utils/map-image'
 import { useMemo } from 'react'
 
-import { firstName } from '@utils/first-name'
+import { firstName } from '@/utils/first-name'
 import { Models } from 'react-native-appwrite'
 import * as S from './styles'
 

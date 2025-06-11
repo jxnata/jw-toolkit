@@ -1,17 +1,16 @@
-import Dropdown from '@components/Dropdown'
-import Input from '@components/Input'
-import MapItem from '@components/MapItem'
-import useCities from '@hooks/useCities'
-import useMaps from '@hooks/useMaps'
-import { useLocation } from '@hooks/useLocation'
+import Dropdown from '@/components/Dropdown'
+import Input from '@/components/Input'
+import MapItem from '@/components/MapItem'
+import SkeletonItem from '@/components/SkeletonItem'
+import useCities from '@/hooks/useCities'
+import { useLocation } from '@/hooks/useLocation'
+import useMaps from '@/hooks/useMaps'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
 
-import * as S from './styles'
-import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import * as S from './styles'
 
 const Maps = () => {
 	const router = useRouter()

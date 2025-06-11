@@ -1,14 +1,13 @@
-import Button from '@components/Button'
-import useCheckbox from '@hooks/useCheckbox'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Button from '@/components/Button'
+import useCheckbox from '@/hooks/useCheckbox'
+import { getMapRegion } from '@/utils/get-map-region'
+import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
+import { validCoordinates } from '@/utils/valid-coordinates'
 import { AppleMaps, Coordinates, GoogleMaps } from 'expo-maps'
-import { getMapRegion } from '@utils/get-map-region'
-import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-import { validCoordinates } from '@utils/valid-coordinates'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import * as S from './styles'
-import React from 'react'
 import { Platform } from 'react-native'
+import * as S from './styles'
 
 type Props = {
 	onSelect: (coord: [number, number]) => void

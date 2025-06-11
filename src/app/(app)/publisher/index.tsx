@@ -1,11 +1,11 @@
-import AssignmentItem from '@components/AssignmentItem'
-import useMyAssignments from '@hooks/useMyAssignments'
-import { useLocation } from '@hooks/useLocation'
+import AssignmentItem from '@/components/AssignmentItem'
+import SkeletonItem from '@/components/SkeletonItem'
+import { useLocation } from '@/hooks/useLocation'
+import useMyAssignments from '@/hooks/useMyAssignments'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect } from 'react'
-import { OneSignal } from 'react-native-onesignal'
 import { FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
+import { OneSignal } from 'react-native-onesignal'
 
 import * as S from './styles'
 

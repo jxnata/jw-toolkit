@@ -1,5 +1,4 @@
-import React from 'react'
-import Skeleton from '@components/Skeleton'
+import Skeleton from '@/components/Skeleton'
 import * as S from './styles'
 
 interface SkeletonItemProps {

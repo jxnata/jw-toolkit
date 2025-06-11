@@ -1,5 +1,5 @@
-import { useDocument } from '@hooks/documents'
-import { database } from '@services/appwrite'
+import { useDocument } from '@/hooks/documents'
+import { database } from '@/services/appwrite'
 import { Models } from 'react-native-appwrite'
 
 const useMap = (id?: string, initialData?: Models.Document) => {

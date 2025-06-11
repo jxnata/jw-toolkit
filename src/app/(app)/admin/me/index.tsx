@@ -1,10 +1,10 @@
-import { APP_VERSION } from '@constants/content'
-import { useSession } from '@contexts/session'
+import { APP_VERSION } from '@/constants/content'
+import { useSession } from '@/contexts/session'
 import { Link, Stack } from 'expo-router'
 import { Alert } from 'react-native'
 
+import Button from '@/components/Button'
 import * as S from './styles'
-import Button from '@components/Button'
 
 const UserDetails = () => {
 	const { current, loading, congregation, logout, type } = useSession()

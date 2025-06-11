@@ -1,15 +1,14 @@
-import Input from '@components/Input'
-import usePublishers from '@hooks/usePublishers'
+import Input from '@/components/Input'
+import usePublishers from '@/hooks/usePublishers'
+import { firstLetter } from '@/utils/first-letter'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
 import { FlatList } from 'react-native'
-import { firstLetter } from '@utils/first-letter'
 
+import SkeletonItem from '@/components/SkeletonItem'
+import useRequestPublishers from '@/hooks/useRequestPublishers'
 import * as S from './styles'
-import useRequestPublishers from '@hooks/useRequestPublishers'
-import React from 'react'
-import SkeletonItem from '@components/SkeletonItem'
 
 const Publishers = () => {
 	const router = useRouter()
