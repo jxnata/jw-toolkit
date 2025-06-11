@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"strict": true,
 		"baseUrl": ".",
+		"jsx": "react-jsx",
 		"paths": {
 			"@app/*": ["src/app/*"],
 			"@assets/*": ["src/assets/*"],
@@ -14,7 +15,6 @@
 			"@hooks/*": ["src/hooks/*"],
 			"@messages/*": ["src/messages/*"],
 			"@services/*": ["src/services/*"],
-			"@themes/*": ["src/themes/*"],
 			"@utils/*": ["src/utils/*"]
 		}
 	},
