@@ -1,40 +1,40 @@
+import { colors } from '@/utils/color-theme'
 import { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message'
-import { colors, dark, light } from '@themes/index'
 
 export const configToast = (scheme: 'light' | 'dark'): ToastConfig => {
-	const theme = { dark, light }
-
 	return {
 		success: props => (
 			<BaseToast
 				{...props}
-				style={{ borderLeftColor: colors.success, backgroundColor: theme[scheme].backgroundAlt }}
+				style={{ borderLeftColor: colors.success[500], backgroundColor: colors[scheme].card }}
 				text1Style={{
 					fontSize: 17,
 					fontFamily: 'urbanist-bold',
-					color: theme[scheme].text,
+					color: colors[scheme].foreground,
 				}}
 				text2Style={{
 					fontSize: 15,
 					fontFamily: 'urbanist-regular',
-					color: theme[scheme].textAlt,
+					color: colors[scheme].foreground + '70',
 				}}
+				text2NumberOfLines={3}
 			/>
 		),
 		error: props => (
 			<ErrorToast
 				{...props}
-				style={{ borderLeftColor: colors.error, backgroundColor: theme[scheme].backgroundAlt }}
+				style={{ borderLeftColor: colors.danger[500], backgroundColor: colors[scheme].card }}
 				text1Style={{
 					fontSize: 17,
 					fontFamily: 'urbanist-bold',
-					color: theme[scheme].text,
+					color: colors[scheme].foreground,
 				}}
 				text2Style={{
 					fontSize: 15,
 					fontFamily: 'urbanist-regular',
-					color: theme[scheme].textAlt,
+					color: colors[scheme].foreground + '70',
 				}}
+				text2NumberOfLines={3}
 			/>
 		),
 	}

@@ -1,30 +1,31 @@
-import Input from '@/components/Input'
+import Input from '@/components/input'
+import ListItem from '@/components/list-item'
+import SkeletonItem from '@/components/skeleton-item'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import usePublishers from '@/hooks/usePublishers'
-import { firstLetter } from '@/utils/first-letter'
+import useRequestPublishers from '@/hooks/useRequestPublishers'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
-import { FlatList } from 'react-native'
-
-import SkeletonItem from '@/components/SkeletonItem'
-import useRequestPublishers from '@/hooks/useRequestPublishers'
-import * as S from './styles'
+import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 
 const Publishers = () => {
 	const router = useRouter()
 	const [search, setSearch] = useState('')
 	const { publishers, loading, mutate } = usePublishers({ search: search })
 	const { publishers: requestPublishers } = useRequestPublishers()
+	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/publishers/review')}>
-					<S.Ionicon name='mail-unread-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View>
+				<Pressable onPress={() => router.push('/admin/publishers/review')} className='mx-2'>
+					<Ionicons name='mail-unread-outline' size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[router]
+		[router, colors.foreground]
 	)
 
 	const ListHeaderComponent = () => {
@@ -37,11 +38,14 @@ const Publishers = () => {
 					clearButtonMode='always'
 				/>
 				{requestPublishers?.length > 0 && (
-					<S.WarningButton onPress={() => router.push('/admin/publishers/review')}>
-						<S.WarningText>
+					<Pressable
+						onPress={() => router.push('/admin/publishers/review')}
+						className='bg-danger rounded-lg p-2.5 my-2.5'
+					>
+						<Text className='text-white text-center text-sm font-medium'>
 							{requestPublishers.length} solicitação(ões) pendente(s) para aprovação
-						</S.WarningText>
-					</S.WarningButton>
+						</Text>
+					</Pressable>
 				)}
 			</>
 		)
@@ -52,9 +56,9 @@ const Publishers = () => {
 	}, 500)
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Publicadores', headerRight: HeaderRight }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				{loading && !publishers.length ? (
 					<FlatList
 						data={[1, 2, 3, 4, 5]}
@@ -67,41 +71,39 @@ const Publishers = () => {
 						ListHeaderComponent={<ListHeaderComponent />}
 						data={publishers}
 						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
-						renderItem={({ item }) => (
-							<S.MenuItem
-								key={item.$id}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/publishers/edit/${item.$id}`,
-										params: { data: JSON.stringify(item) },
-									})
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+						contentContainerClassName='gap-2'
+						showsVerticalScrollIndicator={false}
+						renderItem={({ item }) => {
+							const getLabel = (level: number) => {
+								if (level === 1) {
+									return { text: 'admin', color: 'bg-primary-600' }
 								}
-							>
-								<S.IconContainer>
-									<S.Icon>{firstLetter(item.name)}</S.Icon>
-								</S.IconContainer>
-								<S.MenuContent>
-									<S.MenuTitle>{item.name}</S.MenuTitle>
-									<S.BadgeContainer>
-										{item.level === 1 && (
-											<S.Badge>
-												<S.BadgeText>admin</S.BadgeText>
-											</S.Badge>
-										)}
-										{item.level === 2 && (
-											<S.Badge>
-												<S.BadgeText>editor</S.BadgeText>
-											</S.Badge>
-										)}
-									</S.BadgeContainer>
-								</S.MenuContent>
-							</S.MenuItem>
-						)}
+								if (level === 2) {
+									return { text: 'editor', color: 'bg-success' }
+								}
+								return undefined
+							}
+
+							return (
+								<ListItem
+									id={item.$id}
+									name={item.name}
+									onPress={() =>
+										router.push({
+											pathname: `/admin/publishers/edit/${item.$id}`,
+											params: { data: JSON.stringify(item) },
+										})
+									}
+									label={getLabel(item.level)}
+								/>
+							)
+						}}
+						ListFooterComponent={() => <View className='h-[60px]' />}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

@@ -1,28 +1,29 @@
-import Input from '@/components/Input'
-import SkeletonItem from '@/components/SkeletonItem'
+import Input from '@/components/input'
+import ListItem from '@/components/list-item'
+import SkeletonItem from '@/components/skeleton-item'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import useCities from '@/hooks/useCities'
-import { firstLetter } from '@/utils/first-letter'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { useCallback, useState } from 'react'
-import { FlatList } from 'react-native'
-
-import * as S from './styles'
+import { FlatList, Pressable, RefreshControl, View } from 'react-native'
 
 const Cities = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const { cities, loading, mutate } = useCities({ search: searchTerm })
+	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/cities/add')}>
-					<S.Ionicon name='add-circle-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View>
+				<Pressable onPress={() => router.push('/admin/cities/add')} className='mx-2'>
+					<Ionicons name='add-circle-outline' size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[router]
+		[router, colors.foreground]
 	)
 
 	const debouncedSearch = debounce(async term => {
@@ -41,9 +42,9 @@ const Cities = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Cidades', headerRight: HeaderRight }} />
-			<S.Content>
+			<View className='flex p-2 w-full h-full bg-background'>
 				{loading && !cities.length ? (
 					<FlatList
 						data={[1, 2, 3, 4, 5]}
@@ -56,27 +57,25 @@ const Cities = () => {
 						ListHeaderComponent={<ListHeaderComponent />}
 						data={cities}
 						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+						contentContainerClassName='gap-2'
+						showsVerticalScrollIndicator={false}
 						renderItem={({ item }) => (
-							<S.MenuItem
-								key={item.$id}
+							<ListItem
+								id={item.$id}
+								name={item.name}
 								onPress={() =>
 									router.push({
 										pathname: `/admin/cities/edit/${item.$id}`,
 										params: { data: JSON.stringify(item) },
 									})
 								}
-							>
-								<S.IconContainer>
-									<S.Icon>{firstLetter(item.name)}</S.Icon>
-								</S.IconContainer>
-								<S.MenuTitle>{item.name}</S.MenuTitle>
-							</S.MenuItem>
+							/>
 						)}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { Pressable, Text, View } from 'react-native'
 
-import * as S from './styles'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 
 type CheckboxComponentProps = {
 	onChange?: () => void
@@ -8,6 +9,7 @@ type CheckboxComponentProps = {
 
 const useCheckbox = (options: string[], initialSelected?: string[], unique?: boolean) => {
 	const [selectedValues, setSelectedValues] = useState(initialSelected || [])
+	const { colors } = useThemedColors()
 
 	const isSelected = useCallback(
 		(option: string) => {
@@ -39,20 +41,24 @@ const useCheckbox = (options: string[], initialSelected?: string[], unique?: boo
 	const CheckboxComponent = useCallback(
 		({ onChange }: CheckboxComponentProps) => {
 			return (
-				<S.Container>
+				<View className='flex-row items-center gap-1'>
 					{options.map(option => (
-						<S.Button
+						<Pressable
 							key={option}
-							aria-selected={isSelected(option)}
+							className={`p-2.5 rounded-lg ${isSelected(option) ? 'bg-primary-600' : 'bg-card'}`}
 							onPress={() => onChangeSelected(option, onChange)}
 						>
-							<S.ButtonText aria-selected={isSelected(option)}>{option}</S.ButtonText>
-						</S.Button>
+							<Text
+								className={`text-xs font-bold ${isSelected(option) ? 'text-background' : 'text-foreground'}`}
+							>
+								{option}
+							</Text>
+						</Pressable>
 					))}
-				</S.Container>
+				</View>
 			)
 		},
-		[options, isSelected, onChangeSelected]
+		[options, isSelected, onChangeSelected, colors]
 	)
 
 	return { CheckboxComponent, selectedValues }

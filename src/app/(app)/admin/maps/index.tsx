@@ -1,16 +1,17 @@
-import Dropdown from '@/components/Dropdown'
-import Input from '@/components/Input'
-import MapItem from '@/components/MapItem'
-import SkeletonItem from '@/components/SkeletonItem'
+import Dropdown from '@/components/dropdown'
+import Input from '@/components/input'
+import MapItem from '@/components/map-item'
+import SkeletonItem from '@/components/skeleton-item'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import useCities from '@/hooks/useCities'
 import { useLocation } from '@/hooks/useLocation'
 import useMaps from '@/hooks/useMaps'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, View } from 'react-native'
 
 import { Controller, useForm } from 'react-hook-form'
-import * as S from './styles'
 
 const Maps = () => {
 	const router = useRouter()
@@ -19,6 +20,7 @@ const Maps = () => {
 	const [status, setStatus] = useState<'assigned' | 'unassigned' | ''>('')
 	const [showFilter, setFilter] = useState(true)
 	const { control, handleSubmit, reset } = useForm<{ search: string }>()
+	const { colors } = useThemedColors()
 
 	const { maps, loading, mutate, queryKey, loadMore, loadingMore, hasMore } = useMaps({
 		search: searchTerm,
@@ -39,29 +41,30 @@ const Maps = () => {
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton
+			<View className='flex-row'>
+				<Pressable
 					onPress={() =>
 						router.push({ pathname: '/admin/maps/add', params: { query: JSON.stringify(queryKey) } })
 					}
+					className='mx-2'
 				>
-					<S.Ionicon name='add-circle-outline' />
-				</S.IconButton>
-				<S.IconButton onPress={toggleFilter}>
-					<S.Ionicon name='funnel-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+					<Ionicons name='add-circle-outline' size={24} color={colors.foreground} />
+				</Pressable>
+				<Pressable onPress={toggleFilter} className='mx-2'>
+					<Ionicons name='funnel-outline' size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[queryKey, router]
+		[queryKey, router, colors.foreground]
 	)
 
 	const ListHeaderComponent = () => {
 		return (
-			<>
+			<View className='bg-background'>
 				{showFilter && (
 					<>
-						<S.FilterContainer>
-							<S.FilterItemsContainer>
+						<View className='flex-row gap-2.5 mb-2.5'>
+							<View className='flex-1'>
 								<Dropdown
 									placeholder='Todos'
 									options={[
@@ -72,19 +75,19 @@ const Maps = () => {
 									selectedValue={status}
 									onValueChange={setStatus}
 								/>
-							</S.FilterItemsContainer>
-							<S.FilterItemsContainer>
+							</View>
+							<View className='flex-1'>
 								<Dropdown
 									placeholder='Cidade'
 									options={citiesList}
 									selectedValue={searchCity}
 									onValueChange={filterCity}
 								/>
-							</S.FilterItemsContainer>
-						</S.FilterContainer>
+							</View>
+						</View>
 
-						<S.FilterContainer>
-							<S.SearchContainer>
+						<View className='flex-row gap-2.5 mb-2.5'>
+							<View className='flex-1'>
 								<Controller
 									control={control}
 									rules={{ required: true }}
@@ -102,28 +105,31 @@ const Maps = () => {
 										/>
 									)}
 								/>
-								{searchTerm && (
-									<S.ClearButton onPress={handleClear}>
-										<S.Ionicon name='close-outline' />
-									</S.ClearButton>
-								)}
-								<S.SearchButton onPress={handleSubmit(handleSearch)}>
-									<S.Ionicon name='search-outline' />
-								</S.SearchButton>
-							</S.SearchContainer>
-						</S.FilterContainer>
+							</View>
+							{searchTerm && (
+								<Pressable onPress={handleClear} className='w-10 h-10 items-center justify-center'>
+									<Ionicons name='close-outline' size={24} color={colors.foreground} />
+								</Pressable>
+							)}
+							<Pressable
+								onPress={handleSubmit(handleSearch)}
+								className='w-10 h-10 items-center justify-center'
+							>
+								<Ionicons name='search-outline' size={24} color={colors.foreground} />
+							</Pressable>
+						</View>
 					</>
 				)}
-			</>
+			</View>
 		)
 	}
 
 	const ListFooterComponent = () => {
 		if (!loadingMore) return null
 		return (
-			<S.LoadingContainer>
-				<ActivityIndicator />
-			</S.LoadingContainer>
+			<View className='py-2.5 items-center'>
+				<ActivityIndicator size='small' color={colors.primary[600]} />
+			</View>
 		)
 	}
 
@@ -152,9 +158,9 @@ const Maps = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				{loading && !maps.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
@@ -169,29 +175,29 @@ const Maps = () => {
 						ListFooterComponent={<ListFooterComponent />}
 						data={maps}
 						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+						contentContainerClassName='gap-2'
+						showsVerticalScrollIndicator={false}
 						renderItem={({ item }) => (
-							<S.ListContainer>
-								<MapItem
-									key={item.$id}
-									map={item}
-									location={location}
-									onPress={() =>
-										router.push({
-											pathname: `/admin/maps/${item.$id}`,
-											params: { data: JSON.stringify(item), query: JSON.stringify(queryKey) },
-										})
-									}
-								/>
-							</S.ListContainer>
+							<MapItem
+								key={item.$id}
+								map={item}
+								location={location}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/maps/${item.$id}`,
+										params: { data: JSON.stringify(item), query: JSON.stringify(queryKey) },
+									})
+								}
+							/>
 						)}
 						stickyHeaderIndices={[0]}
 						onEndReached={handleEndReached}
 						onEndReachedThreshold={0.5}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

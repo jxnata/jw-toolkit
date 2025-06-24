@@ -1,14 +1,14 @@
-import AssignmentItem from '@/components/AssignmentItem'
-import Input from '@/components/Input'
-import SkeletonItem from '@/components/SkeletonItem'
+import AssignmentItem from '@/components/assignment-item'
+import IconButton from '@/components/icon-button'
+import Input from '@/components/input'
+import SkeletonItem from '@/components/skeleton-item'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { useLocation } from '@/hooks/useLocation'
 import useMaps from '@/hooks/useMaps'
 import { Stack, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { ActivityIndicator, FlatList } from 'react-native'
-
-import * as S from './styles'
+import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native'
 
 const Assignments = () => {
 	const router = useRouter()
@@ -16,6 +16,7 @@ const Assignments = () => {
 	const { maps, loading, mutate, loadMore, loadingMore, hasMore } = useMaps({ status: 'assigned', search })
 	const { location } = useLocation()
 	const { control, handleSubmit, reset } = useForm<{ search: string }>()
+	const { colors } = useThemedColors()
 
 	const handleSearch = (data: { search: string }) => {
 		setSearch(data.search)
@@ -28,8 +29,8 @@ const Assignments = () => {
 
 	const ListHeaderComponent = () => {
 		return (
-			<S.FilterContainer>
-				<S.SearchContainer>
+			<View className='flex-row gap-2.5 mb-2.5'>
+				<View className='flex-1'>
 					<Controller
 						control={control}
 						rules={{ required: true }}
@@ -47,25 +48,19 @@ const Assignments = () => {
 							/>
 						)}
 					/>
-					{search && (
-						<S.ClearButton onPress={handleClear}>
-							<S.Ionicon name='close-outline' />
-						</S.ClearButton>
-					)}
-					<S.SearchButton onPress={handleSubmit(handleSearch)}>
-						<S.Ionicon name='search-outline' />
-					</S.SearchButton>
-				</S.SearchContainer>
-			</S.FilterContainer>
+				</View>
+				{search && <IconButton icon='close-outline' onPress={handleClear} />}
+				<IconButton icon='search-outline' onPress={handleSubmit(handleSearch)} />
+			</View>
 		)
 	}
 
 	const ListFooterComponent = () => {
 		if (!loadingMore) return null
 		return (
-			<S.LoadingContainer>
-				<ActivityIndicator />
-			</S.LoadingContainer>
+			<View className='py-2.5 items-center'>
+				<ActivityIndicator size='small' color={colors.primary[600]} />
+			</View>
 		)
 	}
 
@@ -76,9 +71,9 @@ const Assignments = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Designações' }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				{loading && !maps.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
@@ -92,7 +87,7 @@ const Assignments = () => {
 						ListHeaderComponent={<ListHeaderComponent />}
 						ListFooterComponent={<ListFooterComponent />}
 						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item }) => (
 							<AssignmentItem
 								key={item.$id}
@@ -110,8 +105,8 @@ const Assignments = () => {
 						onEndReachedThreshold={0.5}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

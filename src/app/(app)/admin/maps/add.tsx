@@ -1,77 +1,76 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
+import { useSession } from '@/contexts/session'
 import useCities from '@/hooks/useCities'
-import { EditMapReq } from '@/interfaces/api/maps'
-import { error, success } from '@/messages/edit'
+import { AddMapReq } from '@/interfaces/api/maps'
+import { error, success } from '@/messages/add'
 import { database } from '@/services/appwrite'
-import { getCoordinates } from '@/utils/get-coordinates'
 import { setCoordinates } from '@/utils/set-coordinates'
+import { updateMapsCache } from '@/utils/update-maps-cache'
+import { useQueryClient } from '@tanstack/react-query'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
+import { Save } from 'lucide-react-native'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { Models } from 'react-native-appwrite'
+import { ID, Permission, Role } from 'react-native-appwrite'
 
-import { useQueryClient } from '@tanstack/react-query'
-
-const EditMap = () => {
-	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
+const AddMap = () => {
+	const { query } = useLocalSearchParams()
+	const queryKey = JSON.parse((query as string) || '[]')
 	const { cities } = useCities()
+	const { congregation } = useSession()
+	const { control, formState, handleSubmit } = useForm<AddMapReq>()
 	const queryClient = useQueryClient()
+
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
 
-	const defaultValues: EditMapReq | undefined = useMemo(
-		() =>
-			params
-				? {
-						name: params.name,
-						address: params.address,
-						district: params.district,
-						details: params.details,
-						city: params.city.$id,
-						coordinates: getCoordinates([params.lat, params.lng]),
-					}
-				: undefined,
-		[params]
-	)
-
-	const { control, formState, handleSubmit } = useForm<EditMapReq>({ defaultValues })
-
-	const save: SubmitHandler<EditMapReq> = async data => {
+	const save: SubmitHandler<AddMapReq> = async data => {
+		if (!congregation) return
 		const [lat, lng] = setCoordinates(data.coordinates)
 
-		if (lat === 0 || lng === 0) {
+		if (lat === 0 && lng === 0) {
 			error('mapa, coordenadas inválidas')
 			return
 		}
 
 		try {
-			const updatedMap = await database.updateDocument('production', 'maps', params.$id, {
-				name: data.name,
-				address: data.address,
-				district: data.district,
-				details: data.details,
-				city: data.city,
-				lat,
-				lng,
-			})
+			const newMap = await database.createDocument(
+				'production',
+				'maps',
+				ID.unique(),
+				{
+					name: data.name,
+					address: data.address,
+					district: data.district,
+					details: data.details,
+					lat,
+					lng,
+					city: data.city,
+					congregation: congregation.id,
+				},
+				[
+					Permission.read(Role.label(congregation.id)),
+					Permission.update(Role.label(congregation.id)),
+					Permission.delete(Role.label(congregation.id)),
+				]
+			)
+
+			// Update the React Query cache
+			updateMapsCache(queryClient, queryKey, newMap)
 
 			success('mapa')
-
-			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
-
 			router.back()
 		} catch (err) {
 			error('mapa')
-			console.error('Failed to update map:', err)
+			console.error('Failed to create map:', err)
 		}
 	}
 
 	return (
 		<View className='flex'>
-			<Stack.Screen options={{ title: 'Editar Mapa' }} />
+			<Stack.Screen options={{ title: 'Novo Mapa' }} />
 			<View className='flex p-2.5 w-full h-full bg-background'>
 				<Controller
 					control={control}
@@ -142,7 +141,6 @@ const EditMap = () => {
 							render={({ field: { onChange, onBlur, value } }) => (
 								<Input
 									label='Coordenadas'
-									defaultValue={value}
 									placeholder='Coordenadas'
 									onBlur={onBlur}
 									onChangeText={onChange}
@@ -160,6 +158,7 @@ const EditMap = () => {
 					name='city'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Dropdown
+							label='Cidade'
 							placeholder='Selecione uma cidade...'
 							options={citiesList}
 							selectedValue={value}
@@ -171,10 +170,16 @@ const EditMap = () => {
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}
-						initial={setCoordinates(getValues('coordinates'))}
+						initial={getMapRegion(setCoordinates(getValues('coordinates')))}
 					/>
 				</Modal> */}
-				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+				<Button
+					disabled={!formState.isValid}
+					loading={formState.isSubmitting}
+					onPress={handleSubmit(save)}
+					className='mt-4'
+					left={<Save size={16} color='#ffffff' />}
+				>
 					Salvar
 				</Button>
 			</View>
@@ -182,4 +187,4 @@ const EditMap = () => {
 	)
 }
 
-export default EditMap
+export default AddMap

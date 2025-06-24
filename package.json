@@ -40,6 +40,7 @@
 		"jest": "^29.2.1",
 		"jest-expo": "~53.0.7",
 		"lodash": "^4.17.21",
+		"lucide-react-native": "^0.522.0",
 		"nativewind": "^4.1.23",
 		"onesignal-expo-plugin": "^2.0.3",
 		"react": "19.0.0",

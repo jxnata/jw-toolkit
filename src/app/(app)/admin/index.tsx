@@ -1,24 +1,25 @@
 import { APP_VERSION } from '@/constants/content'
 import { useSession } from '@/contexts/session'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link, Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
-
-import { Alert } from 'react-native'
-import * as S from './styles'
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native'
 
 const Admin = () => {
 	const router = useRouter()
 	const { congregation } = useSession()
+	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/me')}>
-					<S.Ionicon name='person-circle-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View className='flex flex-row justify-center items-center gap-[15px]'>
+				<Pressable onPress={() => router.push('/admin/me')}>
+					<Ionicons name='person-circle-outline' size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[router]
+		[router, colors]
 	)
 
 	const confirmExport = () => {
@@ -35,54 +36,83 @@ const Admin = () => {
 	if (!congregation) return null
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: congregation.name, headerRight: HeaderRight }} />
-			<S.Content>
+			<ScrollView className='flex p-2.5 w-full h-full bg-background' contentContainerClassName='gap-2'>
+				<View className='flex flex-row items-center w-full gap-2 my-2'>
+					<Text className='text-foreground text-sm py-2 font-medium opacity-70'>ADMINISTRADOR</Text>
+					<View className='h-[1px] w-full bg-foreground opacity-20' />
+				</View>
+
 				<Link href='/admin/publishers' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Publicadores</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
+						<View className='flex flex-row items-center gap-2.5'>
+							<Text className='text-[32px] font-icons text-primary'></Text>
+							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Publicadores</Text>
+						</View>
+						<View className='flex flex-row items-center gap-2.5'></View>
+					</Pressable>
 				</Link>
+
 				<Link href='/admin/maps' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Mapas</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
+						<View className='flex flex-row items-center gap-2.5'>
+							<Text className='text-[32px] font-icons text-primary'></Text>
+							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Mapas</Text>
+						</View>
+						<View className='flex flex-row items-center gap-2.5'></View>
+					</Pressable>
 				</Link>
+
 				<Link href='/admin/assignments' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Designações</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
+						<View className='flex flex-row items-center gap-2.5'>
+							<Text className='text-[32px] font-icons text-primary'></Text>
+							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Designações</Text>
+						</View>
+						<View className='flex flex-row items-center gap-2.5'></View>
+					</Pressable>
 				</Link>
+
 				<Link href='/admin/cities' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Cidades</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
+						<View className='flex flex-row items-center gap-2.5'>
+							<Text className='text-[32px] font-icons text-primary'></Text>
+							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Cidades</Text>
+						</View>
+						<View className='flex flex-row items-center gap-2.5'></View>
+					</Pressable>
 				</Link>
-				<S.MenuItem onPress={confirmExport}>
-					<S.Column>
-						<S.Icon></S.Icon>
-						<S.MenuTitle>Exportar mapas</S.MenuTitle>
-					</S.Column>
-				</S.MenuItem>
-			</S.Content>
-			<S.Version>Versão: {APP_VERSION}</S.Version>
-		</S.Container>
+
+				<Pressable
+					onPress={confirmExport}
+					className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'
+				>
+					<View className='flex flex-row items-center gap-2.5'>
+						<Text className='text-[32px] font-icons text-primary'></Text>
+						<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Exportar mapas</Text>
+					</View>
+				</Pressable>
+
+				<View className='flex flex-row items-center w-full gap-2 my-2'>
+					<Text className='text-foreground text-sm py-2 font-medium opacity-70'>PUBLICADOR</Text>
+					<View className='h-[1px] w-full bg-foreground opacity-20' />
+				</View>
+
+				<Link href='/admin/my-assignments' asChild>
+					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
+						<View className='flex flex-row items-center gap-2.5'>
+							<Text className='text-[32px] font-icons text-primary'></Text>
+							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Minhas designações</Text>
+						</View>
+					</Pressable>
+				</Link>
+			</ScrollView>
+
+			<Text className='text-xs text-foreground py-2.5 font-medium absolute bottom-[50px] self-center'>
+				Versão: {APP_VERSION}
+			</Text>
+		</View>
 	)
 }
 

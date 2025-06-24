@@ -12,6 +12,8 @@ export const trackDatabaseOperation = async (
 		const userId = storage.getString('session.user.id')
 		const congregationId = storage.getString('congregation.id')
 
+		if (__DEV__) return
+
 		await analytics().logEvent('database_operation', {
 			operation,
 			collection_id: collectionId,
