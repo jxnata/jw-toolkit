@@ -1,18 +1,18 @@
-import Button from '@components/Button'
-import Dropdown from '@components/Dropdown'
-import Input from '@components/Input'
-import useCities from '@hooks/useCities'
-import { EditMapReq } from '@interfaces/api/maps'
+import Button from '@/components/button'
+import Dropdown from '@/components/dropdown'
+import Input from '@/components/input'
+import useCities from '@/hooks/useCities'
+import { EditMapReq } from '@/interfaces/api/maps'
+import { error, success } from '@/messages/edit'
+import { database } from '@/services/appwrite'
+import { getCoordinates } from '@/utils/get-coordinates'
+import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { error, success } from '@messages/edit'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { getCoordinates } from '@utils/get-coordinates'
-import { setCoordinates } from '@utils/set-coordinates'
-import { database } from '@services/appwrite'
+import { View } from 'react-native'
 import { Models } from 'react-native-appwrite'
 
-import * as S from './styles'
 import { useQueryClient } from '@tanstack/react-query'
 
 const EditMap = () => {
@@ -70,15 +70,16 @@ const EditMap = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Editar Mapa' }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				<Controller
 					control={control}
 					rules={{ required: true }}
 					name='name'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
+							label='Nome'
 							placeholder='Nome do mapa'
 							onBlur={onBlur}
 							onChangeText={onChange}
@@ -93,6 +94,7 @@ const EditMap = () => {
 					name='address'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
+							label='Endereço'
 							placeholder='Endereço'
 							onBlur={onBlur}
 							onChangeText={onChange}
@@ -107,6 +109,7 @@ const EditMap = () => {
 					name='district'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
+							label='Bairro'
 							placeholder='Bairro'
 							onBlur={onBlur}
 							onChangeText={onChange}
@@ -121,6 +124,7 @@ const EditMap = () => {
 					name='details'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
+							label='Detalhes'
 							placeholder='Detalhes ou observações'
 							onBlur={onBlur}
 							onChangeText={onChange}
@@ -129,14 +133,15 @@ const EditMap = () => {
 						/>
 					)}
 				/>
-				<S.Row>
-					<S.MaxWidth>
+				<View className='flex-row gap-2'>
+					<View className='flex-1'>
 						<Controller
 							control={control}
 							rules={{ required: true }}
 							name='coordinates'
 							render={({ field: { onChange, onBlur, value } }) => (
 								<Input
+									label='Coordenadas'
 									defaultValue={value}
 									placeholder='Coordenadas'
 									onBlur={onBlur}
@@ -146,9 +151,9 @@ const EditMap = () => {
 								/>
 							)}
 						/>
-					</S.MaxWidth>
+					</View>
 					{/* <IconButton icon='locate-outline' onPress={toggleMap} /> */}
-				</S.Row>
+				</View>
 				<Controller
 					control={control}
 					rules={{ required: true }}
@@ -172,8 +177,8 @@ const EditMap = () => {
 				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 					Salvar
 				</Button>
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

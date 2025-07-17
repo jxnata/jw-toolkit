@@ -1,28 +1,29 @@
-import AssignmentItem from '@components/AssignmentItem'
-import useMyAssignments from '@hooks/useMyAssignments'
-import { useLocation } from '@hooks/useLocation'
+import AssignmentItem from '@/components/assignment-item'
+import SkeletonItem from '@/components/skeleton-item'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { useLocation } from '@/hooks/useLocation'
+import useMyAssignments from '@/hooks/useMyAssignments'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect } from 'react'
+import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
-import { FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
-
-import * as S from './styles'
 
 const PublisherHome = () => {
 	const router = useRouter()
 	const { location } = useLocation()
 	const { assignments, loading, mutate } = useMyAssignments()
+	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/me')}>
-					<S.Icon name='person-circle-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View className='flex flex-row justify-center items-center gap-[15px]'>
+				<Pressable onPress={() => router.push('/admin/me')}>
+					<Ionicons name='person-circle-outline' size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[router]
+		[router, colors]
 	)
 
 	useEffect(() => {
@@ -34,9 +35,9 @@ const PublisherHome = () => {
 	}, [mutate])
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Minhas designações', headerRight: HeaderRight }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				{loading && !assignments.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
@@ -47,7 +48,7 @@ const PublisherHome = () => {
 					<FlatList
 						data={assignments}
 						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item: assignment }) => (
 							<AssignmentItem
 								key={assignment.$id}
@@ -62,11 +63,15 @@ const PublisherHome = () => {
 								}
 							/>
 						)}
-						ListEmptyComponent={<S.Paragraph>Nenhuma designação</S.Paragraph>}
+						ListEmptyComponent={
+							<Text className='text-[15px] text-foreground py-5 px-2.5 font-medium self-center'>
+								Nenhuma designação
+							</Text>
+						}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

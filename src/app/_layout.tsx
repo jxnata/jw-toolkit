@@ -1,13 +1,13 @@
-import '../../polyfills'
+import '../../global.css'
 
-import { fonts } from '@constants/fonts'
-import { configToast } from '@constants/toast'
-import { SessionProvider } from '@contexts/session'
-import { clientPersister } from '@database/cache/provider'
+import { fonts } from '@/constants/fonts'
+import { configToast } from '@/constants/toast'
+import { SessionProvider } from '@/contexts/session'
+import { ThemeProvider } from '@/contexts/theme'
+import { clientPersister } from '@/database/cache/provider'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import theme from '@themes/index'
 import Constants from 'expo-constants'
 import { useFonts } from 'expo-font'
 import { Slot } from 'expo-router'
@@ -18,8 +18,6 @@ import { Platform, useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { ThemeProvider } from 'styled-components/native'
-import { SWRConfig } from 'swr'
 
 if (__DEV__) require('../../reactotron')
 
@@ -56,11 +54,9 @@ export default function Layout() {
 		<SafeAreaProvider onLayout={handleOnLayout}>
 			<PersistQueryClientProvider client={queryClient} persistOptions={{ persister: clientPersister }}>
 				<SessionProvider>
-					<ThemeProvider theme={theme[scheme || 'light']}>
+					<ThemeProvider>
 						<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-						<SWRConfig>
-							<Slot />
-						</SWRConfig>
+						<Slot />
 					</ThemeProvider>
 				</SessionProvider>
 			</PersistQueryClientProvider>

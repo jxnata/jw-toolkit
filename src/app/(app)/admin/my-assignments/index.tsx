@@ -1,14 +1,11 @@
-import AssignmentItem from '@components/AssignmentItem'
-import useMyAssignments from '@hooks/useMyAssignments'
-import { useLocation } from '@hooks/useLocation'
+import AssignmentItem from '@/components/assignment-item'
+import SkeletonItem from '@/components/skeleton-item'
+import { useLocation } from '@/hooks/useLocation'
+import useMyAssignments from '@/hooks/useMyAssignments'
 import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
+import { FlatList, RefreshControl, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
-import { FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
-
-import * as S from './styles'
-import React from 'react'
 
 const MyAssignments = () => {
 	const router = useRouter()
@@ -17,16 +14,14 @@ const MyAssignments = () => {
 
 	useEffect(() => {
 		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			event.preventDefault()
 			mutate()
-			event.getNotification().display()
 		})
 	}, [mutate])
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Minhas designações' }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				{loading && !assignments.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
@@ -37,7 +32,7 @@ const MyAssignments = () => {
 					<FlatList
 						data={assignments}
 						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item: assignment }) => (
 							<AssignmentItem
 								key={assignment.$id}
@@ -45,17 +40,21 @@ const MyAssignments = () => {
 								location={location}
 								onPress={() =>
 									router.push({
-										pathname: `/admin/my-assignments/view/${assignment.$id}`,
+										pathname: `/admin/my-assignments/${assignment.$id}`,
 										params: { data: JSON.stringify({ ...assignment }) },
 									})
 								}
 							/>
 						)}
-						ListEmptyComponent={<S.Paragraph>Nenhuma designação</S.Paragraph>}
+						ListEmptyComponent={
+							<Text className='text-[15px] text-foreground py-5 px-2.5 font-medium self-center'>
+								Nenhuma designação
+							</Text>
+						}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

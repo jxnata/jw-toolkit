@@ -1,4 +1,4 @@
-import { storage } from '@database/index'
+import { storage } from '@/database/index'
 import analytics from '@react-native-firebase/analytics'
 
 type DatabaseOperation = 'create' | 'read' | 'update' | 'delete' | 'list'
@@ -11,6 +11,8 @@ export const trackDatabaseOperation = async (
 	try {
 		const userId = storage.getString('session.user.id')
 		const congregationId = storage.getString('congregation.id')
+
+		if (__DEV__) return
 
 		await analytics().logEvent('database_operation', {
 			operation,

@@ -1,0 +1,117 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Guidelines
+
+## Project Overview
+
+**JW Toolkit** is a React Native application for managing territorial assignments for Jehovah's Witnesses congregations. The app facilitates territory management, publisher assignments, and field service organization.
+
+### Core Functionality
+
+- **Territory Management**: Create, edit, and organize geographical territories/maps
+- **Assignment System**: Assign territories to publishers with tracking capabilities
+- **User Management**: Handle different user levels (Admin, Editor, Publisher)
+- **Approval Workflow**: Review and approve publisher registration requests
+- **Reporting**: Export territory data and generate PDF reports
+- **Real-time Updates**: Push notifications for assignment changes
+
+## Tech Stack
+
+### Core Technologies
+
+- **React Native** with Expo
+- **TypeScript** for type safety
+- **Expo Router** with app directory structure
+- **NativeWind** (Tailwind CSS for React Native) for styling
+- **Appwrite** as backend service
+- **TanStack Query** for data fetching and caching
+
+## Development Standards
+
+### File Naming Convention
+
+- **ALWAYS use kebab-case** for all files and directories
+- Examples: `user-profile.tsx`, `map-details.tsx`, `assignment-list.tsx`
+
+### Styling Guidelines
+
+- **ALWAYS use NativeWind** for styling with `className` prop
+- Import React Native components: `View`, `Text`, `Pressable`, `FlatList`, etc.
+- Use `useThemedColors` hook for dynamic colors outside className
+- Avoid inline styles
+
+## Design System
+
+### Color Palette
+
+```javascript
+// Available in tailwind.config.js
+primary: {
+	50 - 950
+} // Orange/Brown theme (#bb7424)
+success: {
+	50 - 950
+} // Green theme (#719453)
+danger: {
+	50 - 950
+} // Red theme (#bf616a)
+background: 'var(--color-background)'
+foreground: 'var(--color-foreground)'
+card: 'var(--color-card)'
+border: 'var(--color-border)'
+```
+
+### Typography
+
+- **Font Family**: Urbanist (regular, medium, semibold, bold, extrabold, black)
+- **Icon Font**: jw-icons for custom icons
+- **Classes**: `font-regular`, `font-medium`, `font-semibold`, `font-bold`
+
+## Project Structure
+
+### Directory Organization
+
+```
+src/
+├── app/(app)/           # App router pages
+│   ├── admin/          # Admin-only pages
+│   ├── publisher/      # Publisher pages
+│   └── sign-in/        # Authentication
+├── components/         # Reusable UI components
+├── hooks/             # Custom React hooks
+├── interfaces/        # TypeScript interfaces
+├── services/          # API services (Appwrite)
+├── utils/             # Helper functions
+└── themes/            # Theme configuration
+```
+
+### User Roles & Permissions
+
+- **Admin (level 1)**: Full access to all features
+- **Editor (level 2)**: Limited administrative access
+- **Publisher (level 3)**: Basic territory assignment access
+
+## Data Models
+
+### Key Entities
+
+- **Maps**: Territory/geographical areas with coordinates
+- **Assignments**: Publisher-territory relationships
+- **Publishers**: User profiles with approval status
+- **Cities**: Geographical organization units
+- **Congregations**: Top-level organizational units
+
+## Development Guidelines
+
+### State Management
+
+- Use TanStack Query for server state
+- Use React hooks for local state
+- Implement optimistic updates for better UX
+
+---
+
+**Remember**: Always prioritize user experience, maintain consistency with the design system, and follow the established patterns when adding new features or modifying existing code.

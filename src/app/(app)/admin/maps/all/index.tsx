@@ -1,20 +1,21 @@
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { getMapRegion } from '@/utils/get-map-region'
+import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
+import { getPinColor } from '@/utils/get-pin-color'
 import * as Location from 'expo-location'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { Platform } from 'react-native'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
-import { getMapRegion } from '@utils/get-map-region'
-import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-import { getPinColor } from '@utils/get-pin-color'
+import { ActivityIndicator, Platform, Text, View } from 'react-native'
 
-import * as S from './styles'
-import useAllMaps from '@hooks/useAllMaps'
+import useAllMaps from '@/hooks/useAllMaps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()
 	const params = useLocalSearchParams()
 	const { initialMaps } = JSON.parse((params.maps as string) || '[]')
 	const { maps, loading } = useAllMaps({ initialData: initialMaps })
+	const { colors } = useThemedColors()
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
@@ -71,20 +72,20 @@ const AllMaps = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Mapas da congregação' }} />
-			<S.Content>
-				<S.MapContainer>{renderMap()}</S.MapContainer>
+			<View className='flex w-full h-full bg-background'>
+				<View className='flex-1'>{renderMap()}</View>
 				{loading && (
-					<S.LoadingContainer>
-						<S.LoadingContent>
-							<S.Loading />
-							<S.Label>Carregando mapas...</S.Label>
-						</S.LoadingContent>
-					</S.LoadingContainer>
+					<View className='absolute inset-0 bg-background/80 items-center justify-center'>
+						<View className='items-center'>
+							<ActivityIndicator size='large' color={colors.primary[600]} />
+							<Text className='text-xs text-foreground py-2.5 font-medium'>Carregando mapas...</Text>
+						</View>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

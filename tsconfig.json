@@ -3,23 +3,20 @@
 	"compilerOptions": {
 		"strict": true,
 		"baseUrl": ".",
+		"jsx": "react-jsx",
 		"paths": {
-			"@app/*": ["src/app/*"],
-			"@assets/*": ["src/assets/*"],
-			"@components/*": ["src/components/*"],
-			"@constants/*": ["src/constants/*"],
-			"@contexts/*": ["src/contexts/*"],
-			"@database/*": ["src/database/*"],
-			"@interfaces/*": ["src/interfaces/*"],
-			"@hooks/*": ["src/hooks/*"],
-			"@messages/*": ["src/messages/*"],
-			"@services/*": ["src/services/*"],
-			"@themes/*": ["src/themes/*"],
-			"@utils/*": ["src/utils/*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"exclude": ["node_modules"],
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "nativewind-env.d.ts"],
 	"files": [],
-	"overrides": [{ "files": ["**/*styles.ts"], "rules": { "@typescript-eslint/no-implicit-any": "off" } }]
+	"overrides": [
+		{
+			"files": ["**/*styles.ts"],
+			"rules": {
+				"@typescript-eslint/no-implicit-any": "off"
+			}
+		}
+	]
 }

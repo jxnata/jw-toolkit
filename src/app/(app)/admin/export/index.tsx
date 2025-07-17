@@ -1,18 +1,19 @@
-import Button from '@components/Button'
-import { useSession } from '@contexts/session'
-import useAllMaps from '@hooks/useAllMaps'
+import Button from '@/components/button'
+import { useSession } from '@/contexts/session'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import useAllMaps from '@/hooks/useAllMaps'
 import { Stack } from 'expo-router'
 import { useState } from 'react'
-import { Platform, Share } from 'react-native'
+import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 
-import * as S from './styles'
 import { Models } from 'react-native-appwrite'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
 	const { maps, loading } = useAllMaps()
 	const { congregation } = useSession()
+	const { colors } = useThemedColors()
 
 	const generatePDF = async () => {
 		if (!congregation) return
@@ -135,32 +136,34 @@ const ExportMaps = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: 'Exportar Mapas' }} />
-			<S.Content>
+			<View className='flex p-2.5 w-full h-full bg-background'>
 				{loading && (
-					<S.LoadingContainer>
-						<S.LoadingContent>
-							<S.Loading />
-							<S.Label>Carregando mapas...</S.Label>
-						</S.LoadingContent>
-					</S.LoadingContainer>
+					<View className='flex-1 justify-center items-center'>
+						<View className='items-center'>
+							<ActivityIndicator size='large' color={colors.primary[600]} />
+							<Text className='text-xs text-foreground py-2.5 font-medium'>Carregando mapas...</Text>
+						</View>
+					</View>
 				)}
-				{!loading && maps.length === 0 && <S.Label>Não há mapas para exportar.</S.Label>}
+				{!loading && maps.length === 0 && (
+					<Text className='text-xs text-foreground py-2.5 font-medium'>Não há mapas para exportar.</Text>
+				)}
 				{!loading && maps.length > 0 && (
-					<S.ExportContent>
-						<S.Label>
+					<View className='flex-1 justify-center items-center'>
+						<Text className='text-xs text-foreground py-2.5 font-medium text-center mb-5'>
 							{maps.length} mapas encontrados. Pressione o botão abaixo para exportar em PDF.
-						</S.Label>
-						<S.ButtonContainer>
+						</Text>
+						<View className='w-full'>
 							<Button loading={loading || generating} onPress={generatePDF}>
 								Exportar
 							</Button>
-						</S.ButtonContainer>
-					</S.ExportContent>
+						</View>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

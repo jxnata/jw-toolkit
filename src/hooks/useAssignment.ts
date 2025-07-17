@@ -1,6 +1,6 @@
-import { storage } from '@database/index'
-import { useDocument } from '@hooks/documents'
-import { database } from '@services/appwrite'
+import { storage } from '@/database/index'
+import { useDocument } from '@/hooks/documents'
+import { database } from '@/services/appwrite'
 import { Models } from 'react-native-appwrite'
 
 const useAssignment = (id: string, initialData?: Models.Document) => {

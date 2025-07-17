@@ -1,6 +1,5 @@
-import { useSession } from '@contexts/session'
+import { useSession } from '@/contexts/session'
 import { Redirect, Slot, Stack } from 'expo-router'
-import React from 'react'
 import { ActivityIndicator, View } from 'react-native'
 
 export default function App() {

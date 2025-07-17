@@ -1,5 +1,5 @@
-import { useDocuments } from '@hooks/documents'
-import { database } from '@services/appwrite'
+import { useDocuments } from '@/hooks/documents'
+import { database } from '@/services/appwrite'
 import { Query } from 'react-native-appwrite'
 
 const useCongregations = () => {

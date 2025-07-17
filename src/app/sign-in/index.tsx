@@ -1,4 +1,10 @@
-import Dropdown from '@components/Dropdown'
+import Dropdown from '@/components/dropdown'
+import { APP_VERSION } from '@/constants/content'
+import { history, storage } from '@/database/index'
+import { LAST_CONGREGATION } from '@/database/types/keys'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import useCongregations from '@/hooks/useCongregations'
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import {
 	AppleAuthenticationButton,
 	AppleAuthenticationButtonStyle,
@@ -6,21 +12,23 @@ import {
 	AppleAuthenticationScope,
 	signInAsync,
 } from 'expo-apple-authentication'
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
-import { APP_VERSION } from '@constants/content'
-import { history, storage } from '@database/index'
-import { LAST_CONGREGATION } from '@database/types/keys'
-import useCongregations from '@hooks/useCongregations'
 import { Stack } from 'expo-router/stack'
 import { useEffect, useMemo, useState } from 'react'
+import {
+	ActivityIndicator,
+	Alert,
+	ImageBackground,
+	Linking,
+	Platform,
+	Pressable,
+	Text,
+	useColorScheme,
+	View,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import * as S from './styles'
-import { Alert, Linking, Platform, useColorScheme } from 'react-native'
-import React from 'react'
+import { useSession } from '@/contexts/session'
 import { StatusBar } from 'expo-status-bar'
-import { useSession } from '@contexts/session'
-import { ActivityIndicator } from 'react-native'
 
 const Login = () => {
 	const [congregationId, setCongregationId] = useState<string>()
@@ -28,6 +36,7 @@ const Login = () => {
 	const { congregations } = useCongregations()
 	const insets = useSafeAreaInsets()
 	const scheme = useColorScheme()
+	const { colors } = useThemedColors()
 
 	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c.$id })), [congregations])
 	const lastCongregation = useMemo(() => history.getString(LAST_CONGREGATION), [])
@@ -110,17 +119,35 @@ const Login = () => {
 	}, [congregationsList, lastCongregation])
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<StatusBar style='dark' />
 			<Stack.Screen options={{ headerShown: false }} />
-			<S.Background source={require('../../assets/images/login-bg.jpg')}>
-				<S.Mask />
-				<S.Content>
-					<S.Panel style={{ paddingBottom: insets.bottom + 10 }}>
-						<S.TitleContainer>
-							<S.Title>Bem vindo!</S.Title>
-							<S.Small>Faça login usando sua conta {Platform.OS === 'ios' ? 'Apple' : 'Google'}</S.Small>
-						</S.TitleContainer>
+			<ImageBackground
+				source={require('../../assets/images/login-bg.jpg')}
+				resizeMode='cover'
+				className='flex w-full h-full'
+			>
+				<View
+					className='absolute flex-1 top-0 left-0 w-full h-full opacity-70'
+					style={{ backgroundColor: colors.background }}
+				/>
+				<View className='flex h-full justify-end'>
+					<View
+						className='flex px-[15px] pt-[25px] rounded-xl opacity-90'
+						style={{
+							backgroundColor: colors.background,
+							paddingBottom: insets.bottom + 10,
+						}}
+					>
+						<View className='flex-col text-center items-center mb-[25px] gap-2.5'>
+							<Text className='text-center text-lg text-foreground font-bold'>Bem vindo!</Text>
+							<Text
+								className='text-center text-sm font-regular'
+								style={{ color: colors.foreground + '80' }}
+							>
+								Faça login usando sua conta {Platform.OS === 'ios' ? 'Apple' : 'Google'}
+							</Text>
+						</View>
 
 						<Dropdown
 							label='Congregação'
@@ -129,17 +156,22 @@ const Login = () => {
 							selectedValue={congregationId}
 							onValueChange={handleCongregation}
 							footerComponent={
-								<S.Row>
-									<S.IconButton onPress={handleAddCongregation}>
-										<S.Accent>Adicionar congregação</S.Accent>
-									</S.IconButton>
-								</S.Row>
+								<View className='gap-[5px] flex-row justify-center'>
+									<Pressable onPress={handleAddCongregation}>
+										<Text
+											className='text-center text-[15px] font-bold'
+											style={{ color: colors.primary[600] }}
+										>
+											Adicionar congregação
+										</Text>
+									</Pressable>
+								</View>
 							}
 						/>
 						{loading ? (
-							<S.LoadingContainer>
+							<View className='h-[100px] justify-center items-center'>
 								<ActivityIndicator size='large' />
-							</S.LoadingContainer>
+							</View>
 						) : (
 							<>
 								{Platform.OS === 'ios' ? (
@@ -169,11 +201,16 @@ const Login = () => {
 								)}
 							</>
 						)}
-						<S.Version>Versão: {APP_VERSION}</S.Version>
-					</S.Panel>
-				</S.Content>
-			</S.Background>
-		</S.Container>
+						<Text
+							className='mt-5 self-center text-center text-sm font-regular'
+							style={{ color: colors.foreground + '80' }}
+						>
+							Versão: {APP_VERSION}
+						</Text>
+					</View>
+				</View>
+			</ImageBackground>
+		</View>
 	)
 }
 

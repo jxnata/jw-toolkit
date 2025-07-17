@@ -1,25 +1,25 @@
-import Button from '@components/Button'
-import Dropdown from '@components/Dropdown'
-import MapViewDetails from '@components/MapViewDetails'
-import useMap from '@hooks/useMap'
-import usePublishers from '@hooks/usePublishers'
-import { AddAssignmentReq } from '@interfaces/api/assignments'
+import Button from '@/components/button'
+import Dropdown from '@/components/dropdown'
+import MapViewDetails from '@/components/map-view-details'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import useMap from '@/hooks/useMap'
+import usePublishers from '@/hooks/usePublishers'
+import { AddAssignmentReq } from '@/interfaces/api/assignments'
+import { error, success } from '@/messages/add'
+import { error as removeError, success as removeSuccess } from '@/messages/delete'
+import { getMapRegion } from '@/utils/get-map-region'
+import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { useQueryClient } from '@tanstack/react-query'
+import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { error, success } from '@messages/add'
-import { error as removeError, success as removeSuccess } from '@messages/delete'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { ActivityIndicator, Alert, Platform } from 'react-native'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
+import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
-import { getMapRegion } from '@utils/get-map-region'
-import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-import { useQueryClient } from '@tanstack/react-query'
 
-import * as S from './styles'
-import React from 'react'
+import { database } from '@/services/appwrite'
 import { Models } from 'react-native-appwrite'
-import { database } from '@services/appwrite'
 
 const ViewMap = () => {
 	const { data, query } = useLocalSearchParams()
@@ -31,6 +31,7 @@ const ViewMap = () => {
 		defaultValues: { assigned: params.assigned },
 	})
 	const queryClient = useQueryClient()
+	const { colors } = useThemedColors()
 
 	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
@@ -97,11 +98,15 @@ const ViewMap = () => {
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={mutate}>
-					{refetching ? <ActivityIndicator size='small' color='#D08129' /> : <S.Ionicon name='refresh' />}
-				</S.IconButton>
-				<S.IconButton
+			<View className='flex-row'>
+				<Pressable onPress={() => mutate()} className='mx-2'>
+					{refetching ? (
+						<ActivityIndicator size='small' color={colors.primary[600]} />
+					) : (
+						<Ionicons name='refresh' size={24} color={colors.foreground} />
+					)}
+				</Pressable>
+				<Pressable
 					onPress={() =>
 						router.replace({
 							pathname: `/admin/maps/${params.$id}/edit`,
@@ -109,15 +114,16 @@ const ViewMap = () => {
 						})
 					}
 					disabled={!map}
+					className='mx-2'
 				>
-					<S.Ionicon name='create-outline' />
-				</S.IconButton>
-				<S.IconButton onPress={showDeleteAlert}>
-					<S.Ionicon name='trash-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+					<Ionicons name='create-outline' size={24} color={colors.foreground} />
+				</Pressable>
+				<Pressable onPress={showDeleteAlert} className='mx-2'>
+					<Ionicons name='trash-outline' size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[mutate, refetching, map, showDeleteAlert, params.$id]
+		[mutate, refetching, map, showDeleteAlert, params.$id, colors]
 	)
 
 	useEffect(() => {
@@ -128,23 +134,23 @@ const ViewMap = () => {
 	}, [mutate])
 
 	return (
-		<S.Container>
+		<View className='flex'>
 			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
-			<S.Content>
-				<S.DetailsContainer>
+			<View className='flex w-full h-full bg-background'>
+				<View className='p-2.5'>
 					{!!map && (
 						<>
 							<MapViewDetails map={map} />
 							{!map.assigned ? (
-								<S.Columm>
-									<S.Label>Designar mapa</S.Label>
+								<View>
+									<Text className='text-xs text-foreground py-2 font-medium'>Designar mapa</Text>
 									<Controller
 										control={control}
 										rules={{ required: true }}
 										name='assigned'
 										render={({ field: { onChange, onBlur, value } }) => (
 											<Dropdown
-												placeholder='Selecione uma publicador...'
+												placeholder='Selecione um publicador...'
 												options={publisherList}
 												selectedValue={value}
 												onValueChange={onChange}
@@ -152,7 +158,7 @@ const ViewMap = () => {
 											/>
 										)}
 									/>
-									<S.Row>
+									<View className='mt-2'>
 										{formState.isValid && (
 											<Button
 												disabled={!formState.isValid}
@@ -162,25 +168,27 @@ const ViewMap = () => {
 												Designar
 											</Button>
 										)}
-									</S.Row>
-								</S.Columm>
+									</View>
+								</View>
 							) : (
-								<S.Row>
-									<S.Columm>
-										<S.Label>Designado para:</S.Label>
-									</S.Columm>
-									<S.Columm>
+								<View className='flex-row items-baseline mt-2 ml-2'>
+									<View>
+										<Text className='text-sm text-foreground font-medium'>Designado para:</Text>
+									</View>
+									<View className='ml-2.5'>
 										{typeof map.assigned === 'object' && (
-											<S.ParagraphSpace>{map.assigned.name}</S.ParagraphSpace>
+											<Text className='text-[15px] text-foreground font-medium'>
+												{map.assigned.name}
+											</Text>
 										)}
-									</S.Columm>
-								</S.Row>
+									</View>
+								</View>
 							)}
 						</>
 					)}
-				</S.DetailsContainer>
+				</View>
 				{!!map && (
-					<S.MapContainer>
+					<View className='flex-1 m-2.5 rounded-lg overflow-hidden'>
 						{Platform.OS === 'ios' ? (
 							<AppleMaps.View
 								cameraPosition={region}
@@ -194,10 +202,10 @@ const ViewMap = () => {
 								markers={[{ coordinates: marker, title: map.name }]}
 							/>
 						)}
-					</S.MapContainer>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 
