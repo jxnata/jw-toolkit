@@ -1,5 +1,5 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Animated, ViewStyle } from 'react-native'
 
 interface SkeletonProps {
@@ -8,7 +8,7 @@ interface SkeletonProps {
 }
 
 const Skeleton = ({ width = '100%', height = 50 }: SkeletonProps) => {
-	const animatedValue = new Animated.Value(0.3)
+	const animatedValue = useRef(new Animated.Value(0.3)).current
 	const { colors } = useThemedColors()
 
 	useEffect(() => {
@@ -18,7 +18,7 @@ const Skeleton = ({ width = '100%', height = 50 }: SkeletonProps) => {
 				Animated.timing(animatedValue, { toValue: 0.3, duration: 1000, useNativeDriver: true }),
 			])
 		).start()
-	}, [])
+	}, [animatedValue])
 
 	const dynamicStyle: ViewStyle = {
 		width: width as ViewStyle['width'],

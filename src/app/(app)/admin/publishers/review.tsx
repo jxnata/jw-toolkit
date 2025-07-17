@@ -48,6 +48,10 @@ const Publishers = () => {
 	)
 
 	useEffect(() => {
+		setList(publishers)
+	}, [publishers])
+
+	useEffect(() => {
 		return () => {
 			mutatePublishers()
 		}

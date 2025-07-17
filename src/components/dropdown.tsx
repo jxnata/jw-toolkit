@@ -77,6 +77,9 @@ const Dropdown = ({
 			<Pressable
 				onPress={toggle}
 				disabled={disabled}
+				accessibilityLabel={`${label || 'Dropdown'}: ${selectedLabel || placeholder}`}
+				accessibilityRole='button'
+				accessibilityState={{ selected: selectedValue !== undefined }}
 				className={`flex-row justify-between items-center w-full px-4 py-4 rounded-lg border border-border bg-card ${disabled ? 'opacity-50' : ''}`}
 			>
 				<Text className='text-foreground font-medium'>{selectedLabel || placeholder}</Text>
@@ -118,6 +121,9 @@ const Dropdown = ({
 									onPress={() => onPress(item)}
 									className='flex-row items-center rounded-xl px-4 py-4 mt-[5px] gap-2.5'
 									style={{ backgroundColor: colors.background + '70' }}
+									accessibilityLabel={item.label}
+									accessibilityRole='button'
+									accessibilityState={{ selected: item.value === selectedValue }}
 								>
 									{item.value === selectedValue ? (
 										<Ionicons name='checkmark-circle' size={20} color={colors.foreground + '80'} />

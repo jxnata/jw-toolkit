@@ -6,7 +6,7 @@ interface ThemeProviderProps {
 	children: React.ReactNode
 }
 
-export const ThemeContext = createContext<{ theme: 'light' | 'dark' }>({ theme: 'light' })
+export const ThemeContext = createContext<{ theme: 'light' | 'dark' }>({ theme: 'dark' })
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 	const scheme = useColorScheme()

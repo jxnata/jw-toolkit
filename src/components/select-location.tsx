@@ -14,7 +14,7 @@ const { height } = Dimensions.get('window')
 type Props = {
 	onSelect: (coord: [number, number]) => void
 	onClose: () => void
-	initial?: any
+	initial?: { coordinates: Coordinates; zoom: number }
 }
 
 const mapTypes =

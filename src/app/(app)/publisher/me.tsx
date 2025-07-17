@@ -38,7 +38,7 @@ const PublisherDetails = () => {
 						disabled={loading}
 						className='gap-[5px] flex flex-row items-center justify-center py-2.5 px-5 rounded-xl bg-card text-[15px] h-[50px]'
 					>
-						<Text className='text-[15px] font-bold' style={{ color: colors.foreground + '80' }}>
+						<Text className='text-[15px] font-bold opacity-80' style={{ color: colors.foreground }}>
 							Sair
 						</Text>
 					</Pressable>
