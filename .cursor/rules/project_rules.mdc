@@ -1,13 +1,14 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
+
 # Project Guidelines
 
 ## Project Overview
 
-**JW Toolkit** is a React Native application for managing territorial assignments for Jehovah's Witnesses congregations. The app facilitates territory management, publisher assignments, and field service organization.
+**LS Maps** is a React Native application for managing territorial assignments for Jehovah's Witnesses congregations. The app facilitates territory management, publisher assignments, and field service organization.
 
 ### Core Functionality
 
