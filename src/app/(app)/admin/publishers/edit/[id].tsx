@@ -2,22 +2,21 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
+import usePublishers from '@/hooks/use-publishers-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import usePublishers from '@/hooks/usePublishers'
 import { EditPublisherReq } from '@/interfaces/api/publishers'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
 import { error, success } from '@/messages/edit'
+import { publishersService } from '@/services/instantdb'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { database } from '@/services/appwrite'
 import { Save } from 'lucide-react-native'
-import { Models } from 'react-native-appwrite'
 
 const EditPublisher = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
+	const params = JSON.parse((data as string) || '{}') as any
 	const { mutate } = usePublishers({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
 		defaultValues: { name: params.name, level: params.level ? params.level.toString() : '3' },
@@ -34,7 +33,7 @@ const EditPublisher = () => {
 		if (!data.name) return
 
 		try {
-			await database.updateDocument('production', 'publishers', params.$id, {
+			await publishersService.updatePublisher(params.id, {
 				name: data.name,
 				level: parseInt(data.level || '3'),
 			})
@@ -48,7 +47,7 @@ const EditPublisher = () => {
 
 	const deletePublisher = async () => {
 		try {
-			await database.deleteDocument('production', 'publishers', params.$id)
+			await publishersService.deletePublisher(params.id)
 
 			removeSuccess('publicador')
 			mutate()

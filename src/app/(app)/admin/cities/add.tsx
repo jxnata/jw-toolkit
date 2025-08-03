@@ -1,15 +1,14 @@
 import Button from '@/components/button'
 import Input from '@/components/input'
-import { useSession } from '@/contexts/session'
-import useCities from '@/hooks/useCities'
+import { useSession } from '@/contexts/session-instantdb'
+import useCities from '@/hooks/use-cities-instant'
 import { AddCityReq } from '@/interfaces/api/cities'
 import { error, success } from '@/messages/add'
-import { database } from '@/services/appwrite'
+import { citiesService } from '@/services/instantdb'
 import { Stack, router } from 'expo-router'
 import { Save } from 'lucide-react-native'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { ID, Permission, Role } from 'react-native-appwrite'
 
 const AddCity = () => {
 	const { congregation } = useSession()
@@ -21,20 +20,10 @@ const AddCity = () => {
 		if (!congregation) return
 
 		try {
-			await database.createDocument(
-				'production',
-				'cities',
-				ID.unique(),
-				{
-					name: data.name,
-					congregation: congregation.id,
-				},
-				[
-					Permission.read(Role.label(congregation.id)),
-					Permission.update(Role.label(congregation.id)),
-					Permission.delete(Role.label(congregation.id)),
-				]
-			)
+			await citiesService.createCity({
+				name: data.name,
+				congregationId: congregation.id,
+			})
 			success('cidade')
 			mutate()
 			router.back()

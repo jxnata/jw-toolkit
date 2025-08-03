@@ -2,7 +2,7 @@ import '../../global.css'
 
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
-import { SessionProvider } from '@/contexts/session'
+import { SessionProvider } from '@/contexts/session-instantdb'
 import { ThemeProvider } from '@/contexts/theme'
 import { clientPersister } from '@/database/cache/provider'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'

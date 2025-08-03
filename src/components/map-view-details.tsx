@@ -1,16 +1,16 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { formatDate } from '@/utils/date-format'
 import { mapImage } from '@/utils/map-image'
 import { useMemo } from 'react'
 import { Dimensions, Image, Text, View } from 'react-native'
 
 import { firstName } from '@/utils/first-name'
-import { Models } from 'react-native-appwrite'
 
 const screenWidth = Dimensions.get('screen').width
 
 interface MapProps {
-	map: Models.Document
+	map: Map
 	showImage?: boolean
 }
 
@@ -35,7 +35,7 @@ const MapViewDetails = ({ map, showImage }: MapProps) => {
 				<View className='flex'>
 					<Image
 						resizeMode='contain'
-						source={{ uri: mapImage(map.coordinates) }}
+						source={{ uri: mapImage([map.lat, map.lng]) }}
 						className='rounded-[10px] w-20 h-20'
 					/>
 				</View>

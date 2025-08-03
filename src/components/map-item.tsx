@@ -7,13 +7,13 @@ import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
 import { Dimensions, Image, Pressable, Text, View } from 'react-native'
 
+import { Map } from '@/interfaces'
 import { firstName } from '@/utils/first-name'
-import { Models } from 'react-native-appwrite'
 
 const screenWidth = Dimensions.get('screen').width
 
 interface MapProps {
-	map: Models.Document
+	map: Map
 	location: LocationObjectCoords | null
 	onPress: () => void
 }

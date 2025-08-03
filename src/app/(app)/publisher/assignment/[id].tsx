@@ -1,7 +1,7 @@
 import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
+import useAssignment from '@/hooks/use-assignment-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useAssignment from '@/hooks/useAssignment'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -9,16 +9,15 @@ import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Platform, Pressable, View } from 'react-native'
-import { Models } from 'react-native-appwrite'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
+	const params = JSON.parse((data as string) || '{}') as any
 	const router = useRouter()
 	const { colors } = useThemedColors()
 
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(params.$id as string, params as Models.Document)
+	const { assignment } = useAssignment(params.id as string)
 
 	const toggleModal = () => {
 		setShowFinish(old => !old)
@@ -41,7 +40,7 @@ const AssigmentDetails = () => {
 	return (
 		<View className='flex'>
 			<Stack.Screen options={{ presentation: 'modal' }} />
-			{typeof assignment.map !== 'string' && (
+			{assignment && (
 				<View className='flex w-full h-full'>
 					<Pressable
 						onPress={router.back}

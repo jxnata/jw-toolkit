@@ -2,21 +2,19 @@ import AssignmentItem from '@/components/assignment-item'
 import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
 import SkeletonItem from '@/components/skeleton-item'
-import { useThemedColors } from '@/hooks/use-themed-colors'
+import useMaps from '@/hooks/use-maps-instant'
 import { useLocation } from '@/hooks/useLocation'
-import useMaps from '@/hooks/useMaps'
 import { Stack, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native'
+import { FlatList, RefreshControl, View } from 'react-native'
 
 const Assignments = () => {
 	const router = useRouter()
 	const [search, setSearch] = useState('')
-	const { maps, loading, mutate, loadMore, loadingMore, hasMore } = useMaps({ status: 'assigned', search })
+	const { maps, loading, mutate } = useMaps({ status: 'assigned', search })
 	const { location } = useLocation()
 	const { control, handleSubmit, reset } = useForm<{ search: string }>()
-	const { colors } = useThemedColors()
 
 	const handleSearch = (data: { search: string }) => {
 		setSearch(data.search)
@@ -56,18 +54,11 @@ const Assignments = () => {
 	}
 
 	const ListFooterComponent = () => {
-		if (!loadingMore) return null
-		return (
-			<View className='py-2.5 items-center'>
-				<ActivityIndicator size='small' color={colors.primary[600]} />
-			</View>
-		)
+		return null
 	}
 
 	const handleEndReached = () => {
-		if (hasMore && !loadingMore) {
-			loadMore()
-		}
+		// InstantDB handles pagination automatically
 	}
 
 	return (
@@ -86,16 +77,16 @@ const Assignments = () => {
 						data={maps}
 						ListHeaderComponent={<ListHeaderComponent />}
 						ListFooterComponent={<ListFooterComponent />}
-						keyExtractor={item => item.$id}
+						keyExtractor={item => item.id}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item }) => (
 							<AssignmentItem
-								key={item.$id}
+								key={item.id}
 								map={item}
 								location={location}
 								onPress={() =>
 									router.push({
-										pathname: `/admin/assignments/edit/${item.$id}`,
+										pathname: `/admin/assignments/edit/${item.id}`,
 										params: { data: JSON.stringify({ ...item, search }) },
 									})
 								}

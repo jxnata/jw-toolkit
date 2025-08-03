@@ -1,22 +1,20 @@
 import Button from '@/components/button'
 import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
+import useCities from '@/hooks/use-cities-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useCities from '@/hooks/useCities'
 import { EditCityReq } from '@/interfaces/api/cities'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
 import { error, success } from '@/messages/edit'
-import { database } from '@/services/appwrite'
+import { citiesService } from '@/services/instantdb'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Save } from 'lucide-react-native'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { Models } from 'react-native-appwrite'
-
 const EditCity = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
+	const params = JSON.parse((data as string) || '{}') as any
 	const { mutate } = useCities({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditCityReq>({
 		defaultValues: { name: params.name },
@@ -27,7 +25,7 @@ const EditCity = () => {
 		if (!data.name) return
 
 		try {
-			await database.updateDocument('production', 'cities', params.$id, {
+			await citiesService.updateCity(params.id, {
 				name: data.name,
 			})
 			success('cidade')
@@ -41,7 +39,7 @@ const EditCity = () => {
 
 	const deleteCity = async () => {
 		try {
-			await database.deleteDocument('production', 'cities', params.$id)
+			await citiesService.deleteCity(params.id)
 
 			removeSuccess('cidade')
 			mutate()

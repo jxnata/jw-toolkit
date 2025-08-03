@@ -2,10 +2,10 @@ import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
 import MapItem from '@/components/map-item'
 import SkeletonItem from '@/components/skeleton-item'
+import useCities from '@/hooks/use-cities-instant'
+import useMaps from '@/hooks/use-maps-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useCities from '@/hooks/useCities'
 import { useLocation } from '@/hooks/useLocation'
-import useMaps from '@/hooks/useMaps'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -31,11 +31,11 @@ const Maps = () => {
 	const { cities } = useCities()
 	const { location } = useLocation()
 
-	const citiesList = useMemo(() => [...cities.map(c => ({ label: c.name, value: c.$id }))], [cities])
+	const citiesList = useMemo(() => [...cities.map(c => ({ label: c.name, value: c.id }))], [cities])
 
 	useEffect(() => {
 		if (cities.length > 0 && !searchCity) {
-			setSearchCity(cities[0].$id)
+			setSearchCity(cities[0].id)
 		}
 	}, [cities, searchCity])
 
@@ -174,18 +174,18 @@ const Maps = () => {
 						ListHeaderComponent={<ListHeaderComponent />}
 						ListFooterComponent={<ListFooterComponent />}
 						data={maps}
-						keyExtractor={item => item.$id}
+						keyExtractor={item => item.id}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						contentContainerClassName='gap-2'
 						showsVerticalScrollIndicator={false}
 						renderItem={({ item }) => (
 							<MapItem
-								key={item.$id}
+								key={item.id}
 								map={item}
 								location={location}
 								onPress={() =>
 									router.push({
-										pathname: `/admin/maps/${item.$id}`,
+										pathname: `/admin/maps/${item.id}`,
 										params: { data: JSON.stringify(item), query: JSON.stringify(queryKey) },
 									})
 								}

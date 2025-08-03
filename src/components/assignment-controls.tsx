@@ -4,10 +4,8 @@ import { useNavigation } from 'expo-router'
 import React from 'react'
 import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native'
 
-import { Models } from 'react-native-appwrite'
-
 interface AssignmentProps {
-	assignment: Models.Document
+	assignment: any
 	onFinish: () => void
 }
 

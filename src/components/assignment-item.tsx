@@ -5,15 +5,15 @@ import { useQuery } from '@tanstack/react-query'
 import { LocationObjectCoords } from 'expo-location'
 import { Dimensions, Image, Pressable, Text, View } from 'react-native'
 
+import { Map } from '@/interfaces'
 import { formatDate } from '@/utils/date-format'
 import { firstName } from '@/utils/first-name'
 import { useMemo } from 'react'
-import { Models } from 'react-native-appwrite'
 
 const screenWidth = Dimensions.get('screen').width
 
 interface AssignmentProps {
-	map: Models.Document
+	map: Map
 	location: LocationObjectCoords | null
 	onPress?: () => void
 	hidePublisher?: boolean

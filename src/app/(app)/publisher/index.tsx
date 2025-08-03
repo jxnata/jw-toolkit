@@ -1,8 +1,8 @@
 import AssignmentItem from '@/components/assignment-item'
 import SkeletonItem from '@/components/skeleton-item'
+import useMyAssignments from '@/hooks/use-my-assignments-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { useLocation } from '@/hooks/useLocation'
-import useMyAssignments from '@/hooks/useMyAssignments'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect } from 'react'
@@ -47,17 +47,17 @@ const PublisherHome = () => {
 				) : (
 					<FlatList
 						data={assignments}
-						keyExtractor={item => item.$id}
+						keyExtractor={item => item.id}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item: assignment }) => (
 							<AssignmentItem
-								key={assignment.$id}
+								key={assignment.id}
 								map={assignment}
 								location={location}
 								hidePublisher
 								onPress={() =>
 									router.push({
-										pathname: `/publisher/assignment/${assignment.$id}`,
+										pathname: `/publisher/assignment/${assignment.id}`,
 										params: { data: JSON.stringify({ ...assignment }) },
 									})
 								}

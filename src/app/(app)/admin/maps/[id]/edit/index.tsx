@@ -1,26 +1,22 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
-import useCities from '@/hooks/useCities'
+import useCities from '@/hooks/use-cities-instant'
 import { EditMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/edit'
-import { database } from '@/services/appwrite'
+import { mapsService } from '@/services/instantdb'
 import { getCoordinates } from '@/utils/get-coordinates'
 import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { Models } from 'react-native-appwrite'
-
-import { useQueryClient } from '@tanstack/react-query'
 
 const EditMap = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
+	const params = JSON.parse((data as string) || '{}') as any
 	const { cities } = useCities()
-	const queryClient = useQueryClient()
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.id })), [cities])
 
 	const defaultValues: EditMapReq | undefined = useMemo(
 		() =>
@@ -30,7 +26,7 @@ const EditMap = () => {
 						address: params.address,
 						district: params.district,
 						details: params.details,
-						city: params.city.$id,
+						city: params.city.id,
 						coordinates: getCoordinates([params.lat, params.lng]),
 					}
 				: undefined,
@@ -48,19 +44,16 @@ const EditMap = () => {
 		}
 
 		try {
-			const updatedMap = await database.updateDocument('production', 'maps', params.$id, {
+			await mapsService.updateMap(params.id, {
 				name: data.name,
 				address: data.address,
 				district: data.district,
 				details: data.details,
-				city: data.city,
 				lat,
 				lng,
 			})
 
 			success('mapa')
-
-			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
 
 			router.back()
 		} catch (err) {
@@ -160,6 +153,7 @@ const EditMap = () => {
 					name='city'
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Dropdown
+							label='Cidade'
 							placeholder='Selecione uma cidade...'
 							options={citiesList}
 							selectedValue={value}
@@ -174,7 +168,12 @@ const EditMap = () => {
 						initial={setCoordinates(getValues('coordinates'))}
 					/>
 				</Modal> */}
-				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+				<Button
+					disabled={!formState.isValid}
+					loading={formState.isSubmitting}
+					onPress={handleSubmit(save)}
+					className='mt-4'
+				>
 					Salvar
 				</Button>
 			</View>
