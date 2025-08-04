@@ -12,11 +12,12 @@ import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
+import { Publisher } from '@/interfaces'
 import { Save } from 'lucide-react-native'
 
 const EditPublisher = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
+	const params = JSON.parse((data as string) || '{}') as Publisher
 	const { mutate } = usePublishers({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
 		defaultValues: { name: params.name, level: params.level ? params.level.toString() : '3' },

@@ -4,6 +4,7 @@ import MapViewDetails from '@/components/map-view-details'
 import useMap from '@/hooks/use-map-instant'
 import usePublishers from '@/hooks/use-publishers-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { EditAssignmentReq } from '@/interfaces/api/assignments'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
 import { error, success } from '@/messages/edit'
@@ -15,14 +16,14 @@ import { Alert, Pressable, Text, View } from 'react-native'
 
 const EditAssignment = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
-	const { map } = useMap(params.id)
+	const params = JSON.parse((data as string) || '{}') as Map
+	const { map } = useMap({ mapId: params.id })
 	const { publishers } = usePublishers()
 	const { colors } = useThemedColors()
 
 	const defaultValues: EditAssignmentReq = useMemo(
 		() => ({
-			assigned: typeof params.assigned === 'object' ? params.assigned.id : params.assigned,
+			assigned: typeof params.assigned === 'object' ? params!.assigned!.id : params.assigned,
 		}),
 		[params.assigned]
 	)

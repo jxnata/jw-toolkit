@@ -9,14 +9,15 @@ import { useState } from 'react'
 
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { useLocation } from '@/hooks/useLocation'
+import { Map } from '@/interfaces'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
+	const params = JSON.parse((data as string) || '{}') as Map
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(params.id as string)
+	const { assignment } = useAssignment(params.id)
 	const router = useRouter()
 	const { location } = useLocation()
 	const { colors } = useThemedColors()

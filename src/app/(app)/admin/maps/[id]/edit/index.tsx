@@ -2,6 +2,7 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
 import useCities from '@/hooks/use-cities-instant'
+import { Map } from '@/interfaces'
 import { EditMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/edit'
 import { mapsService } from '@/services/instantdb'
@@ -14,7 +15,7 @@ import { View } from 'react-native'
 
 const EditMap = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
+	const params = JSON.parse((data as string) || '{}') as Map
 	const { cities } = useCities()
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.id })), [cities])
 

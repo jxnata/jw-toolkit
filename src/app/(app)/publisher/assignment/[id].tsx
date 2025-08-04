@@ -2,6 +2,7 @@ import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
 import useAssignment from '@/hooks/use-assignment-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -12,12 +13,12 @@ import { ActivityIndicator, Platform, Pressable, View } from 'react-native'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
+	const params = JSON.parse((data as string) || '{}') as Map
 	const router = useRouter()
 	const { colors } = useThemedColors()
 
 	const [showFinish, setShowFinish] = useState(false)
-	const { assignment } = useAssignment(params.id as string)
+	const { assignment } = useAssignment(params.id)
 
 	const toggleModal = () => {
 		setShowFinish(old => !old)

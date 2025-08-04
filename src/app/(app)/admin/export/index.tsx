@@ -2,6 +2,7 @@ import Button from '@/components/button'
 import { useSession } from '@/contexts/session-instantdb'
 import useAllMaps from '@/hooks/use-all-maps-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
@@ -18,14 +19,14 @@ const ExportMaps = () => {
 
 		setGenerating(true)
 
-		const groupedMaps: Record<string, any[]> = maps.reduce(
+		const groupedMaps: Record<string, Map[]> = maps.reduce(
 			(acc, map) => {
 				const city = map.city?.name || 'Sem cidade'
 				if (!acc[city]) acc[city] = []
-				acc[city].push(map)
+				acc[city].push(map as Map)
 				return acc
 			},
-			{} as Record<string, any[]>
+			{} as Record<string, Map[]>
 		)
 
 		let mapIndex = 1

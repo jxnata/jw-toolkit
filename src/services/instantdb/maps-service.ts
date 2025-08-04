@@ -75,7 +75,7 @@ class MapsService {
 				}
 			}
 		})
-		return data.maps[0] as Map | null
+		return data.maps?.[0] as Map ?? null
 	}
 
 	async deleteMap(mapId: string): Promise<void> {

@@ -4,6 +4,7 @@ import MapViewDetails from '@/components/map-view-details'
 import useMap from '@/hooks/use-map-instant'
 import usePublishers from '@/hooks/use-publishers-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { AddAssignmentReq } from '@/interfaces/api/assignments'
 import { error, success } from '@/messages/add'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
@@ -20,11 +21,11 @@ import { OneSignal } from 'react-native-onesignal'
 
 const ViewMap = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
-	const { map } = useMap(params.id)
+	const params = JSON.parse((data as string) || '{}') as Map
+	const { map } = useMap({ mapId: params.id })
 	const { publishers } = usePublishers()
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({
-		defaultValues: { assigned: params.assigned },
+		defaultValues: { assigned: typeof params.assigned === 'object' ? params.assigned!.id : params.assigned },
 	})
 	const { colors } = useThemedColors()
 

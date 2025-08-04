@@ -3,6 +3,7 @@ import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
 import useCities from '@/hooks/use-cities-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { City } from '@/interfaces'
 import { EditCityReq } from '@/interfaces/api/cities'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
 import { error, success } from '@/messages/edit'
@@ -14,7 +15,7 @@ import { Alert, View } from 'react-native'
 
 const EditCity = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as any
+	const params = JSON.parse((data as string) || '{}') as City
 	const { mutate } = useCities({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditCityReq>({
 		defaultValues: { name: params.name },

@@ -39,7 +39,7 @@ class CitiesService {
 				congregation: {}
 			}
 		})
-		return data.cities[0] as City | null
+		return data.cities?.[0] as City ?? null
 	}
 
 	async deleteCity(cityId: string): Promise<void> {
