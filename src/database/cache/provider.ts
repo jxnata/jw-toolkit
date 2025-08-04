@@ -3,7 +3,7 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 
 const clientStorage = {
 	setItem: (key: string, value: boolean | string | number | Uint8Array<ArrayBufferLike>) => {
-		cache.set(key, value)
+		cache.set(key, value as any)
 	},
 	getItem: (key: string) => {
 		const value = cache.getString(key)

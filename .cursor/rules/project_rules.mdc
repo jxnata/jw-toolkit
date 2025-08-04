@@ -27,7 +27,7 @@ alwaysApply: true
 - **TypeScript** for type safety
 - **Expo Router** with app directory structure
 - **NativeWind** (Tailwind CSS for React Native) for styling
-- **Appwrite** as backend service
+- **InstantDB** as backend service with real-time synchronization
 - **TanStack Query** for data fetching and caching
 
 ## Development Standards
@@ -84,7 +84,7 @@ src/
 ├── components/         # Reusable UI components
 ├── hooks/             # Custom React hooks
 ├── interfaces/        # TypeScript interfaces
-├── services/          # API services (Appwrite)
+├── services/          # API services (InstantDB)
 ├── utils/             # Helper functions
 └── themes/            # Theme configuration
 ```

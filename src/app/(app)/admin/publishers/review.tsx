@@ -1,7 +1,7 @@
+import usePublishers from '@/hooks/use-publishers-instant'
+import useRequestPublishers from '@/hooks/use-request-publishers-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import usePublishers from '@/hooks/usePublishers'
-import useRequestPublishers from '@/hooks/useRequestPublishers'
-import { database } from '@/services/appwrite'
+import { publishersService } from '@/services/instantdb'
 import { firstLetter } from '@/utils/first-letter'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
@@ -10,7 +10,7 @@ import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-na
 
 const Publishers = () => {
 	const router = useRouter()
-	const { publishers, loading, mutate } = useRequestPublishers()
+	const { requestPublishers: publishers, loading, mutate } = useRequestPublishers()
 	const { mutate: mutatePublishers } = usePublishers()
 	const [list, setList] = useState(publishers)
 	const { colors } = useThemedColors()
@@ -18,9 +18,9 @@ const Publishers = () => {
 	const approve = useCallback(
 		async (publisherId: string) => {
 			try {
-				setList(list.filter(p => p.$id !== publisherId))
+				setList(list.filter(p => p.id !== publisherId))
 
-				await database.updateDocument('production', 'publishers', publisherId, {
+				await publishersService.updatePublisher(publisherId, {
 					approved: true,
 				})
 			} catch (err) {
@@ -34,9 +34,9 @@ const Publishers = () => {
 	const deny = useCallback(
 		async (publisherId: string) => {
 			try {
-				setList(list.filter(p => p.$id !== publisherId))
+				setList(list.filter(p => p.id !== publisherId))
 
-				await database.updateDocument('production', 'publishers', publisherId, {
+				await publishersService.updatePublisher(publisherId, {
 					approved: false,
 				})
 			} catch (err) {
@@ -63,16 +63,16 @@ const Publishers = () => {
 			<View className='flex p-2.5 w-full h-full bg-background'>
 				<FlatList
 					data={list}
-					keyExtractor={item => item.$id}
+					keyExtractor={item => item.id}
 					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 					contentContainerClassName='gap-2'
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							key={item.$id}
+							key={item.id}
 							onPress={() =>
 								router.push({
-									pathname: `/admin/publishers/edit/${item.$id}`,
+									pathname: `/admin/publishers/edit/${item.id}`,
 									params: { data: JSON.stringify(item) },
 								})
 							}
@@ -85,7 +85,7 @@ const Publishers = () => {
 								<Text className='text-foreground font-semibold'>{item.name}</Text>
 								<View className='flex-row mt-1 gap-2'>
 									<TouchableOpacity
-										onPress={() => approve(item.$id)}
+										onPress={() => approve(item.id)}
 										className='w-10 h-10 items-center justify-center'
 									>
 										<Ionicons
@@ -95,7 +95,7 @@ const Publishers = () => {
 										/>
 									</TouchableOpacity>
 									<TouchableOpacity
-										onPress={() => deny(item.$id)}
+										onPress={() => deny(item.id)}
 										className='w-10 h-10 items-center justify-center'
 									>
 										<Ionicons name='close-circle-outline' size={24} color={colors.danger[500]} />

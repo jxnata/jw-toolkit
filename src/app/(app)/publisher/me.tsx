@@ -1,5 +1,5 @@
 import { APP_VERSION } from '@/constants/content'
-import { useSession } from '@/contexts/session'
+import { useSession } from '@/contexts/session-instantdb'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack } from 'expo-router'
 import { Alert, Pressable, Text, View } from 'react-native'

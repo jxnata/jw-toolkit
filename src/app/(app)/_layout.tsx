@@ -1,5 +1,5 @@
 import LocationRequest from '@/components/location-request'
-import { useSession } from '@/contexts/session'
+import { useSession } from '@/contexts/session-instantdb'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { useForegroundPermissions } from 'expo-location'
 import { Redirect, Stack } from 'expo-router'
@@ -12,7 +12,7 @@ export default function Layout() {
 	const { colors } = useThemedColors()
 
 	useEffect(() => {
-		if (current) OneSignal.login(current.$id)
+		if (current) OneSignal.login(current.id)
 	}, [current])
 
 	if (!current) {

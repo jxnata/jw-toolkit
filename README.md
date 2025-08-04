@@ -74,7 +74,7 @@
 
 ### Backend & Data
 
-- **[Appwrite](https://appwrite.io/)** - Backend-as-a-Service
+- **[InstantDB](https://instantdb.com/)** - Backend-as-a-Service com sincronização em tempo real
 - **[TanStack Query](https://tanstack.com/query)** - Gerenciamento de estado e cache
 - **[React Hook Form](https://react-hook-form.com/)** - Formulários performáticos
 
@@ -130,8 +130,7 @@
 
     ```env
     GOOGLE_MAPS_API_KEY=sua_chave_api_aqui
-    APPWRITE_ENDPOINT=sua_url_appwrite
-    APPWRITE_PROJECT_ID=seu_project_id
+    INSTANT_APP_ID=seu_instant_app_id
     ```
 
 4. **Execute o projeto**

@@ -1,9 +1,9 @@
 import Input from '@/components/input'
 import ListItem from '@/components/list-item'
 import SkeletonItem from '@/components/skeleton-item'
+import usePublishers from '@/hooks/use-publishers-instant'
+import useRequestPublishers from '@/hooks/use-request-publishers-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import usePublishers from '@/hooks/usePublishers'
-import useRequestPublishers from '@/hooks/useRequestPublishers'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
@@ -14,7 +14,7 @@ const Publishers = () => {
 	const router = useRouter()
 	const [search, setSearch] = useState('')
 	const { publishers, loading, mutate } = usePublishers({ search: search })
-	const { publishers: requestPublishers } = useRequestPublishers()
+	const { requestPublishers } = useRequestPublishers()
 	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
@@ -70,7 +70,7 @@ const Publishers = () => {
 					<FlatList
 						ListHeaderComponent={<ListHeaderComponent />}
 						data={publishers}
-						keyExtractor={item => item.$id}
+						keyExtractor={item => item.id}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						contentContainerClassName='gap-2'
 						showsVerticalScrollIndicator={false}
@@ -87,11 +87,11 @@ const Publishers = () => {
 
 							return (
 								<ListItem
-									id={item.$id}
+									id={item.id}
 									name={item.name}
 									onPress={() =>
 										router.push({
-											pathname: `/admin/publishers/edit/${item.$id}`,
+											pathname: `/admin/publishers/edit/${item.id}`,
 											params: { data: JSON.stringify(item) },
 										})
 									}

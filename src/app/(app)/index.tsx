@@ -1,4 +1,4 @@
-import { useSession } from '@/contexts/session'
+import { useSession } from '@/contexts/session-instantdb'
 import { Redirect, Slot, Stack } from 'expo-router'
 import { ActivityIndicator, View } from 'react-native'
 

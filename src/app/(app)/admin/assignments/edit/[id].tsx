@@ -1,49 +1,41 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import MapViewDetails from '@/components/map-view-details'
+import useMap from '@/hooks/use-map-instant'
+import usePublishers from '@/hooks/use-publishers-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useMap from '@/hooks/useMap'
-import usePublishers from '@/hooks/usePublishers'
+import { Map } from '@/interfaces'
 import { EditAssignmentReq } from '@/interfaces/api/assignments'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
 import { error, success } from '@/messages/edit'
+import { mapsService } from '@/services/instantdb'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, Pressable, Text, View } from 'react-native'
 
-import { database } from '@/services/appwrite'
-import { useQueryClient } from '@tanstack/react-query'
-import { Models } from 'react-native-appwrite'
-
 const EditAssignment = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
-	const { map } = useMap(params.$id)
+	const params = JSON.parse((data as string) || '{}') as Map
+	const { map } = useMap({ mapId: params.id })
 	const { publishers } = usePublishers()
-	const queryClient = useQueryClient()
 	const { colors } = useThemedColors()
 
 	const defaultValues: EditAssignmentReq = useMemo(
 		() => ({
-			assigned: typeof params.assigned === 'object' ? params.assigned.$id : params.assigned,
+			assigned: typeof params.assigned === 'object' ? params!.assigned!.id : params.assigned,
 		}),
 		[params.assigned]
 	)
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
+	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.id })), [publishers])
 
 	const save: SubmitHandler<EditAssignmentReq> = async data => {
 		try {
-			const updatedMap = await database.updateDocument('production', 'maps', params.$id!, {
-				assigned: data.assigned,
-			})
-
+			await mapsService.assignMap(params.id, data.assigned)
 			success('designação')
-
-			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
 
 			router.back()
 		} catch (err) {
@@ -54,13 +46,9 @@ const EditAssignment = () => {
 
 	const deleteAssignment = async () => {
 		try {
-			const updatedMap = await database.updateDocument('production', 'maps', params.$id!, {
-				assigned: null,
-			})
+			await mapsService.assignMap(params.id, null)
 
 			removeSuccess('designação')
-
-			queryClient.setQueryData(['map', updatedMap.$id], updatedMap)
 
 			router.back()
 		} catch (err) {

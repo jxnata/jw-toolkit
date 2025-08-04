@@ -1,13 +1,12 @@
 import Button from '@/components/button'
-import { useSession } from '@/contexts/session'
+import { useSession } from '@/contexts/session-instantdb'
+import useAllMaps from '@/hooks/use-all-maps-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useAllMaps from '@/hooks/useAllMaps'
+import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
-
-import { Models } from 'react-native-appwrite'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
@@ -20,14 +19,14 @@ const ExportMaps = () => {
 
 		setGenerating(true)
 
-		const groupedMaps: Record<string, Models.Document[]> = maps.reduce(
+		const groupedMaps: Record<string, Map[]> = maps.reduce(
 			(acc, map) => {
-				const city = map.city.name
+				const city = map.city?.name || 'Sem cidade'
 				if (!acc[city]) acc[city] = []
-				acc[city].push(map)
+				acc[city].push(map as Map)
 				return acc
 			},
-			{} as Record<string, Models.Document[]>
+			{} as Record<string, Map[]>
 		)
 
 		let mapIndex = 1
@@ -93,9 +92,10 @@ const ExportMaps = () => {
 							<h2>${city}</h2>
 							${cityMaps
 								.map(map => {
-									const googleMapsLink = map.coordinates
-										? `https://www.google.com/maps?q=${map.coordinates[0]},${map.coordinates[1]}`
-										: null
+									const googleMapsLink =
+										map.lat && map.lng
+											? `https://www.google.com/maps?q=${map.lat},${map.lng}`
+											: null
 									return `
 								<div class="card">
 									<span class="index">${mapIndex++}</span> <!-- Número do mapa -->

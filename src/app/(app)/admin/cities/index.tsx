@@ -1,8 +1,8 @@
 import Input from '@/components/input'
 import ListItem from '@/components/list-item'
 import SkeletonItem from '@/components/skeleton-item'
+import useCities from '@/hooks/use-cities-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useCities from '@/hooks/useCities'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
@@ -56,17 +56,17 @@ const Cities = () => {
 					<FlatList
 						ListHeaderComponent={<ListHeaderComponent />}
 						data={cities}
-						keyExtractor={item => item.$id}
+						keyExtractor={item => item.id}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						contentContainerClassName='gap-2'
 						showsVerticalScrollIndicator={false}
 						renderItem={({ item }) => (
 							<ListItem
-								id={item.$id}
+								id={item.id}
 								name={item.name}
 								onPress={() =>
 									router.push({
-										pathname: `/admin/cities/edit/${item.$id}`,
+										pathname: `/admin/cities/edit/${item.id}`,
 										params: { data: JSON.stringify(item) },
 									})
 								}

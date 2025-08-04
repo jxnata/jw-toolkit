@@ -1,3 +1,4 @@
+import useAllMaps from '@/hooks/use-all-maps-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
@@ -8,13 +9,11 @@ import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Platform, Text, View } from 'react-native'
 
-import useAllMaps from '@/hooks/useAllMaps'
-
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()
 	const params = useLocalSearchParams()
 	const { initialMaps } = JSON.parse((params.maps as string) || '[]')
-	const { maps, loading } = useAllMaps({ initialData: initialMaps })
+	const { maps, loading } = useAllMaps()
 	const { colors } = useThemedColors()
 
 	const getLocation = useCallback(async () => {
@@ -32,7 +31,7 @@ const AllMaps = () => {
 	const renderMap = () => {
 		if (!location) return null
 
-		const markers = maps.map(map => ({
+		const markers = maps.map((map: any) => ({
 			coordinates: getMarkerCoordinate([map.lat, map.lng]),
 			title: map.name,
 			description: map.address,
@@ -40,7 +39,7 @@ const AllMaps = () => {
 			onCalloutPress: () => {
 				if (!map.last_assignment?.finished) {
 					router.push({
-						pathname: `/admin/maps/${map.$id}`,
+						pathname: `/admin/maps/${map.id}`,
 						params: { data: JSON.stringify(map) },
 					})
 				}

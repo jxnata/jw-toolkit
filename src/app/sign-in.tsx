@@ -2,8 +2,8 @@ import Dropdown from '@/components/dropdown'
 import { APP_VERSION } from '@/constants/content'
 import { history, storage } from '@/database/index'
 import { LAST_CONGREGATION } from '@/database/types/keys'
+import useCongregations from '@/hooks/use-congregations-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useCongregations from '@/hooks/useCongregations'
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import {
 	AppleAuthenticationButton,
@@ -27,7 +27,7 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { useSession } from '@/contexts/session'
+import { useSession } from '@/contexts/session-instantdb'
 import { StatusBar } from 'expo-status-bar'
 
 const Login = () => {
@@ -38,7 +38,7 @@ const Login = () => {
 	const scheme = useColorScheme()
 	const { colors } = useThemedColors()
 
-	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c.$id })), [congregations])
+	const congregationsList = useMemo(() => congregations.map(c => ({ label: c.name, value: c.id })), [congregations])
 	const lastCongregation = useMemo(() => history.getString(LAST_CONGREGATION), [])
 
 	const handleCongregation = (c: string) => {
@@ -123,7 +123,7 @@ const Login = () => {
 			<StatusBar style='dark' />
 			<Stack.Screen options={{ headerShown: false }} />
 			<ImageBackground
-				source={require('../../assets/images/login-bg.jpg')}
+				source={require('../assets/images/login-bg.jpg')}
 				resizeMode='cover'
 				className='flex w-full h-full'
 			>
@@ -173,7 +173,7 @@ const Login = () => {
 								<ActivityIndicator size='large' />
 							</View>
 						) : (
-							<>
+							<View className='my-2'>
 								{Platform.OS === 'ios' ? (
 									<AppleAuthenticationButton
 										buttonType={AppleAuthenticationButtonType.SIGN_IN}
@@ -199,7 +199,7 @@ const Login = () => {
 										disabled={loading}
 									/>
 								)}
-							</>
+							</View>
 						)}
 						<Text
 							className='mt-5 self-center text-center text-sm font-regular'

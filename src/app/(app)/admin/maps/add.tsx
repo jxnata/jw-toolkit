@@ -1,20 +1,17 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
-import { useSession } from '@/contexts/session'
-import useCities from '@/hooks/useCities'
+import { useSession } from '@/contexts/session-instantdb'
+import useCities from '@/hooks/use-cities-instant'
 import { AddMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/add'
-import { database } from '@/services/appwrite'
+import { mapsService } from '@/services/instantdb'
 import { setCoordinates } from '@/utils/set-coordinates'
-import { updateMapsCache } from '@/utils/update-maps-cache'
-import { useQueryClient } from '@tanstack/react-query'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Save } from 'lucide-react-native'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { ID, Permission, Role } from 'react-native-appwrite'
 
 const AddMap = () => {
 	const { query } = useLocalSearchParams()
@@ -22,9 +19,8 @@ const AddMap = () => {
 	const { cities } = useCities()
 	const { congregation } = useSession()
 	const { control, formState, handleSubmit } = useForm<AddMapReq>()
-	const queryClient = useQueryClient()
 
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
+	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.id })), [cities])
 
 	const save: SubmitHandler<AddMapReq> = async data => {
 		if (!congregation) return
@@ -36,29 +32,16 @@ const AddMap = () => {
 		}
 
 		try {
-			const newMap = await database.createDocument(
-				'production',
-				'maps',
-				ID.unique(),
-				{
-					name: data.name,
-					address: data.address,
-					district: data.district,
-					details: data.details,
-					lat,
-					lng,
-					city: data.city,
-					congregation: congregation.id,
-				},
-				[
-					Permission.read(Role.label(congregation.id)),
-					Permission.update(Role.label(congregation.id)),
-					Permission.delete(Role.label(congregation.id)),
-				]
-			)
-
-			// Update the React Query cache
-			updateMapsCache(queryClient, queryKey, newMap)
+			await mapsService.createMap({
+				name: data.name,
+				address: data.address,
+				district: data.district,
+				details: data.details,
+				lat,
+				lng,
+				cityId: data.city,
+				congregationId: congregation.id,
+			})
 
 			success('mapa')
 			router.back()

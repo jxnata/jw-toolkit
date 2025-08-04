@@ -1,16 +1,14 @@
+import useMyAssignments from '@/hooks/use-my-assignments-instant'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useMyAssignments from '@/hooks/useMyAssignments'
 import { error, success } from '@/messages/edit'
+import { mapsService } from '@/services/instantdb'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, TouchableOpacity, View } from 'react-native'
 
-import { functions } from '@/services/appwrite'
-import { ExecutionMethod, Models } from 'react-native-appwrite'
-
 interface AssignmentProps {
-	assignment: Models.Document
+	assignment: any
 	onCancel: () => void
 }
 
@@ -23,22 +21,18 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const save = async (found: boolean) => {
 		setLoading(true)
 		try {
-			const result = await functions.createExecution(
-				'finish-map',
-				JSON.stringify({ $id: assignment.$id, found }),
-				false,
-				undefined,
-				ExecutionMethod.POST
-			)
-
-			if (result.responseStatusCode !== 200) {
-				error('designação')
-				return
-			}
+			await mapsService.updateMap(assignment.id, {
+				found,
+				visited: new Date().toISOString(),
+				visited_by: assignment.assigned?.name || 'Unknown',
+			})
 
 			success('designação')
 			mutate()
 			router.back()
+		} catch (err) {
+			error('designação')
+			console.error('Failed to update assignment:', err)
 		} finally {
 			setLoading(false)
 		}
