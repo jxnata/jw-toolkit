@@ -1,5 +1,6 @@
 import '../../global.css'
 
+import { REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
 import { SessionProvider } from '@/contexts/session-instantdb'
@@ -16,6 +17,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect } from 'react'
 import { Platform, useColorScheme } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
+import Purchases from 'react-native-purchases'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 
@@ -37,7 +39,12 @@ export default function Layout() {
 	useEffect(() => {
 		OneSignal.initialize(Constants.expoConfig!.extra!.oneSignalAppId)
 		OneSignal.Notifications.requestPermission(true)
-		if (Platform.OS === 'android') {
+
+		if (Platform.OS === 'ios') {
+			Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
+		} else if (Platform.OS === 'android') {
+			Purchases.configure({ apiKey: REVENUECAT_GOOGLE_API_KEY })
+
 			GoogleSignin.configure({
 				webClientId: '561014260561-1hiq7gqjerul4lmhdl8lqpth3bs50ktk.apps.googleusercontent.com',
 				offlineAccess: true,

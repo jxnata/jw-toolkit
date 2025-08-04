@@ -1,6 +1,5 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { PermissionStatus } from 'expo-location'
-import { requestPermissionsAsync } from 'expo-maps'
+import { PermissionStatus, requestForegroundPermissionsAsync } from 'expo-location'
 import { Redirect } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Linking, Pressable, SafeAreaView, Text, View } from 'react-native'
@@ -11,7 +10,7 @@ const LocationRequest = () => {
 
 	useEffect(() => {
 		const checkPermissionStatus = async () => {
-			const { status: newStatus } = await requestPermissionsAsync()
+			const { status: newStatus } = await requestForegroundPermissionsAsync()
 			setStatus(newStatus)
 		}
 		checkPermissionStatus()
@@ -30,7 +29,7 @@ const LocationRequest = () => {
 			return
 		}
 
-		requestPermissionsAsync()
+		requestForegroundPermissionsAsync()
 	}
 
 	return (

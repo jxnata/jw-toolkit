@@ -1,19 +1,23 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
+import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
+import SelectLocation from '@/components/select-location'
 import useCities from '@/hooks/use-cities-instant'
 import { Map } from '@/interfaces'
 import { EditMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/edit'
 import { mapsService } from '@/services/instantdb'
 import { getCoordinates } from '@/utils/get-coordinates'
+import { getMapRegion } from '@/utils/get-map-region'
 import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { View } from 'react-native'
+import { Modal, View } from 'react-native'
 
 const EditMap = () => {
+	const [modalVisible, setModalVisible] = useState(false)
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const { cities } = useCities()
@@ -34,7 +38,11 @@ const EditMap = () => {
 		[params]
 	)
 
-	const { control, formState, handleSubmit } = useForm<EditMapReq>({ defaultValues })
+	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })
+
+	const toggleMap = () => {
+		setModalVisible(old => !old)
+	}
 
 	const save: SubmitHandler<EditMapReq> = async data => {
 		const [lat, lng] = setCoordinates(data.coordinates)
@@ -146,7 +154,7 @@ const EditMap = () => {
 							)}
 						/>
 					</View>
-					{/* <IconButton icon='locate-outline' onPress={toggleMap} /> */}
+					<IconButton icon='locate-outline' onPress={toggleMap} />
 				</View>
 				<Controller
 					control={control}
@@ -162,13 +170,13 @@ const EditMap = () => {
 						/>
 					)}
 				/>
-				{/* <Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
+				<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}
-						initial={setCoordinates(getValues('coordinates'))}
+						initial={{ coordinates: getMapRegion(setCoordinates(getValues('coordinates'))) }}
 					/>
-				</Modal> */}
+				</Modal>
 				<Button
 					disabled={!formState.isValid}
 					loading={formState.isSubmitting}
