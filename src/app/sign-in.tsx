@@ -12,7 +12,7 @@ import { Stack } from 'expo-router/stack'
 import { ActivityIndicator, Alert, ImageBackground, Platform, Text, useColorScheme, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import { StatusBar } from 'expo-status-bar'
 
 const Login = () => {

@@ -1,5 +1,5 @@
 import { storage } from '@/database/index'
-import usePublisher from '@/hooks/use-publisher-instant'
+import usePublisher from '@/hooks/use-publisher'
 import { Congregation, Publisher } from '@/interfaces'
 import db from '@/lib/db'
 import { publishersService } from '@/services/instantdb/publishers-service'

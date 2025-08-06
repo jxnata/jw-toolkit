@@ -1,13 +1,14 @@
 import Button from '@/components/button'
+import useCheckbox from '@/hooks/use-checkbox'
+import { useLocation } from '@/hooks/use-location'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import useCheckbox from '@/hooks/useCheckbox'
-import { useLocation } from '@/hooks/useLocation'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { validCoordinates } from '@/utils/valid-coordinates'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Dimensions, Pressable, View } from 'react-native'
+import { Dimensions, Pressable, Text, View } from 'react-native'
 import MapView, { MapViewProps, Marker } from 'react-native-maps'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const { height } = Dimensions.get('window')
 
@@ -23,6 +24,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	const mapRef = useRef<MapView>(null)
 	const { colors } = useThemedColors()
 	const { location } = useLocation()
+	const { top, bottom } = useSafeAreaInsets()
 
 	const [pin, setPin] = useState<[number, number]>(
 		validCoordinates([initial?.coordinates?.latitude || 0, initial?.coordinates?.longitude || 0]) || [0, 0]
@@ -31,6 +33,13 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 
 	const mapType = useMemo(() => selectedValues[0], [selectedValues])
 	const marker = useMemo(() => getMarkerCoordinate(pin), [pin])
+
+	const initialLocation = useMemo(() => {
+		return {
+			latitude: initial ? initial.coordinates.latitude : location?.latitude || 0,
+			longitude: initial ? initial.coordinates.longitude : location?.longitude || 0,
+		}
+	}, [initial, location])
 
 	const onSelectLocation = useCallback(
 		(e: any) => {
@@ -47,6 +56,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	useEffect(() => {
 		if (!pin) return
 		if (!mapRef.current) return
+		if (pin.every(p => p === 0)) return
 
 		mapRef.current.animateToRegion(
 			{
@@ -61,47 +71,55 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 
 	return (
 		<View className='flex justify-end w-full h-full'>
-			<View className='flex w-full items-center rounded-[10px] bg-card' style={{ height: height * 0.9 }}>
+			<View className='flex w-full items-center rounded-[10px] bg-card'>
 				<View
-					className='absolute left-2.5 top-2.5 rounded-[10px] justify-center items-center p-[5px] z-10'
-					style={{ backgroundColor: colors.foreground }}
+					className='absolute left-3 rounded-xl justify-center items-center p-2 z-10'
+					style={{ backgroundColor: colors.foreground, top: top + 10 }}
 				>
 					<MapOptions />
 				</View>
 
 				<Pressable
 					onPress={onClose}
-					className='absolute right-2.5 top-2.5 items-center justify-center rounded-[10px] w-10 h-10 z-10'
-					style={{ backgroundColor: colors.foreground }}
+					className='absolute right-3 items-center justify-center rounded-xl w-10 h-10 z-10'
+					style={{ backgroundColor: colors.foreground, top: top + 10 }}
 				>
 					<Ionicons name='close-outline' size={24} color={colors.background} />
 				</Pressable>
 
-				<MapView
-					ref={mapRef}
-					style={{ width: '100%', height: '100%' }}
-					initialRegion={{
-						latitude: initial ? initial.coordinates.latitude : location?.latitude || 0,
-						longitude: initial ? initial.coordinates.longitude : location?.longitude || 0,
-						latitudeDelta: 0.01,
-						longitudeDelta: 0.01,
-					}}
-					showsUserLocation
-					showsMyLocationButton
-					showsCompass
-					mapType={mapType as MapViewProps['mapType']}
-					onPress={onSelectLocation}
-				>
-					<Marker
-						coordinate={{
-							latitude: marker.latitude,
-							longitude: marker.longitude,
+				{initialLocation.latitude !== 0 && initialLocation.longitude !== 0 && (
+					<MapView
+						ref={mapRef}
+						style={{ width: '100%', height: '100%' }}
+						initialRegion={{
+							latitude: initialLocation.latitude,
+							longitude: initialLocation.longitude,
+							latitudeDelta: 0.01,
+							longitudeDelta: 0.01,
 						}}
-					/>
-				</MapView>
+						showsUserLocation
+						showsMyLocationButton
+						showsCompass
+						mapType={mapType as MapViewProps['mapType']}
+						onPress={onSelectLocation}
+					>
+						<Marker
+							coordinate={{
+								latitude: marker.latitude,
+								longitude: marker.longitude,
+							}}
+						/>
+					</MapView>
+				)}
 
 				{!!pin && (
-					<View className='absolute bottom-[30px] w-full px-2.5'>
+					<View
+						className='absolute w-full px-4 pt-4 rounded-t-xl bg-card'
+						style={{ bottom: 0, paddingBottom: bottom + 10 }}
+					>
+						<Text className='text-lg text-foreground text-center mb-3 font-bold'>
+							Toque no mapa para selecionar a localização
+						</Text>
 						<Button onPress={onClose}>Confirmar</Button>
 					</View>
 				)}

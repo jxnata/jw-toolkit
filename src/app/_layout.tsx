@@ -4,9 +4,10 @@ import '../../global.css'
 import { REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
-import { SessionProvider, useSession } from '@/contexts/session-instantdb'
+import { LocationProvider } from '@/contexts/location-provider'
+import { SessionProvider, useSession } from '@/contexts/session-provider'
 import { SubscriptionProvider } from '@/contexts/subscription-provider'
-import { ThemeProvider } from '@/contexts/theme'
+import { ThemeProvider } from '@/contexts/theme-provider'
 import { storage } from '@/database'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
@@ -66,8 +67,10 @@ export default function Layout() {
 				<SessionProvider>
 					<SubscriptionProvider>
 						<ThemeProvider>
-							<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-							<RootNavigator />
+							<LocationProvider>
+								<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+								<RootNavigator />
+							</LocationProvider>
 						</ThemeProvider>
 					</SubscriptionProvider>
 				</SessionProvider>

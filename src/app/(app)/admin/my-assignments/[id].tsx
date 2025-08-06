@@ -1,6 +1,6 @@
 import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
-import useAssignment from '@/hooks/use-assignment-instant'
+import useAssignment from '@/hooks/use-assignment'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'

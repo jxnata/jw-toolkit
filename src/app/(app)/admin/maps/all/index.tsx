@@ -1,4 +1,4 @@
-import useAllMaps from '@/hooks/use-all-maps-instant'
+import useAllMaps from '@/hooks/use-all-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getPinColor } from '@/utils/get-pin-color'

@@ -41,8 +41,8 @@ class PublishersService {
 		)
 	}
 
-	async updatePublisher(publisherId: string, updates: Partial<Publisher>): Promise<void> {
-		await db.transact(db.tx.publishers[publisherId].update(updates))
+	async updatePublisher(publisherId: string, updates: Partial<Publisher>, links?: Record<string, string>): Promise<void> {
+		await db.transact(db.tx.publishers[publisherId].update(updates).link(links || {}))
 	}
 
 	async getPublisher(publisherId: string): Promise<Publisher | null> {

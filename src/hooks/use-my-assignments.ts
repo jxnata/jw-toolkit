@@ -1,4 +1,4 @@
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
 

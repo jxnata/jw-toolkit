@@ -1,6 +1,6 @@
 import { patchSubscription } from '@/utils/subscriptions'
 import React, { createContext, useCallback, useEffect, useState } from 'react'
-import { useSession } from './session-instantdb'
+import { useSession } from './session-provider'
 
 export const SubscriptionContext = createContext<{
 	subscribed: boolean
@@ -15,9 +15,13 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 	const { type, current } = useSession()
 
 	const fetchSubscription = useCallback(async () => {
-		if (!current) return
-		const isSubscribed = await patchSubscription(current.refresh_token)
-		setSubscribed(isSubscribed)
+		try {
+			if (!current) return
+			const isSubscribed = await patchSubscription(current.refresh_token)
+			setSubscribed(isSubscribed)
+		} catch (error) {
+			console.error(error)
+		}
 	}, [current])
 
 	useEffect(() => {

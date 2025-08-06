@@ -1,6 +1,6 @@
 import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
-import useAssignment from '@/hooks/use-assignment-instant'
+import useAssignment from '@/hooks/use-assignment'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { getMapRegion } from '@/utils/get-map-region'

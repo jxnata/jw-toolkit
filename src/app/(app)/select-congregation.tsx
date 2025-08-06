@@ -1,10 +1,9 @@
 import Button from '@/components/button'
 import Input from '@/components/input'
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import { storage } from '@/database'
-import useCongregations from '@/hooks/use-congregations-instant'
+import useCongregations from '@/hooks/use-congregations'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import db from '@/lib/db'
 import { publishersService } from '@/services/instantdb/publishers-service'
 import { id } from '@instantdb/react-native'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
@@ -66,25 +65,25 @@ const SelectCongregation = () => {
 				return
 			}
 
+			const updates = {
+				name: current.email,
+				level: publisher ? publisher.level : 3,
+				approved: publisher
+					? selectedCongregation === publisher.congregation.id
+						? publisher.approved
+						: false
+					: false,
+			}
+
+			const links = {
+				user: current.id,
+				congregation: selectedCongregation,
+			}
+
 			// Create/update publisher profile and link to congregation
 			const publisherId = publisher ? publisher.id : id()
 
-			await db.transact([
-				db.tx.publishers[publisherId]
-					.update({
-						name: current.email,
-						level: publisher ? publisher.level : 3,
-						approved: publisher
-							? selectedCongregation === publisher.congregation.id
-								? publisher.approved
-								: false
-							: false,
-					})
-					.link({
-						user: current.id,
-						congregation: selectedCongregation,
-					}),
-			])
+			await publishersService.updatePublisher(publisherId, updates, links)
 
 			// Store congregation info
 			storage.set('congregation.id', selectedCongregation)

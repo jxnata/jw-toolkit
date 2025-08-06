@@ -1,6 +1,6 @@
 import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link, Stack, useRouter } from 'expo-router'

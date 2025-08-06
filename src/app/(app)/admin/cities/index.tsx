@@ -1,7 +1,7 @@
 import Input from '@/components/input'
 import ListItem from '@/components/list-item'
 import SkeletonItem from '@/components/skeleton-item'
-import useCities from '@/hooks/use-cities-instant'
+import useCities from '@/hooks/use-cities'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'

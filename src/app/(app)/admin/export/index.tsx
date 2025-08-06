@@ -1,6 +1,6 @@
 import Button from '@/components/button'
-import { useSession } from '@/contexts/session-instantdb'
-import useAllMaps from '@/hooks/use-all-maps-instant'
+import { useSession } from '@/contexts/session-provider'
+import useAllMaps from '@/hooks/use-all-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'

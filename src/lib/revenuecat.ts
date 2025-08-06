@@ -25,7 +25,7 @@ export async function checkSubscription() {
 
 export const identifyUser = async (userId: string) => {
 	try {
-		if (!userId) return
+		if (!userId) return null
 
 		const customerInfo = await Purchases.logIn(userId)
 
