@@ -1,21 +1,24 @@
+import { Loading } from '@/components/loading'
 import '../../global.css'
 
-import { REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
+import { REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
-import { SessionProvider } from '@/contexts/session-instantdb'
+import { SessionProvider, useSession } from '@/contexts/session-instantdb'
+import { SubscriptionProvider } from '@/contexts/subscription-provider'
 import { ThemeProvider } from '@/contexts/theme'
-import { clientPersister } from '@/database/cache/provider'
+import { storage } from '@/database'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
-import { QueryClient } from '@tanstack/react-query'
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Constants from 'expo-constants'
 import { useFonts } from 'expo-font'
-import { Slot } from 'expo-router'
+import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Platform, useColorScheme } from 'react-native'
+import { useMMKVListener } from 'react-native-mmkv'
 import { OneSignal } from 'react-native-onesignal'
 import Purchases from 'react-native-purchases'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -41,7 +44,7 @@ export default function Layout() {
 		OneSignal.Notifications.requestPermission(true)
 
 		if (Platform.OS === 'ios') {
-			Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
+			// Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
 		} else if (Platform.OS === 'android') {
 			Purchases.configure({ apiKey: REVENUECAT_GOOGLE_API_KEY })
 
@@ -59,15 +62,47 @@ export default function Layout() {
 
 	return (
 		<SafeAreaProvider onLayout={handleOnLayout}>
-			<PersistQueryClientProvider client={queryClient} persistOptions={{ persister: clientPersister }}>
+			<QueryClientProvider client={queryClient}>
 				<SessionProvider>
-					<ThemeProvider>
-						<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-						<Slot />
-					</ThemeProvider>
+					<SubscriptionProvider>
+						<ThemeProvider>
+							<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+							<RootNavigator />
+						</ThemeProvider>
+					</SubscriptionProvider>
 				</SessionProvider>
-			</PersistQueryClientProvider>
+			</QueryClientProvider>
 			<Toast position='bottom' config={config} />
 		</SafeAreaProvider>
+	)
+}
+
+function RootNavigator() {
+	const { loading, current, congregation } = useSession()
+	const [initialized, setInitialized] = useState(storage.getBoolean('initialized'))
+	const { colors } = useThemedColors()
+
+	useMMKVListener(key => {
+		if (key === 'initialized') {
+			setInitialized(!!storage.getBoolean('initialized'))
+		}
+	}, storage)
+
+	if (loading) {
+		return <Loading />
+	}
+
+	return (
+		<Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
+			{/* <Stack.Protected guard={!initialized}>
+				<Stack.Screen name="onboarding" />
+			</Stack.Protected> */}
+
+			<Stack.Protected guard={!!current}>
+				<Stack.Screen name='(app)' />
+			</Stack.Protected>
+
+			<Stack.Screen name='sign-in' />
+		</Stack>
 	)
 }

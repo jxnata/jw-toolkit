@@ -7,7 +7,6 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { useLocation } from '@/hooks/useLocation'
 import { Map } from '@/interfaces'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
@@ -19,7 +18,6 @@ const AssigmentDetails = () => {
 	const [showFinish, setShowFinish] = useState(false)
 	const { assignment } = useAssignment(params.id)
 	const router = useRouter()
-	const { location } = useLocation()
 	const { colors } = useThemedColors()
 
 	const toggleModal = () => {
@@ -61,7 +59,6 @@ const AssigmentDetails = () => {
 							longitudeDelta: 0.01,
 						}}
 						showsUserLocation={true}
-						followsUserLocation={true}
 					>
 						<Marker
 							coordinate={{

@@ -22,7 +22,13 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 	const { colors } = useThemedColors()
 
 	const { data: distance } = useQuery({
-		queryKey: ['distance', location?.latitude, location?.longitude, map.lat, map.lng],
+		queryKey: [
+			'distance',
+			location?.latitude.toFixed(4),
+			location?.longitude.toFixed(4),
+			map.lat.toFixed(4),
+			map.lng.toFixed(4),
+		],
 		queryFn: () => getLocationDistance(location, [map.lat, map.lng]),
 		enabled: !!location,
 	})
@@ -40,7 +46,7 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 	}, [map])
 
 	return (
-		<Pressable onPress={onPress} className='flex flex-row mb-[5px] w-full rounded-[10px] bg-card p-2.5 gap-2.5'>
+		<Pressable onPress={onPress} className='flex flex-row mb-2 w-full rounded-lg bg-card p-2.5 gap-2.5'>
 			{map.assigned ? (
 				<View
 					className='absolute top-[5px] right-[5px] px-[5px] py-0.5 rounded-[5px]'

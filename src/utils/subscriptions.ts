@@ -14,6 +14,8 @@ export const identifierToSubscription = (identifier: string) => {
 
 export const patchSubscription = async (refreshToken: string) => {
 	try {
+		if (!api.defaults.baseURL) return false
+
 		const { data } = await api.patch<{ is_pro: boolean }>('/subscription/check', {}, {
 			headers: {
 				token: refreshToken,

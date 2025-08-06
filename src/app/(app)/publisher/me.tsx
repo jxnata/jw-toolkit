@@ -1,11 +1,13 @@
+import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
 import { useSession } from '@/contexts/session-instantdb'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { Stack } from 'expo-router'
-import { Alert, Pressable, Text, View } from 'react-native'
+import { router, Stack } from 'expo-router'
+import { LogOut, Shuffle } from 'lucide-react-native'
+import { Alert, Text, View } from 'react-native'
 
-const PublisherDetails = () => {
-	const { current, congregation, loading, logout } = useSession()
+const UserDetails = () => {
+	const { current, loading, congregation, logout } = useSession()
 	const { colors } = useThemedColors()
 
 	const handleLogout = () => {
@@ -28,21 +30,32 @@ const PublisherDetails = () => {
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal' }} />
 			<View className='flex p-2.5 w-full h-full items-center bg-background'>
-				<Text className='text-[42px] text-foreground py-2.5 font-icons'></Text>
-				<Text className='text-[17px] text-foreground py-5 font-bold'>{current.name}</Text>
-				<Text className='text-xs text-foreground py-2.5 font-medium'>Congregação</Text>
-				<Text className='text-[15px] text-foreground pb-5 font-medium'>{congregation.name}</Text>
-				<View className='flex-row gap-2.5 mt-2.5'>
-					<Pressable
-						onPress={handleLogout}
+				<Text className='text-5xl text-foreground py-2.5 font-icons'></Text>
+				<Text className='text-lg text-foreground pt-5 font-bold'>{current.name}</Text>
+				<Text className='text-primary pb-5 pt-2.5 font-medium'>{current.email}</Text>
+				<View className='flex flex-row items-center justify-between gap-2 w-full bg-card rounded-xl pl-4 py-2.5'>
+					<View className='flex-col gap-1.5'>
+						<Text className='text-sm text-foreground font-medium'>Congregação</Text>
+						<Text className='text-foreground font-medium'>{congregation.name}</Text>
+					</View>
+					<Button
+						right={<Shuffle size={16} color={colors.primary[600]} />}
+						variant='link'
+						onPress={() => router.push('/select-congregation?initial=' + congregation.id)}
 						disabled={loading}
-						className='gap-[5px] flex flex-row items-center justify-center py-2.5 px-5 rounded-xl bg-card text-[15px] h-[50px]'
 					>
-						<Text className='text-[15px] font-bold opacity-80' style={{ color: colors.foreground }}>
-							Sair
-						</Text>
-					</Pressable>
+						Alterar
+					</Button>
 				</View>
+				<Button
+					variant='danger'
+					onPress={handleLogout}
+					disabled={loading}
+					className='mt-6'
+					left={<LogOut size={16} color={colors.danger[500]} />}
+				>
+					Sair
+				</Button>
 				<Text className='text-xs text-foreground py-2.5 font-medium absolute bottom-[50px]'>
 					Versão: {APP_VERSION}
 				</Text>
@@ -51,4 +64,4 @@ const PublisherDetails = () => {
 	)
 }
 
-export default PublisherDetails
+export default UserDetails

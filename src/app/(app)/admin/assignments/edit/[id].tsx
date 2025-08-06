@@ -46,7 +46,10 @@ const EditAssignment = () => {
 
 	const deleteAssignment = async () => {
 		try {
-			await mapsService.assignMap(params.id, null)
+			if (!map) return
+			if (!map.assigned) return
+
+			await mapsService.unassignMap(params.id, map.assigned.id)
 
 			removeSuccess('designação')
 

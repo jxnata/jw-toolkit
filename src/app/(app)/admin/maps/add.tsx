@@ -1,10 +1,10 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
-import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
 import SelectLocation from '@/components/select-location'
 import { useSession } from '@/contexts/session-instantdb'
 import useCities from '@/hooks/use-cities-instant'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { AddMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/add'
 import { mapsService } from '@/services/instantdb'
@@ -12,17 +12,20 @@ import { getCoordinates } from '@/utils/get-coordinates'
 import { getMapRegion } from '@/utils/get-map-region'
 import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router } from 'expo-router'
-import { Save } from 'lucide-react-native'
+import { MapPinPlus, Save } from 'lucide-react-native'
 import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Modal, View } from 'react-native'
+import { Modal, TouchableOpacity, View } from 'react-native'
 
 const AddMap = () => {
 	const [modalVisible, setModalVisible] = useState(false)
 	const { cities } = useCities()
 	const { congregation } = useSession()
-	const { control, formState, handleSubmit, setValue, getValues } = useForm<AddMapReq>()
+	const { control, formState, handleSubmit, setValue, getValues, watch } = useForm<AddMapReq>()
+	const { colors } = useThemedColors()
 
+	const coordinates = watch('coordinates')
+	console.log({ coordinates })
 	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.id })), [cities])
 
 	const toggleMap = () => {
@@ -122,7 +125,7 @@ const AddMap = () => {
 						/>
 					)}
 				/>
-				<View className='flex-row gap-2'>
+				<View className='flex-row gap-2 items-end'>
 					<View className='flex-1'>
 						<Controller
 							control={control}
@@ -140,7 +143,9 @@ const AddMap = () => {
 							)}
 						/>
 					</View>
-					<IconButton icon='locate-outline' onPress={toggleMap} />
+					<TouchableOpacity onPress={toggleMap} className='mb-3 p-3 bg-card border border-border rounded-lg'>
+						<MapPinPlus size={24} color={colors.primary[500]} />
+					</TouchableOpacity>
 				</View>
 				<Controller
 					control={control}
@@ -160,7 +165,7 @@ const AddMap = () => {
 					<SelectLocation
 						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
 						onClose={toggleMap}
-						initial={{ coordinates: getMapRegion(setCoordinates(getValues('coordinates'))) }}
+						initial={coordinates ? { coordinates: getMapRegion(setCoordinates(coordinates)) } : undefined}
 					/>
 				</Modal>
 				<Button

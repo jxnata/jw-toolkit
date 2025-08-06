@@ -14,8 +14,10 @@ const useAssignment = (assignmentId: string) => {
 						id: assignmentId,
 						congregation: congregation ? congregation.id : null
 					}
-				}
-			}
+				},
+				city: {},
+				assigned: {},
+			},
 		} : null
 	)
 

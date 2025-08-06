@@ -1,18 +1,22 @@
-import { useThemedColors } from '@/hooks/use-themed-colors'
-import { Text, TextInput, TextInputProps, View } from 'react-native'
+import { useState } from 'react'
+import { Text, TextInput, TextInputProps } from 'react-native'
 
-const Input = (props: TextInputProps & { label?: string }) => {
-	const { colors } = useThemedColors()
+const Input = (props: TextInputProps & { label?: React.ReactNode; error?: unknown }) => {
+	const [focused, setFocused] = useState(false)
 
 	return (
-		<View className='flex flex-col gap-1'>
-			{props.label && <Text className='text-foreground text-sm font-medium opacity-70 ml-1'>{props.label}</Text>}
+		<>
+			{typeof props.label === 'string' && (
+				<Text className='mb-2 font-semibold text-foreground opacity-75'>{props.label}</Text>
+			)}
+			{typeof props.label === 'object' && props.label}
 			<TextInput
 				{...props}
-				placeholderTextColor={colors.foreground + '80'}
-				className='w-full px-4 py-4 rounded-lg border border-border bg-card text-foreground mb-2 font-medium'
+				className={`mb-3 rounded-xl border bg-card p-4 font-regular text-foreground ${props.error ? 'border-red-500' : focused ? 'border-primary' : 'border-border'} ${props.className}`}
+				onFocus={() => setFocused(true)}
+				onBlur={() => setFocused(false)}
 			/>
-		</View>
+		</>
 	)
 }
 

@@ -42,8 +42,9 @@ const useMaps = (props: Props = {
 
 	if (search) {
 		whereConditions.or = [
-			{ name: { $like: `%${search}%` } },
-			{ district: { $like: `%${search}%` } }
+			{ name: { $ilike: `%${search}%` } },
+			{ district: { $ilike: `%${search}%` } },
+			{ 'assigned.name': { $ilike: `%${search}%` } },
 		]
 	}
 
@@ -56,7 +57,7 @@ const useMaps = (props: Props = {
 	}
 
 	if (status === 'assigned') {
-		whereConditions.assigned = { $isNotNull: true }
+		whereConditions.assigned = { $isNull: false }
 	} else if (status === 'unassigned') {
 		whereConditions.assigned = { $isNull: true }
 	}
@@ -66,7 +67,7 @@ const useMaps = (props: Props = {
 			maps: {
 				$: {
 					where: whereConditions,
-					order: { serverCreatedAt: 'desc' },
+					order: { visited: 'asc' },
 				},
 				city: {},
 				assigned: {},

@@ -1,9 +1,11 @@
 import { storage } from '@/database/index'
+import usePublisher from '@/hooks/use-publisher-instant'
+import { Congregation, Publisher } from '@/interfaces'
 import db from '@/lib/db'
-import { id, User as InstantUser } from '@instantdb/react-native'
+import { publishersService } from '@/services/instantdb/publishers-service'
+import { User as InstantUser } from '@instantdb/react-native'
 import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 import { AppleAuthenticationCredential } from 'expo-apple-authentication'
-import { router } from 'expo-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Platform } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
@@ -11,10 +13,10 @@ import { OneSignal } from 'react-native-onesignal'
 type LocalSession = {
 	current: (InstantUser & { name: string }) | null
 	type: 'publisher' | 'admin' | null
-	congregation: { id: string; name: string } | null
-	publisher: string | null
-	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential, cong: string) => Promise<void>
-	googleAuthentication: (user: User, cong: string) => Promise<void>
+	congregation: Congregation | null
+	publisher: Publisher | null
+	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential) => Promise<void>
+	googleAuthentication: (user: User) => Promise<void>
 	logout: () => Promise<void>
 	loading: boolean
 }
@@ -37,30 +39,29 @@ export function useSession() {
 }
 
 export function SessionProvider(props: { children: React.ReactNode }) {
-	const { user, isLoading, error } = db.useAuth()
-	const [publisher, setPublisher] = useState<string | null>(null)
-	const [congregation, setCongregation] = useState<{ id: string; name: string } | null>(null)
-
-	// Query publisher data based on authenticated user
-	const { data: publisherData } = db.useQuery({
-		publishers: {
-			$: {
-				where: { user: user?.id },
-				limit: 1,
-			},
-			congregation: {},
-		},
+	const { user, isLoading } = db.useAuth()
+	const [loading, setLoading] = useState(false)
+	const { publisher, loading: publisherLoading } = usePublisher({
+		userId: user ? user.id : undefined,
+		enabled: !!user,
 	})
 
-	const currentPublisher = publisherData?.publishers?.[0]
-
-	// Determine user type based on publisher level
 	const type = useMemo(() => {
-		if (!currentPublisher) return null
-		return currentPublisher.level === 1 ? 'admin' : 'publisher'
-	}, [currentPublisher])
+		if (!publisher) return null
+		return publisher.level === 1 ? 'admin' : 'publisher'
+	}, [publisher])
 
-	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential, congregationId: string) {
+	const congregation = useMemo(() => {
+		if (!publisher) return null
+		return publisher.congregation
+	}, [publisher])
+
+	const isLoadingSession = useMemo(() => {
+		if (!user) return isLoading || loading
+		return isLoading || loading || publisherLoading
+	}, [user, isLoading, loading, publisherLoading])
+
+	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential) {
 		try {
 			if (!appleRequestResponse.identityToken) {
 				throw new Error('No identity token received from Apple')
@@ -71,16 +72,19 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				idToken: appleRequestResponse.identityToken,
 			})
 
-			// Store congregation info
-			storage.set('congregation.id', congregationId)
-			await handlePostAuthSetup(congregationId, user)
+			await createPublisherIfNotExists(
+				user.id,
+				appleRequestResponse.fullName
+					? appleRequestResponse.fullName.givenName + ' ' + appleRequestResponse.fullName.familyName
+					: 'Apple User'
+			)
 		} catch (error) {
 			console.error('Apple authentication error:', error)
 			throw error
 		}
 	}
 
-	async function googleAuthentication(googleRequestResponse: User, congregationId: string) {
+	async function googleAuthentication(googleRequestResponse: User) {
 		try {
 			if (!googleRequestResponse.idToken) {
 				throw new Error('No ID token received from Google')
@@ -91,68 +95,28 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				idToken: googleRequestResponse.idToken,
 			})
 
-			// Store congregation info
-			storage.set('congregation.id', congregationId)
-			await handlePostAuthSetup(congregationId, user)
+			await createPublisherIfNotExists(
+				user.id,
+				googleRequestResponse.user
+					? googleRequestResponse.user.givenName + ' ' + googleRequestResponse.user.familyName
+					: 'Google User'
+			)
 		} catch (error) {
 			console.error('Google authentication error:', error)
 			throw error
 		}
 	}
 
-	async function handlePostAuthSetup(congregationId: string, user: InstantUser) {
-		// Get congregation info
-		const { data } = await db.queryOnce({
-			congregations: {
-				$: { where: { id: congregationId } },
-			},
-			publishers: {
-				$: { where: { user: user?.id } },
-			},
+	const createPublisherIfNotExists = async (userId: string, name: string) => {
+		const pub = await publishersService.searchByUserId(userId)
+		if (pub) return
+
+		await publishersService.createPublisher({
+			userId,
+			name,
+			level: 3,
+			approved: false,
 		})
-
-		const congregationInfo = data?.congregations?.[0]
-		const publisherInfo = data?.publishers?.[0]
-
-		if (congregationInfo) {
-			storage.set('congregation.name', congregationInfo.name)
-			setCongregation({
-				id: congregationId,
-				name: congregationInfo.name,
-			})
-		}
-
-		// Check if publisher profile exists, create if not
-		if (user && !publisherInfo) {
-			const publisherId = id()
-
-			await db.transact([
-				db.tx.publishers[publisherId]
-					.update({
-						name: user.email || 'Unknown User',
-						level: 3, // Default publisher level
-						approved: false, // Requires admin approval
-					})
-					.link({
-						user: user.id,
-						congregation: congregationId,
-					}),
-			])
-
-			storage.set('user.publisher', publisherId)
-			setPublisher(publisherId)
-		} else if (currentPublisher) {
-			storage.set('user.publisher', currentPublisher.id)
-			setPublisher(currentPublisher.id)
-		}
-
-		// Setup OneSignal
-		OneSignal.login(user!.id)
-		OneSignal.User.addEmail(user!.email)
-
-		// Navigate to appropriate section
-		const userType = currentPublisher?.level === 1 ? 'admin' : 'publisher'
-		router.replace(`/${userType}`)
 	}
 
 	async function logout() {
@@ -166,53 +130,44 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		storage.delete('congregation.name')
 		storage.delete('congregation.id')
 		storage.delete('user.publisher')
-
-		setPublisher(null)
-		setCongregation(null)
 	}
 
 	// Initialize session data when user changes
 	useEffect(() => {
-		if (user && currentPublisher) {
-			const storedCongregationId = storage.getString('congregation.id')
-			const storedCongregationName = storage.getString('congregation.name')
-			const storedPublisher = storage.getString('user.publisher')
+		const getPublisherInfo = async () => {
+			setLoading(true)
+			if (!user) return
 
-			if (storedCongregationId && storedCongregationName) {
-				setCongregation({
-					id: storedCongregationId,
-					name: storedCongregationName,
-				})
-			} else if (currentPublisher.congregation) {
-				setCongregation({
-					id: currentPublisher.congregation.id,
-					name: currentPublisher.congregation.name,
-				})
-				storage.set('congregation.id', currentPublisher.congregation.id)
-				storage.set('congregation.name', currentPublisher.congregation.name)
+			const pub = await publishersService.searchByUserId(user.id)
+
+			if (!pub) return
+
+			storage.set('user.publisher', pub.id)
+
+			if (pub.congregation) {
+				storage.set('congregation.id', pub.congregation.id)
+				storage.set('congregation.name', pub.congregation.name)
 			}
 
-			if (storedPublisher) {
-				setPublisher(storedPublisher)
-			} else {
-				setPublisher(currentPublisher.id)
-				storage.set('user.publisher', currentPublisher.id)
-			}
+			setLoading(false)
+		}
 
-			// Setup OneSignal
+		if (user) {
+			getPublisherInfo()
+
 			OneSignal.login(user.id)
 			OneSignal.User.addEmail(user.email)
 		}
-	}, [user, currentPublisher])
+	}, [user])
 
 	return (
 		<SessionContext.Provider
 			value={{
-				current: user ? { ...user, name: publisherData?.publishers?.[0]?.name || '' } : null,
+				current: user ? { ...user, name: publisher?.name || '' } : null,
 				type,
-				congregation,
-				publisher,
-				loading: isLoading,
+				congregation: congregation || null,
+				publisher: publisher as Publisher,
+				loading: isLoadingSession,
 				appleAuthentication,
 				googleAuthentication,
 				logout,

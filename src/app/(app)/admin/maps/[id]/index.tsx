@@ -117,7 +117,7 @@ const ViewMap = () => {
 							<MapViewDetails map={map} />
 							{!map.assigned ? (
 								<View>
-									<Text className='text-xs text-foreground py-2 font-medium'>Designar mapa</Text>
+									<Text className='text-sm text-foreground py-2 font-medium'>Designar mapa</Text>
 									<Controller
 										control={control}
 										rules={{ required: true }}
