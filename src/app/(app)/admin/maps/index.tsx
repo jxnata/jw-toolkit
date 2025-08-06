@@ -1,7 +1,6 @@
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
 import MapItem from '@/components/map-item'
-import SkeletonItem from '@/components/skeleton-item'
 import useCities from '@/hooks/use-cities'
 import { useLocation } from '@/hooks/use-location'
 import useMaps from '@/hooks/use-maps'
@@ -9,7 +8,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { FlatList, Pressable, View } from 'react-native'
+import { FlatList, Pressable, Text, View } from 'react-native'
 import { useDebounce } from 'use-debounce'
 
 const Maps = () => {
@@ -104,35 +103,31 @@ const Maps = () => {
 				)}
 
 				<View className='flex-1'>
-					{loading && !maps.length ? (
-						<FlatList
-							data={Array.from({ length: 8 }, (_, index) => index + 1)}
-							keyExtractor={item => String(item)}
-							renderItem={() => <SkeletonItem height={100} />}
-							keyboardDismissMode='none'
-						/>
-					) : (
-						<FlatList
-							ListFooterComponent={<View className='h-14' />}
-							data={maps}
-							keyExtractor={item => item.id}
-							showsVerticalScrollIndicator={false}
-							keyboardDismissMode='none'
-							renderItem={({ item }) => (
-								<MapItem
-									key={item.id}
-									map={item}
-									location={location}
-									onPress={() =>
-										router.push({
-											pathname: `/admin/maps/${item.id}`,
-											params: { data: JSON.stringify(item) },
-										})
-									}
-								/>
-							)}
-						/>
-					)}
+					<FlatList
+						ListFooterComponent={<View className='h-14' />}
+						data={maps}
+						keyExtractor={item => item.id}
+						showsVerticalScrollIndicator={false}
+						keyboardDismissMode='none'
+						ListEmptyComponent={
+							<View className='flex-1 py-8 items-center justify-center'>
+								<Text className='text-foreground font-light opacity-80'>Nenhum mapa encontrado</Text>
+							</View>
+						}
+						renderItem={({ item }) => (
+							<MapItem
+								key={item.id}
+								map={item}
+								location={location}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/maps/${item.id}`,
+										params: { data: JSON.stringify(item) },
+									})
+								}
+							/>
+						)}
+					/>
 				</View>
 			</View>
 		</View>

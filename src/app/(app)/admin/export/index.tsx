@@ -149,7 +149,9 @@ const ExportMaps = () => {
 					</View>
 				)}
 				{!loading && maps.length === 0 && (
-					<Text className='text-foreground py-2.5 font-medium'>Não há mapas para exportar.</Text>
+					<View className='flex-1 py-8 items-center justify-center'>
+						<Text className='text-foreground font-light opacity-80'>Não há mapas para exportar.</Text>
+					</View>
 				)}
 				{!loading && maps.length > 0 && (
 					<View className='flex-1 justify-center items-center'>

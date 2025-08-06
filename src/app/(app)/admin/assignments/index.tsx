@@ -1,11 +1,10 @@
 import AssignmentItem from '@/components/assignment-item'
 import Input from '@/components/input'
-import SkeletonItem from '@/components/skeleton-item'
 import { useLocation } from '@/hooks/use-location'
 import useMaps from '@/hooks/use-maps'
 import { Stack, useRouter } from 'expo-router'
 import { useState } from 'react'
-import { FlatList, View } from 'react-native'
+import { FlatList, Text, View } from 'react-native'
 import { useDebounce } from 'use-debounce'
 
 const Assignments = () => {
@@ -40,36 +39,31 @@ const Assignments = () => {
 					returnKeyType='search'
 				/>
 
-				{loading && !maps.length ? (
-					<FlatList
-						data={Array.from({ length: 8 }, (_, index) => index + 1)}
-						keyExtractor={item => String(item)}
-						ListHeaderComponent={<ListHeaderComponent />}
-						renderItem={() => <SkeletonItem />}
-						keyboardDismissMode='none'
-					/>
-				) : (
-					<FlatList
-						data={maps}
-						ListHeaderComponent={<ListHeaderComponent />}
-						ListFooterComponent={<View className='h-14' />}
-						keyExtractor={item => item.id}
-						keyboardDismissMode='none'
-						renderItem={({ item }) => (
-							<AssignmentItem
-								key={item.id}
-								map={item}
-								location={location}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/assignments/edit/${item.id}`,
-										params: { data: JSON.stringify({ ...item }) },
-									})
-								}
-							/>
-						)}
-					/>
-				)}
+				<FlatList
+					data={maps}
+					ListHeaderComponent={<ListHeaderComponent />}
+					ListFooterComponent={<View className='h-14' />}
+					keyExtractor={item => item.id}
+					keyboardDismissMode='none'
+					renderItem={({ item }) => (
+						<AssignmentItem
+							key={item.id}
+							map={item}
+							location={location}
+							onPress={() =>
+								router.push({
+									pathname: `/admin/assignments/edit/${item.id}`,
+									params: { data: JSON.stringify({ ...item }) },
+								})
+							}
+						/>
+					)}
+					ListEmptyComponent={
+						<View className='flex-1 py-8 items-center justify-center'>
+							<Text className='text-foreground font-light opacity-80'>Nenhuma designação encontrada</Text>
+						</View>
+					}
+				/>
 			</View>
 		</View>
 	)
