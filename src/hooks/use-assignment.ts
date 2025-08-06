@@ -1,4 +1,4 @@
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import db from '@/lib/db'
 
 const useAssignment = (assignmentId: string) => {
@@ -14,8 +14,10 @@ const useAssignment = (assignmentId: string) => {
 						id: assignmentId,
 						congregation: congregation ? congregation.id : null
 					}
-				}
-			}
+				},
+				city: {},
+				assigned: {},
+			},
 		} : null
 	)
 

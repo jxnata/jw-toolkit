@@ -1,7 +1,7 @@
 import Button from '@/components/button'
 import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
-import useCities from '@/hooks/use-cities-instant'
+import useCities from '@/hooks/use-cities'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { City } from '@/interfaces'
 import { EditCityReq } from '@/interfaces/api/cities'
@@ -11,7 +11,7 @@ import { citiesService } from '@/services/instantdb'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Save } from 'lucide-react-native'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, View } from 'react-native'
 
 const EditCity = () => {
 	const { data } = useLocalSearchParams()
@@ -69,7 +69,7 @@ const EditCity = () => {
 		)
 
 	return (
-		<View className='flex'>
+		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Editar Cidade' }} />
 			<View className='flex px-4 py-2 w-full h-full bg-background'>
 				<Controller
@@ -99,7 +99,7 @@ const EditCity = () => {
 					<IconButton icon='trash-bin-outline' color={colors.danger[600]} onPress={showDeleteAlert} />
 				</View>
 			</View>
-		</View>
+		</KeyboardAvoidingView>
 	)
 }
 

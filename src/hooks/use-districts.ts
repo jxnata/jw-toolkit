@@ -1,18 +1,23 @@
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import db from '@/lib/db'
 
 type Props = {
+	cityId?: string
 	search?: string
 	enabled?: boolean
 }
 
-const useCities = ({ search, enabled = true }: Props = {}) => {
+const useDistricts = ({ cityId, search, enabled = true }: Props = {}) => {
 	const { congregation } = useSession()
 
 	const active = enabled && congregation
 
-	const whereConditions: any = {
-		congregation: congregation ? congregation.id : null,
+	const whereConditions: any = {}
+
+	if (cityId) {
+		whereConditions.city = { id: cityId }
+	} else {
+		whereConditions.city = { congregation: congregation ? congregation.id : null }
 	}
 
 	if (search) {
@@ -21,7 +26,7 @@ const useCities = ({ search, enabled = true }: Props = {}) => {
 
 	const { data, isLoading, error } = db.useQuery(
 		active ? {
-			cities: {
+			districts: {
 				$: {
 					where: whereConditions,
 					order: { serverCreatedAt: 'desc' }
@@ -31,11 +36,11 @@ const useCities = ({ search, enabled = true }: Props = {}) => {
 	)
 
 	return {
-		cities: data?.cities || [],
+		districts: data?.districts || [],
 		loading: isLoading,
 		error,
 		mutate: () => { },
 	}
 }
 
-export default useCities
+export default useDistricts

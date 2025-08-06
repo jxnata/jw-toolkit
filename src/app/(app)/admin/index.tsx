@@ -1,14 +1,16 @@
+import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link, Stack, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 const Admin = () => {
 	const router = useRouter()
-	const { congregation } = useSession()
+	const { congregation, logout } = useSession()
 	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
@@ -33,12 +35,18 @@ const Admin = () => {
 		)
 	}
 
-	if (!congregation) return null
+	if (!congregation)
+		return (
+			<View className='flex-1 items-center justify-center'>
+				<Button onPress={logout}>Sair</Button>
+			</View>
+		)
+	// if (!congregation) return null
 
 	return (
-		<View className='flex'>
+		<Animated.View className='flex' entering={FadeInDown}>
 			<Stack.Screen options={{ title: congregation.name, headerRight: HeaderRight }} />
-			<ScrollView className='flex p-2.5 w-full h-full bg-background' contentContainerClassName='gap-2'>
+			<ScrollView className='flex p-3 w-full h-full bg-background' contentContainerClassName='gap-2'>
 				<View className='flex flex-row items-center w-full gap-2 my-2'>
 					<Text className='text-foreground text-sm py-2 font-medium opacity-70'>ADMINISTRADOR</Text>
 					<View className='h-[1px] w-full bg-foreground opacity-20' />
@@ -112,7 +120,7 @@ const Admin = () => {
 			<Text className='text-xs text-foreground py-2.5 font-medium absolute bottom-[50px] self-center'>
 				Versão: {APP_VERSION}
 			</Text>
-		</View>
+		</Animated.View>
 	)
 }
 

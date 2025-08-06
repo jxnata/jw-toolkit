@@ -1,4 +1,4 @@
-import useMyAssignments from '@/hooks/use-my-assignments-instant'
+import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { error, success } from '@/messages/edit'
 import { mapsService } from '@/services/instantdb'

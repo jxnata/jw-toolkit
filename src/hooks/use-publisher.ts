@@ -13,12 +13,6 @@ const usePublisher = ({ publisherId, userId, enabled = true }: Props = {}) => {
 		whereCondition.id = publisherId
 	} else if (userId) {
 		whereCondition['user.id'] = userId
-	} else {
-		return {
-			publisher: null,
-			loading: false,
-			error: null,
-		}
 	}
 
 	const query = {

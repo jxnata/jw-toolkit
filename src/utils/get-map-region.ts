@@ -1,5 +1,5 @@
 
-export const getMapRegion = (coordinates: [number, number]): any => {
+export const getMapRegion = (coordinates: [number, number]): { latitude: number; longitude: number } => {
 	if (!coordinates) {
 		coordinates = [0, 0]
 	}
@@ -8,10 +8,7 @@ export const getMapRegion = (coordinates: [number, number]): any => {
 	}
 
 	return {
-		coordinates: {
-			latitude: coordinates[0],
-			longitude: coordinates[1],
-		},
-		zoom: 17,
+		latitude: coordinates[0],
+		longitude: coordinates[1],
 	}
 }

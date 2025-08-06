@@ -6,7 +6,7 @@ export interface CreatePublisherInput {
 	name: string
 	level: number
 	approved?: boolean
-	congregationId: string
+	congregationId?: string
 	userId: string
 }
 
@@ -28,16 +28,21 @@ class PublishersService {
 			approved: input.approved,
 		}
 
+		const links: Record<string, string> = {
+			user: input.userId,
+		}
+
+		if (input.congregationId) {
+			links.congregation = input.congregationId
+		}
+
 		await db.transact(
-			db.tx.publishers[id()].update(publisherData).link({
-				congregation: input.congregationId,
-				user: input.userId
-			})
+			db.tx.publishers[id()].update(publisherData).link(links)
 		)
 	}
 
-	async updatePublisher(publisherId: string, updates: Partial<Publisher>): Promise<void> {
-		await db.transact(db.tx.publishers[publisherId].update(updates))
+	async updatePublisher(publisherId: string, updates: Partial<Publisher>, links?: Record<string, string>): Promise<void> {
+		await db.transact(db.tx.publishers[publisherId].update(updates).link(links || {}))
 	}
 
 	async getPublisher(publisherId: string): Promise<Publisher | null> {
@@ -48,6 +53,16 @@ class PublishersService {
 				},
 				congregation: {},
 				user: {}
+			}
+		})
+		return data.publishers[0] as Publisher | null
+	}
+
+	async searchByUserId(userId: string): Promise<Publisher | null> {
+		const { data } = await db.queryOnce({
+			publishers: {
+				$: { where: { user: userId } },
+				congregation: {}
 			}
 		})
 		return data.publishers[0] as Publisher | null

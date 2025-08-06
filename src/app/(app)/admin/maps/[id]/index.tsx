@@ -1,8 +1,8 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import MapViewDetails from '@/components/map-view-details'
-import useMap from '@/hooks/use-map-instant'
-import usePublishers from '@/hooks/use-publishers-instant'
+import useMap from '@/hooks/use-map'
+import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { AddAssignmentReq } from '@/interfaces/api/assignments'
@@ -12,11 +12,11 @@ import { mapsService } from '@/services/instantdb'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Platform, Pressable, Text, View } from 'react-native'
+import { Alert, Pressable, Text, View } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 import { OneSignal } from 'react-native-onesignal'
 
 const ViewMap = () => {
@@ -117,7 +117,7 @@ const ViewMap = () => {
 							<MapViewDetails map={map} />
 							{!map.assigned ? (
 								<View>
-									<Text className='text-xs text-foreground py-2 font-medium'>Designar mapa</Text>
+									<Text className='text-sm text-foreground py-2 font-medium'>Designar mapa</Text>
 									<Controller
 										control={control}
 										rules={{ required: true }}
@@ -162,19 +162,23 @@ const ViewMap = () => {
 				</View>
 				{!!map && (
 					<View className='flex-1 m-2.5 rounded-lg overflow-hidden'>
-						{Platform.OS === 'ios' ? (
-							<AppleMaps.View
-								cameraPosition={region}
-								style={{ width: '100%', height: '100%' }}
-								markers={[{ coordinates: marker, title: map.name }]}
+						<MapView
+							style={{ width: '100%', height: '100%' }}
+							initialRegion={{
+								latitude: region.latitude,
+								longitude: region.longitude,
+								latitudeDelta: 0.01,
+								longitudeDelta: 0.01,
+							}}
+						>
+							<Marker
+								coordinate={{
+									latitude: marker.latitude,
+									longitude: marker.longitude,
+								}}
+								title={map.name}
 							/>
-						) : (
-							<GoogleMaps.View
-								cameraPosition={region}
-								style={{ width: '100%', height: '100%' }}
-								markers={[{ coordinates: marker, title: map.name }]}
-							/>
-						)}
+						</MapView>
 					</View>
 				)}
 			</View>

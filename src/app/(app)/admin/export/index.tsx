@@ -1,9 +1,10 @@
 import Button from '@/components/button'
-import { useSession } from '@/contexts/session-instantdb'
-import useAllMaps from '@/hooks/use-all-maps-instant'
+import { useSession } from '@/contexts/session-provider'
+import useAllMaps from '@/hooks/use-all-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'
+import { Download } from 'lucide-react-native'
 import { useState } from 'react'
 import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
@@ -138,25 +139,29 @@ const ExportMaps = () => {
 	return (
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Exportar Mapas' }} />
-			<View className='flex p-2.5 w-full h-full bg-background'>
+			<View className='flex p-4 w-full h-full bg-background'>
 				{loading && (
 					<View className='flex-1 justify-center items-center'>
 						<View className='items-center'>
 							<ActivityIndicator size='large' color={colors.primary[600]} />
-							<Text className='text-xs text-foreground py-2.5 font-medium'>Carregando mapas...</Text>
+							<Text className='text-foreground py-2.5 font-medium'>Carregando mapas...</Text>
 						</View>
 					</View>
 				)}
 				{!loading && maps.length === 0 && (
-					<Text className='text-xs text-foreground py-2.5 font-medium'>Não há mapas para exportar.</Text>
+					<Text className='text-foreground py-2.5 font-medium'>Não há mapas para exportar.</Text>
 				)}
 				{!loading && maps.length > 0 && (
 					<View className='flex-1 justify-center items-center'>
-						<Text className='text-xs text-foreground py-2.5 font-medium text-center mb-5'>
+						<Text className='text-foreground py-2.5 font-medium text-center mb-5'>
 							{maps.length} mapas encontrados. Pressione o botão abaixo para exportar em PDF.
 						</Text>
 						<View className='w-full'>
-							<Button loading={loading || generating} onPress={generatePDF}>
+							<Button
+								loading={loading || generating}
+								onPress={generatePDF}
+								left={<Download size={20} color='white' />}
+							>
 								Exportar
 							</Button>
 						</View>

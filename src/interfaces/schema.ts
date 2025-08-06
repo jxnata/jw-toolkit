@@ -14,7 +14,7 @@ const _schema = i.schema({
 		}),
 		congregations: i.entity({
 			enabled: i.boolean().optional(),
-			name: i.string(),
+			name: i.string().indexed(),
 		}),
 		districts: i.entity({
 			name: i.string(),
@@ -22,18 +22,18 @@ const _schema = i.schema({
 		maps: i.entity({
 			address: i.string(),
 			details: i.string().optional(),
-			district: i.string().optional(),
+			district: i.string().optional().indexed(),
 			found: i.boolean().optional(),
 			lat: i.number(),
 			lng: i.number(),
-			name: i.string(),
-			visited: i.date().optional(),
+			name: i.string().indexed(),
+			visited: i.date().optional().indexed(),
 			visited_by: i.string().optional(),
 		}),
 		publishers: i.entity({
 			approved: i.boolean().optional(),
 			level: i.number(),
-			name: i.string(),
+			name: i.string().indexed(),
 		}),
 	},
 	links: {

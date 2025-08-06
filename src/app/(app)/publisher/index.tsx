@@ -1,13 +1,14 @@
 import AssignmentItem from '@/components/assignment-item'
 import SkeletonItem from '@/components/skeleton-item'
-import useMyAssignments from '@/hooks/use-my-assignments-instant'
+import { useLocation } from '@/hooks/use-location'
+import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { useLocation } from '@/hooks/useLocation'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import { useCallback, useEffect } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 const PublisherHome = () => {
 	const router = useRouter()
@@ -35,9 +36,9 @@ const PublisherHome = () => {
 	}, [mutate])
 
 	return (
-		<View className='flex'>
+		<Animated.View className='flex' entering={FadeInDown}>
 			<Stack.Screen options={{ title: 'Minhas designações', headerRight: HeaderRight }} />
-			<View className='flex p-2.5 w-full h-full bg-background'>
+			<View className='flex p-3 w-full h-full bg-background'>
 				{loading && !assignments.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
@@ -71,7 +72,7 @@ const PublisherHome = () => {
 					/>
 				)}
 			</View>
-		</View>
+		</Animated.View>
 	)
 }
 

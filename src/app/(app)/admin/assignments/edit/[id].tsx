@@ -1,8 +1,8 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import MapViewDetails from '@/components/map-view-details'
-import useMap from '@/hooks/use-map-instant'
-import usePublishers from '@/hooks/use-publishers-instant'
+import useMap from '@/hooks/use-map'
+import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { EditAssignmentReq } from '@/interfaces/api/assignments'
@@ -12,7 +12,7 @@ import { mapsService } from '@/services/instantdb'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Pressable, Text, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native'
 
 const EditAssignment = () => {
 	const { data } = useLocalSearchParams()
@@ -46,7 +46,10 @@ const EditAssignment = () => {
 
 	const deleteAssignment = async () => {
 		try {
-			await mapsService.assignMap(params.id, null)
+			if (!map) return
+			if (!map.assigned) return
+
+			await mapsService.unassignMap(params.id, map.assigned.id)
 
 			removeSuccess('designação')
 
@@ -71,7 +74,7 @@ const EditAssignment = () => {
 		])
 
 	return (
-		<View className='flex'>
+		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Editar Designação' }} />
 			<View className='flex p-2.5 w-full h-full bg-background'>
 				{!!map && <MapViewDetails map={map} />}
@@ -104,7 +107,7 @@ const EditAssignment = () => {
 					</Pressable>
 				</View>
 			</View>
-		</View>
+		</KeyboardAvoidingView>
 	)
 }
 

@@ -1,14 +1,14 @@
 import Button from '@/components/button'
 import Input from '@/components/input'
-import { useSession } from '@/contexts/session-instantdb'
-import useCities from '@/hooks/use-cities-instant'
+import { useSession } from '@/contexts/session-provider'
+import useCities from '@/hooks/use-cities'
 import { AddCityReq } from '@/interfaces/api/cities'
 import { error, success } from '@/messages/add'
 import { citiesService } from '@/services/instantdb'
 import { Stack, router } from 'expo-router'
 import { Save } from 'lucide-react-native'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { View } from 'react-native'
+import { KeyboardAvoidingView, Platform, View } from 'react-native'
 
 const AddCity = () => {
 	const { congregation } = useSession()
@@ -34,7 +34,7 @@ const AddCity = () => {
 	}
 
 	return (
-		<View className='flex'>
+		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Nova Cidade' }} />
 			<View className='flex px-4 py-2 w-full h-full bg-background'>
 				<Controller
@@ -60,7 +60,7 @@ const AddCity = () => {
 					Salvar
 				</Button>
 			</View>
-		</View>
+		</KeyboardAvoidingView>
 	)
 }
 

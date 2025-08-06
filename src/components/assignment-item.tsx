@@ -36,7 +36,13 @@ const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentPro
 	}, [map])
 
 	const { data: distance } = useQuery({
-		queryKey: ['distance', location?.latitude, location?.longitude, coordinates[0], coordinates[1]],
+		queryKey: [
+			'distance',
+			location?.latitude.toFixed(4),
+			location?.longitude.toFixed(4),
+			coordinates[0].toFixed(4),
+			coordinates[1].toFixed(4),
+		],
 		queryFn: () => getLocationDistance(location, coordinates),
 		enabled: !!location,
 	})

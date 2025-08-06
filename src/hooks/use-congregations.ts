@@ -11,7 +11,7 @@ const useCongregations = ({ search, enabled = true }: Props = {}) => {
 	}
 
 	if (search) {
-		whereConditions.name = { $like: `%${search}%` }
+		whereConditions.name = { $ilike: `%${search}%` }
 	}
 
 	const { data, isLoading, error } = db.useQuery(
@@ -19,7 +19,7 @@ const useCongregations = ({ search, enabled = true }: Props = {}) => {
 			congregations: {
 				$: {
 					where: whereConditions,
-					order: { serverCreatedAt: 'desc' }
+					order: { name: 'asc' }
 				},
 			}
 		} : null

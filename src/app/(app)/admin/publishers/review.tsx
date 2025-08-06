@@ -1,5 +1,5 @@
-import usePublishers from '@/hooks/use-publishers-instant'
-import useRequestPublishers from '@/hooks/use-request-publishers-instant'
+import usePublishers from '@/hooks/use-publishers'
+import useRequestPublishers from '@/hooks/use-request-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { publishersService } from '@/services/instantdb'
 import { firstLetter } from '@/utils/first-letter'

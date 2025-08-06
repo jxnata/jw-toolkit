@@ -1,4 +1,4 @@
-import { useSession } from '@/contexts/session-instantdb'
+import { useSession } from '@/contexts/session-provider'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
 
@@ -12,7 +12,7 @@ const useMyAssignments = ({ enabled = true }: Props = {}) => {
 	const active = enabled && publisher
 
 	const whereConditions: any = {
-		assigned: publisher ? publisher : null,
+		assigned: publisher ? publisher.id : null,
 	}
 
 	const { data, isLoading, error } = db.useQuery(
@@ -22,6 +22,8 @@ const useMyAssignments = ({ enabled = true }: Props = {}) => {
 					where: whereConditions,
 					order: { serverCreatedAt: 'desc' },
 				},
+				city: {},
+				assigned: {},
 			}
 		} : null
 	)

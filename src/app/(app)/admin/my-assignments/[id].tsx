@@ -1,17 +1,16 @@
 import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
-import useAssignment from '@/hooks/use-assignment-instant'
+import useAssignment from '@/hooks/use-assignment'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { useLocation } from '@/hooks/useLocation'
 import { Map } from '@/interfaces'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
@@ -19,7 +18,6 @@ const AssigmentDetails = () => {
 	const [showFinish, setShowFinish] = useState(false)
 	const { assignment } = useAssignment(params.id)
 	const router = useRouter()
-	const { location } = useLocation()
 	const { colors } = useThemedColors()
 
 	const toggleModal = () => {
@@ -52,30 +50,25 @@ const AssigmentDetails = () => {
 						<Ionicons name='arrow-back' size={24} color={colors.foreground} />
 					</TouchableOpacity>
 
-					{Platform.OS === 'ios' ? (
-						<AppleMaps.View
-							cameraPosition={region}
-							style={{ width: '100%', height: '100%' }}
-							markers={[{ coordinates: marker, title: assignment.name }]}
-						/>
-					) : (
-						<GoogleMaps.View
-							cameraPosition={region}
-							style={{ width: '100%', height: '100%' }}
-							markers={[
-								{
-									coordinates: marker,
-									title: assignment.name,
-									snippet: assignment.address,
-									showCallout: true,
-								},
-							]}
-							userLocation={{
-								followUserLocation: true,
-								coordinates: { latitude: location?.latitude, longitude: location?.longitude },
+					<MapView
+						style={{ width: '100%', height: '100%' }}
+						initialRegion={{
+							latitude: region.latitude,
+							longitude: region.longitude,
+							latitudeDelta: 0.01,
+							longitudeDelta: 0.01,
+						}}
+						showsUserLocation={true}
+					>
+						<Marker
+							coordinate={{
+								latitude: marker.latitude,
+								longitude: marker.longitude,
 							}}
+							title={assignment.name}
+							description={assignment.address}
 						/>
-					)}
+					</MapView>
 
 					{showFinish ? (
 						<AssignmentMapCard assignment={assignment} onCancel={toggleModal} />

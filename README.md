@@ -86,7 +86,6 @@
 
 ### Analytics & Notifications
 
-- **[Firebase Analytics](https://firebase.google.com/docs/analytics)** - Análise de uso
 - **[OneSignal](https://onesignal.com/)** - Push notifications
 - **[Google Sign-In](https://developers.google.com/identity/sign-in/android)** - Autenticação social
 

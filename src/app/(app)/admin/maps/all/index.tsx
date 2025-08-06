@@ -1,13 +1,12 @@
-import useAllMaps from '@/hooks/use-all-maps-instant'
+import useAllMaps from '@/hooks/use-all-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getMapRegion } from '@/utils/get-map-region'
-import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { getPinColor } from '@/utils/get-pin-color'
 import * as Location from 'expo-location'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, Platform, Text, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()
@@ -31,42 +30,39 @@ const AllMaps = () => {
 	const renderMap = () => {
 		if (!location) return null
 
-		const markers = maps.map((map: any) => ({
-			coordinates: getMarkerCoordinate([map.lat, map.lng]),
-			title: map.name,
-			description: map.address,
-			tintColor: getPinColor(map.assigned),
-			onCalloutPress: () => {
-				if (!map.last_assignment?.finished) {
-					router.push({
-						pathname: `/admin/maps/${map.id}`,
-						params: { data: JSON.stringify(map) },
-					})
-				}
-			},
-			callout: {
-				title: map.name,
-				description: `${map.address}, ${map.city.name}`,
-				actions: map.last_assignment?.finished ? [] : [{ title: 'DESIGNAR' }],
-			},
-		}))
-
-		if (Platform.OS === 'ios') {
-			return (
-				<AppleMaps.View cameraPosition={location} style={{ width: '100%', height: '100%' }} markers={markers} />
-			)
-		}
-
 		return (
-			<GoogleMaps.View
-				userLocation={{
-					followUserLocation: true,
-					coordinates: { latitude: location.latitude, longitude: location.longitude },
-				}}
-				cameraPosition={location}
+			<MapView
 				style={{ width: '100%', height: '100%' }}
-				markers={markers}
-			/>
+				initialRegion={{
+					latitude: location.latitude,
+					longitude: location.longitude,
+					latitudeDelta: 0.01,
+					longitudeDelta: 0.01,
+				}}
+				showsUserLocation={true}
+				followsUserLocation={true}
+			>
+				{maps.map((map: any) => (
+					<Marker
+						key={map.id}
+						coordinate={{
+							latitude: map.lat,
+							longitude: map.lng,
+						}}
+						title={map.name}
+						description={`${map.address}, ${map.city.name}`}
+						pinColor={getPinColor(map.assigned)}
+						onCalloutPress={() => {
+							if (!map.last_assignment?.finished) {
+								router.push({
+									pathname: `/admin/maps/${map.id}`,
+									params: { data: JSON.stringify(map) },
+								})
+							}
+						}}
+					/>
+				))}
+			</MapView>
 		)
 	}
 
