@@ -1,6 +1,5 @@
 import Input from '@/components/input'
 import ListItem from '@/components/list-item'
-import SkeletonItem from '@/components/skeleton-item'
 import usePublishers from '@/hooks/use-publishers'
 import useRequestPublishers from '@/hooks/use-request-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -59,49 +58,45 @@ const Publishers = () => {
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Publicadores', headerRight: HeaderRight }} />
 			<View className='flex p-2.5 w-full h-full bg-background'>
-				{loading && !publishers.length ? (
-					<FlatList
-						data={[1, 2, 3, 4, 5]}
-						keyExtractor={item => String(item)}
-						ListHeaderComponent={<ListHeaderComponent />}
-						renderItem={() => <SkeletonItem />}
-					/>
-				) : (
-					<FlatList
-						ListHeaderComponent={<ListHeaderComponent />}
-						data={publishers}
-						keyExtractor={item => item.id}
-						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
-						contentContainerClassName='gap-2'
-						showsVerticalScrollIndicator={false}
-						renderItem={({ item }) => {
-							const getLabel = (level: number) => {
-								if (level === 1) {
-									return { text: 'admin', color: 'bg-primary-600' }
-								}
-								if (level === 2) {
-									return { text: 'editor', color: 'bg-success' }
-								}
-								return undefined
+				<FlatList
+					ListHeaderComponent={<ListHeaderComponent />}
+					data={publishers}
+					keyExtractor={item => item.id}
+					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+					contentContainerClassName='gap-2'
+					showsVerticalScrollIndicator={false}
+					renderItem={({ item }) => {
+						const getLabel = (level: number) => {
+							if (level === 1) {
+								return { text: 'admin', color: 'bg-primary-600' }
 							}
+							if (level === 2) {
+								return { text: 'editor', color: 'bg-success' }
+							}
+							return undefined
+						}
 
-							return (
-								<ListItem
-									id={item.id}
-									name={item.name}
-									onPress={() =>
-										router.push({
-											pathname: `/admin/publishers/edit/${item.id}`,
-											params: { data: JSON.stringify(item) },
-										})
-									}
-									label={getLabel(item.level)}
-								/>
-							)
-						}}
-						ListFooterComponent={() => <View className='h-[60px]' />}
-					/>
-				)}
+						return (
+							<ListItem
+								id={item.id}
+								name={item.name}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/publishers/edit/${item.id}`,
+										params: { data: JSON.stringify(item) },
+									})
+								}
+								label={getLabel(item.level)}
+							/>
+						)
+					}}
+					ListFooterComponent={() => <View className='h-[60px]' />}
+					ListEmptyComponent={
+						<View className='flex-1 py-8 items-center justify-center'>
+							<Text className='text-foreground font-light opacity-80'>Nenhum publicador encontrado</Text>
+						</View>
+					}
+				/>
 			</View>
 		</View>
 	)

@@ -1,5 +1,4 @@
 import AssignmentItem from '@/components/assignment-item'
-import SkeletonItem from '@/components/skeleton-item'
 import { useLocation } from '@/hooks/use-location'
 import useMyAssignments from '@/hooks/use-my-assignments'
 import { Stack, useRouter } from 'expo-router'
@@ -22,37 +21,29 @@ const MyAssignments = () => {
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Minhas designações' }} />
 			<View className='flex p-2.5 w-full h-full bg-background'>
-				{loading && !assignments.length ? (
-					<FlatList
-						data={Array.from({ length: 8 }, (_, index) => index + 1)}
-						keyExtractor={item => String(item)}
-						renderItem={() => <SkeletonItem height={100} />}
-					/>
-				) : (
-					<FlatList
-						data={assignments}
-						keyExtractor={item => item.id}
-						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
-						renderItem={({ item: assignment }) => (
-							<AssignmentItem
-								key={assignment.id}
-								map={assignment}
-								location={location}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/my-assignments/${assignment.id}`,
-										params: { data: JSON.stringify({ ...assignment }) },
-									})
-								}
-							/>
-						)}
-						ListEmptyComponent={
-							<Text className='text-[15px] text-foreground py-5 px-2.5 font-medium self-center'>
-								Nenhuma designação
-							</Text>
-						}
-					/>
-				)}
+				<FlatList
+					data={assignments}
+					keyExtractor={item => item.id}
+					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+					renderItem={({ item: assignment }) => (
+						<AssignmentItem
+							key={assignment.id}
+							map={assignment}
+							location={location}
+							onPress={() =>
+								router.push({
+									pathname: `/admin/my-assignments/${assignment.id}`,
+									params: { data: JSON.stringify({ ...assignment }) },
+								})
+							}
+						/>
+					)}
+					ListEmptyComponent={
+						<Text className='text-[15px] text-foreground py-5 px-2.5 font-medium self-center'>
+							Nenhuma designação
+						</Text>
+					}
+				/>
 			</View>
 		</View>
 	)

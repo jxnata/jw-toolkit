@@ -15,7 +15,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 const SelectCongregation = () => {
 	const { initial } = useLocalSearchParams()
-	const { current, type } = useSession()
+	const { current, logout } = useSession()
 	const [search, setSearch] = useState('')
 	const [debouncedSearch, setDebouncedSearch] = useState('')
 	const [selectedCongregation, setSelectedCongregation] = useState<string | null>((initial as string) || null)
@@ -66,13 +66,8 @@ const SelectCongregation = () => {
 			}
 
 			const updates = {
-				name: current.email,
-				level: publisher ? publisher.level : 3,
-				approved: publisher
-					? selectedCongregation === publisher.congregation.id
-						? publisher.approved
-						: false
-					: false,
+				level: 3,
+				approved: false,
 			}
 
 			const links = {
@@ -90,12 +85,16 @@ const SelectCongregation = () => {
 			storage.set('congregation.name', congregation.name)
 			storage.set('user.publisher', publisherId)
 
-			Alert.alert('Sucesso', 'Perfil criado com sucesso! Aguarde a aprovação de um administrador.', [
-				{
-					text: 'OK',
-					onPress: () => router.replace(`/${type}`),
-				},
-			])
+			Alert.alert(
+				'Sucesso',
+				'Congregação alterada com sucesso! Você precisará fazer login novamente e ser aprovado por um administrador da nova congregação.',
+				[
+					{
+						text: 'OK',
+						onPress: logout,
+					},
+				]
+			)
 		} catch (error) {
 			console.error('Error creating publisher profile:', error)
 			Alert.alert('Erro', 'Ocorreu um erro ao criar o perfil')
