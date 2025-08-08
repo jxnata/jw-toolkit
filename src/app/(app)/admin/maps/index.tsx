@@ -35,7 +35,7 @@ const Maps = () => {
 
 	useEffect(() => {
 		if (cities.length > 0 && !searchCity) {
-			setSearchCity(cities[0].id)
+			setSearchCity(cities[cities.length - 1].id)
 		}
 	}, [cities, searchCity])
 

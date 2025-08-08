@@ -68,6 +68,10 @@ class PublishersService {
 		return data.publishers[0] as Publisher | null
 	}
 
+	async unlinkCongregation(publisherId: string, congregationId: string): Promise<void> {
+		await db.transact(db.tx.publishers[publisherId].unlink({ congregation: congregationId }))
+	}
+
 	async deletePublisher(publisherId: string): Promise<void> {
 		await db.transact(db.tx.publishers[publisherId].delete())
 	}

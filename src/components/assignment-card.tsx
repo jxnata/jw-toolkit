@@ -1,3 +1,4 @@
+import { useSession } from '@/contexts/session-provider'
 import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { error, success } from '@/messages/edit'
@@ -17,15 +18,21 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const { mutate } = useMyAssignments()
 	const [loading, setLoading] = useState(false)
 	const { colors } = useThemedColors()
+	const { publisher } = useSession()
 
 	const save = async (found: boolean) => {
 		setLoading(true)
 		try {
+			if (!publisher) return
+			if (!assignment.assigned) return
+
 			await mapsService.updateMap(assignment.id, {
 				found,
 				visited: new Date().toISOString(),
-				visited_by: assignment.assigned?.name || 'Unknown',
+				visited_by: assignment.assigned.name,
 			})
+
+			await mapsService.unassignMap(assignment.id, publisher.id)
 
 			success('designação')
 			mutate()

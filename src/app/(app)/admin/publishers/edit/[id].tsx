@@ -2,7 +2,6 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import IconButton from '@/components/icon-button'
 import Input from '@/components/input'
-import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { EditPublisherReq } from '@/interfaces/api/publishers'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
@@ -18,7 +17,6 @@ import { Save } from 'lucide-react-native'
 const EditPublisher = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Publisher
-	const { mutate } = usePublishers({ search: '' })
 	const { control, formState, handleSubmit } = useForm<EditPublisherReq>({
 		defaultValues: { name: params.name, level: params.level ? params.level.toString() : '3' },
 	})
@@ -39,7 +37,7 @@ const EditPublisher = () => {
 				level: parseInt(data.level || '3'),
 			})
 			success('publicador')
-			mutate()
+			router.back()
 		} catch (err) {
 			error('publicador')
 			console.error('Failed to update publisher:', err)
@@ -51,7 +49,6 @@ const EditPublisher = () => {
 			await publishersService.deletePublisher(params.id)
 
 			removeSuccess('publicador')
-			mutate()
 			router.back()
 		} catch (err) {
 			removeError('publicador')

@@ -1,3 +1,4 @@
+import { useSession } from '@/contexts/session-provider'
 import { useLimitCheck } from '@/hooks/use-limit-check'
 import usePublishers from '@/hooks/use-publishers'
 import useRequestPublishers from '@/hooks/use-request-publishers'
@@ -16,6 +17,7 @@ const Publishers = () => {
 	const { checkPublisherLimit } = useLimitCheck()
 	const [list, setList] = useState(publishers)
 	const { colors } = useThemedColors()
+	const { congregation } = useSession()
 
 	const approve = useCallback(
 		async (publisherId: string) => {
@@ -40,12 +42,16 @@ const Publishers = () => {
 
 	const deny = useCallback(
 		async (publisherId: string) => {
+			if (!congregation) return
+
 			try {
 				setList(list.filter(p => p.id !== publisherId))
 
 				await publishersService.updatePublisher(publisherId, {
 					approved: false,
 				})
+
+				await publishersService.unlinkCongregation(publisherId, congregation.id)
 			} catch (err) {
 				console.error('Failed to deny publisher:', err)
 				mutate()
