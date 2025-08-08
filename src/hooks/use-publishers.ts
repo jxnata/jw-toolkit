@@ -14,11 +14,12 @@ const usePublishers = ({ search }: Props = { search: '' }) => {
 				$: {
 					where: {
 						approved: true,
+						congregation: congregation.id,
 						...(search && {
 							name: { $like: `%${search}%` },
 						}),
 					},
-					order: { serverCreatedAt: 'desc' },
+					order: { name: 'asc' },
 					limit: 1000,
 				},
 			}

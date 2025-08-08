@@ -116,7 +116,7 @@ const Dropdown = ({
 						<FlatList
 							className='w-full p-2'
 							data={options}
-							renderItem={({ item }) => (
+							renderItem={({ item, index }) => (
 								<Pressable
 									onPress={() => onPress(item)}
 									className='flex-row items-center rounded-xl px-4 py-4 mt-[5px] gap-2.5'
@@ -133,7 +133,7 @@ const Dropdown = ({
 									<Text className='text-foreground text-base font-medium'>{item.label}</Text>
 								</Pressable>
 							)}
-							keyExtractor={item => item.label}
+							keyExtractor={(item, index) => `${item.label}-${index}`}
 							ListFooterComponent={
 								<>
 									<View className='h-[30px]' />
