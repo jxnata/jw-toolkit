@@ -76,8 +76,12 @@ const Login = () => {
 					>
 						<View className='flex-col text-center items-center mb-[25px] gap-2.5'>
 							<Text className='text-center text-xl text-foreground font-bold'>Bem vindo!</Text>
-							<Text className='text-center font-regular' style={{ color: colors.foreground + '80' }}>
-								Faça login usando sua conta {Platform.OS === 'ios' ? 'Apple' : 'Google'}
+							<Text
+								className='text-center text-lg font-regular'
+								style={{ color: colors.foreground + '99' }}
+							>
+								Faça login usando sua conta ou crie uma nova conta com{' '}
+								{Platform.OS === 'ios' ? 'a Apple' : 'o Google'}
 							</Text>
 						</View>
 

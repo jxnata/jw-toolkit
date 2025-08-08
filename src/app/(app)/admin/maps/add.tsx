@@ -4,6 +4,7 @@ import Input from '@/components/input'
 import SelectLocation from '@/components/select-location'
 import { useSession } from '@/contexts/session-provider'
 import useCities from '@/hooks/use-cities'
+import { useLimitCheck } from '@/hooks/use-limit-check'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { AddMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/add'
@@ -21,6 +22,7 @@ const AddMap = () => {
 	const [modalVisible, setModalVisible] = useState(false)
 	const { cities } = useCities()
 	const { congregation } = useSession()
+	const { checkMapLimit } = useLimitCheck()
 	const { control, formState, handleSubmit, setValue, getValues, watch } = useForm<AddMapReq>()
 	const { colors } = useThemedColors()
 
@@ -34,6 +36,12 @@ const AddMap = () => {
 
 	const save: SubmitHandler<AddMapReq> = async data => {
 		if (!congregation) return
+
+		// Check if map limit is reached
+		if (!checkMapLimit()) {
+			return
+		}
+
 		const [lat, lng] = setCoordinates(data.coordinates)
 
 		if (lat === 0 && lng === 0) {

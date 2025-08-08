@@ -3,7 +3,11 @@ import { Redirect, Slot, Stack } from 'expo-router'
 import { ActivityIndicator, View } from 'react-native'
 
 export default function App() {
-	const { type, loading } = useSession()
+	const { type, loading, congregation } = useSession()
+
+	if (!congregation) {
+		return <Redirect href='/select-congregation' />
+	}
 
 	return (
 		<>

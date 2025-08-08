@@ -1,3 +1,4 @@
+import { useLimitCheck } from '@/hooks/use-limit-check'
 import usePublishers from '@/hooks/use-publishers'
 import useRequestPublishers from '@/hooks/use-request-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -12,11 +13,17 @@ const Publishers = () => {
 	const router = useRouter()
 	const { requestPublishers: publishers, loading, mutate } = useRequestPublishers()
 	const { mutate: mutatePublishers } = usePublishers()
+	const { checkPublisherLimit } = useLimitCheck()
 	const [list, setList] = useState(publishers)
 	const { colors } = useThemedColors()
 
 	const approve = useCallback(
 		async (publisherId: string) => {
+			// Check if publisher limit is reached
+			if (!checkPublisherLimit()) {
+				return
+			}
+
 			try {
 				setList(list.filter(p => p.id !== publisherId))
 
@@ -28,7 +35,7 @@ const Publishers = () => {
 				mutate()
 			}
 		},
-		[list, mutate]
+		[list, mutate, checkPublisherLimit]
 	)
 
 	const deny = useCallback(

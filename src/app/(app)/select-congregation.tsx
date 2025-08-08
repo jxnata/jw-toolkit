@@ -160,7 +160,7 @@ const SelectCongregation = () => {
 
 				<View className='pb-4 gap-4' style={{ paddingBottom: insets.bottom + 16 }}>
 					{!initial && (
-						<Button variant='link' onPress={() => {}}>
+						<Button variant='link' onPress={() => router.push('/add-congregation')}>
 							Criar nova congregação
 						</Button>
 					)}

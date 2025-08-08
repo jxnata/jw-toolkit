@@ -1,6 +1,7 @@
 import { Loading } from '@/components/loading'
 import '../../global.css'
 
+import { LimitGuard } from '@/components/limit-guard'
 import { REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
@@ -66,12 +67,14 @@ export default function Layout() {
 			<QueryClientProvider client={queryClient}>
 				<SessionProvider>
 					<SubscriptionProvider>
-						<ThemeProvider>
-							<LocationProvider>
-								<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-								<RootNavigator />
-							</LocationProvider>
-						</ThemeProvider>
+						<LimitGuard>
+							<ThemeProvider>
+								<LocationProvider>
+									<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+									<RootNavigator />
+								</LocationProvider>
+							</ThemeProvider>
+						</LimitGuard>
 					</SubscriptionProvider>
 				</SessionProvider>
 			</QueryClientProvider>
@@ -90,6 +93,8 @@ function RootNavigator() {
 			setInitialized(!!storage.getBoolean('initialized'))
 		}
 	}, storage)
+
+	console.log({ loading, current, congregation })
 
 	if (loading) {
 		return <Loading />

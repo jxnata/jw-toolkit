@@ -56,6 +56,8 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		return publisher.congregation
 	}, [publisher])
 
+	console.log({ user, isLoading, loading, publisherLoading })
+
 	const isLoadingSession = useMemo(() => {
 		if (!user) return isLoading || loading
 		return isLoading || loading || publisherLoading
