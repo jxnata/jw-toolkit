@@ -67,7 +67,7 @@ export default function Layout() {
 			<QueryClientProvider client={queryClient}>
 				<SessionProvider>
 					<SubscriptionProvider>
-						<LimitGuard>
+						<LimitGuard checkMaps={false} checkPublishers={false}>
 							<ThemeProvider>
 								<LocationProvider>
 									<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
@@ -93,8 +93,6 @@ function RootNavigator() {
 			setInitialized(!!storage.getBoolean('initialized'))
 		}
 	}, storage)
-
-	console.log({ loading, current, congregation })
 
 	if (loading) {
 		return <Loading />

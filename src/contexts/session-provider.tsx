@@ -56,8 +56,6 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		return publisher.congregation
 	}, [publisher])
 
-	console.log({ user, isLoading, loading, publisherLoading })
-
 	const isLoadingSession = useMemo(() => {
 		if (!user) return isLoading || loading
 		return isLoading || loading || publisherLoading
@@ -93,7 +91,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			}
 
 			const { user } = await db.auth.signInWithIdToken({
-				clientName: 'google',
+				clientName: 'google-android',
 				idToken: googleRequestResponse.idToken,
 			})
 

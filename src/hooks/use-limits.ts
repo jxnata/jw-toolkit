@@ -1,12 +1,9 @@
+import { FREE_LIMITS } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
 import { useSubscription } from '@/hooks/use-subscription'
 import db from '@/lib/db'
 import { useMemo } from 'react'
 
-const FREE_LIMITS = {
-	maps: 75,
-	publishers: 30,
-}
 
 export const useLimits = () => {
 	const { congregation } = useSession()
@@ -53,8 +50,8 @@ export const useLimits = () => {
 		const mapsCount = mapsData?.maps?.length || 0
 		const publishersCount = publishersData?.publishers?.length || 0
 
-		const mapsReached = mapsCount >= FREE_LIMITS.maps
-		const publishersReached = publishersCount >= FREE_LIMITS.publishers
+		const mapsReached = mapsCount >= Number(FREE_LIMITS.maps)
+		const publishersReached = publishersCount >= Number(FREE_LIMITS.publishers)
 
 		return {
 			mapsReached,

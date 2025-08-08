@@ -11,7 +11,7 @@ interface LimitGuardProps {
 }
 
 export const LimitGuard = ({ children, checkMaps = false, checkPublishers = false }: LimitGuardProps) => {
-	const { anyLimitReached, mapsReached, publishersReached } = useLimits()
+	const { mapsReached, publishersReached } = useLimits()
 	const { type } = useSession()
 
 	useEffect(() => {
@@ -19,12 +19,12 @@ export const LimitGuard = ({ children, checkMaps = false, checkPublishers = fals
 		if (type !== 'admin') return
 
 		// Check if we need to redirect based on what's being checked
-		const shouldRedirect = (checkMaps && mapsReached) || (checkPublishers && publishersReached) || anyLimitReached
+		const shouldRedirect = (checkMaps && mapsReached) || (checkPublishers && publishersReached)
 
 		if (shouldRedirect) {
-			router.push('/limit-alert')
+			router.push('/(app)/limit-alert')
 		}
-	}, [anyLimitReached, mapsReached, publishersReached, checkMaps, checkPublishers, type])
+	}, [mapsReached, publishersReached, checkMaps, checkPublishers, type])
 
 	return <View style={{ flex: 1 }}>{children}</View>
 }

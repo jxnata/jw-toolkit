@@ -1,4 +1,5 @@
 import Button from '@/components/button'
+import { FREE_LIMITS } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
 import { router, Stack } from 'expo-router'
 import { AlertTriangle, ArrowRight, Crown, Map, Users } from 'lucide-react-native'
@@ -42,13 +43,14 @@ const LimitAlert = () => {
 							<View className='flex-row items-center'>
 								<Users size={20} color='#bf616a' />
 								<Text className='text-danger-700 ml-3 flex-1'>
-									<Text className='font-semibold'>30 publicadores</Text> por congregação
+									<Text className='font-semibold'>{FREE_LIMITS.publishers} publicadores</Text> por
+									congregação
 								</Text>
 							</View>
 							<View className='flex-row items-center'>
 								<Map size={20} color='#bf616a' />
 								<Text className='text-danger-700 ml-3 flex-1'>
-									<Text className='font-semibold'>75 mapas</Text> por congregação
+									<Text className='font-semibold'>{FREE_LIMITS.maps} mapas</Text> por congregação
 								</Text>
 							</View>
 						</View>

@@ -10,7 +10,7 @@ export const useLimitCheck = () => {
 	const checkMapLimit = useCallback(() => {
 		if (type !== 'admin') return true
 		if (mapsReached) {
-			router.push('/limit-alert')
+			router.push('/(app)/limit-alert')
 			return false
 		}
 		return true
@@ -19,7 +19,7 @@ export const useLimitCheck = () => {
 	const checkPublisherLimit = useCallback(() => {
 		if (type !== 'admin') return true
 		if (publishersReached) {
-			router.push('/limit-alert')
+			router.push('/(app)/limit-alert')
 			return false
 		}
 		return true
@@ -28,7 +28,7 @@ export const useLimitCheck = () => {
 	const checkAnyLimit = useCallback(() => {
 		if (type !== 'admin') return true
 		if (anyLimitReached) {
-			router.push('/limit-alert')
+			router.push('/(app)/limit-alert')
 			return false
 		}
 		return true
