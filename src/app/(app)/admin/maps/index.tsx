@@ -65,7 +65,7 @@ const Maps = () => {
 	return (
 		<View className='flex-1'>
 			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
-			<View className='p-3 w-full h-full bg-background'>
+			<View className='p-4 w-full h-full bg-background'>
 				{showFilter && (
 					<View>
 						<Input

@@ -76,7 +76,7 @@ const EditAssignment = () => {
 	return (
 		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Editar Designação' }} />
-			<View className='flex p-2.5 w-full h-full bg-background'>
+			<View className='flex p-4 w-full h-full bg-background'>
 				{!!map && <MapViewDetails map={map} />}
 				<Controller
 					control={control}

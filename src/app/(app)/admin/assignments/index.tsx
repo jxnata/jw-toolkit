@@ -1,21 +1,50 @@
 import AssignmentItem from '@/components/assignment-item'
 import Input from '@/components/input'
+import { useSession } from '@/contexts/session-provider'
 import { useLocation } from '@/hooks/use-location'
 import useMaps from '@/hooks/use-maps'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { mapsService } from '@/services/instantdb'
 import { Stack, useRouter } from 'expo-router'
-import { useState } from 'react'
-import { FlatList, Text, View } from 'react-native'
+import { Trash } from 'lucide-react-native'
+import { useCallback, useState } from 'react'
+import { Alert, FlatList, Pressable, Text, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { useDebounce } from 'use-debounce'
 
 const Assignments = () => {
 	const router = useRouter()
 	const [searchInput, setSearchInput] = useState('')
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
-	const { maps, loading } = useMaps({ status: 'assigned', search: debouncedSearchTerm })
+	const { maps } = useMaps({ status: 'assigned', search: debouncedSearchTerm })
 	const { location } = useLocation()
+	const { congregation } = useSession()
+	const { colors } = useThemedColors()
 
-	const handleClear = () => {
-		setSearchInput('')
+	const removeAllAssignments = async () => {
+		try {
+			if (!congregation) return
+			await mapsService.unassignAllMaps(congregation.id)
+
+			Toast.show({
+				type: 'success',
+				text1: 'Sucesso',
+				text2: 'Designações removidas com sucesso',
+			})
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Erro',
+				text2: 'Erro ao remover designações',
+			})
+		}
+	}
+
+	const removeAllAssignmentsConfirm = () => {
+		Alert.alert('Remover todas as designações', 'Tem certeza que deseja remover todas as designações?', [
+			{ text: 'Cancelar', style: 'cancel' },
+			{ text: 'Remover', style: 'destructive', onPress: removeAllAssignments },
+		])
 	}
 
 	const ListHeaderComponent = () => {
@@ -26,10 +55,26 @@ const Assignments = () => {
 		)
 	}
 
+	const HeaderRight = useCallback(
+		() => (
+			<View className='flex-row'>
+				<Pressable hitSlop={10} onPress={removeAllAssignmentsConfirm} className='mx-2'>
+					<Trash size={20} color={colors.foreground} />
+				</Pressable>
+			</View>
+		),
+		[router, colors.foreground]
+	)
+
 	return (
 		<View className='flex'>
-			<Stack.Screen options={{ title: 'Designações' }} />
-			<View className='flex p-3 w-full h-full bg-background'>
+			<Stack.Screen
+				options={{
+					title: 'Designações',
+					headerRight: HeaderRight,
+				}}
+			/>
+			<View className='flex p-4 w-full h-full bg-background'>
 				<Input
 					autoCorrect={false}
 					placeholder='Buscar por mapa ou bairro'
@@ -60,7 +105,9 @@ const Assignments = () => {
 					)}
 					ListEmptyComponent={
 						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-light opacity-80'>Nenhuma designação encontrada</Text>
+							<Text className='text-foreground font-medium opacity-80'>
+								Nenhuma designação encontrada
+							</Text>
 						</View>
 					}
 				/>

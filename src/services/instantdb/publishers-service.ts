@@ -68,6 +68,18 @@ class PublishersService {
 		return data.publishers[0] as Publisher | null
 	}
 
+	async checkIsFirstPublisher(congregationId: string): Promise<boolean> {
+		const { data } = await db.queryOnce({
+			publishers: {
+				$: {
+					limit: 1,
+					where: { congregation: congregationId }
+				}
+			}
+		})
+		return data.publishers.length === 0
+	}
+
 	async unlinkCongregation(publisherId: string, congregationId: string): Promise<void> {
 		await db.transact(db.tx.publishers[publisherId].unlink({ congregation: congregationId }))
 	}

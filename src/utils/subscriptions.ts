@@ -5,7 +5,11 @@ export const identifierToSubscription = (identifier: string) => {
 	switch (identifier) {
 		case 'dev.jxnata.jwtoolkit.monthly':
 			return 'monthly'
+		case 'pro:monthly':
+			return 'monthly'
 		case 'dev.jxnata.jwtoolkit.yearly':
+			return 'yearly'
+		case 'pro:yearly':
 			return 'yearly'
 		default:
 			return null

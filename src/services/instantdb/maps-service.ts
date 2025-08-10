@@ -67,6 +67,41 @@ class MapsService {
 		await db.transact(db.tx.maps[mapId].unlink({ assigned: publisherId }))
 	}
 
+	async unassignAllMaps(congregationId: string): Promise<void> {
+		const batchLimit = 25
+
+		const { data } = await db.queryOnce({
+			maps: {
+				$: {
+					where: {
+						congregation: congregationId,
+						assigned: { $isNull: false }
+					}
+				},
+				assigned: {}
+			}
+		})
+
+		const assignedMaps = data.maps || []
+
+		if (assignedMaps.length === 0) {
+			return
+		}
+
+		const batches = []
+
+		for (let i = 0; i < assignedMaps.length; i += batchLimit) {
+			const batch = assignedMaps.slice(i, i + batchLimit).map(map => {
+				return db.tx.maps[map.id].unlink({ assigned: map.assigned!.id })
+			})
+			batches.push(batch)
+		}
+
+		for (const batch of batches) {
+			await db.transact(batch)
+		}
+	}
+
 	async getMap(mapId: string): Promise<Map | null> {
 		const { data } = await db.queryOnce({
 			maps: {

@@ -26,7 +26,7 @@ export default function Subscription() {
 				setLoadingPackages(true)
 				const availablePackages = await getOfferings()
 				setPackages(availablePackages)
-				const defaultPackage = availablePackages.find(pkg => pkg.packageType === 'ANNUAL')
+				const defaultPackage = availablePackages.find(pkg => pkg.packageType === 'MONTHLY')
 				if (defaultPackage) {
 					setSelectedPackage(defaultPackage)
 				}
@@ -109,7 +109,7 @@ export default function Subscription() {
 	return (
 		<View className='flex-1 bg-background'>
 			<Stack.Screen options={{ title: 'Assinatura' }} />
-			<View className='flex-1 px-4' style={{ paddingBottom: insets.bottom + 12 }}>
+			<View className='flex-1' style={{ paddingBottom: insets.bottom + 12 }}>
 				<ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
 					<View className='items-center px-4'>
 						<Image source={require('../../assets/icon.png')} className='h-16 w-16 rounded-xl' />
@@ -152,7 +152,7 @@ export default function Subscription() {
 							</Text>
 						</View>
 					) : (
-						<View className='mb-6 w-full gap-2 px-6'>
+						<View className='my-4 w-full gap-2 px-4'>
 							{packages.map(pkg => (
 								<TouchableOpacity
 									key={pkg.identifier}
@@ -171,15 +171,15 @@ export default function Subscription() {
 										</View>
 									)}
 									<View className='mb-1 flex-row items-center gap-2'>
-										<Text className='font-semibold text-lg text-foreground opacity-70'>
+										<Text className='font-semibold text-lg text-foreground opacity-80'>
 											{getPackageTypeText(pkg.packageType)}
 										</Text>
 										{pkg.packageType === 'ANNUAL' &&
 											monthlyPackage &&
 											monthlyPackage.product.pricePerYear && (
-												<View className='flex-row items-center gap-1 rounded-lg bg-success-500 px-3 py-1'>
-													<Gift size={12} color='#d1d5db' />
-													<Text className='font-bold text-xs text-gray-300'>
+												<View className='flex-row items-center gap-1 rounded-full bg-success-500 px-2 py-1'>
+													<Gift size={12} color='#FFFFFF' />
+													<Text className='font-bold text-xs text-white'>
 														Economize{' '}
 														{Math.round(
 															((monthlyPackage.product.pricePerYear - pkg.product.price) /
@@ -198,7 +198,7 @@ export default function Subscription() {
 													{getFreeTrialText(pkg.packageType)}
 												</Text>
 											</View>
-											<Text className='font-regular text-xs text-secondary-300'>
+											<Text className='font-semibold text-sm text-foreground'>
 												{pkg.product.priceString}{' '}
 												{getPackageTypeText(pkg.packageType).toLowerCase()}
 											</Text>

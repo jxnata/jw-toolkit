@@ -111,7 +111,7 @@ const ViewMap = () => {
 		<View className='flex'>
 			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
 			<View className='flex w-full h-full bg-background'>
-				<View className='p-2.5'>
+				<View className='p-4'>
 					{!!map && (
 						<>
 							<MapViewDetails map={map} />
