@@ -39,12 +39,16 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 	}, [current])
 
 	useEffect(() => {
-		if (!current) return
+		if (!current) {
+			setSubscribed(false)
+			setIsUserSubscribed(false)
+			return
+		}
 		if (type === 'publisher') return
 
 		fetchSubscription()
 		checkUserSubscription()
-	}, [current, type])
+	}, [current, type, fetchSubscription, checkUserSubscription])
 
 	return (
 		<SubscriptionContext.Provider value={{ subscribed, checkSubscription: fetchSubscription, isUserSubscribed }}>

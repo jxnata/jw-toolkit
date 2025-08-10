@@ -15,6 +15,7 @@ import { useDebounce } from 'use-debounce'
 const Assignments = () => {
 	const router = useRouter()
 	const [searchInput, setSearchInput] = useState('')
+	const [loading, setLoading] = useState(false)
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
 	const { maps } = useMaps({ status: 'assigned', search: debouncedSearchTerm })
 	const { location } = useLocation()
@@ -23,6 +24,7 @@ const Assignments = () => {
 
 	const removeAllAssignments = async () => {
 		try {
+			setLoading(true)
 			if (!congregation) return
 			await mapsService.unassignAllMaps(congregation.id)
 
@@ -37,6 +39,8 @@ const Assignments = () => {
 				text1: 'Erro',
 				text2: 'Erro ao remover designações',
 			})
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -58,7 +62,7 @@ const Assignments = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View className='flex-row'>
-				<Pressable hitSlop={10} onPress={removeAllAssignmentsConfirm} className='mx-2'>
+				<Pressable hitSlop={10} onPress={removeAllAssignmentsConfirm} disabled={loading} className='mx-2'>
 					<Trash size={20} color={colors.foreground} />
 				</Pressable>
 			</View>

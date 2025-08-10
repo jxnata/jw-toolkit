@@ -75,7 +75,7 @@ const SelectCongregation = () => {
 
 			const updates = {
 				level: isFirstPublisher ? 1 : 3,
-				approved: true,
+				approved: isFirstPublisher,
 			}
 
 			const links = {

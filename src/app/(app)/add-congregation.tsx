@@ -35,9 +35,9 @@ const AddCongregation = () => {
 			})
 			success('congregação')
 
-			Alert.alert('Sucesso', 'Congregação criada, selecione-a na próxima tela.')
-
-			router.back()
+			Alert.alert('Sucesso', 'Congregação criada, selecione-a na próxima tela.', [
+				{ text: 'OK', onPress: () => router.back() },
+			])
 		} catch (err) {
 			error('congregação')
 			console.error('Failed to create congregation:', err)
