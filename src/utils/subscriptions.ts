@@ -2,14 +2,15 @@ import { api } from "@/lib/api"
 
 
 export const identifierToSubscription = (identifier: string) => {
-	switch (identifier) {
-		case 'dev.jxnata.jwtoolkit.monthly':
-			return 'monthly'
-		case 'dev.jxnata.jwtoolkit.yearly':
-			return 'yearly'
-		default:
-			return null
+	const normalized = identifier.toLowerCase()
+	const map: Record<string, 'monthly' | 'yearly'> = {
+		'dev.jxnata.jwtoolkit.monthly': 'monthly',
+		'pro:monthly': 'monthly',
+		'dev.jxnata.jwtoolkit.yearly': 'yearly',
+		'pro:yearly': 'yearly',
 	}
+
+	return map[normalized] ?? null
 }
 
 export const patchSubscription = async (refreshToken: string) => {

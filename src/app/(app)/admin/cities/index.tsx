@@ -43,7 +43,7 @@ const Cities = () => {
 	return (
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Cidades', headerRight: HeaderRight }} />
-			<View className='flex p-2 w-full h-full bg-background'>
+			<View className='flex p-4 w-full h-full bg-background'>
 				<FlatList
 					ListHeaderComponent={<ListHeaderComponent />}
 					data={cities}

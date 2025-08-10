@@ -68,13 +68,13 @@ const Login = () => {
 				/>
 				<View className='flex h-full justify-end'>
 					<View
-						className='flex px-[15px] pt-[25px] rounded-xl opacity-90'
+						className='flex px-6 pt-6 rounded-xl opacity-90'
 						style={{
 							backgroundColor: colors.background,
 							paddingBottom: insets.bottom + 10,
 						}}
 					>
-						<View className='flex-col text-center items-center mb-[25px] gap-2.5'>
+						<View className='flex-col text-center items-center mb-8 gap-2.5'>
 							<Text className='text-center text-xl text-foreground font-bold'>Bem vindo!</Text>
 							<Text
 								className='text-center text-lg font-regular'

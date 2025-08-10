@@ -73,7 +73,7 @@ const AddMap = () => {
 		<View className='flex-1 bg-background'>
 			<Stack.Screen options={{ title: 'Novo Mapa' }} />
 			<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName='p-3 w-full'>
+				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName='p-4 w-full'>
 					<Controller
 						control={control}
 						rules={{ required: true }}

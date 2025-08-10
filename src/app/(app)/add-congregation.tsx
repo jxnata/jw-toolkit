@@ -2,14 +2,13 @@ import Button from '@/components/button'
 import Input from '@/components/input'
 import { FREE_LIMITS } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
-import useCongregations from '@/hooks/use-congregations'
 import { error, success } from '@/messages/add'
 import { congregationsService } from '@/services/instantdb'
 import { Stack, router } from 'expo-router'
 import { ArrowRight, Crown, Map, Save, Users } from 'lucide-react-native'
 import { useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 interface AddCongregationForm {
@@ -18,7 +17,6 @@ interface AddCongregationForm {
 
 const AddCongregation = () => {
 	const { current } = useSession()
-	const { mutate } = useCongregations()
 	const [showExplanation, setShowExplanation] = useState(true)
 	const { control, formState, handleSubmit } = useForm<AddCongregationForm>({
 		defaultValues: {
@@ -36,8 +34,10 @@ const AddCongregation = () => {
 				enabled: true,
 			})
 			success('congregação')
-			mutate()
-			router.back()
+
+			Alert.alert('Sucesso', 'Congregação criada, selecione-a na próxima tela.', [
+				{ text: 'OK', onPress: () => router.back() },
+			])
 		} catch (err) {
 			error('congregação')
 			console.error('Failed to create congregation:', err)

@@ -5,18 +5,19 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
+import { ArrowLeft } from 'lucide-react-native'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const AssigmentDetails = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const router = useRouter()
 	const { colors } = useThemedColors()
-
+	const insets = useSafeAreaInsets()
 	const [showFinish, setShowFinish] = useState(false)
 	const { assignment } = useAssignment(params.id)
 
@@ -45,9 +46,10 @@ const AssigmentDetails = () => {
 				<View className='flex w-full h-full'>
 					<Pressable
 						onPress={router.back}
-						className='absolute top-[50px] left-2.5 z-10 w-10 h-10 items-center justify-center rounded-full bg-card'
+						className='absolute left-3 z-10 w-12 h-12 items-center justify-center rounded-xl bg-card'
+						style={{ top: insets.top }}
 					>
-						<Ionicons name='arrow-back' size={24} color={colors.foreground} />
+						<ArrowLeft color={colors.foreground} />
 					</Pressable>
 
 					<MapView
@@ -59,7 +61,6 @@ const AssigmentDetails = () => {
 							longitudeDelta: 0.01,
 						}}
 						showsUserLocation={true}
-						followsUserLocation={true}
 					>
 						<Marker
 							coordinate={{

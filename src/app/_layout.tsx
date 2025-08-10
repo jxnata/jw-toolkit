@@ -2,7 +2,7 @@ import { Loading } from '@/components/loading'
 import '../../global.css'
 
 import { LimitGuard } from '@/components/limit-guard'
-import { REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
+import { REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
 import { LocationProvider } from '@/contexts/location-provider'
@@ -46,7 +46,7 @@ export default function Layout() {
 		OneSignal.Notifications.requestPermission(true)
 
 		if (Platform.OS === 'ios') {
-			// Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
+			Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
 		} else if (Platform.OS === 'android') {
 			Purchases.configure({ apiKey: REVENUECAT_GOOGLE_API_KEY })
 
