@@ -3,11 +3,11 @@ import ListItem from '@/components/list-item'
 import usePublishers from '@/hooks/use-publishers'
 import useRequestPublishers from '@/hooks/use-request-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
+import { Mail, MailWarning } from 'lucide-react-native'
 import { useCallback, useState } from 'react'
-import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import { FlatList, Pressable, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Publishers = () => {
 	const router = useRouter()
@@ -19,9 +19,13 @@ const Publishers = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View>
-				<Pressable onPress={() => router.push('/admin/publishers/review')} className='mx-2'>
-					<Ionicons name='mail-unread-outline' size={24} color={colors.foreground} />
-				</Pressable>
+				<TouchableOpacity onPress={() => router.push('/admin/publishers/review')} className='mx-2'>
+					{requestPublishers.length ? (
+						<MailWarning size={24} color={colors.primary[500]} />
+					) : (
+						<Mail size={24} color={colors.foreground} />
+					)}
+				</TouchableOpacity>
 			</View>
 		),
 		[router, colors.foreground]
@@ -93,7 +97,9 @@ const Publishers = () => {
 					ListFooterComponent={() => <View className='h-[60px]' />}
 					ListEmptyComponent={
 						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-light opacity-80'>Nenhum publicador encontrado</Text>
+							<Text className='text-foreground font-regular opacity-80'>
+								Nenhum publicador encontrado
+							</Text>
 						</View>
 					}
 				/>

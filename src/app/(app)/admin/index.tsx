@@ -2,8 +2,8 @@ import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
 import { useSession } from '@/contexts/session-provider'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Link, Stack, useRouter } from 'expo-router'
+import { UserCircle2 } from 'lucide-react-native'
 import { useCallback } from 'react'
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
@@ -17,7 +17,7 @@ const Admin = () => {
 		() => (
 			<View className='flex flex-row justify-center items-center gap-[15px]'>
 				<Pressable onPress={() => router.push('/admin/me')}>
-					<Ionicons name='person-circle-outline' size={24} color={colors.foreground} />
+					<UserCircle2 size={24} color={colors.foreground} />
 				</Pressable>
 			</View>
 		),

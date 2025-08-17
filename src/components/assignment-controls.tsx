@@ -1,6 +1,6 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { useNavigation } from 'expo-router'
+import { MapPin } from 'lucide-react-native'
 import React from 'react'
 import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native'
 
@@ -46,7 +46,7 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 						onPress={navigate}
 						className='gap-[5px] flex flex-row items-center justify-center flex-1 py-[15px] px-5 rounded-xl bg-primary-600 text-[15px] mb-2'
 					>
-						<Ionicons name='navigate-circle-outline' size={24} color='white' />
+						<MapPin size={24} color='white' />
 						<Text className='text-white text-[15px] font-bold'>Ir para</Text>
 					</TouchableOpacity>
 

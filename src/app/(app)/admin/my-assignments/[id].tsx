@@ -8,7 +8,7 @@ import { useState } from 'react'
 
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { ArrowLeft } from 'lucide-react-native'
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
@@ -47,7 +47,7 @@ const AssigmentDetails = () => {
 						onPress={router.back}
 						className='absolute top-4 left-3 z-10 w-12 h-12 items-center justify-center rounded-lg bg-card'
 					>
-						<Ionicons name='arrow-back' size={24} color={colors.foreground} />
+						<ArrowLeft size={24} color={colors.foreground} />
 					</TouchableOpacity>
 
 					<MapView

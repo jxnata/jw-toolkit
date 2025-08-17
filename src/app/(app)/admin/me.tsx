@@ -1,6 +1,7 @@
 import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
 import { useSession } from '@/contexts/session-provider'
+import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { api } from '@/lib/api'
 import { router, Stack } from 'expo-router'
@@ -10,6 +11,7 @@ import { Alert, Pressable, Text, View } from 'react-native'
 
 const UserDetails = () => {
 	const { current, loading, congregation, logout } = useSession()
+	const { subscribed } = useSubscription()
 	const { colors } = useThemedColors()
 	const [loadingDelete, setLoadingDelete] = useState(false)
 
@@ -27,6 +29,13 @@ const UserDetails = () => {
 	}
 
 	const deleteAccountConfirm = () => {
+		if (subscribed) {
+			Alert.alert('Deletar conta', 'Antes de deletar sua conta, você precisa cancelar sua assinatura.', [
+				{ text: 'Ok', style: 'default' },
+			])
+			return
+		}
+
 		Alert.alert('Deletar conta', 'Tem certeza que deseja deletar sua conta? Esta ação é irreversível.', [
 			{ text: 'Cancelar', style: 'cancel' },
 			{ text: 'Deletar', style: 'destructive', onPress: deleteAccount },
