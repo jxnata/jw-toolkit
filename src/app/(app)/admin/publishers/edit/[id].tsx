@@ -12,7 +12,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, KeyboardAvoidingView, Platform, View } from 'react-native'
 
 import { Publisher } from '@/interfaces'
-import { Save } from 'lucide-react-native'
+import { Save, Trash } from 'lucide-react-native'
 
 const EditPublisher = () => {
 	const { data } = useLocalSearchParams()
@@ -108,7 +108,7 @@ const EditPublisher = () => {
 								Atualizar
 							</Button>
 						</View>
-						<IconButton icon='trash-bin-outline' color={colors.danger[600]} onPress={showDeleteAlert} />
+						<IconButton icon={<Trash size={16} color={colors.danger[600]} />} onPress={showDeleteAlert} />
 					</View>
 				</View>
 			</KeyboardAvoidingView>

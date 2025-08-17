@@ -11,11 +11,11 @@ import { error as removeError, success as removeSuccess } from '@/messages/delet
 import { mapsService } from '@/services/instantdb'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
+import { Pencil, Trash } from 'lucide-react-native'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Pressable, Text, View } from 'react-native'
+import { Alert, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { OneSignal } from 'react-native-onesignal'
 
@@ -80,7 +80,7 @@ const ViewMap = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View className='flex-row'>
-				<Pressable
+				<TouchableOpacity
 					onPress={() =>
 						router.replace({
 							pathname: `/admin/maps/${params.id}/edit`,
@@ -90,11 +90,11 @@ const ViewMap = () => {
 					disabled={!map}
 					className='mx-2'
 				>
-					<Ionicons name='create-outline' size={24} color={colors.foreground} />
-				</Pressable>
-				<Pressable onPress={showDeleteAlert} className='mx-2'>
-					<Ionicons name='trash-outline' size={24} color={colors.foreground} />
-				</Pressable>
+					<Pencil size={24} color={colors.foreground} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={showDeleteAlert} className='mx-2'>
+					<Trash size={24} color={colors.foreground} />
+				</TouchableOpacity>
 			</View>
 		),
 		[map, showDeleteAlert, params.id, colors]

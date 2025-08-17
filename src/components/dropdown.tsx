@@ -1,5 +1,5 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { CheckCircle, ChevronDown, Circle, RefreshCcw, X } from 'lucide-react-native'
 import React, { useMemo, useState } from 'react'
 import {
 	ActivityIndicator,
@@ -83,7 +83,7 @@ const Dropdown = ({
 				className={`flex-row justify-between items-center w-full px-4 py-4 rounded-lg border border-border bg-card ${disabled ? 'opacity-50' : ''}`}
 			>
 				<Text className='text-foreground font-medium'>{selectedLabel || placeholder}</Text>
-				<Ionicons name='chevron-down' size={16} color={colors.foreground + '80'} />
+				<ChevronDown size={16} color={colors.foreground + '80'} />
 			</Pressable>
 
 			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
@@ -101,7 +101,7 @@ const Dropdown = ({
 								{isRefreshing ? (
 									<ActivityIndicator size='small' color={colors.primary[600]} />
 								) : (
-									<Ionicons name='refresh' size={20} color={colors.foreground + '80'} />
+									<RefreshCcw size={20} color={colors.foreground + '80'} />
 								)}
 							</TouchableOpacity>
 						)}
@@ -110,7 +110,7 @@ const Dropdown = ({
 							onPress={toggle}
 							className='absolute -top-[45px] right-2.5 bg-card border border-danger-500 p-2 rounded-lg z-10'
 						>
-							<Ionicons name='close' size={20} color={colors.foreground + '80'} />
+							<X size={20} color={colors.foreground + '80'} />
 						</TouchableOpacity>
 
 						<FlatList
@@ -126,9 +126,9 @@ const Dropdown = ({
 									accessibilityState={{ selected: item.value === selectedValue }}
 								>
 									{item.value === selectedValue ? (
-										<Ionicons name='checkmark-circle' size={20} color={colors.foreground + '80'} />
+										<CheckCircle size={20} color={colors.foreground + '80'} />
 									) : (
-										<Ionicons name='ellipse-outline' size={20} color={colors.foreground + '80'} />
+										<Circle size={20} color={colors.foreground + '80'} />
 									)}
 									<Text className='text-foreground text-base font-medium'>{item.label}</Text>
 								</Pressable>

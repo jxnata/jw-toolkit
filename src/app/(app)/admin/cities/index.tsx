@@ -2,11 +2,11 @@ import Input from '@/components/input'
 import ListItem from '@/components/list-item'
 import useCities from '@/hooks/use-cities'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
+import { PlusCircle } from 'lucide-react-native'
 import { useCallback, useState } from 'react'
-import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Cities = () => {
 	const router = useRouter()
@@ -17,9 +17,9 @@ const Cities = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View>
-				<Pressable onPress={() => router.push('/admin/cities/add')} className='mx-2'>
-					<Ionicons name='add-circle-outline' size={24} color={colors.foreground} />
-				</Pressable>
+				<TouchableOpacity onPress={() => router.push('/admin/cities/add')} className='mx-2'>
+					<PlusCircle size={24} color={colors.foreground} />
+				</TouchableOpacity>
 			</View>
 		),
 		[router, colors.foreground]
@@ -66,7 +66,7 @@ const Cities = () => {
 					ListFooterComponent={() => <View className='h-[60px]' />}
 					ListEmptyComponent={
 						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-light opacity-80'>Nenhuma cidade encontrada</Text>
+							<Text className='text-foreground font-regular opacity-80'>Nenhuma cidade encontrada</Text>
 						</View>
 					}
 				/>

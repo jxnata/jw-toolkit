@@ -1,7 +1,9 @@
 import AssignmentItem from '@/components/assignment-item'
 import { useLocation } from '@/hooks/use-location'
 import useMyAssignments from '@/hooks/use-my-assignments'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack, useRouter } from 'expo-router'
+import { Map } from 'lucide-react-native'
 import { useEffect } from 'react'
 import { FlatList, RefreshControl, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
@@ -10,6 +12,7 @@ const MyAssignments = () => {
 	const router = useRouter()
 	const { location } = useLocation()
 	const { assignments, loading, mutate } = useMyAssignments()
+	const { colors } = useThemedColors()
 
 	useEffect(() => {
 		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
@@ -39,9 +42,13 @@ const MyAssignments = () => {
 						/>
 					)}
 					ListEmptyComponent={
-						<Text className='text-[15px] text-foreground py-5 px-2.5 font-medium self-center'>
-							Nenhuma designação
-						</Text>
+						<View className='flex flex-col items-center justify-center gap-3 pt-8'>
+							<Map size={48} color={colors.border} strokeWidth={1.5} />
+							<Text className='text-foreground px-3 font-regular text-center opacity-70'>
+								Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você receber
+								uma designação.
+							</Text>
+						</View>
 					}
 				/>
 			</View>

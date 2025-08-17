@@ -4,7 +4,7 @@ import { useLocation } from '@/hooks/use-location'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { validCoordinates } from '@/utils/valid-coordinates'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { X } from 'lucide-react-native'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, Pressable, Text, View } from 'react-native'
 import MapView, { MapViewProps, Marker } from 'react-native-maps'
@@ -84,7 +84,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 					className='absolute right-3 items-center justify-center rounded-xl w-10 h-10 z-10'
 					style={{ backgroundColor: colors.foreground, top: top + 10 }}
 				>
-					<Ionicons name='close-outline' size={24} color={colors.background} />
+					<X size={24} color={colors.background} />
 				</Pressable>
 
 				{initialLocation.latitude !== 0 && initialLocation.longitude !== 0 && (

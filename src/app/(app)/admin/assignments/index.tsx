@@ -8,7 +8,7 @@ import { mapsService } from '@/services/instantdb'
 import { Stack, useRouter } from 'expo-router'
 import { Trash } from 'lucide-react-native'
 import { useCallback, useState } from 'react'
-import { Alert, FlatList, Pressable, Text, View } from 'react-native'
+import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { useDebounce } from 'use-debounce'
 
@@ -62,9 +62,14 @@ const Assignments = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View className='flex-row'>
-				<Pressable hitSlop={10} onPress={removeAllAssignmentsConfirm} disabled={loading} className='mx-2'>
+				<TouchableOpacity
+					hitSlop={10}
+					onPress={removeAllAssignmentsConfirm}
+					disabled={loading}
+					className='mx-2'
+				>
 					<Trash size={20} color={colors.foreground} />
-				</Pressable>
+				</TouchableOpacity>
 			</View>
 		),
 		[router, colors.foreground]
@@ -109,7 +114,7 @@ const Assignments = () => {
 					)}
 					ListEmptyComponent={
 						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-medium opacity-80'>
+							<Text className='text-foreground font-regular opacity-80'>
 								Nenhuma designação encontrada
 							</Text>
 						</View>

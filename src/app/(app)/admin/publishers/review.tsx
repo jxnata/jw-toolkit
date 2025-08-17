@@ -5,8 +5,8 @@ import useRequestPublishers from '@/hooks/use-request-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { publishersService } from '@/services/instantdb'
 import { firstLetter } from '@/utils/first-letter'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
+import { CheckCircle, XCircle } from 'lucide-react-native'
 import { useCallback, useEffect, useState } from 'react'
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
@@ -101,22 +101,25 @@ const Publishers = () => {
 										onPress={() => approve(item.id)}
 										className='w-10 h-10 items-center justify-center'
 									>
-										<Ionicons
-											name='checkmark-circle-outline'
-											size={24}
-											color={colors.success[500]}
-										/>
+										<CheckCircle size={24} color={colors.success[500]} />
 									</TouchableOpacity>
 									<TouchableOpacity
 										onPress={() => deny(item.id)}
 										className='w-10 h-10 items-center justify-center'
 									>
-										<Ionicons name='close-circle-outline' size={24} color={colors.danger[500]} />
+										<XCircle size={24} color={colors.danger[500]} />
 									</TouchableOpacity>
 								</View>
 							</View>
 						</TouchableOpacity>
 					)}
+					ListEmptyComponent={
+						<View className='flex-1 py-8 items-center justify-center'>
+							<Text className='text-foreground font-regular opacity-80'>
+								Nenhuma solicitação pendente.
+							</Text>
+						</View>
+					}
 				/>
 			</View>
 		</View>

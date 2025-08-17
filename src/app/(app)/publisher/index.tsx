@@ -3,8 +3,8 @@ import SkeletonItem from '@/components/skeleton-item'
 import { useLocation } from '@/hooks/use-location'
 import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
+import { Map, UserCircle2 } from 'lucide-react-native'
 import { useCallback, useEffect } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
@@ -19,8 +19,8 @@ const PublisherHome = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View className='flex flex-row justify-center items-center gap-[15px]'>
-				<Pressable onPress={() => router.push('/admin/me')}>
-					<Ionicons name='person-circle-outline' size={24} color={colors.foreground} />
+				<Pressable onPress={() => router.push('/publisher/me')}>
+					<UserCircle2 size={24} color={colors.foreground} />
 				</Pressable>
 			</View>
 		),
@@ -65,9 +65,13 @@ const PublisherHome = () => {
 							/>
 						)}
 						ListEmptyComponent={
-							<Text className='text-[15px] text-foreground py-5 px-2.5 font-medium self-center'>
-								Nenhuma designação
-							</Text>
+							<View className='flex flex-col items-center justify-center gap-3 pt-8'>
+								<Map size={48} color={colors.border} strokeWidth={1.5} />
+								<Text className='text-foreground px-3 font-regular text-center opacity-70'>
+									Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você
+									receber uma designação.
+								</Text>
+							</View>
 						}
 					/>
 				)}

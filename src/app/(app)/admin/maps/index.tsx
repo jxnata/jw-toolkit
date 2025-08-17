@@ -5,10 +5,11 @@ import useCities from '@/hooks/use-cities'
 import { useLocation } from '@/hooks/use-location'
 import useMaps from '@/hooks/use-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Stack, useRouter } from 'expo-router'
+import { Funnel, PlusCircle } from 'lucide-react-native'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { FlatList, Pressable, Text, View } from 'react-native'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated'
 import { useDebounce } from 'use-debounce'
 
 const Maps = () => {
@@ -42,12 +43,12 @@ const Maps = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View className='flex-row'>
-				<Pressable onPress={() => router.push('/admin/maps/add')} className='mx-2'>
-					<Ionicons name='add-circle-outline' size={24} color={colors.foreground} />
-				</Pressable>
-				<Pressable onPress={toggleFilter} className='mx-2'>
-					<Ionicons name='funnel-outline' size={24} color={colors.foreground} />
-				</Pressable>
+				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className='mx-2'>
+					<PlusCircle size={24} color={colors.foreground} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={toggleFilter} className='mx-2'>
+					<Funnel size={24} color={colors.foreground} />
+				</TouchableOpacity>
 			</View>
 		),
 		[router, colors.foreground]
@@ -67,7 +68,7 @@ const Maps = () => {
 			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
 			<View className='p-4 w-full h-full bg-background'>
 				{showFilter && (
-					<View>
+					<Animated.View entering={SlideInUp} exiting={SlideOutUp}>
 						<Input
 							autoCorrect={false}
 							placeholder='Buscar por nome ou bairro'
@@ -99,7 +100,7 @@ const Maps = () => {
 								/>
 							</View>
 						</View>
-					</View>
+					</Animated.View>
 				)}
 
 				<View className='flex-1'>
@@ -111,7 +112,7 @@ const Maps = () => {
 						keyboardDismissMode='none'
 						ListEmptyComponent={
 							<View className='flex-1 py-8 items-center justify-center'>
-								<Text className='text-foreground font-light opacity-80'>Nenhum mapa encontrado</Text>
+								<Text className='text-foreground font-regular opacity-80'>Nenhum mapa encontrado</Text>
 							</View>
 						}
 						renderItem={({ item }) => (

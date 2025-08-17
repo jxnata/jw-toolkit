@@ -3,8 +3,8 @@ import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { error, success } from '@/messages/edit'
 import { mapsService } from '@/services/instantdb'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { useRouter } from 'expo-router'
+import { XCircle } from 'lucide-react-native'
 import { useState } from 'react'
 import { Pressable, Text, TouchableOpacity, View } from 'react-native'
 
@@ -56,7 +56,7 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 					disabled={loading}
 					className='absolute top-1 right-1 w-[50px] h-[50px] flex flex-row items-center justify-center rounded-xl'
 				>
-					<Ionicons name='close-circle-outline' size={24} color={colors.foreground} />
+					<XCircle size={24} color={colors.foreground} />
 				</Pressable>
 
 				<Text className='py-2 text-foreground text-base font-bold'>Encontrou alguém?</Text>
