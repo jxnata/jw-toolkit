@@ -6,7 +6,7 @@ import { publishersService } from '@/services/instantdb/publishers-service'
 import { User as InstantUser } from '@instantdb/react-native'
 import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 import { AppleAuthenticationCredential } from 'expo-apple-authentication'
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo } from 'react'
 import { Platform } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 
@@ -40,7 +40,6 @@ export function useSession() {
 
 export function SessionProvider(props: { children: React.ReactNode }) {
 	const { user, isLoading } = db.useAuth()
-	const [loading, setLoading] = useState(false)
 	const { publisher, loading: publisherLoading } = usePublisher({
 		userId: user ? user.id : undefined,
 		enabled: !!user,
@@ -57,9 +56,9 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 	}, [publisher])
 
 	const isLoadingSession = useMemo(() => {
-		if (!user) return isLoading || loading
-		return isLoading || loading || publisherLoading
-	}, [user, isLoading, loading, publisherLoading])
+		if (!user) return isLoading
+		return isLoading || publisherLoading
+	}, [user, isLoading, publisherLoading])
 
 	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential) {
 		try {
@@ -135,7 +134,6 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 	// Initialize session data when user changes
 	useEffect(() => {
 		const getPublisherInfo = async () => {
-			setLoading(true)
 			if (!user) return
 
 			const pub = await publishersService.searchByUserId(user.id)
@@ -148,8 +146,6 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				storage.set('congregation.id', pub.congregation.id)
 				storage.set('congregation.name', pub.congregation.name)
 			}
-
-			setLoading(false)
 		}
 
 		if (user) {
