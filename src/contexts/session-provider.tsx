@@ -9,6 +9,7 @@ import { AppleAuthenticationCredential } from 'expo-apple-authentication'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { Platform } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
+import Purchases from 'react-native-purchases'
 
 type LocalSession = {
 	current: (InstantUser & { name: string }) | null
@@ -123,6 +124,8 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			await GoogleSignin.signOut()
 		}
 
+		await Purchases.logOut()
+
 		await db.auth.signOut()
 
 		// Clear storage
@@ -135,6 +138,8 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 	useEffect(() => {
 		const getPublisherInfo = async () => {
 			if (!user) return
+
+			await Purchases.logIn(user.id)
 
 			const pub = await publishersService.searchByUserId(user.id)
 

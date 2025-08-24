@@ -15,17 +15,17 @@ export const identifierToSubscription = (identifier: string) => {
 
 export const patchSubscription = async (refreshToken: string) => {
 	try {
-		if (!api.defaults.baseURL) return false
+		if (!api.defaults.baseURL) return { isPro: false, expired: false }
 
-		const { data } = await api.patch<{ is_pro: boolean }>('/subscription/check', {}, {
+		const { data } = await api.patch<{ is_pro: boolean, expired: boolean }>('/subscription/check', {}, {
 			headers: {
 				token: refreshToken,
 			},
 		})
 
-		return data.is_pro
+		return { isPro: data.is_pro, expired: data.expired }
 	} catch (error) {
 		console.error('Error patching subscription', error)
-		return false
+		return { isPro: false, expired: false }
 	}
 }

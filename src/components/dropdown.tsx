@@ -80,7 +80,7 @@ const Dropdown = ({
 				accessibilityLabel={`${label || 'Dropdown'}: ${selectedLabel || placeholder}`}
 				accessibilityRole='button'
 				accessibilityState={{ selected: selectedValue !== undefined }}
-				className={`flex-row justify-between items-center w-full px-4 py-4 rounded-lg border border-border bg-card ${disabled ? 'opacity-50' : ''}`}
+				className={`flex-row justify-between items-center w-full px-4 py-4 rounded-xl border border-border bg-card ${disabled ? 'opacity-50' : ''}`}
 			>
 				<Text className='text-foreground font-medium'>{selectedLabel || placeholder}</Text>
 				<ChevronDown size={16} color={colors.foreground + '80'} />

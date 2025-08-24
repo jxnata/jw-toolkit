@@ -5,13 +5,13 @@ import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { api } from '@/lib/api'
 import { router, Stack } from 'expo-router'
-import { LogOut, Shuffle, Trash } from 'lucide-react-native'
+import { CreditCard, LogOut, Shuffle, Trash } from 'lucide-react-native'
 import { useCallback, useState } from 'react'
 import { Alert, Pressable, Text, View } from 'react-native'
 
 const UserDetails = () => {
 	const { current, loading, congregation, logout } = useSession()
-	const { subscribed } = useSubscription()
+	const { isUserSubscribed, subscribed } = useSubscription()
 	const { colors } = useThemedColors()
 	const [loadingDelete, setLoadingDelete] = useState(false)
 
@@ -29,7 +29,7 @@ const UserDetails = () => {
 	}
 
 	const deleteAccountConfirm = () => {
-		if (subscribed) {
+		if (isUserSubscribed) {
 			Alert.alert('Deletar conta', 'Antes de deletar sua conta, você precisa cancelar sua assinatura.', [
 				{ text: 'Ok', style: 'default' },
 			])
@@ -62,6 +62,10 @@ const UserDetails = () => {
 		}
 	}
 
+	const goToSubscription = () => {
+		router.push('/subscription')
+	}
+
 	const HeaderRight = useCallback(
 		() => (
 			<View className='flex-row'>
@@ -84,7 +88,7 @@ const UserDetails = () => {
 	return (
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal', headerRight: HeaderRight }} />
-			<View className='flex p-2.5 w-full h-full items-center bg-background'>
+			<View className='flex p-3 w-full h-full items-center bg-background'>
 				<Text className='text-5xl text-foreground py-2.5 font-icons'></Text>
 				<Text className='text-lg text-foreground pt-5 font-bold'>{current.name}</Text>
 				<Text className='text-primary pb-5 pt-2.5 font-medium'>{current.email}</Text>
@@ -102,6 +106,17 @@ const UserDetails = () => {
 						Alterar
 					</Button>
 				</View>
+				{!subscribed && (
+					<Button
+						variant='outline'
+						onPress={goToSubscription}
+						disabled={loading || loadingDelete}
+						className='my-6 w-full'
+						left={<CreditCard size={16} color={colors.primary[600]} />}
+					>
+						Assinar versão Pro
+					</Button>
+				)}
 				<Button
 					variant='danger'
 					onPress={handleLogout}

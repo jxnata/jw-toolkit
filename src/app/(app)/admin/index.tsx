@@ -1,24 +1,28 @@
 import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
 import { useSession } from '@/contexts/session-provider'
+import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Link, Stack, useRouter } from 'expo-router'
-import { UserCircle2 } from 'lucide-react-native'
+import { CircleAlert, UserCircle2 } from 'lucide-react-native'
 import { useCallback } from 'react'
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const Admin = () => {
 	const router = useRouter()
+	const insets = useSafeAreaInsets()
+	const { expired, subscribed } = useSubscription()
 	const { congregation, logout } = useSession()
 	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
 		() => (
-			<View className='flex flex-row justify-center items-center gap-[15px]'>
-				<Pressable onPress={() => router.push('/admin/me')}>
+			<View className='flex flex-row justify-center items-center gap-base'>
+				<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')}>
 					<UserCircle2 size={24} color={colors.foreground} />
-				</Pressable>
+				</TouchableOpacity>
 			</View>
 		),
 		[router, colors]
@@ -41,7 +45,6 @@ const Admin = () => {
 				<Button onPress={logout}>Sair</Button>
 			</View>
 		)
-	// if (!congregation) return null
 
 	return (
 		<Animated.View className='flex' entering={FadeInDown}>
@@ -53,54 +56,67 @@ const Admin = () => {
 				</View>
 
 				<Link href='/admin/publishers' asChild>
-					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
-						<View className='flex flex-row items-center gap-2.5'>
-							<Text className='text-[32px] font-icons text-primary'></Text>
-							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Publicadores</Text>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
+					>
+						<View className='flex flex-row items-center gap-3'>
+							<Text className='text-4xl font-icons text-primary'></Text>
+							<Text className='text-base text-foreground font-semibold'>Publicadores</Text>
 						</View>
-						<View className='flex flex-row items-center gap-2.5'></View>
-					</Pressable>
+						<View className='flex flex-row items-center gap-3'></View>
+					</TouchableOpacity>
 				</Link>
 
 				<Link href='/admin/maps' asChild>
-					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
-						<View className='flex flex-row items-center gap-2.5'>
-							<Text className='text-[32px] font-icons text-primary'></Text>
-							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Mapas</Text>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
+					>
+						<View className='flex flex-row items-center gap-3'>
+							<Text className='text-4xl font-icons text-primary'></Text>
+							<Text className='text-base text-foreground font-semibold'>Mapas</Text>
 						</View>
-						<View className='flex flex-row items-center gap-2.5'></View>
-					</Pressable>
+						<View className='flex flex-row items-center gap-3'></View>
+					</TouchableOpacity>
 				</Link>
 
 				<Link href='/admin/assignments' asChild>
-					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
-						<View className='flex flex-row items-center gap-2.5'>
-							<Text className='text-[32px] font-icons text-primary'></Text>
-							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Designações</Text>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
+					>
+						<View className='flex flex-row items-center gap-3'>
+							<Text className='text-4xl font-icons text-primary'></Text>
+							<Text className='text-base text-foreground font-semibold'>Designações</Text>
 						</View>
-						<View className='flex flex-row items-center gap-2.5'></View>
-					</Pressable>
+						<View className='flex flex-row items-center gap-3'></View>
+					</TouchableOpacity>
 				</Link>
 
 				<Link href='/admin/cities' asChild>
-					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
-						<View className='flex flex-row items-center gap-2.5'>
-							<Text className='text-[32px] font-icons text-primary'></Text>
-							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Cidades</Text>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
+					>
+						<View className='flex flex-row items-center gap-3'>
+							<Text className='text-4xl font-icons text-primary'></Text>
+							<Text className='text-base text-foreground font-semibold'>Cidades</Text>
 						</View>
-						<View className='flex flex-row items-center gap-2.5'></View>
-					</Pressable>
+						<View className='flex flex-row items-center gap-3'></View>
+					</TouchableOpacity>
 				</Link>
 
-				<Pressable
+				<TouchableOpacity
+					activeOpacity={0.7}
 					onPress={confirmExport}
-					className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'
+					className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
 				>
-					<View className='flex flex-row items-center gap-2.5'>
-						<Text className='text-[32px] font-icons text-primary'></Text>
-						<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Exportar mapas</Text>
+					<View className='flex flex-row items-center gap-3'>
+						<Text className='text-4xl font-icons text-primary'></Text>
+						<Text className='text-base text-foreground font-semibold'>Exportar mapas</Text>
 					</View>
-				</Pressable>
+				</TouchableOpacity>
 
 				<View className='flex flex-row items-center w-full gap-2 my-2'>
 					<Text className='text-foreground text-sm py-2 font-medium opacity-70'>PUBLICADOR</Text>
@@ -108,16 +124,41 @@ const Admin = () => {
 				</View>
 
 				<Link href='/admin/my-assignments' asChild>
-					<Pressable className='flex flex-row items-center justify-between w-full rounded-[10px] bg-card p-5 gap-2.5'>
-						<View className='flex flex-row items-center gap-2.5'>
-							<Text className='text-[32px] font-icons text-primary'></Text>
-							<Text className='text-[15px] text-foreground pl-2.5 font-semibold'>Minhas designações</Text>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
+					>
+						<View className='flex flex-row items-center gap-3'>
+							<Text className='text-4xl font-icons text-primary'></Text>
+							<Text className='text-base text-foreground font-semibold'>Minhas designações</Text>
 						</View>
-					</Pressable>
+					</TouchableOpacity>
 				</Link>
+
+				{expired && (
+					<View className='flex flex-col gap-4'>
+						<View className='h-[1px] w-full bg-foreground opacity-20 mt-2' />
+						<Link href='/subscription' asChild>
+							<TouchableOpacity
+								activeOpacity={0.7}
+								className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3 border border-danger'
+							>
+								<View className='flex flex-row items-center gap-3'>
+									<CircleAlert size={24} color={colors.danger[500]} />
+									<Text className='text-base text-foreground font-semibold flex-1'>
+										A assinatura da sua congregação está expirada, toque aqui para renová-la.
+									</Text>
+								</View>
+							</TouchableOpacity>
+						</Link>
+					</View>
+				)}
 			</ScrollView>
 
-			<Text className='text-xs text-foreground py-2.5 font-medium absolute bottom-[50px] self-center'>
+			<Text
+				className='text-xs text-foreground font-medium absolute self-center'
+				style={{ bottom: insets.bottom + 10 }}
+			>
 				Versão: {APP_VERSION}
 			</Text>
 		</Animated.View>

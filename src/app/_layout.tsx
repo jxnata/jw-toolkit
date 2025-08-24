@@ -2,7 +2,7 @@ import { Loading } from '@/components/loading'
 import '../../global.css'
 
 import { LimitGuard } from '@/components/limit-guard'
-import { REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
+import { ONESIGNAL_APP_ID, REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
 import { LocationProvider } from '@/contexts/location-provider'
@@ -13,7 +13,6 @@ import { storage } from '@/database'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import Constants from 'expo-constants'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -42,7 +41,7 @@ export default function Layout() {
 	}, [isLoaded])
 
 	useEffect(() => {
-		OneSignal.initialize(Constants.expoConfig!.extra!.oneSignalAppId)
+		OneSignal.initialize(ONESIGNAL_APP_ID)
 		OneSignal.Notifications.requestPermission(true)
 
 		if (Platform.OS === 'ios') {

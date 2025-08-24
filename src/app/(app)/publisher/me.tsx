@@ -75,7 +75,7 @@ const UserDetails = () => {
 	return (
 		<View className='flex'>
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal', headerRight: HeaderRight }} />
-			<View className='flex p-2.5 w-full h-full items-center bg-background'>
+			<View className='flex p-3 w-full h-full items-center bg-background'>
 				<Text className='text-5xl text-foreground py-2.5 font-icons'></Text>
 				<Text className='text-lg text-foreground pt-5 font-bold'>{current.name}</Text>
 				<Text className='text-primary pb-5 pt-2.5 font-medium'>{current.email}</Text>
