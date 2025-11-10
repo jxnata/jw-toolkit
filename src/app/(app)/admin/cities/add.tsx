@@ -24,18 +24,18 @@ const AddCity = () => {
 				name: data.name,
 				congregationId: congregation.id,
 			})
-			success('cidade')
+			success('cidade/território')
 			mutate()
 			router.back()
 		} catch (err) {
-			error('cidade')
+			error('cidade/território')
 			console.error('Failed to create city:', err)
 		}
 	}
 
 	return (
 		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-			<Stack.Screen options={{ title: 'Nova Cidade' }} />
+			<Stack.Screen options={{ title: 'Nova Cidade/Território' }} />
 			<View className='flex px-4 py-2 w-full h-full bg-background'>
 				<Controller
 					control={control}
@@ -44,7 +44,7 @@ const AddCity = () => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
 							label='Nome'
-							placeholder='Nome da cidade'
+							placeholder='Nome da cidade ou território'
 							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}

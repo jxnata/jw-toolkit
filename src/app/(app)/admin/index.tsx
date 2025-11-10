@@ -1,11 +1,12 @@
 import Button from '@/components/button'
 import { APP_VERSION } from '@/constants/content'
 import { useSession } from '@/contexts/session-provider'
+import { storage } from '@/database/index'
 import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { Link, Stack, useRouter } from 'expo-router'
+import { Link, Redirect, Stack, useRouter } from 'expo-router'
 import { CircleAlert, UserCircle2 } from 'lucide-react-native'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -16,14 +17,21 @@ const Admin = () => {
 	const { expired, subscribed } = useSubscription()
 	const { congregation, logout } = useSession()
 	const { colors } = useThemedColors()
+	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
+
+	useEffect(() => {
+		const accepted = storage.getBoolean('privacy.policy.accepted') ?? false
+		setPrivacyAccepted(accepted)
+		if (!accepted) {
+			router.replace('/privacy-policy')
+		}
+	}, [router])
 
 	const HeaderRight = useCallback(
 		() => (
-			<View className='flex flex-row justify-center items-center gap-base'>
-				<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')}>
-					<UserCircle2 size={24} color={colors.foreground} />
-				</TouchableOpacity>
-			</View>
+			<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className='p-2'>
+				<UserCircle2 size={24} color={colors.foreground} />
+			</TouchableOpacity>
 		),
 		[router, colors]
 	)
@@ -37,6 +45,10 @@ const Admin = () => {
 				{ text: 'Exportar', onPress: () => router.push('/admin/export') },
 			]
 		)
+	}
+
+	if (!privacyAccepted) {
+		return <Redirect href='/privacy-blocked' />
 	}
 
 	if (!congregation)
@@ -101,7 +113,7 @@ const Admin = () => {
 					>
 						<View className='flex flex-row items-center gap-3'>
 							<Text className='text-4xl font-icons text-primary'></Text>
-							<Text className='text-base text-foreground font-semibold'>Cidades</Text>
+							<Text className='text-base text-foreground font-semibold'>Cidades/Territórios</Text>
 						</View>
 						<View className='flex flex-row items-center gap-3'></View>
 					</TouchableOpacity>

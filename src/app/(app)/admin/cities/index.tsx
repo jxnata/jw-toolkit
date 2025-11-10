@@ -33,7 +33,7 @@ const Cities = () => {
 		return (
 			<Input
 				autoCorrect={false}
-				placeholder='Buscar uma cidade...'
+				placeholder='Buscar uma cidade/território...'
 				onChangeText={debouncedSearch}
 				clearButtonMode='always'
 			/>
@@ -42,7 +42,7 @@ const Cities = () => {
 
 	return (
 		<View className='flex'>
-			<Stack.Screen options={{ title: 'Cidades', headerRight: HeaderRight }} />
+			<Stack.Screen options={{ title: 'Cidades/Territórios', headerRight: HeaderRight }} />
 			<View className='flex p-4 w-full h-full bg-background'>
 				<FlatList
 					ListHeaderComponent={<ListHeaderComponent />}
@@ -66,7 +66,9 @@ const Cities = () => {
 					ListFooterComponent={() => <View className='h-[60px]' />}
 					ListEmptyComponent={
 						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-regular opacity-80'>Nenhuma cidade encontrada</Text>
+							<Text className='text-foreground font-regular opacity-80'>
+								Nenhuma cidade/território encontrado
+							</Text>
 						</View>
 					}
 				/>

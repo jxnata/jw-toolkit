@@ -5,6 +5,7 @@ export type AddMapReq = {
 	district?: string
 	city: string
 	coordinates: string
+	tag?: string
 }
 
 export type AddMapRes = {
@@ -18,6 +19,7 @@ export type EditMapReq = {
 	district?: string
 	city: string
 	coordinates: string
+	tag?: string
 }
 
 export type EditMapRes = {

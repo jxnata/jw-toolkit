@@ -6,7 +6,7 @@ type Props = {
 	search?: string
 	city?: string
 	district?: string
-	status?: 'assigned' | 'unassigned' | ''
+	status?: 'assigned' | 'unassigned' | 'no-visit' | ''
 	enabled?: boolean
 	limit?: number
 	offset?: number
@@ -38,6 +38,7 @@ const useMaps = (props: Props = {
 	// Build where conditions
 	const whereConditions: any = {
 		congregation: congregation ? congregation.id : null,
+		tag: { $not: 'nao-visitar' },
 	}
 
 	if (search) {
@@ -60,6 +61,8 @@ const useMaps = (props: Props = {
 		whereConditions.assigned = { $isNull: false }
 	} else if (status === 'unassigned') {
 		whereConditions.assigned = { $isNull: true }
+	} else if (status === 'no-visit') {
+		whereConditions.tag = 'nao-visitar'
 	}
 
 	const { data, isLoading, error } = db.useQuery(

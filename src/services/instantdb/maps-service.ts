@@ -15,6 +15,7 @@ export interface CreateMapInput {
 	cityId: string
 	congregationId: string
 	assignedId?: string
+	tag?: string
 }
 
 export interface MapResponse {
@@ -39,6 +40,7 @@ class MapsService {
 			found: input.found,
 			visited: input.visited?.toISOString(),
 			visited_by: input.visited_by,
+			tag: input.tag,
 		}
 
 		const links: Record<string, string> = {
@@ -53,8 +55,8 @@ class MapsService {
 		await db.transact(db.tx.maps[id()].update(mapData).link(links))
 	}
 
-	async updateMap(mapId: string, updates: Partial<Map>): Promise<void> {
-		await db.transact(db.tx.maps[mapId].update(updates))
+	async updateMap(mapId: string, updates: Partial<Map>, links?: Record<string, string>): Promise<void> {
+		await db.transact(db.tx.maps[mapId].update(updates).link(links || {}))
 	}
 
 	async assignMap(mapId: string, publisherId: string | null): Promise<void> {

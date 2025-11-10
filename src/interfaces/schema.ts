@@ -29,6 +29,7 @@ const _schema = i.schema({
 			name: i.string().indexed(),
 			visited: i.date().optional().indexed(),
 			visited_by: i.string().optional(),
+			tag: i.string().optional().indexed(),
 		}),
 		publishers: i.entity({
 			approved: i.boolean().optional(),

@@ -7,8 +7,10 @@ import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
 import { Dimensions, Image, Pressable, Text, View } from 'react-native'
 
+import { STATUS_NAME } from '@/constants/content'
 import { Map } from '@/interfaces'
 import { firstName } from '@/utils/first-name'
+import { getBadgeColor } from '@/utils/get-badge-color'
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -49,14 +51,14 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 		<Pressable onPress={onPress} className='flex flex-row mb-2 w-full rounded-lg bg-card p-2.5 gap-2.5'>
 			{map.assigned ? (
 				<View
-					className='absolute top-[5px] right-[5px] px-[5px] py-0.5 rounded-[5px]'
+					className='absolute bottom-2 right-2 z-10 px-[5px] py-0.5 rounded-[5px]'
 					style={{ backgroundColor: colors.primary[600] }}
 				>
 					<Text className='font-semibold text-[10px] text-white'>DESIGNADO</Text>
 				</View>
 			) : (
 				<View
-					className='absolute top-[5px] right-[5px] px-[5px] py-0.5 rounded-[5px]'
+					className='absolute bottom-2 right-2 z-10 px-[5px] py-0.5 rounded-[5px]'
 					style={{ backgroundColor: colors.success.DEFAULT }}
 				>
 					<Text className='font-semibold text-[10px] text-white'>LIVRE</Text>
@@ -71,7 +73,7 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				/>
 			</View>
 
-			<View className='flex'>
+			<View className='flex-col flex-1 gap-1'>
 				<Text
 					className='text-foreground font-medium flex-wrap'
 					style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}
@@ -88,7 +90,7 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 				</Text>
 				{!!map.visited ? (
 					<View className='flex'>
-						<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
+						<Text className='font-regular text-xs' style={{ color: colors.foreground + '80' }}>
 							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
 							{formatDate(map.visited)}
 						</Text>
@@ -107,10 +109,17 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 						Ainda não visitado
 					</Text>
 				)}
+				{map.tag && (
+					<View className={`${getBadgeColor(map.tag)} px-2 py-1 rounded-xl absolute -top-1 -right-1`}>
+						<Text className='text-white text-xs font-medium'>
+							{STATUS_NAME[map.tag as keyof typeof STATUS_NAME]}
+						</Text>
+					</View>
+				)}
 			</View>
 
 			<View
-				className='absolute bottom-[5px] right-[5px] px-[5px] py-0.5 rounded-[5px]'
+				className='absolute bottom-2 left-2 px-2 py-0.5 rounded-[5px]'
 				style={{ backgroundColor: colors.background }}
 			>
 				<Text className='font-bold text-[10px]' style={{ color: colors.foreground + '80' }}>

@@ -16,7 +16,7 @@ const Maps = () => {
 	const router = useRouter()
 	const [searchInput, setSearchInput] = useState('')
 	const [searchCity, setSearchCity] = useState('')
-	const [status, setStatus] = useState<'assigned' | 'unassigned' | ''>('')
+	const [status, setStatus] = useState<'assigned' | 'unassigned' | 'no-visit' | ''>('')
 	const [showFilter, setFilter] = useState(true)
 	const { colors } = useThemedColors()
 
@@ -86,6 +86,7 @@ const Maps = () => {
 										{ label: 'Todos', value: '' },
 										{ label: 'Designados', value: 'assigned' },
 										{ label: 'Livres', value: 'unassigned' },
+										{ label: 'Não visitar', value: 'no-visit' },
 									]}
 									selectedValue={status}
 									onValueChange={setStatus}

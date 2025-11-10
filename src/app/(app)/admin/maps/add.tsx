@@ -2,6 +2,7 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
 import SelectLocation from '@/components/select-location'
+import { STATUS_LIST } from '@/constants/content'
 import { useSession } from '@/contexts/session-provider'
 import useCities from '@/hooks/use-cities'
 import { useLimitCheck } from '@/hooks/use-limit-check'
@@ -57,6 +58,7 @@ const AddMap = () => {
 				details: data.details,
 				lat,
 				lng,
+				tag: data.tag,
 				cityId: data.city,
 				congregationId: congregation.id,
 			})
@@ -168,6 +170,20 @@ const AddMap = () => {
 								label='Cidade'
 								placeholder='Selecione uma cidade...'
 								options={citiesList}
+								selectedValue={value}
+								onValueChange={onChange}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						rules={{ required: true }}
+						name='tag'
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Dropdown
+								label='Status'
+								placeholder='Selecione um status...'
+								options={STATUS_LIST}
 								selectedValue={value}
 								onValueChange={onChange}
 							/>

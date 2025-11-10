@@ -13,11 +13,10 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Pencil, Trash } from 'lucide-react-native'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
-import { OneSignal } from 'react-native-onesignal'
 
 const ViewMap = () => {
 	const { data } = useLocalSearchParams()
@@ -100,13 +99,6 @@ const ViewMap = () => {
 		[map, showDeleteAlert, params.id, colors]
 	)
 
-	useEffect(() => {
-		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			event.preventDefault()
-			// InstantDB automatically updates in real-time
-		})
-	}, [])
-
 	return (
 		<View className='flex'>
 			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
@@ -128,9 +120,15 @@ const ViewMap = () => {
 												options={publisherList}
 												selectedValue={value}
 												onValueChange={onChange}
+												disabled={map.tag === 'nao-visitar'}
 											/>
 										)}
 									/>
+									{map.tag === 'nao-visitar' && (
+										<Text className='text-danger-500 py-2 font-medium'>
+											Não é possível designar esse mapa pois está marcado como "não visitar".
+										</Text>
+									)}
 									<View className='mt-2'>
 										{formState.isValid && (
 											<Button

@@ -3,7 +3,7 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.1.5",
+		"version": "1.1.6",
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
@@ -19,8 +19,13 @@
 			"usesAppleSignIn": true,
 			"googleServicesFile": "./GoogleService-Info.plist",
 			"infoPlist": {
+				"UIBackgroundModes": ["remote-notification"],
 				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada.",
 				"ITSAppUsesNonExemptEncryption": false
+			},
+			"entitlements": {
+				"aps-environment": "production",
+				"com.apple.security.application-groups": ["group.dev.jxnata.jwtoolkit.onesignal"]
 			},
 			"appleTeamId": "N9G6UA9982",
 			"config": {
@@ -56,6 +61,13 @@
 			"bundler": "metro"
 		},
 		"plugins": [
+			[
+				"onesignal-expo-plugin",
+				{
+					"mode": "production",
+					"devTeam": "N9G6UA9982"
+				}
+			],
 			"expo-router",
 			"expo-font",
 			"expo-apple-authentication",
@@ -64,12 +76,6 @@
 				"@react-native-google-signin/google-signin",
 				{
 					"iosUrlScheme": "com.googleusercontent.apps.561014260561-au4cn876vvjtjqhugoakvbiebsmpnlj1"
-				}
-			],
-			[
-				"onesignal-expo-plugin",
-				{
-					"mode": "production"
 				}
 			],
 			[

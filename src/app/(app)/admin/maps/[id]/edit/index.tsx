@@ -2,6 +2,7 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
 import SelectLocation from '@/components/select-location'
+import { STATUS_LIST } from '@/constants/content'
 import useCities from '@/hooks/use-cities'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
@@ -34,6 +35,7 @@ const EditMap = () => {
 						details: params.details,
 						city: params.city.id,
 						coordinates: getCoordinates([params.lat, params.lng]),
+						tag: params.tag,
 					}
 				: undefined,
 		[params]
@@ -55,14 +57,19 @@ const EditMap = () => {
 		}
 
 		try {
-			await mapsService.updateMap(params.id, {
-				name: data.name,
-				address: data.address,
-				district: data.district,
-				details: data.details,
-				lat,
-				lng,
-			})
+			await mapsService.updateMap(
+				params.id,
+				{
+					name: data.name,
+					address: data.address,
+					district: data.district,
+					details: data.details,
+					lat,
+					lng,
+					tag: data.tag,
+				},
+				data.city ? { city: data.city } : undefined
+			)
 
 			success('mapa')
 
@@ -173,6 +180,20 @@ const EditMap = () => {
 								label='Cidade'
 								placeholder='Selecione uma cidade...'
 								options={citiesList}
+								selectedValue={value}
+								onValueChange={onChange}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						rules={{ required: true }}
+						name='tag'
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Dropdown
+								label='Status'
+								placeholder='Selecione um status...'
+								options={STATUS_LIST}
 								selectedValue={value}
 								onValueChange={onChange}
 							/>

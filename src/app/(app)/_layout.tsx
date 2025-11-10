@@ -46,6 +46,8 @@ export default function Layout() {
 			<Stack.Screen name='admin/my-assignments/[id]' options={{ presentation: 'modal', headerShown: false }} />
 			<Stack.Screen name='select-congregation' options={{ presentation: 'modal' }} />
 			<Stack.Screen name='limit-alert' options={{ presentation: 'modal' }} />
+			<Stack.Screen name='privacy-policy' options={{ presentation: 'modal' }} />
+			<Stack.Screen name='privacy-blocked' options={{ presentation: 'modal' }} />
 		</Stack>
 	)
 }

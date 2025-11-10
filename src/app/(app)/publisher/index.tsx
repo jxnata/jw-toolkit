@@ -1,11 +1,12 @@
 import AssignmentItem from '@/components/assignment-item'
 import SkeletonItem from '@/components/skeleton-item'
+import { storage } from '@/database/index'
 import { useLocation } from '@/hooks/use-location'
 import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { Stack, useRouter } from 'expo-router'
+import { Redirect, Stack, useRouter } from 'expo-router'
 import { Map, UserCircle2 } from 'lucide-react-native'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { OneSignal } from 'react-native-onesignal'
 import Animated, { FadeInDown } from 'react-native-reanimated'
@@ -15,6 +16,15 @@ const PublisherHome = () => {
 	const { location } = useLocation()
 	const { assignments, loading, mutate } = useMyAssignments()
 	const { colors } = useThemedColors()
+	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
+
+	useEffect(() => {
+		const accepted = storage.getBoolean('privacy.policy.accepted') ?? false
+		setPrivacyAccepted(accepted)
+		if (!accepted) {
+			router.replace('/privacy-policy')
+		}
+	}, [router])
 
 	const HeaderRight = useCallback(
 		() => (
@@ -34,6 +44,10 @@ const PublisherHome = () => {
 			event.getNotification().display()
 		})
 	}, [mutate])
+
+	if (!privacyAccepted) {
+		return <Redirect href='/privacy-blocked' />
+	}
 
 	return (
 		<Animated.View className='flex' entering={FadeInDown}>

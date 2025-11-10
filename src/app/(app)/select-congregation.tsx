@@ -185,7 +185,7 @@ const SelectCongregation = () => {
 				</View>
 			) : (
 				<View className='px-4 flex-1'>
-					<Text className='font-regular text-center text-lg text-foreground mb-3'>
+					<Text className='font-regular text-center text-lg text-foreground my-3'>
 						Você faz o pagamento da assinatura, por isso não é possível alterar a congregação.
 					</Text>
 				</View>

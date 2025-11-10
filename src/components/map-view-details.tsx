@@ -45,7 +45,7 @@ const MapViewDetails = ({ map, showImage }: MapProps) => {
 					className='text-foreground font-medium flex-wrap'
 					style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}
 				>
-					{map.city.name} - {map.name}
+					{map.city?.name} - {map.name}
 				</Text>
 				<Text
 					numberOfLines={2}
