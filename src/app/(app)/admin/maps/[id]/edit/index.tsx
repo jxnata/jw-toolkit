@@ -117,7 +117,7 @@ const EditMap = () => {
 					/>
 					<Controller
 						control={control}
-						rules={{ required: true }}
+						rules={{ required: false }}
 						name='district'
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
@@ -187,8 +187,8 @@ const EditMap = () => {
 					/>
 					<Controller
 						control={control}
-						rules={{ required: true }}
 						name='tag'
+						rules={{ required: false }}
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Dropdown
 								label='Status'

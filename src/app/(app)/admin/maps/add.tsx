@@ -108,7 +108,7 @@ const AddMap = () => {
 					/>
 					<Controller
 						control={control}
-						rules={{ required: true }}
+						rules={{ required: false }}
 						name='district'
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
@@ -177,7 +177,6 @@ const AddMap = () => {
 					/>
 					<Controller
 						control={control}
-						rules={{ required: true }}
 						name='tag'
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Dropdown
