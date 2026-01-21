@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 const Admin = () => {
 	const router = useRouter()
 	const insets = useSafeAreaInsets()
-	const { expired, subscribed } = useSubscription()
+	const { expired } = useSubscription()
 	const { congregation, logout } = useSession()
 	const { colors } = useThemedColors()
 	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
@@ -29,7 +29,7 @@ const Admin = () => {
 
 	const HeaderRight = useCallback(
 		() => (
-			<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className='p-2'>
+			<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className="p-2">
 				<UserCircle2 size={24} color={colors.foreground} />
 			</TouchableOpacity>
 		),
@@ -48,116 +48,109 @@ const Admin = () => {
 	}
 
 	if (!privacyAccepted) {
-		return <Redirect href='/privacy-blocked' />
+		return <Redirect href="/privacy-blocked" />
 	}
 
 	if (!congregation)
 		return (
-			<View className='flex-1 items-center justify-center'>
+			<View className="flex-1 items-center justify-center">
 				<Button onPress={logout}>Sair</Button>
 			</View>
 		)
 
 	return (
-		<Animated.View className='flex' entering={FadeInDown}>
+		<Animated.View className="flex" entering={FadeInDown}>
 			<Stack.Screen options={{ title: congregation.name, headerRight: HeaderRight }} />
-			<ScrollView className='flex p-3 w-full h-full bg-background' contentContainerClassName='gap-2'>
-				<View className='flex flex-row items-center w-full gap-2 my-2'>
-					<Text className='text-foreground text-sm py-2 font-medium opacity-70'>ADMINISTRADOR</Text>
-					<View className='h-[1px] w-full bg-foreground opacity-20' />
+			<ScrollView className="flex h-full w-full bg-background p-3" contentContainerClassName="gap-2">
+				<View className="my-2 flex w-full flex-row items-center gap-2">
+					<Text className="py-2 font-medium text-sm text-foreground opacity-70">ADMINISTRADOR</Text>
+					<View className="h-[1px] w-full bg-foreground opacity-20" />
 				</View>
 
-				<Link href='/admin/publishers' asChild>
+				<Link href="/admin/publishers" asChild>
 					<TouchableOpacity
 						activeOpacity={0.7}
-						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
-					>
-						<View className='flex flex-row items-center gap-3'>
-							<Text className='text-4xl font-icons text-primary'></Text>
-							<Text className='text-base text-foreground font-semibold'>Publicadores</Text>
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Publicadores</Text>
 						</View>
-						<View className='flex flex-row items-center gap-3'></View>
+						<View className="flex flex-row items-center gap-3"></View>
 					</TouchableOpacity>
 				</Link>
 
-				<Link href='/admin/maps' asChild>
+				<Link href="/admin/maps" asChild>
 					<TouchableOpacity
 						activeOpacity={0.7}
-						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
-					>
-						<View className='flex flex-row items-center gap-3'>
-							<Text className='text-4xl font-icons text-primary'></Text>
-							<Text className='text-base text-foreground font-semibold'>Mapas</Text>
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Mapas</Text>
 						</View>
-						<View className='flex flex-row items-center gap-3'></View>
+						<View className="flex flex-row items-center gap-3"></View>
 					</TouchableOpacity>
 				</Link>
 
-				<Link href='/admin/assignments' asChild>
+				<Link href="/admin/assignments" asChild>
 					<TouchableOpacity
 						activeOpacity={0.7}
-						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
-					>
-						<View className='flex flex-row items-center gap-3'>
-							<Text className='text-4xl font-icons text-primary'></Text>
-							<Text className='text-base text-foreground font-semibold'>Designações</Text>
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Designações</Text>
 						</View>
-						<View className='flex flex-row items-center gap-3'></View>
+						<View className="flex flex-row items-center gap-3"></View>
 					</TouchableOpacity>
 				</Link>
 
-				<Link href='/admin/cities' asChild>
+				<Link href="/admin/cities" asChild>
 					<TouchableOpacity
 						activeOpacity={0.7}
-						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
-					>
-						<View className='flex flex-row items-center gap-3'>
-							<Text className='text-4xl font-icons text-primary'></Text>
-							<Text className='text-base text-foreground font-semibold'>Cidades/Territórios</Text>
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Cidades/Territórios</Text>
 						</View>
-						<View className='flex flex-row items-center gap-3'></View>
+						<View className="flex flex-row items-center gap-3"></View>
 					</TouchableOpacity>
 				</Link>
 
 				<TouchableOpacity
 					activeOpacity={0.7}
 					onPress={confirmExport}
-					className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
-				>
-					<View className='flex flex-row items-center gap-3'>
-						<Text className='text-4xl font-icons text-primary'></Text>
-						<Text className='text-base text-foreground font-semibold'>Exportar mapas</Text>
+					className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+					<View className="flex flex-row items-center gap-3">
+						<Text className="font-icons text-4xl text-primary"></Text>
+						<Text className="font-semibold text-base text-foreground">Exportar mapas</Text>
 					</View>
 				</TouchableOpacity>
 
-				<View className='flex flex-row items-center w-full gap-2 my-2'>
-					<Text className='text-foreground text-sm py-2 font-medium opacity-70'>PUBLICADOR</Text>
-					<View className='h-[1px] w-full bg-foreground opacity-20' />
+				<View className="my-2 flex w-full flex-row items-center gap-2">
+					<Text className="py-2 font-medium text-sm text-foreground opacity-70">PUBLICADOR</Text>
+					<View className="h-[1px] w-full bg-foreground opacity-20" />
 				</View>
 
-				<Link href='/admin/my-assignments' asChild>
+				<Link href="/admin/my-assignments" asChild>
 					<TouchableOpacity
 						activeOpacity={0.7}
-						className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3'
-					>
-						<View className='flex flex-row items-center gap-3'>
-							<Text className='text-4xl font-icons text-primary'></Text>
-							<Text className='text-base text-foreground font-semibold'>Minhas designações</Text>
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Minhas designações</Text>
 						</View>
 					</TouchableOpacity>
 				</Link>
 
 				{expired && (
-					<View className='flex flex-col gap-4'>
-						<View className='h-[1px] w-full bg-foreground opacity-20 mt-2' />
-						<Link href='/subscription' asChild>
+					<View className="flex flex-col gap-4">
+						<View className="mt-2 h-[1px] w-full bg-foreground opacity-20" />
+						<Link href="/subscription" asChild>
 							<TouchableOpacity
 								activeOpacity={0.7}
-								className='flex flex-row items-center justify-between w-full rounded-xl bg-card p-4 gap-3 border border-danger'
-							>
-								<View className='flex flex-row items-center gap-3'>
+								className="flex w-full flex-row items-center justify-between gap-3 rounded-xl border border-danger bg-card p-4">
+								<View className="flex flex-row items-center gap-3">
 									<CircleAlert size={24} color={colors.danger[500]} />
-									<Text className='text-base text-foreground font-semibold flex-1'>
+									<Text className="flex-1 font-semibold text-base text-foreground">
 										A assinatura da sua congregação está expirada, toque aqui para renová-la.
 									</Text>
 								</View>
@@ -167,10 +160,7 @@ const Admin = () => {
 				)}
 			</ScrollView>
 
-			<Text
-				className='text-xs text-foreground font-medium absolute self-center'
-				style={{ bottom: insets.bottom + 10 }}
-			>
+			<Text className="absolute self-center font-medium text-xs text-foreground" style={{ bottom: insets.bottom + 10 }}>
 				Versão: {APP_VERSION}
 			</Text>
 		</Animated.View>

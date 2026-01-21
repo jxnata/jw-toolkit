@@ -24,18 +24,18 @@ const AddMap = () => {
 	const { cities } = useCities()
 	const { congregation } = useSession()
 	const { checkMapLimit } = useLimitCheck()
-	const { control, formState, handleSubmit, setValue, getValues, watch } = useForm<AddMapReq>()
+	const { control, formState, handleSubmit, setValue, watch } = useForm<AddMapReq>()
 	const { colors } = useThemedColors()
 
 	const coordinates = watch('coordinates')
 
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.id })), [cities])
+	const citiesList = useMemo(() => cities.map((c) => ({ label: c.name, value: c.id })), [cities])
 
 	const toggleMap = () => {
-		setModalVisible(old => !old)
+		setModalVisible((old) => !old)
 	}
 
-	const save: SubmitHandler<AddMapReq> = async data => {
+	const save: SubmitHandler<AddMapReq> = async (data) => {
 		if (!congregation) return
 
 		// Check if map limit is reached
@@ -72,18 +72,18 @@ const AddMap = () => {
 	}
 
 	return (
-		<View className='flex-1 bg-background'>
+		<View className="flex-1 bg-background">
 			<Stack.Screen options={{ title: 'Novo Mapa' }} />
 			<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName='p-4 w-full'>
+				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName="p-4 w-full">
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='name'
+						name="name"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Nome'
-								placeholder='Nome do mapa'
+								label="Nome"
+								placeholder="Nome do mapa"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -94,11 +94,11 @@ const AddMap = () => {
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='address'
+						name="address"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Endereço'
-								placeholder='Endereço'
+								label="Endereço"
+								placeholder="Endereço"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -109,11 +109,11 @@ const AddMap = () => {
 					<Controller
 						control={control}
 						rules={{ required: false }}
-						name='district'
+						name="district"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Bairro'
-								placeholder='Bairro'
+								label="Bairro"
+								placeholder="Bairro"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -124,11 +124,11 @@ const AddMap = () => {
 					<Controller
 						control={control}
 						rules={{ required: false }}
-						name='details'
+						name="details"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Detalhes'
-								placeholder='Detalhes ou observações'
+								label="Detalhes"
+								placeholder="Detalhes ou observações"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -136,16 +136,16 @@ const AddMap = () => {
 							/>
 						)}
 					/>
-					<View className='flex-row gap-2 items-end'>
-						<View className='flex-1'>
+					<View className="flex-row items-end gap-2">
+						<View className="flex-1">
 							<Controller
 								control={control}
 								rules={{ required: true }}
-								name='coordinates'
+								name="coordinates"
 								render={({ field: { onChange, onBlur, value } }) => (
 									<Input
-										label='Coordenadas'
-										placeholder='Coordenadas'
+										label="Coordenadas"
+										placeholder="Coordenadas"
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}
@@ -154,21 +154,18 @@ const AddMap = () => {
 								)}
 							/>
 						</View>
-						<TouchableOpacity
-							onPress={toggleMap}
-							className='mb-3 p-3 bg-card border border-border rounded-lg'
-						>
+						<TouchableOpacity onPress={toggleMap} className="mb-3 rounded-lg border border-border bg-card p-3">
 							<MapPinPlus size={24} color={colors.primary[500]} />
 						</TouchableOpacity>
 					</View>
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='city'
+						name="city"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Dropdown
-								label='Cidade'
-								placeholder='Selecione uma cidade...'
+								label="Cidade"
+								placeholder="Selecione uma cidade..."
 								options={citiesList}
 								selectedValue={value}
 								onValueChange={onChange}
@@ -177,33 +174,30 @@ const AddMap = () => {
 					/>
 					<Controller
 						control={control}
-						name='tag'
+						name="tag"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Dropdown
-								label='Status'
-								placeholder='Selecione um status...'
+								label="Status"
+								placeholder="Selecione um status..."
 								options={STATUS_LIST}
 								selectedValue={value}
 								onValueChange={onChange}
 							/>
 						)}
 					/>
-					<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
+					<Modal animationType="slide" transparent visible={modalVisible} onRequestClose={toggleMap}>
 						<SelectLocation
-							onSelect={coord => setValue('coordinates', getCoordinates(coord))}
+							onSelect={(coord) => setValue('coordinates', getCoordinates(coord))}
 							onClose={toggleMap}
-							initial={
-								coordinates ? { coordinates: getMapRegion(setCoordinates(coordinates)) } : undefined
-							}
+							initial={coordinates ? { coordinates: getMapRegion(setCoordinates(coordinates)) } : undefined}
 						/>
 					</Modal>
 					<Button
 						disabled={!formState.isValid}
 						loading={formState.isSubmitting}
 						onPress={handleSubmit(save)}
-						className='mt-4'
-						left={<Save size={16} color='#ffffff' />}
-					>
+						className="mt-4"
+						left={<Save size={16} color="#ffffff" />}>
 						Salvar
 					</Button>
 				</ScrollView>

@@ -8,7 +8,6 @@ import { Redirect, Stack, useRouter } from 'expo-router'
 import { Map, UserCircle2 } from 'lucide-react-native'
 import { useCallback, useEffect, useState } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { OneSignal } from 'react-native-onesignal'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 const PublisherHome = () => {
@@ -28,7 +27,7 @@ const PublisherHome = () => {
 
 	const HeaderRight = useCallback(
 		() => (
-			<View className='flex flex-row justify-center items-center gap-[15px]'>
+			<View className="flex flex-row items-center justify-center gap-[15px]">
 				<Pressable onPress={() => router.push('/publisher/me')}>
 					<UserCircle2 size={24} color={colors.foreground} />
 				</Pressable>
@@ -37,32 +36,24 @@ const PublisherHome = () => {
 		[router, colors]
 	)
 
-	useEffect(() => {
-		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			event.preventDefault()
-			mutate()
-			event.getNotification().display()
-		})
-	}, [mutate])
-
 	if (!privacyAccepted) {
-		return <Redirect href='/privacy-blocked' />
+		return <Redirect href="/privacy-blocked" />
 	}
 
 	return (
-		<Animated.View className='flex' entering={FadeInDown}>
+		<Animated.View className="flex" entering={FadeInDown}>
 			<Stack.Screen options={{ title: 'Minhas designações', headerRight: HeaderRight }} />
-			<View className='flex p-3 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-3">
 				{loading && !assignments.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
-						keyExtractor={item => String(item)}
+						keyExtractor={(item) => String(item)}
 						renderItem={() => <SkeletonItem height={100} />}
 					/>
 				) : (
 					<FlatList
 						data={assignments}
-						keyExtractor={item => item.id}
+						keyExtractor={(item) => item.id}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item: assignment }) => (
 							<AssignmentItem
@@ -79,11 +70,10 @@ const PublisherHome = () => {
 							/>
 						)}
 						ListEmptyComponent={
-							<View className='flex flex-col items-center justify-center gap-3 pt-8'>
+							<View className="flex flex-col items-center justify-center gap-3 pt-8">
 								<Map size={48} color={colors.border} strokeWidth={1.5} />
-								<Text className='text-foreground px-3 font-regular text-center opacity-70'>
-									Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você
-									receber uma designação.
+								<Text className="px-3 text-center font-regular text-foreground opacity-70">
+									Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você receber uma designação.
 								</Text>
 							</View>
 						}

@@ -13,7 +13,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
 	return (
 		<ThemeContext.Provider value={{ theme: scheme || 'dark' }}>
-			<View style={themes[scheme || 'dark']} className='flex-1'>
+			<View style={themes[scheme || 'dark']} className="flex-1">
 				{children}
 			</View>
 		</ThemeContext.Provider>

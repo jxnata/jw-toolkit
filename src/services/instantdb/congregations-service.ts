@@ -35,9 +35,9 @@ class CongregationsService {
 		const { data } = await db.queryOnce({
 			congregations: {
 				$: {
-					where: { id: congregationId }
-				}
-			}
+					where: { id: congregationId },
+				},
+			},
 		})
 		return data.congregations[0] || null
 	}
@@ -47,4 +47,4 @@ class CongregationsService {
 	}
 }
 
-export const congregationsService = new CongregationsService() 
+export const congregationsService = new CongregationsService()

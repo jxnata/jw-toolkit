@@ -28,7 +28,7 @@ const EditPublisher = () => {
 		{ label: 'Publicador', value: '3' },
 	]
 
-	const save: SubmitHandler<EditPublisherReq> = async data => {
+	const save: SubmitHandler<EditPublisherReq> = async (data) => {
 		if (!data.name) return
 
 		try {
@@ -57,54 +57,43 @@ const EditPublisher = () => {
 	}
 
 	const showDeleteAlert = () =>
-		Alert.alert(
-			'Excluir',
-			'Deseja excluir o publicador e todas as suas designações? Essa opção não pode ser revertida.',
-			[
-				{ text: 'Cancelar', style: 'cancel' },
-				{ text: 'Sim, excluir', onPress: () => deletePublisher(), style: 'default' },
-			]
-		)
+		Alert.alert('Excluir', 'Deseja excluir o publicador e todas as suas designações? Essa opção não pode ser revertida.', [
+			{ text: 'Cancelar', style: 'cancel' },
+			{ text: 'Sim, excluir', onPress: () => deletePublisher(), style: 'default' },
+		])
 
 	return (
-		<View className='flex-1'>
+		<View className="flex-1">
 			<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 				<Stack.Screen options={{ title: 'Editar Publicador' }} />
-				<View className='flex px-4 py-2 w-full h-full bg-background'>
+				<View className="flex h-full w-full bg-background px-4 py-2">
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='name'
+						name="name"
 						render={({ field: { onChange, onBlur, value } }) => (
-							<Input
-								placeholder='Nome do publicador'
-								label='Nome'
-								onBlur={onBlur}
-								onChangeText={onChange}
-								value={value}
-							/>
+							<Input placeholder="Nome do publicador" label="Nome" onBlur={onBlur} onChangeText={onChange} value={value} />
 						)}
 					/>
 					<Controller
 						control={control}
-						name='level'
+						name="level"
 						render={({ field: { onChange, value } }) => (
 							<Dropdown
-								label='Nível de acesso'
+								label="Nível de acesso"
 								selectedValue={value}
 								options={levelOptions}
-								placeholder='Selecione o nível'
+								placeholder="Selecione o nível"
 								onValueChange={onChange}
 							/>
 						)}
 					/>
-					<View className='flex-row gap-2.5 mt-5'>
-						<View className='flex-1'>
+					<View className="mt-5 flex-row gap-2.5">
+						<View className="flex-1">
 							<Button
 								loading={formState.isSubmitting}
 								onPress={handleSubmit(save)}
-								left={<Save size={16} color={colors.foreground} />}
-							>
+								left={<Save size={16} color={colors.foreground} />}>
 								Atualizar
 							</Button>
 						</View>

@@ -19,7 +19,7 @@ const Publishers = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View>
-				<TouchableOpacity onPress={() => router.push('/admin/publishers/review')} className='mx-2'>
+				<TouchableOpacity onPress={() => router.push('/admin/publishers/review')} className="mx-2">
 					{requestPublishers.length ? (
 						<MailWarning size={24} color={colors.primary[500]} />
 					) : (
@@ -28,24 +28,16 @@ const Publishers = () => {
 				</TouchableOpacity>
 			</View>
 		),
-		[router, colors.foreground]
+		[router, colors.foreground, colors.primary, requestPublishers.length]
 	)
 
 	const ListHeaderComponent = () => {
 		return (
 			<>
-				<Input
-					autoCorrect={false}
-					placeholder='Buscar um publicador...'
-					onChangeText={debouncedSearch}
-					clearButtonMode='always'
-				/>
+				<Input autoCorrect={false} placeholder="Buscar um publicador..." onChangeText={debouncedSearch} clearButtonMode="always" />
 				{requestPublishers?.length > 0 && (
-					<Pressable
-						onPress={() => router.push('/admin/publishers/review')}
-						className='bg-danger rounded-lg p-2.5 my-2.5'
-					>
-						<Text className='text-white text-center text-sm font-medium'>
+					<Pressable onPress={() => router.push('/admin/publishers/review')} className="my-2.5 rounded-lg bg-danger p-2.5">
+						<Text className="text-center font-medium text-sm text-white">
 							{requestPublishers.length} solicitação(ões) pendente(s) para aprovação
 						</Text>
 					</Pressable>
@@ -54,20 +46,20 @@ const Publishers = () => {
 		)
 	}
 
-	const debouncedSearch = debounce(async term => {
+	const debouncedSearch = debounce(async (term) => {
 		setSearch(term)
 	}, 500)
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Publicadores', headerRight: HeaderRight }} />
-			<View className='flex p-2.5 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-2.5">
 				<FlatList
 					ListHeaderComponent={<ListHeaderComponent />}
 					data={publishers}
-					keyExtractor={item => item.id}
+					keyExtractor={(item) => item.id}
 					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
-					contentContainerClassName='gap-2'
+					contentContainerClassName="gap-2"
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => {
 						const getLabel = (level: number) => {
@@ -94,12 +86,10 @@ const Publishers = () => {
 							/>
 						)
 					}}
-					ListFooterComponent={() => <View className='h-[60px]' />}
+					ListFooterComponent={() => <View className="h-[60px]" />}
 					ListEmptyComponent={
-						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-regular opacity-80'>
-								Nenhum publicador encontrado
-							</Text>
+						<View className="flex-1 items-center justify-center py-8">
+							<Text className="font-regular text-foreground opacity-80">Nenhum publicador encontrado</Text>
 						</View>
 					}
 				/>

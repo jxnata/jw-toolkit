@@ -48,50 +48,42 @@ const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentPro
 	})
 
 	return (
-		<Pressable onPress={onPress} className='flex flex-row mb-[5px] w-full rounded-[10px] bg-card p-2.5 gap-2.5'>
-			<View className='flex'>
-				<Image
-					resizeMode='contain'
-					source={{ uri: mapImage(coordinates) }}
-					className='rounded-[10px] w-20 h-20'
-				/>
+		<Pressable onPress={onPress} className="mb-[5px] flex w-full flex-row gap-2.5 rounded-[10px] bg-card p-2.5">
+			<View className="flex">
+				<Image resizeMode="contain" source={{ uri: mapImage(coordinates) }} className="h-20 w-20 rounded-[10px]" />
 			</View>
 
-			<View className='flex'>
-				{map.assigned && !hidePublisher && (
-					<Text className='text-foreground font-medium'>{map.assigned.name}</Text>
-				)}
-				<Text className='text-foreground font-medium' style={{ width: screenWidth - 10 - 10 - 10 - 80 - 20 }}>
+			<View className="flex">
+				{map.assigned && !hidePublisher && <Text className="font-medium text-foreground">{map.assigned.name}</Text>}
+				<Text className="font-medium text-foreground" style={{ width: screenWidth - 10 - 10 - 10 - 80 - 20 }}>
 					{map.name} - {map.address}, {map.city.name}
 				</Text>
 				{!!map.visited ? (
-					<View className='flex'>
-						<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
-							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em{' '}
-							{formatDate(map.visited)}
+					<View className="flex">
+						<Text className="pt-[5px] font-regular text-xs" style={{ color: colors.foreground + '80' }}>
+							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
 						</Text>
 						{found ? (
-							<Text className='font-semibold text-xs pt-0' style={{ color: colors.success.DEFAULT }}>
+							<Text className="pt-0 font-semibold text-xs" style={{ color: colors.success.DEFAULT }}>
 								Encontrado
 							</Text>
 						) : (
-							<Text className='font-semibold text-xs pt-0' style={{ color: colors.primary[600] }}>
+							<Text className="pt-0 font-semibold text-xs" style={{ color: colors.primary[600] }}>
 								Não encontrado
 							</Text>
 						)}
 					</View>
 				) : (
-					<Text className='font-regular text-xs pt-[5px]' style={{ color: colors.foreground + '80' }}>
+					<Text className="pt-[5px] font-regular text-xs" style={{ color: colors.foreground + '80' }}>
 						Ainda não visitado
 					</Text>
 				)}
 			</View>
 
 			<View
-				className='absolute bottom-[5px] right-[5px] px-[5px] py-0.5 rounded-[5px]'
-				style={{ backgroundColor: colors.background }}
-			>
-				<Text className='font-bold text-[10px]' style={{ color: colors.foreground + '80' }}>
+				className="absolute bottom-[5px] right-[5px] rounded-[5px] px-[5px] py-0.5"
+				style={{ backgroundColor: colors.background }}>
+				<Text className="font-bold text-[10px]" style={{ color: colors.foreground + '80' }}>
 					{distance}
 				</Text>
 			</View>

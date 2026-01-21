@@ -2,7 +2,7 @@ import { Loading } from '@/components/loading'
 import '../../global.css'
 
 import { LimitGuard } from '@/components/limit-guard'
-import { ONESIGNAL_APP_ID, REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
+import { REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
 import { fonts } from '@/constants/fonts'
 import { configToast } from '@/constants/toast'
 import { LocationProvider } from '@/contexts/location-provider'
@@ -20,12 +20,9 @@ import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect, useState } from 'react'
 import { Platform, useColorScheme } from 'react-native'
 import { useMMKVListener } from 'react-native-mmkv'
-import { OneSignal } from 'react-native-onesignal'
 import Purchases from 'react-native-purchases'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-
-if (__DEV__) require('../../reactotron')
 
 SplashScreen.preventAutoHideAsync()
 
@@ -41,9 +38,6 @@ export default function Layout() {
 	}, [isLoaded])
 
 	useEffect(() => {
-		OneSignal.initialize(ONESIGNAL_APP_ID)
-		OneSignal.Notifications.requestPermission(true)
-
 		if (Platform.OS === 'ios') {
 			Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
 		} else if (Platform.OS === 'android') {
@@ -77,17 +71,17 @@ export default function Layout() {
 					</SubscriptionProvider>
 				</SessionProvider>
 			</QueryClientProvider>
-			<Toast position='bottom' config={config} />
+			<Toast position="bottom" config={config} />
 		</SafeAreaProvider>
 	)
 }
 
 function RootNavigator() {
-	const { loading, current, congregation } = useSession()
-	const [initialized, setInitialized] = useState(storage.getBoolean('initialized'))
+	const { loading, current } = useSession()
+	const [, setInitialized] = useState(storage.getBoolean('initialized'))
 	const { colors } = useThemedColors()
 
-	useMMKVListener(key => {
+	useMMKVListener((key) => {
 		if (key === 'initialized') {
 			setInitialized(!!storage.getBoolean('initialized'))
 		}
@@ -104,10 +98,10 @@ function RootNavigator() {
 			</Stack.Protected> */}
 
 			<Stack.Protected guard={!!current}>
-				<Stack.Screen name='(app)' />
+				<Stack.Screen name="(app)" />
 			</Stack.Protected>
 
-			<Stack.Screen name='sign-in' />
+			<Stack.Screen name="sign-in" />
 		</Stack>
 	)
 }

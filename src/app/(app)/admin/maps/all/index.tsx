@@ -3,15 +3,13 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getPinColor } from '@/utils/get-pin-color'
 import * as Location from 'expo-location'
-import { router, Stack, useLocalSearchParams } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()
-	const params = useLocalSearchParams()
-	const { initialMaps } = JSON.parse((params.maps as string) || '[]')
 	const { maps, loading } = useAllMaps()
 	const { colors } = useThemedColors()
 
@@ -40,8 +38,7 @@ const AllMaps = () => {
 					longitudeDelta: 0.01,
 				}}
 				showsUserLocation={true}
-				followsUserLocation={true}
-			>
+				followsUserLocation={true}>
 				{maps.map((map: any) => (
 					<Marker
 						key={map.id}
@@ -67,15 +64,15 @@ const AllMaps = () => {
 	}
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Mapas da congregação' }} />
-			<View className='flex w-full h-full bg-background'>
-				<View className='flex-1'>{renderMap()}</View>
+			<View className="flex h-full w-full bg-background">
+				<View className="flex-1">{renderMap()}</View>
 				{loading && (
-					<View className='absolute inset-0 bg-background/80 items-center justify-center'>
-						<View className='items-center'>
-							<ActivityIndicator size='large' color={colors.primary[600]} />
-							<Text className='text-xs text-foreground py-2.5 font-medium'>Carregando mapas...</Text>
+					<View className="bg-background/80 absolute inset-0 items-center justify-center">
+						<View className="items-center">
+							<ActivityIndicator size="large" color={colors.primary[600]} />
+							<Text className="py-2.5 font-medium text-xs text-foreground">Carregando mapas...</Text>
 						</View>
 					</View>
 				)}

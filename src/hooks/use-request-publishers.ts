@@ -11,24 +11,26 @@ const useRequestPublishers = ({ enabled = true }: Props = {}) => {
 	const active = enabled && congregation
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			publishers: {
-				$: {
-					where: {
-						congregation: congregation ? congregation.id : null,
-						approved: false, // Only unapproved publishers
+		active
+			? {
+					publishers: {
+						$: {
+							where: {
+								congregation: congregation ? congregation.id : null,
+								approved: false, // Only unapproved publishers
+							},
+							order: { serverCreatedAt: 'desc' },
+						},
 					},
-					order: { serverCreatedAt: 'desc' },
-				},
-			}
-		} : null
+				}
+			: null
 	)
 
 	return {
 		requestPublishers: data?.publishers || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

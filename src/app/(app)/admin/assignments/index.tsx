@@ -7,7 +7,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { mapsService } from '@/services/instantdb'
 import { Stack, useRouter } from 'expo-router'
 import { Trash } from 'lucide-react-native'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { useDebounce } from 'use-debounce'
@@ -33,7 +33,7 @@ const Assignments = () => {
 				text1: 'Sucesso',
 				text2: 'Designações removidas com sucesso',
 			})
-		} catch (error) {
+		} catch {
 			Toast.show({
 				type: 'error',
 				text1: 'Erro',
@@ -53,52 +53,44 @@ const Assignments = () => {
 
 	const ListHeaderComponent = () => {
 		return (
-			<View className='flex-row gap-2.5 mb-2.5'>
-				<View className='flex-1'></View>
+			<View className="mb-2.5 flex-row gap-2.5">
+				<View className="flex-1"></View>
 			</View>
 		)
 	}
 
-	const HeaderRight = useCallback(
-		() => (
-			<View className='flex-row'>
-				<TouchableOpacity
-					hitSlop={10}
-					onPress={removeAllAssignmentsConfirm}
-					disabled={loading}
-					className='mx-2'
-				>
-					<Trash size={20} color={colors.foreground} />
-				</TouchableOpacity>
-			</View>
-		),
-		[router, colors.foreground]
+	const HeaderRight = () => (
+		<View className="flex-row">
+			<TouchableOpacity hitSlop={10} onPress={removeAllAssignmentsConfirm} disabled={loading} className="mx-2">
+				<Trash size={20} color={colors.foreground} />
+			</TouchableOpacity>
+		</View>
 	)
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen
 				options={{
 					title: 'Designações',
 					headerRight: HeaderRight,
 				}}
 			/>
-			<View className='flex p-4 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-4">
 				<Input
 					autoCorrect={false}
-					placeholder='Buscar por mapa ou bairro'
+					placeholder="Buscar por mapa ou bairro"
 					onChangeText={setSearchInput}
 					value={searchInput}
-					clearButtonMode='always'
-					returnKeyType='search'
+					clearButtonMode="always"
+					returnKeyType="search"
 				/>
 
 				<FlatList
 					data={maps}
 					ListHeaderComponent={<ListHeaderComponent />}
-					ListFooterComponent={<View className='h-14' />}
-					keyExtractor={item => item.id}
-					keyboardDismissMode='none'
+					ListFooterComponent={<View className="h-14" />}
+					keyExtractor={(item) => item.id}
+					keyboardDismissMode="none"
 					renderItem={({ item }) => (
 						<AssignmentItem
 							key={item.id}
@@ -113,10 +105,8 @@ const Assignments = () => {
 						/>
 					)}
 					ListEmptyComponent={
-						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-regular opacity-80'>
-								Nenhuma designação encontrada
-							</Text>
+						<View className="flex-1 items-center justify-center py-8">
+							<Text className="font-regular text-foreground opacity-80">Nenhuma designação encontrada</Text>
 						</View>
 					}
 				/>

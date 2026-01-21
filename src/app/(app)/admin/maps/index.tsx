@@ -22,7 +22,7 @@ const Maps = () => {
 
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
 
-	const { maps, loading } = useMaps({
+	const { maps } = useMaps({
 		search: debouncedSearchTerm,
 		city: searchCity,
 		status,
@@ -32,7 +32,7 @@ const Maps = () => {
 	const { cities } = useCities()
 	const { location } = useLocation()
 
-	const citiesList = useMemo(() => [...cities.map(c => ({ label: c.name, value: c.id }))], [cities])
+	const citiesList = useMemo(() => [...cities.map((c) => ({ label: c.name, value: c.id }))], [cities])
 
 	useEffect(() => {
 		if (cities.length > 0 && !searchCity) {
@@ -42,11 +42,11 @@ const Maps = () => {
 
 	const HeaderRight = useCallback(
 		() => (
-			<View className='flex-row'>
-				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className='mx-2'>
+			<View className="flex-row">
+				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
 					<PlusCircle size={24} color={colors.foreground} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={toggleFilter} className='mx-2'>
+				<TouchableOpacity onPress={toggleFilter} className="mx-2">
 					<Funnel size={24} color={colors.foreground} />
 				</TouchableOpacity>
 			</View>
@@ -60,28 +60,28 @@ const Maps = () => {
 	}
 
 	const toggleFilter = () => {
-		setFilter(old => !old)
+		setFilter((old) => !old)
 	}
 
 	return (
-		<View className='flex-1'>
+		<View className="flex-1">
 			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
-			<View className='p-4 w-full h-full bg-background'>
+			<View className="h-full w-full bg-background p-4">
 				{showFilter && (
 					<Animated.View entering={SlideInUp} exiting={SlideOutUp}>
 						<Input
 							autoCorrect={false}
-							placeholder='Buscar por nome ou bairro'
+							placeholder="Buscar por nome ou bairro"
 							onChangeText={setSearchInput}
 							value={searchInput}
-							clearButtonMode='always'
-							returnKeyType='search'
+							clearButtonMode="always"
+							returnKeyType="search"
 						/>
 
-						<View className='flex-row gap-2'>
-							<View className='flex-1'>
+						<View className="flex-row gap-2">
+							<View className="flex-1">
 								<Dropdown
-									placeholder='Todos'
+									placeholder="Todos"
 									options={[
 										{ label: 'Todos', value: '' },
 										{ label: 'Designados', value: 'assigned' },
@@ -92,28 +92,23 @@ const Maps = () => {
 									onValueChange={setStatus}
 								/>
 							</View>
-							<View className='flex-1'>
-								<Dropdown
-									placeholder='Cidade'
-									options={citiesList}
-									selectedValue={searchCity}
-									onValueChange={filterCity}
-								/>
+							<View className="flex-1">
+								<Dropdown placeholder="Cidade" options={citiesList} selectedValue={searchCity} onValueChange={filterCity} />
 							</View>
 						</View>
 					</Animated.View>
 				)}
 
-				<View className='flex-1'>
+				<View className="flex-1">
 					<FlatList
-						ListFooterComponent={<View className='h-14' />}
+						ListFooterComponent={<View className="h-14" />}
 						data={maps}
-						keyExtractor={item => item.id}
+						keyExtractor={(item) => item.id}
 						showsVerticalScrollIndicator={false}
-						keyboardDismissMode='none'
+						keyboardDismissMode="none"
 						ListEmptyComponent={
-							<View className='flex-1 py-8 items-center justify-center'>
-								<Text className='text-foreground font-regular opacity-80'>Nenhum mapa encontrado</Text>
+							<View className="flex-1 items-center justify-center py-8">
+								<Text className="font-regular text-foreground opacity-80">Nenhum mapa encontrado</Text>
 							</View>
 						}
 						renderItem={({ item }) => (

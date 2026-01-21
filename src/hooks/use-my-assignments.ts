@@ -16,23 +16,25 @@ const useMyAssignments = ({ enabled = true }: Props = {}) => {
 	}
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			maps: {
-				$: {
-					where: whereConditions,
-					order: { serverCreatedAt: 'desc' },
-				},
-				city: {},
-				assigned: {},
-			}
-		} : null
+		active
+			? {
+					maps: {
+						$: {
+							where: whereConditions,
+							order: { serverCreatedAt: 'desc' },
+						},
+						city: {},
+						assigned: {},
+					},
+				}
+			: null
 	)
 
 	return {
-		assignments: data?.maps as Map[] || [],
+		assignments: (data?.maps as Map[]) || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

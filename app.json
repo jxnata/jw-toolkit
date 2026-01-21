@@ -3,7 +3,7 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.1.6",
+		"version": "1.2.0",
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
@@ -19,13 +19,8 @@
 			"usesAppleSignIn": true,
 			"googleServicesFile": "./GoogleService-Info.plist",
 			"infoPlist": {
-				"UIBackgroundModes": ["remote-notification"],
 				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada.",
 				"ITSAppUsesNonExemptEncryption": false
-			},
-			"entitlements": {
-				"aps-environment": "production",
-				"com.apple.security.application-groups": ["group.dev.jxnata.jwtoolkit.onesignal"]
 			},
 			"appleTeamId": "N9G6UA9982",
 			"config": {
@@ -61,13 +56,6 @@
 			"bundler": "metro"
 		},
 		"plugins": [
-			[
-				"onesignal-expo-plugin",
-				{
-					"mode": "production",
-					"devTeam": "N9G6UA9982"
-				}
-			],
 			"expo-router",
 			"expo-font",
 			"expo-apple-authentication",
@@ -94,25 +82,7 @@
 			"router": {
 				"origin": false
 			},
-			"oneSignalAppId": "afb7a092-f7d7-4f17-bfd9-6ac8f5bafc95",
 			"eas": {
-				"build": {
-					"experimental": {
-						"ios": {
-							"appExtensions": [
-								{
-									"targetName": "OneSignalNotificationServiceExtension",
-									"bundleIdentifier": "dev.jxnata.jwtoolkit.OneSignalNotificationServiceExtension",
-									"entitlements": {
-										"com.apple.security.application-groups": [
-											"group.dev.jxnata.jwtoolkit.onesignal"
-										]
-									}
-								}
-							]
-						}
-					}
-				},
 				"projectId": "fd11d33c-dc78-4e42-8f4f-71f7de1cd229"
 			}
 		},

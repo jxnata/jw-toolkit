@@ -6,11 +6,9 @@ import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { validCoordinates } from '@/utils/valid-coordinates'
 import { X } from 'lucide-react-native'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Dimensions, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import MapView, { MapViewProps, Marker } from 'react-native-maps'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-const { height } = Dimensions.get('window')
 
 type Props = {
 	onSelect: (coord: [number, number]) => void
@@ -43,10 +41,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 
 	const onSelectLocation = useCallback(
 		(e: any) => {
-			const coordinates: [number, number] = [
-				e.nativeEvent.coordinate.latitude || 0,
-				e.nativeEvent.coordinate.longitude || 0,
-			]
+			const coordinates: [number, number] = [e.nativeEvent.coordinate.latitude || 0, e.nativeEvent.coordinate.longitude || 0]
 			setPin([e.nativeEvent.coordinate.latitude || 0, e.nativeEvent.coordinate.longitude || 0])
 			onSelect(coordinates)
 		},
@@ -56,7 +51,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	useEffect(() => {
 		if (!pin) return
 		if (!mapRef.current) return
-		if (pin.every(p => p === 0)) return
+		if (pin.every((p) => p === 0)) return
 
 		mapRef.current.animateToRegion(
 			{
@@ -70,20 +65,18 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	}, [pin, mapRef])
 
 	return (
-		<View className='flex justify-end w-full h-full'>
-			<View className='flex w-full items-center rounded-[10px] bg-card'>
+		<View className="flex h-full w-full justify-end">
+			<View className="flex w-full items-center rounded-[10px] bg-card">
 				<View
-					className='absolute left-3 rounded-xl justify-center items-center p-2 z-10'
-					style={{ backgroundColor: colors.foreground, top: top + 10 }}
-				>
+					className="absolute left-3 z-10 items-center justify-center rounded-xl p-2"
+					style={{ backgroundColor: colors.foreground, top: top + 10 }}>
 					<MapOptions />
 				</View>
 
 				<Pressable
 					onPress={onClose}
-					className='absolute right-3 items-center justify-center rounded-xl w-10 h-10 z-10'
-					style={{ backgroundColor: colors.foreground, top: top + 10 }}
-				>
+					className="absolute right-3 z-10 h-10 w-10 items-center justify-center rounded-xl"
+					style={{ backgroundColor: colors.foreground, top: top + 10 }}>
 					<X size={24} color={colors.background} />
 				</Pressable>
 
@@ -101,8 +94,7 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 						showsMyLocationButton
 						showsCompass
 						mapType={mapType as MapViewProps['mapType']}
-						onPress={onSelectLocation}
-					>
+						onPress={onSelectLocation}>
 						<Marker
 							coordinate={{
 								latitude: marker.latitude,
@@ -113,11 +105,8 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 				)}
 
 				{!!pin && (
-					<View
-						className='absolute w-full px-4 pt-4 rounded-t-xl bg-card'
-						style={{ bottom: 0, paddingBottom: bottom + 10 }}
-					>
-						<Text className='text-lg text-foreground text-center mb-3 font-bold'>
+					<View className="absolute w-full rounded-t-xl bg-card px-4 pt-4" style={{ bottom: 0, paddingBottom: bottom + 10 }}>
+						<Text className="mb-3 text-center font-bold text-lg text-foreground">
 							Toque no mapa para selecionar a localização
 						</Text>
 						<Button onPress={onClose}>Confirmar</Button>

@@ -15,21 +15,23 @@ const useCongregations = ({ search, enabled = true }: Props = {}) => {
 	}
 
 	const { data, isLoading, error } = db.useQuery(
-		enabled ? {
-			congregations: {
-				$: {
-					where: whereConditions,
-					order: { name: 'asc' }
-				},
-			}
-		} : null
+		enabled
+			? {
+					congregations: {
+						$: {
+							where: whereConditions,
+							order: { name: 'asc' },
+						},
+					},
+				}
+			: null
 	)
 
 	return {
 		congregations: data?.congregations || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

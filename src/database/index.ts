@@ -1,19 +1,19 @@
 import { ENCRYPT_STORAGE } from '@/constants/env'
-import { MMKV } from 'react-native-mmkv'
+import { createMMKV } from 'react-native-mmkv'
 
-export const storage = new MMKV({
+export const storage = createMMKV({
 	id: 'main_storage',
 	encryptionKey: ENCRYPT_STORAGE,
 })
 
-export const old_cache = new MMKV({
+export const old_cache = createMMKV({
 	id: 'cache_storage',
 })
 
-export const cache = new MMKV({
+export const cache = createMMKV({
 	id: 'cache_storage',
 })
 
-export const history = new MMKV({
+export const history = createMMKV({
 	id: 'history_storage',
 })

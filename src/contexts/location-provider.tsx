@@ -1,9 +1,4 @@
-import {
-	LocationAccuracy,
-	LocationObjectCoords,
-	getCurrentPositionAsync,
-	requestForegroundPermissionsAsync,
-} from 'expo-location'
+import { LocationAccuracy, LocationObjectCoords, getCurrentPositionAsync, requestForegroundPermissionsAsync } from 'expo-location'
 import { createContext, useCallback, useEffect, useState } from 'react'
 
 interface LocationContextData {
@@ -66,8 +61,7 @@ export const LocationProvider = ({ children }: LocationProviderProps) => {
 				error,
 				getLocation,
 				hasPermission,
-			}}
-		>
+			}}>
 			{children}
 		</LocationContext.Provider>
 	)

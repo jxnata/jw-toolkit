@@ -7,7 +7,7 @@ import { Stack } from 'expo-router'
 import { Download } from 'lucide-react-native'
 import { useState } from 'react'
 import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
-import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import { generatePDF } from 'react-native-html-to-pdf'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
@@ -15,7 +15,7 @@ const ExportMaps = () => {
 	const { congregation } = useSession()
 	const { colors } = useThemedColors()
 
-	const generatePDF = async () => {
+	const createPDF = async () => {
 		if (!congregation) return
 
 		setGenerating(true)
@@ -92,11 +92,8 @@ const ExportMaps = () => {
 						<div class="section">
 							<h2>${city}</h2>
 							${cityMaps
-								.map(map => {
-									const googleMapsLink =
-										map.lat && map.lng
-											? `https://www.google.com/maps?q=${map.lat},${map.lng}`
-											: null
+								.map((map) => {
+									const googleMapsLink = map.lat && map.lng ? `https://www.google.com/maps?q=${map.lat},${map.lng}` : null
 									return `
 								<div class="card">
 									<span class="index">${mapIndex++}</span> <!-- Número do mapa -->
@@ -118,7 +115,7 @@ const ExportMaps = () => {
 		`
 
 		try {
-			const file = await RNHTMLtoPDF.convert({
+			const file = await generatePDF({
 				html: htmlContent,
 				fileName: `Mapas da congregação ${congregation.name}`,
 				base64: true,
@@ -137,33 +134,29 @@ const ExportMaps = () => {
 	}
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Exportar Mapas' }} />
-			<View className='flex p-4 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-4">
 				{loading && (
-					<View className='flex-1 justify-center items-center'>
-						<View className='items-center'>
-							<ActivityIndicator size='large' color={colors.primary[600]} />
-							<Text className='text-foreground py-2.5 font-medium'>Carregando mapas...</Text>
+					<View className="flex-1 items-center justify-center">
+						<View className="items-center">
+							<ActivityIndicator size="large" color={colors.primary[600]} />
+							<Text className="py-2.5 font-medium text-foreground">Carregando mapas...</Text>
 						</View>
 					</View>
 				)}
 				{!loading && maps.length === 0 && (
-					<View className='flex-1 py-8 items-center justify-center'>
-						<Text className='text-foreground font-light opacity-80'>Não há mapas para exportar.</Text>
+					<View className="flex-1 items-center justify-center py-8">
+						<Text className="font-light text-foreground opacity-80">Não há mapas para exportar.</Text>
 					</View>
 				)}
 				{!loading && maps.length > 0 && (
-					<View className='flex-1 justify-center items-center'>
-						<Text className='text-foreground py-2.5 font-medium text-center mb-5'>
+					<View className="flex-1 items-center justify-center">
+						<Text className="mb-5 py-2.5 text-center font-medium text-foreground">
 							{maps.length} mapas encontrados. Pressione o botão abaixo para exportar em PDF.
 						</Text>
-						<View className='w-full'>
-							<Button
-								loading={loading || generating}
-								onPress={generatePDF}
-								left={<Download size={20} color='white' />}
-							>
+						<View className="w-full">
+							<Button loading={loading || generating} onPress={createPDF} left={<Download size={20} color="white" />}>
 								Exportar
 							</Button>
 						</View>

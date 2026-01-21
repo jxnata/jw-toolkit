@@ -6,7 +6,7 @@ export default function App() {
 	const { type, loading, congregation } = useSession()
 
 	if (!congregation) {
-		return <Redirect href='/select-congregation' />
+		return <Redirect href="/select-congregation" />
 	}
 
 	return (
@@ -14,12 +14,12 @@ export default function App() {
 			<Stack.Screen options={{ headerShown: false }} />
 			{loading ? (
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					<ActivityIndicator size='large' />
+					<ActivityIndicator size="large" />
 				</View>
 			) : type === 'publisher' ? (
-				<Redirect href='/publisher' />
+				<Redirect href="/publisher" />
 			) : type === 'admin' ? (
-				<Redirect href='/admin' />
+				<Redirect href="/admin" />
 			) : (
 				<Slot />
 			)}

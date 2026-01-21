@@ -27,7 +27,7 @@ const Skeleton = ({ width = '100%', height = 50 }: SkeletonProps) => {
 
 	return (
 		<Animated.View
-			className='rounded-lg border-[1.5px]'
+			className="rounded-lg border-[1.5px]"
 			style={[
 				{
 					opacity: animatedValue,

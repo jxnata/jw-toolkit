@@ -36,9 +36,7 @@ class PublishersService {
 			links.congregation = input.congregationId
 		}
 
-		await db.transact(
-			db.tx.publishers[id()].update(publisherData).link(links)
-		)
+		await db.transact(db.tx.publishers[id()].update(publisherData).link(links))
 	}
 
 	async updatePublisher(publisherId: string, updates: Partial<Publisher>, links?: Record<string, string>): Promise<void> {
@@ -49,11 +47,11 @@ class PublishersService {
 		const { data } = await db.queryOnce({
 			publishers: {
 				$: {
-					where: { id: publisherId }
+					where: { id: publisherId },
 				},
 				congregation: {},
-				user: {}
-			}
+				user: {},
+			},
 		})
 		return data.publishers[0] as Publisher | null
 	}
@@ -62,8 +60,8 @@ class PublishersService {
 		const { data } = await db.queryOnce({
 			publishers: {
 				$: { where: { user: userId } },
-				congregation: {}
-			}
+				congregation: {},
+			},
 		})
 		return data.publishers[0] as Publisher | null
 	}
@@ -73,9 +71,9 @@ class PublishersService {
 			publishers: {
 				$: {
 					limit: 1,
-					where: { congregation: congregationId }
-				}
-			}
+					where: { congregation: congregationId },
+				},
+			},
 		})
 		return data.publishers.length === 0
 	}
@@ -89,4 +87,4 @@ class PublishersService {
 	}
 }
 
-export const publishersService = new PublishersService() 
+export const publishersService = new PublishersService()

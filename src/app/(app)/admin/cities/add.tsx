@@ -15,7 +15,7 @@ const AddCity = () => {
 	const { mutate } = useCities({ search: '' })
 	const { control, formState, handleSubmit } = useForm<AddCityReq>()
 
-	const save: SubmitHandler<AddCityReq> = async data => {
+	const save: SubmitHandler<AddCityReq> = async (data) => {
 		if (!data.name) return
 		if (!congregation) return
 
@@ -34,17 +34,17 @@ const AddCity = () => {
 	}
 
 	return (
-		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+		<KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Nova Cidade/Território' }} />
-			<View className='flex px-4 py-2 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background px-4 py-2">
 				<Controller
 					control={control}
 					rules={{ required: true }}
-					name='name'
+					name="name"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
-							label='Nome'
-							placeholder='Nome da cidade ou território'
+							label="Nome"
+							placeholder="Nome da cidade ou território"
 							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}
@@ -55,8 +55,7 @@ const AddCity = () => {
 					disabled={!formState.isValid}
 					loading={formState.isSubmitting}
 					onPress={handleSubmit(save)}
-					left={<Save size={16} color='#ffffff' />}
-				>
+					left={<Save size={16} color="#ffffff" />}>
 					Salvar
 				</Button>
 			</View>

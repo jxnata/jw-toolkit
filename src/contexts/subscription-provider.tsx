@@ -56,9 +56,7 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 	}, [current, type, fetchSubscription, checkUserSubscription])
 
 	return (
-		<SubscriptionContext.Provider
-			value={{ subscribed, checkSubscription: fetchSubscription, isUserSubscribed, expired }}
-		>
+		<SubscriptionContext.Provider value={{ subscribed, checkSubscription: fetchSubscription, isUserSubscribed, expired }}>
 			{children}
 		</SubscriptionContext.Provider>
 	)

@@ -12,24 +12,18 @@ type Props = {
 	offset?: number
 }
 
-const useMaps = (props: Props = {
-	search: '',
-	district: '',
-	status: '',
-	city: '',
-	enabled: true,
-	limit: 10,
-	offset: 0
-}) => {
-	const {
-		search = '',
-		district = '',
-		status = '',
-		city = '',
-		enabled = true,
-		limit = 10,
-		offset = 0
-	} = props
+const useMaps = (
+	props: Props = {
+		search: '',
+		district: '',
+		status: '',
+		city: '',
+		enabled: true,
+		limit: 10,
+		offset: 0,
+	}
+) => {
+	const { search = '', district = '', status = '', city = '', enabled = true } = props
 
 	const { congregation } = useSession()
 
@@ -66,24 +60,26 @@ const useMaps = (props: Props = {
 	}
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			maps: {
-				$: {
-					where: whereConditions,
-					order: { visited: 'asc' },
-				},
-				city: {},
-				assigned: {},
-			}
-		} : null
+		active
+			? {
+					maps: {
+						$: {
+							where: whereConditions,
+							order: { visited: 'asc' },
+						},
+						city: {},
+						assigned: {},
+					},
+				}
+			: null
 	)
 
 	return {
-		maps: data?.maps as Map[] || [],
+		maps: (data?.maps as Map[]) || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
-		loadMore: () => { },
+		mutate: () => {},
+		loadMore: () => {},
 		loadingMore: false,
 		hasMore: false,
 		total: data?.maps?.length || 0,

@@ -9,28 +9,30 @@ const usePublishers = ({ search }: Props = { search: '' }) => {
 	const { congregation } = useSession()
 
 	const { data, isLoading, error } = db.useQuery(
-		congregation ? {
-			publishers: {
-				$: {
-					where: {
-						approved: true,
-						congregation: congregation.id,
-						...(search && {
-							name: { $like: `%${search}%` },
-						}),
+		congregation
+			? {
+					publishers: {
+						$: {
+							where: {
+								approved: true,
+								congregation: congregation.id,
+								...(search && {
+									name: { $like: `%${search}%` },
+								}),
+							},
+							order: { name: 'asc' },
+							limit: 1000,
+						},
 					},
-					order: { name: 'asc' },
-					limit: 1000,
-				},
-			}
-		} : null
+				}
+			: null
 	)
 
 	return {
 		publishers: data?.publishers || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

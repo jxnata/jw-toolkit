@@ -15,9 +15,8 @@ const IconButton = (props: TouchableOpacityProps & ButtonProps) => {
 			disabled={props.loading}
 			activeOpacity={0.7}
 			{...props}
-			className={`w-[48px] h-[48px] flex flex-row items-center justify-center rounded-xl bg-card ${props.className}`}
-		>
-			{props.loading ? <ActivityIndicator color={colors.primary[600]} size='small' /> : props.icon}
+			className={`flex h-[48px] w-[48px] flex-row items-center justify-center rounded-xl bg-card ${props.className}`}>
+			{props.loading ? <ActivityIndicator color={colors.primary[600]} size="small" /> : props.icon}
 		</TouchableOpacity>
 	)
 }

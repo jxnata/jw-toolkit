@@ -1,4 +1,3 @@
-
 export const getMapRegion = (coordinates: [number, number]): { latitude: number; longitude: number } => {
 	if (!coordinates) {
 		coordinates = [0, 0]

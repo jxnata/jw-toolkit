@@ -1,5 +1,5 @@
-import { LocationContext } from "@/contexts/location-provider"
-import { useContext } from "react"
+import { LocationContext } from '@/contexts/location-provider'
+import { useContext } from 'react'
 
 export const useLocation = () => {
 	const context = useContext(LocationContext)

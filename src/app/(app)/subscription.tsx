@@ -26,7 +26,7 @@ export default function Subscription() {
 				setLoadingPackages(true)
 				const availablePackages = await getOfferings()
 				setPackages(availablePackages)
-				const defaultPackage = availablePackages.find(pkg => pkg.packageType === 'MONTHLY')
+				const defaultPackage = availablePackages.find((pkg) => pkg.packageType === 'MONTHLY')
 				if (defaultPackage) {
 					setSelectedPackage(defaultPackage)
 				}
@@ -82,7 +82,7 @@ export default function Subscription() {
 		}
 	}
 
-	const monthlyPackage = useMemo(() => packages.find(pkg => pkg.packageType === 'MONTHLY'), [packages])
+	const monthlyPackage = useMemo(() => packages.find((pkg) => pkg.packageType === 'MONTHLY'), [packages])
 
 	const getPackageTypeText = (packageType: string) => {
 		switch (packageType) {
@@ -107,53 +107,41 @@ export default function Subscription() {
 	}
 
 	return (
-		<View className='flex-1 bg-background'>
+		<View className="flex-1 bg-background">
 			<Stack.Screen options={{ title: 'Assinatura' }} />
-			<View className='flex-1' style={{ paddingBottom: insets.bottom + 12 }}>
-				<ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
-					<View className='items-center px-4'>
-						<Image source={require('../../assets/icon.png')} className='h-16 w-16 rounded-xl' />
-						<Text className='px-4 pt-3 text-center font-bold text-2xl text-foreground'>
-							Versão Pro - Sem Limitações
-						</Text>
-						<View className='mt-4 px-6'>
-							<View className='mb-2 flex-row items-center'>
+			<View className="flex-1" style={{ paddingBottom: insets.bottom + 12 }}>
+				<ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+					<View className="items-center px-4">
+						<Image source={require('../../assets/icon.png')} className="h-16 w-16 rounded-xl" />
+						<Text className="px-4 pt-3 text-center font-bold text-2xl text-foreground">Versão Pro - Sem Limitações</Text>
+						<View className="mt-4 px-6">
+							<View className="mb-2 flex-row items-center">
 								<Users size={18} color={colors.primary[500]} />
-								<Text className='ml-3 font-regular text-base text-foreground'>
-									Publicadores ilimitados por congregação
-								</Text>
+								<Text className="ml-3 font-regular text-base text-foreground">Publicadores ilimitados por congregação</Text>
 							</View>
-							<View className='mb-2 flex-row items-center'>
+							<View className="mb-2 flex-row items-center">
 								<Map size={18} color={colors.primary[500]} />
-								<Text className='ml-3 font-regular text-base text-foreground'>
-									Mapas ilimitados por congregação
-								</Text>
+								<Text className="ml-3 font-regular text-base text-foreground">Mapas ilimitados por congregação</Text>
 							</View>
-							<View className='mb-2 flex-row items-center'>
+							<View className="mb-2 flex-row items-center">
 								<Bell size={18} color={colors.primary[500]} />
-								<Text className='ml-3 font-regular text-base text-foreground'>
-									Notificações em tempo real
-								</Text>
+								<Text className="ml-3 font-regular text-base text-foreground">Notificações em tempo real</Text>
 							</View>
-							<View className='mb-2 flex-row items-center'>
+							<View className="mb-2 flex-row items-center">
 								<ClipboardList size={18} color={colors.primary[500]} />
-								<Text className='ml-3 font-regular text-base text-foreground'>
-									Exportação de mapas em PDF
-								</Text>
+								<Text className="ml-3 font-regular text-base text-foreground">Exportação de mapas em PDF</Text>
 							</View>
 						</View>
 					</View>
 
 					{loadingPackages ? (
-						<View className='items-center justify-center py-8'>
+						<View className="items-center justify-center py-8">
 							<Loading />
-							<Text className='mt-4 text-center font-regular text-base text-secondary-300'>
-								Carregando pacotes...
-							</Text>
+							<Text className="text-secondary-300 mt-4 text-center font-regular text-base">Carregando pacotes...</Text>
 						</View>
 					) : (
-						<View className='my-4 w-full gap-2 px-4'>
-							{packages.map(pkg => (
+						<View className="my-4 w-full gap-2 px-4">
+							{packages.map((pkg) => (
 								<TouchableOpacity
 									key={pkg.identifier}
 									className={`w-full rounded-xl border-2 px-4 py-2 ${
@@ -163,56 +151,48 @@ export default function Subscription() {
 									}`}
 									onPress={() => setSelectedPackage(pkg)}
 									activeOpacity={0.8}
-									disabled={isLoading}
-								>
+									disabled={isLoading}>
 									{selectedPackage && selectedPackage.identifier === pkg.identifier && (
-										<View className='absolute right-1 top-1 rounded-full bg-primary p-1'>
-											<Check size={10} color='#FFFFFF' />
+										<View className="absolute right-1 top-1 rounded-full bg-primary p-1">
+											<Check size={10} color="#FFFFFF" />
 										</View>
 									)}
-									<View className='mb-1 flex-row items-center gap-2'>
-										<Text className='font-semibold text-lg text-foreground opacity-80'>
+									<View className="mb-1 flex-row items-center gap-2">
+										<Text className="font-semibold text-lg text-foreground opacity-80">
 											{getPackageTypeText(pkg.packageType)}
 										</Text>
-										{pkg.packageType === 'ANNUAL' &&
-											monthlyPackage &&
-											monthlyPackage.product.pricePerYear && (
-												<View className='flex-row items-center gap-1 rounded-full bg-success-500 px-2 py-1'>
-													<Gift size={12} color='#FFFFFF' />
-													<Text className='font-bold text-xs text-white'>
-														Economize{' '}
-														{Math.round(
-															((monthlyPackage.product.pricePerYear - pkg.product.price) /
-																monthlyPackage.product.pricePerYear) *
-																100
-														)}
-														%
-													</Text>
-												</View>
-											)}
+										{pkg.packageType === 'ANNUAL' && monthlyPackage && monthlyPackage.product.pricePerYear && (
+											<View className="flex-row items-center gap-1 rounded-full bg-success-500 px-2 py-1">
+												<Gift size={12} color="#FFFFFF" />
+												<Text className="font-bold text-xs text-white">
+													Economize{' '}
+													{Math.round(
+														((monthlyPackage.product.pricePerYear - pkg.product.price) /
+															monthlyPackage.product.pricePerYear) *
+															100
+													)}
+													%
+												</Text>
+											</View>
+										)}
 									</View>
 									{pkg.product.introPrice ? (
 										<View key={pkg.identifier}>
-											<View className='flex-row items-baseline gap-2'>
-												<Text className='font-bold text-sm text-primary'>
-													{getFreeTrialText(pkg.packageType)}
-												</Text>
+											<View className="flex-row items-baseline gap-2">
+												<Text className="font-bold text-sm text-primary">{getFreeTrialText(pkg.packageType)}</Text>
 											</View>
-											<Text className='font-semibold text-sm text-foreground'>
-												{pkg.product.priceString}{' '}
-												{getPackageTypeText(pkg.packageType).toLowerCase()}
+											<Text className="font-semibold text-sm text-foreground">
+												{pkg.product.priceString} {getPackageTypeText(pkg.packageType).toLowerCase()}
 											</Text>
 										</View>
 									) : (
-										<View className='flex-row items-baseline gap-1'>
+										<View className="flex-row items-baseline gap-1">
 											{pkg.packageType === 'ANNUAL' && monthlyPackage && (
-												<Text className='font-bold text-base text-foreground line-through opacity-50'>
+												<Text className="font-bold text-base text-foreground line-through opacity-50">
 													{monthlyPackage.product.pricePerYearString}
 												</Text>
 											)}
-											<Text className='font-bold text-lg text-secondary'>
-												{pkg.product.priceString}
-											</Text>
+											<Text className="text-secondary font-bold text-lg">{pkg.product.priceString}</Text>
 										</View>
 									)}
 								</TouchableOpacity>
@@ -220,44 +200,33 @@ export default function Subscription() {
 						</View>
 					)}
 
-					<View className='mb-6 flex-row items-center gap-2 px-6'>
+					<View className="mb-6 flex-row items-center gap-2 px-6">
 						<Shield size={16} color={colors.success[500]} />
-						<Text className='mt-1 font-regular text-sm text-foreground'>Cancele a qualquer momento</Text>
+						<Text className="mt-1 font-regular text-sm text-foreground">Cancele a qualquer momento</Text>
 					</View>
 				</ScrollView>
 
-				<View className='border-t border-border px-6 pt-4'>
+				<View className="border-t border-border px-6 pt-4">
 					<Button
 						onPress={handleSubscribe}
-						className='mb-3 w-full'
+						className="mb-3 w-full"
 						loading={isLoading}
 						disabled={!selectedPackage}
-						right={<ArrowRight size={16} color='#FFFFFF' />}
-					>
+						right={<ArrowRight size={16} color="#FFFFFF" />}>
 						{selectedPackage && selectedPackage.product.introPrice ? 'Teste grátis' : 'Continuar'}
 					</Button>
-					<Button onPress={handleRestorePurchases} className='w-full' variant='link' loading={isLoading}>
+					<Button onPress={handleRestorePurchases} className="w-full" variant="link" loading={isLoading}>
 						Restaurar compras
 					</Button>
-					<View className='mt-2 flex-row items-center justify-between'>
+					<View className="mt-2 flex-row items-center justify-between">
 						<Text
-							className='text-primary underline'
-							onPress={() =>
-								Linking.openURL(
-									'https://jxnata.notion.site/Terms-Conditions-247091336ffe80ac8900c72cc4d20edc'
-								)
-							}
-						>
+							className="text-primary underline"
+							onPress={() => Linking.openURL('https://jxnata.notion.site/Terms-Conditions-247091336ffe80ac8900c72cc4d20edc')}>
 							Termos e condições
 						</Text>
 						<Text
-							className='text-primary underline'
-							onPress={() =>
-								Linking.openURL(
-									'https://jxnata.notion.site/Privacy-Policy-247091336ffe805ea4d8d5436cb486ee'
-								)
-							}
-						>
+							className="text-primary underline"
+							onPress={() => Linking.openURL('https://jxnata.notion.site/Privacy-Policy-247091336ffe805ea4d8d5436cb486ee')}>
 							Política de privacidade
 						</Text>
 					</View>

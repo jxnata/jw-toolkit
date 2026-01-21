@@ -22,15 +22,15 @@ const AssigmentDetails = () => {
 	const { assignment } = useAssignment(params.id)
 
 	const toggleModal = () => {
-		setShowFinish(old => !old)
+		setShowFinish((old) => !old)
 	}
 
 	if (!assignment) {
 		return (
-			<View className='flex'>
+			<View className="flex">
 				<Stack.Screen options={{ presentation: 'modal' }} />
-				<View className='flex-1 justify-center items-center'>
-					<ActivityIndicator size='large' color={colors.primary[600]} />
+				<View className="flex-1 items-center justify-center">
+					<ActivityIndicator size="large" color={colors.primary[600]} />
 				</View>
 			</View>
 		)
@@ -40,15 +40,14 @@ const AssigmentDetails = () => {
 	const marker = getMarkerCoordinate([assignment.lat, assignment.lng])
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ presentation: 'modal' }} />
 			{assignment && (
-				<View className='flex w-full h-full'>
+				<View className="flex h-full w-full">
 					<Pressable
 						onPress={router.back}
-						className='absolute left-3 z-10 w-12 h-12 items-center justify-center rounded-xl bg-card'
-						style={{ top: insets.top }}
-					>
+						className="absolute left-3 z-10 h-12 w-12 items-center justify-center rounded-xl bg-card"
+						style={{ top: insets.top }}>
 						<ArrowLeft color={colors.foreground} />
 					</Pressable>
 
@@ -60,8 +59,7 @@ const AssigmentDetails = () => {
 							latitudeDelta: 0.01,
 							longitudeDelta: 0.01,
 						}}
-						showsUserLocation={true}
-					>
+						showsUserLocation={true}>
 						<Marker
 							coordinate={{
 								latitude: marker.latitude,

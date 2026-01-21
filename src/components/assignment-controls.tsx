@@ -25,37 +25,31 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 		if (Platform.OS === 'ios' || Platform.OS === 'macos') {
 			Linking.openURL(`http://maps.apple.com/?t=r&daddr=${destination}&dirflg=d&t=m`)
 		} else {
-			Linking.openURL(
-				`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving&dir_action=navigate`
-			)
+			Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving&dir_action=navigate`)
 		}
 	}
 
 	return (
-		<View className='absolute bottom-10 w-full px-2'>
-			<View className='px-4 py-2 rounded-[10px] bg-background gap-2'>
-				<Text className='pt-2 text-foreground text-base font-bold'>Endereço</Text>
-				<Text className='text-foreground text-base font-medium'>
+		<View className="absolute bottom-10 w-full px-2">
+			<View className="gap-2 rounded-[10px] bg-background px-4 py-2">
+				<Text className="pt-2 font-bold text-base text-foreground">Endereço</Text>
+				<Text className="font-medium text-base text-foreground">
 					{assignment.address} - {assignment.city.name}
 				</Text>
-				{!!assignment.details && (
-					<Text className='text-foreground text-base font-medium'>{assignment.details}</Text>
-				)}
-				<View className='flex-row gap-2 mt-2'>
+				{!!assignment.details && <Text className="font-medium text-base text-foreground">{assignment.details}</Text>}
+				<View className="mt-2 flex-row gap-2">
 					<TouchableOpacity
 						onPress={navigate}
-						className='gap-[5px] flex flex-row items-center justify-center flex-1 py-[15px] px-5 rounded-xl bg-primary-600 text-[15px] mb-2'
-					>
-						<MapPin size={24} color='white' />
-						<Text className='text-white text-[15px] font-bold'>Ir para</Text>
+						className="mb-2 flex flex-1 flex-row items-center justify-center gap-[5px] rounded-xl bg-primary-600 px-5 py-[15px] text-[15px]">
+						<MapPin size={24} color="white" />
+						<Text className="font-bold text-[15px] text-white">Ir para</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
 						onPress={onFinish}
-						className='gap-[5px] flex flex-row items-center justify-center flex-1 py-[15px] px-5 rounded-xl text-[15px] mb-2'
-						style={{ backgroundColor: colors.card }}
-					>
-						<Text className='text-[15px] font-bold' style={{ color: colors.primary[600] }}>
+						className="mb-2 flex flex-1 flex-row items-center justify-center gap-[5px] rounded-xl px-5 py-[15px] text-[15px]"
+						style={{ backgroundColor: colors.card }}>
+						<Text className="font-bold text-[15px]" style={{ color: colors.primary[600] }}>
 							Finalizar
 						</Text>
 					</TouchableOpacity>

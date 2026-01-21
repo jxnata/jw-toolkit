@@ -17,7 +17,7 @@ const Cities = () => {
 	const HeaderRight = useCallback(
 		() => (
 			<View>
-				<TouchableOpacity onPress={() => router.push('/admin/cities/add')} className='mx-2'>
+				<TouchableOpacity onPress={() => router.push('/admin/cities/add')} className="mx-2">
 					<PlusCircle size={24} color={colors.foreground} />
 				</TouchableOpacity>
 			</View>
@@ -25,7 +25,7 @@ const Cities = () => {
 		[router, colors.foreground]
 	)
 
-	const debouncedSearch = debounce(async term => {
+	const debouncedSearch = debounce(async (term) => {
 		setSearchTerm(term)
 	}, 500)
 
@@ -33,23 +33,23 @@ const Cities = () => {
 		return (
 			<Input
 				autoCorrect={false}
-				placeholder='Buscar uma cidade/território...'
+				placeholder="Buscar uma cidade/território..."
 				onChangeText={debouncedSearch}
-				clearButtonMode='always'
+				clearButtonMode="always"
 			/>
 		)
 	}
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Cidades/Territórios', headerRight: HeaderRight }} />
-			<View className='flex p-4 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-4">
 				<FlatList
 					ListHeaderComponent={<ListHeaderComponent />}
 					data={cities}
-					keyExtractor={item => item.id}
+					keyExtractor={(item) => item.id}
 					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
-					contentContainerClassName='gap-2'
+					contentContainerClassName="gap-2"
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => (
 						<ListItem
@@ -63,12 +63,10 @@ const Cities = () => {
 							}
 						/>
 					)}
-					ListFooterComponent={() => <View className='h-[60px]' />}
+					ListFooterComponent={() => <View className="h-[60px]" />}
 					ListEmptyComponent={
-						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-regular opacity-80'>
-								Nenhuma cidade/território encontrado
-							</Text>
+						<View className="flex-1 items-center justify-center py-8">
+							<Text className="font-regular text-foreground opacity-80">Nenhuma cidade/território encontrado</Text>
 						</View>
 					}
 				/>

@@ -27,7 +27,7 @@ const Publishers = () => {
 			}
 
 			try {
-				setList(list.filter(p => p.id !== publisherId))
+				setList(list.filter((p) => p.id !== publisherId))
 
 				await publishersService.updatePublisher(publisherId, {
 					approved: true,
@@ -45,7 +45,7 @@ const Publishers = () => {
 			if (!congregation) return
 
 			try {
-				setList(list.filter(p => p.id !== publisherId))
+				setList(list.filter((p) => p.id !== publisherId))
 
 				await publishersService.updatePublisher(publisherId, {
 					approved: false,
@@ -57,7 +57,7 @@ const Publishers = () => {
 				mutate()
 			}
 		},
-		[list, mutate]
+		[list, mutate, congregation]
 	)
 
 	useEffect(() => {
@@ -71,14 +71,14 @@ const Publishers = () => {
 	}, [mutatePublishers])
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Solicitações' }} />
-			<View className='flex p-2.5 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-2.5">
 				<FlatList
 					data={list}
-					keyExtractor={item => item.id}
+					keyExtractor={(item) => item.id}
 					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
-					contentContainerClassName='gap-2'
+					contentContainerClassName="gap-2"
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => (
 						<TouchableOpacity
@@ -89,24 +89,17 @@ const Publishers = () => {
 									params: { data: JSON.stringify(item) },
 								})
 							}
-							className='flex-row items-center py-2 px-2 bg-card rounded-lg'
-						>
-							<View className='flex items-center justify-center h-[35px] w-[35px] mr-2.5 bg-card rounded-full'>
-								<Text className='text-foreground text-lg font-bold'>{firstLetter(item.name)}</Text>
+							className="flex-row items-center rounded-lg bg-card px-2 py-2">
+							<View className="mr-2.5 flex h-[35px] w-[35px] items-center justify-center rounded-full bg-card">
+								<Text className="font-bold text-lg text-foreground">{firstLetter(item.name)}</Text>
 							</View>
-							<View className='flex-1 flex-row items-center justify-between'>
-								<Text className='text-foreground font-semibold'>{item.name}</Text>
-								<View className='flex-row mt-1 gap-2'>
-									<TouchableOpacity
-										onPress={() => approve(item.id)}
-										className='w-10 h-10 items-center justify-center'
-									>
+							<View className="flex-1 flex-row items-center justify-between">
+								<Text className="font-semibold text-foreground">{item.name}</Text>
+								<View className="mt-1 flex-row gap-2">
+									<TouchableOpacity onPress={() => approve(item.id)} className="h-10 w-10 items-center justify-center">
 										<CheckCircle size={24} color={colors.success[500]} />
 									</TouchableOpacity>
-									<TouchableOpacity
-										onPress={() => deny(item.id)}
-										className='w-10 h-10 items-center justify-center'
-									>
+									<TouchableOpacity onPress={() => deny(item.id)} className="h-10 w-10 items-center justify-center">
 										<XCircle size={24} color={colors.danger[500]} />
 									</TouchableOpacity>
 								</View>
@@ -114,10 +107,8 @@ const Publishers = () => {
 						</TouchableOpacity>
 					)}
 					ListEmptyComponent={
-						<View className='flex-1 py-8 items-center justify-center'>
-							<Text className='text-foreground font-regular opacity-80'>
-								Nenhuma solicitação pendente.
-							</Text>
+						<View className="flex-1 items-center justify-center py-8">
+							<Text className="font-regular text-foreground opacity-80">Nenhuma solicitação pendente.</Text>
 						</View>
 					}
 				/>

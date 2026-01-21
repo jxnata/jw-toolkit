@@ -28,11 +28,11 @@ const ViewMap = () => {
 	})
 	const { colors } = useThemedColors()
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.id })), [publishers])
+	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
 	const marker = getMarkerCoordinate(map ? [map.lat, map.lng] : [0, 0])
 
-	const save: SubmitHandler<AddAssignmentReq> = async data => {
+	const save: SubmitHandler<AddAssignmentReq> = async (data) => {
 		try {
 			await mapsService.assignMap(params.id, data.assigned)
 
@@ -58,27 +58,23 @@ const ViewMap = () => {
 
 	const showDeleteAlert = useCallback(
 		() =>
-			Alert.alert(
-				'Excluir',
-				'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.',
-				[
-					{
-						text: 'Cancelar',
-						style: 'cancel',
-					},
-					{
-						text: 'Sim, excluir',
-						onPress: () => deleteMap(),
-						style: 'default',
-					},
-				]
-			),
+			Alert.alert('Excluir', 'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.', [
+				{
+					text: 'Cancelar',
+					style: 'cancel',
+				},
+				{
+					text: 'Sim, excluir',
+					onPress: () => deleteMap(),
+					style: 'default',
+				},
+			]),
 		[deleteMap]
 	)
 
 	const HeaderRight = useCallback(
 		() => (
-			<View className='flex-row'>
+			<View className="flex-row">
 				<TouchableOpacity
 					onPress={() =>
 						router.replace({
@@ -87,11 +83,10 @@ const ViewMap = () => {
 						})
 					}
 					disabled={!map}
-					className='mx-2'
-				>
+					className="mx-2">
 					<Pencil size={24} color={colors.foreground} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={showDeleteAlert} className='mx-2'>
+				<TouchableOpacity onPress={showDeleteAlert} className="mx-2">
 					<Trash size={24} color={colors.foreground} />
 				</TouchableOpacity>
 			</View>
@@ -100,23 +95,23 @@ const ViewMap = () => {
 	)
 
 	return (
-		<View className='flex'>
+		<View className="flex">
 			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
-			<View className='flex w-full h-full bg-background'>
-				<View className='p-4'>
+			<View className="flex h-full w-full bg-background">
+				<View className="p-4">
 					{!!map && (
 						<>
 							<MapViewDetails map={map} />
 							{!map.assigned ? (
 								<View>
-									<Text className='text-sm text-foreground py-2 font-medium'>Designar mapa</Text>
+									<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>
 									<Controller
 										control={control}
 										rules={{ required: true }}
-										name='assigned'
+										name="assigned"
 										render={({ field: { onChange, onBlur, value } }) => (
 											<Dropdown
-												placeholder='Selecione um publicador...'
+												placeholder="Selecione um publicador..."
 												options={publisherList}
 												selectedValue={value}
 												onValueChange={onChange}
@@ -125,32 +120,29 @@ const ViewMap = () => {
 										)}
 									/>
 									{map.tag === 'nao-visitar' && (
-										<Text className='text-danger-500 py-2 font-medium'>
-											Não é possível designar esse mapa pois está marcado como "não visitar".
+										<Text className="py-2 font-medium text-danger-500">
+											Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
 										</Text>
 									)}
-									<View className='mt-2'>
+									<View className="mt-2">
 										{formState.isValid && (
 											<Button
 												disabled={!formState.isValid}
 												loading={formState.isSubmitting}
-												onPress={handleSubmit(save)}
-											>
+												onPress={handleSubmit(save)}>
 												Designar
 											</Button>
 										)}
 									</View>
 								</View>
 							) : (
-								<View className='flex-row items-baseline mt-2 ml-2'>
+								<View className="ml-2 mt-2 flex-row items-baseline">
 									<View>
-										<Text className='text-sm text-foreground font-medium'>Designado para:</Text>
+										<Text className="font-medium text-sm text-foreground">Designado para:</Text>
 									</View>
-									<View className='ml-2.5'>
+									<View className="ml-2.5">
 										{typeof map.assigned === 'object' && (
-											<Text className='text-[15px] text-foreground font-medium'>
-												{map.assigned.name}
-											</Text>
+											<Text className="font-medium text-[15px] text-foreground">{map.assigned.name}</Text>
 										)}
 									</View>
 								</View>
@@ -159,7 +151,7 @@ const ViewMap = () => {
 					)}
 				</View>
 				{!!map && (
-					<View className='flex-1 m-2.5 rounded-lg overflow-hidden'>
+					<View className="m-2.5 flex-1 overflow-hidden rounded-lg">
 						<MapView
 							style={{ width: '100%', height: '100%' }}
 							initialRegion={{
@@ -167,8 +159,7 @@ const ViewMap = () => {
 								longitude: region.longitude,
 								latitudeDelta: 0.01,
 								longitudeDelta: 0.01,
-							}}
-						>
+							}}>
 							<Marker
 								coordinate={{
 									latitude: marker.latitude,

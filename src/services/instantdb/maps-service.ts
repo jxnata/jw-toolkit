@@ -77,11 +77,11 @@ class MapsService {
 				$: {
 					where: {
 						congregation: congregationId,
-						assigned: { $isNull: false }
-					}
+						assigned: { $isNull: false },
+					},
 				},
-				assigned: {}
-			}
+				assigned: {},
+			},
 		})
 
 		const assignedMaps = data.maps || []
@@ -93,7 +93,7 @@ class MapsService {
 		const batches = []
 
 		for (let i = 0; i < assignedMaps.length; i += batchLimit) {
-			const batch = assignedMaps.slice(i, i + batchLimit).map(map => {
+			const batch = assignedMaps.slice(i, i + batchLimit).map((map) => {
 				return db.tx.maps[map.id].unlink({ assigned: map.assigned!.id })
 			})
 			batches.push(batch)
@@ -108,11 +108,11 @@ class MapsService {
 		const { data } = await db.queryOnce({
 			maps: {
 				$: {
-					where: { id: mapId }
-				}
-			}
+					where: { id: mapId },
+				},
+			},
 		})
-		return data.maps?.[0] as Map ?? null
+		return (data.maps?.[0] as Map) ?? null
 	}
 
 	async deleteMap(mapId: string): Promise<void> {
@@ -120,4 +120,4 @@ class MapsService {
 	}
 }
 
-export const mapsService = new MapsService() 
+export const mapsService = new MapsService()

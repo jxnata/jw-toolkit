@@ -49,33 +49,30 @@ const AssignmentMapCard = ({ assignment, onCancel }: AssignmentProps) => {
 	const saveNotFound = () => save(false)
 
 	return (
-		<View className='absolute bottom-10 w-full px-2'>
-			<View className='items-center p-4 rounded-[10px] border-[1px] border-border bg-background gap-2'>
+		<View className="absolute bottom-10 w-full px-2">
+			<View className="items-center gap-2 rounded-[10px] border-[1px] border-border bg-background p-4">
 				<Pressable
 					onPress={onCancel}
 					disabled={loading}
-					className='absolute top-1 right-1 w-[50px] h-[50px] flex flex-row items-center justify-center rounded-xl'
-				>
+					className="absolute right-1 top-1 flex h-[50px] w-[50px] flex-row items-center justify-center rounded-xl">
 					<XCircle size={24} color={colors.foreground} />
 				</Pressable>
 
-				<Text className='py-2 text-foreground text-base font-bold'>Encontrou alguém?</Text>
+				<Text className="py-2 font-bold text-base text-foreground">Encontrou alguém?</Text>
 
-				<View className='mt-2 flex-row gap-2'>
+				<View className="mt-2 flex-row gap-2">
 					<TouchableOpacity
 						onPress={saveFound}
 						disabled={loading}
-						className='gap-[5px] flex flex-row items-center justify-center flex-1 px-5 py-5 rounded-xl bg-success-500 text-[15px] mb-[15px]'
-					>
-						<Text className='text-white text-[15px] font-bold'>{loading ? 'Salvando...' : 'Sim'}</Text>
+						className="mb-[15px] flex flex-1 flex-row items-center justify-center gap-[5px] rounded-xl bg-success-500 px-5 py-5 text-[15px]">
+						<Text className="font-bold text-[15px] text-white">{loading ? 'Salvando...' : 'Sim'}</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
 						onPress={saveNotFound}
 						disabled={loading}
-						className='gap-[5px] flex flex-row items-center justify-center flex-1 px-5 py-5 rounded-xl bg-danger-500 text-[15px] mb-[15px]'
-					>
-						<Text className='text-white text-[15px] font-bold'>{loading ? 'Salvando...' : 'Não'}</Text>
+						className="mb-[15px] flex flex-1 flex-row items-center justify-center gap-[5px] rounded-xl bg-danger-500 px-5 py-5 text-[15px]">
+						<Text className="font-bold text-[15px] text-white">{loading ? 'Salvando...' : 'Não'}</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

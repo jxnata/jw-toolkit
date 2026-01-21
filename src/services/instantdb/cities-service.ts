@@ -34,12 +34,12 @@ class CitiesService {
 		const { data } = await db.queryOnce({
 			cities: {
 				$: {
-					where: { id: cityId }
+					where: { id: cityId },
 				},
-				congregation: {}
-			}
+				congregation: {},
+			},
 		})
-		return data.cities?.[0] as City ?? null
+		return (data.cities?.[0] as City) ?? null
 	}
 
 	async deleteCity(cityId: string): Promise<void> {
@@ -47,4 +47,4 @@ class CitiesService {
 	}
 }
 
-export const citiesService = new CitiesService() 
+export const citiesService = new CitiesService()

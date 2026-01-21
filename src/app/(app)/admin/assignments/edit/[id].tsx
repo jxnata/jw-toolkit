@@ -25,14 +25,14 @@ const EditAssignment = () => {
 		() => ({
 			assigned: typeof params.assigned === 'object' ? params!.assigned!.id : params.assigned,
 		}),
-		[params.assigned]
+		[params]
 	)
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.id })), [publishers])
+	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
 
-	const save: SubmitHandler<EditAssignmentReq> = async data => {
+	const save: SubmitHandler<EditAssignmentReq> = async (data) => {
 		try {
 			await mapsService.assignMap(params.id, data.assigned)
 			success('designação')
@@ -74,34 +74,33 @@ const EditAssignment = () => {
 		])
 
 	return (
-		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+		<KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Editar Designação' }} />
-			<View className='flex p-4 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background p-4">
 				{!!map && <MapViewDetails map={map} />}
 				<Controller
 					control={control}
 					rules={{ required: true }}
-					name='assigned'
+					name="assigned"
 					render={({ field: { onChange, value } }) => (
 						<Dropdown
-							label='Designado para'
-							placeholder='Selecione um publicador...'
+							label="Designado para"
+							placeholder="Selecione um publicador..."
 							options={publisherList}
 							selectedValue={value}
 							onValueChange={onChange}
 						/>
 					)}
 				/>
-				<View className='gap-2.5 mt-2.5'>
+				<View className="mt-2.5 gap-2.5">
 					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
 						Atualizar
 					</Button>
 					<Pressable
 						onPress={showDeleteAlert}
 						disabled={formState.isSubmitting}
-						className='py-2.5 px-5 rounded-xl border border-border items-center justify-center h-[50px]'
-					>
-						<Text className='text-[15px] font-bold' style={{ color: colors.foreground + '80' }}>
+						className="h-[50px] items-center justify-center rounded-xl border border-border px-5 py-2.5">
+						<Text className="font-bold text-[15px]" style={{ color: colors.foreground + '80' }}>
 							Remover designação
 						</Text>
 					</Pressable>

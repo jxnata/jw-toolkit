@@ -54,50 +54,36 @@ const Login = () => {
 	}
 
 	return (
-		<View className='flex'>
-			<StatusBar style='dark' />
+		<View className="flex">
+			<StatusBar style="dark" />
 			<Stack.Screen options={{ headerShown: false }} />
-			<ImageBackground
-				source={require('../assets/images/login-bg.jpg')}
-				resizeMode='cover'
-				className='flex w-full h-full'
-			>
-				<View
-					className='absolute flex-1 top-0 left-0 w-full h-full opacity-70'
-					style={{ backgroundColor: colors.background }}
-				/>
-				<View className='flex h-full justify-end'>
+			<ImageBackground source={require('../assets/images/login-bg.jpg')} resizeMode="cover" className="flex h-full w-full">
+				<View className="absolute left-0 top-0 h-full w-full flex-1 opacity-70" style={{ backgroundColor: colors.background }} />
+				<View className="flex h-full justify-end">
 					<View
-						className='flex px-6 pt-6 rounded-xl opacity-90'
+						className="flex rounded-xl px-6 pt-6 opacity-90"
 						style={{
 							backgroundColor: colors.background,
 							paddingBottom: insets.bottom + 10,
-						}}
-					>
-						<View className='flex-col text-center items-center mb-8 gap-2.5'>
-							<Text className='text-center text-xl text-foreground font-bold'>Bem vindo!</Text>
-							<Text
-								className='text-center text-lg font-regular'
-								style={{ color: colors.foreground + '99' }}
-							>
-								Faça login usando sua conta ou crie uma nova conta com{' '}
-								{Platform.OS === 'ios' ? 'a Apple' : 'o Google'}
+						}}>
+						<View className="mb-8 flex-col items-center gap-2.5 text-center">
+							<Text className="text-center font-bold text-xl text-foreground">Bem vindo!</Text>
+							<Text className="text-center font-regular text-lg" style={{ color: colors.foreground + '99' }}>
+								Faça login usando sua conta ou crie uma nova conta com {Platform.OS === 'ios' ? 'a Apple' : 'o Google'}
 							</Text>
 						</View>
 
 						{loading ? (
-							<View className='h-[100px] justify-center items-center'>
-								<ActivityIndicator size='large' />
+							<View className="h-[100px] items-center justify-center">
+								<ActivityIndicator size="large" />
 							</View>
 						) : (
-							<View className='my-2'>
+							<View className="my-2">
 								{Platform.OS === 'ios' ? (
 									<AppleAuthenticationButton
 										buttonType={AppleAuthenticationButtonType.SIGN_IN}
 										buttonStyle={
-											scheme === 'dark'
-												? AppleAuthenticationButtonStyle.WHITE
-												: AppleAuthenticationButtonStyle.BLACK
+											scheme === 'dark' ? AppleAuthenticationButtonStyle.WHITE : AppleAuthenticationButtonStyle.BLACK
 										}
 										cornerRadius={5}
 										style={{ width: 'auto', height: 50 }}
@@ -106,11 +92,7 @@ const Login = () => {
 								) : (
 									<GoogleSigninButton
 										size={GoogleSigninButton.Size.Wide}
-										color={
-											scheme === 'dark'
-												? GoogleSigninButton.Color.Light
-												: GoogleSigninButton.Color.Dark
-										}
+										color={scheme === 'dark' ? GoogleSigninButton.Color.Light : GoogleSigninButton.Color.Dark}
 										style={{ width: 'auto', marginVertical: 5 }}
 										onPress={googleSign}
 										disabled={loading}
@@ -118,10 +100,7 @@ const Login = () => {
 								)}
 							</View>
 						)}
-						<Text
-							className='mt-5 self-center text-center text-sm font-regular'
-							style={{ color: colors.foreground + '80' }}
-						>
+						<Text className="mt-5 self-center text-center font-regular text-sm" style={{ color: colors.foreground + '80' }}>
 							Versão: {APP_VERSION}
 						</Text>
 					</View>

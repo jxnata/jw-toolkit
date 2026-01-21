@@ -42,4 +42,4 @@ export const logoutUser = async () => {
 	} catch (error) {
 		console.error('Error logging out user from RevenueCat:', error)
 	}
-} 
+}

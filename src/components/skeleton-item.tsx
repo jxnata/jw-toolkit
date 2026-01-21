@@ -7,7 +7,7 @@ interface SkeletonItemProps {
 
 const SkeletonItem = ({ height = 70 }: SkeletonItemProps) => {
 	return (
-		<View className='mx-2.5 mb-[5px]'>
+		<View className="mx-2.5 mb-[5px]">
 			<Skeleton height={height} />
 		</View>
 	)

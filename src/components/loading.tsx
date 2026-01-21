@@ -5,8 +5,8 @@ export function Loading() {
 	const { colors } = useThemedColors()
 
 	return (
-		<View className='flex-1 items-center justify-center'>
-			<ActivityIndicator size='large' color={colors.primary[500]} />
+		<View className="flex-1 items-center justify-center">
+			<ActivityIndicator size="large" color={colors.primary[500]} />
 		</View>
 	)
 }

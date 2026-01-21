@@ -27,12 +27,10 @@ const usePublisher = ({ publisherId, userId, enabled = true }: Props = {}) => {
 				city: {},
 				congregation: {},
 			},
-		}
+		},
 	}
 
-	const { data, isLoading, error } = db.useQuery(
-		enabled ? query : null
-	)
+	const { data, isLoading, error } = db.useQuery(enabled ? query : null)
 
 	return {
 		publisher: data?.publishers[0] || null,

@@ -1,15 +1,12 @@
 import { useCallback, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 
-import { useThemedColors } from '@/hooks/use-themed-colors'
-
 type CheckboxComponentProps = {
 	onChange?: () => void
 }
 
 const useCheckbox = (options: string[], initialSelected?: string[], unique?: boolean) => {
 	const [selectedValues, setSelectedValues] = useState(initialSelected || [])
-	const { colors } = useThemedColors()
 
 	const isSelected = useCallback(
 		(option: string) => {
@@ -27,7 +24,7 @@ const useCheckbox = (options: string[], initialSelected?: string[], unique?: boo
 			}
 
 			if (selectedValues.includes(value)) {
-				const values = selectedValues.filter(selected => selected !== value)
+				const values = selectedValues.filter((selected) => selected !== value)
 				setSelectedValues(values)
 				if (callback) callback(values)
 			} else {
@@ -41,16 +38,13 @@ const useCheckbox = (options: string[], initialSelected?: string[], unique?: boo
 	const CheckboxComponent = useCallback(
 		({ onChange }: CheckboxComponentProps) => {
 			return (
-				<View className='flex-row items-center gap-1'>
-					{options.map(option => (
+				<View className="flex-row items-center gap-1">
+					{options.map((option) => (
 						<Pressable
 							key={option}
-							className={`p-2.5 rounded-lg ${isSelected(option) ? 'bg-primary-600' : 'bg-card'}`}
-							onPress={() => onChangeSelected(option, onChange)}
-						>
-							<Text
-								className={`text-xs font-bold ${isSelected(option) ? 'text-background' : 'text-foreground'}`}
-							>
+							className={`rounded-lg p-2.5 ${isSelected(option) ? 'bg-primary-600' : 'bg-card'}`}
+							onPress={() => onChangeSelected(option, onChange)}>
+							<Text className={`font-bold text-xs ${isSelected(option) ? 'text-background' : 'text-foreground'}`}>
 								{option}
 							</Text>
 						</Pressable>
@@ -58,7 +52,7 @@ const useCheckbox = (options: string[], initialSelected?: string[], unique?: boo
 				</View>
 			)
 		},
-		[options, isSelected, onChangeSelected, colors]
+		[options, isSelected, onChangeSelected]
 	)
 
 	return { CheckboxComponent, selectedValues }

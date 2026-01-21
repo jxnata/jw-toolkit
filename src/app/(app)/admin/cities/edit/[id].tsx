@@ -22,7 +22,7 @@ const EditCity = () => {
 	})
 	const { colors } = useThemedColors()
 
-	const save: SubmitHandler<EditCityReq> = async data => {
+	const save: SubmitHandler<EditCityReq> = async (data) => {
 		if (!data.name) return
 
 		try {
@@ -52,47 +52,39 @@ const EditCity = () => {
 	}
 
 	const showDeleteAlert = () =>
-		Alert.alert(
-			'Excluir',
-			'Deseja excluir a cidade/território e todos os mapas relacionados? Essa opção não pode ser revertida.',
-			[
-				{
-					text: 'Cancelar',
-					style: 'cancel',
-				},
-				{
-					text: 'Sim, excluir',
-					onPress: () => deleteCity(),
-					style: 'default',
-				},
-			]
-		)
+		Alert.alert('Excluir', 'Deseja excluir a cidade/território e todos os mapas relacionados? Essa opção não pode ser revertida.', [
+			{
+				text: 'Cancelar',
+				style: 'cancel',
+			},
+			{
+				text: 'Sim, excluir',
+				onPress: () => deleteCity(),
+				style: 'default',
+			},
+		])
 
 	return (
-		<KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+		<KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 			<Stack.Screen options={{ title: 'Editar Cidade/Território' }} />
-			<View className='flex px-4 py-2 w-full h-full bg-background'>
+			<View className="flex h-full w-full bg-background px-4 py-2">
 				<Controller
 					control={control}
 					rules={{ required: true }}
-					name='name'
+					name="name"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
-							label='Nome'
-							placeholder='Nome da cidade ou território'
+							label="Nome"
+							placeholder="Nome da cidade ou território"
 							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}
 						/>
 					)}
 				/>
-				<View className='flex-row gap-2.5 mt-2.5'>
-					<View className='flex-1'>
-						<Button
-							loading={formState.isSubmitting}
-							onPress={handleSubmit(save)}
-							left={<Save size={16} color='#ffffff' />}
-						>
+				<View className="mt-2.5 flex-row gap-2.5">
+					<View className="flex-1">
+						<Button loading={formState.isSubmitting} onPress={handleSubmit(save)} left={<Save size={16} color="#ffffff" />}>
 							Atualizar
 						</Button>
 					</View>

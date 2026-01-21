@@ -5,4 +5,4 @@ import { tomtomInterceptor } from './interceptor'
 
 export const tomtomApi = axios.create({ baseURL: TOMTOM_MAPS_API })
 
-tomtomApi.interceptors.request.use(tomtomInterceptor, error => Promise.reject(error))
+tomtomApi.interceptors.request.use(tomtomInterceptor, (error) => Promise.reject(error))

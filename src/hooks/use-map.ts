@@ -12,16 +12,20 @@ const useMap = ({ mapId, enabled = true }: Props) => {
 
 	const active = enabled && congregation
 
-	const { isLoading, error, data } = db.useQuery(active ? {
-		maps: {
-			$: {
-				where: { id: mapId, congregation: congregation.id },
-				limit: 1,
-			},
-			city: {},
-			assigned: {},
-		}
-	} : null)
+	const { isLoading, error, data } = db.useQuery(
+		active
+			? {
+					maps: {
+						$: {
+							where: { id: mapId, congregation: congregation.id },
+							limit: 1,
+						},
+						city: {},
+						assigned: {},
+					},
+				}
+			: null
+	)
 
 	return {
 		map: data?.maps?.[0] as Map | null,

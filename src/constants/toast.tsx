@@ -3,7 +3,7 @@ import { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message'
 
 export const configToast = (scheme: 'light' | 'dark'): ToastConfig => {
 	return {
-		success: props => (
+		success: (props) => (
 			<BaseToast
 				{...props}
 				style={{ borderLeftColor: colors.success[500], backgroundColor: colors.success[600] }}
@@ -20,7 +20,7 @@ export const configToast = (scheme: 'light' | 'dark'): ToastConfig => {
 				text2NumberOfLines={3}
 			/>
 		),
-		error: props => (
+		error: (props) => (
 			<ErrorToast
 				{...props}
 				style={{ borderLeftColor: colors.danger[500], backgroundColor: colors.danger[600] }}

@@ -4,36 +4,39 @@ import { useSubscription } from '@/hooks/use-subscription'
 import db from '@/lib/db'
 import { useMemo } from 'react'
 
-
 export const useLimits = () => {
 	const { congregation } = useSession()
 	const { subscribed } = useSubscription()
 
 	// Query maps count
 	const { data: mapsData } = db.useQuery(
-		congregation ? {
-			maps: {
-				$: {
-					where: {
-						congregation: congregation.id,
+		congregation
+			? {
+					maps: {
+						$: {
+							where: {
+								congregation: congregation.id,
+							},
+						},
 					},
-				},
-			}
-		} : null
+				}
+			: null
 	)
 
 	// Query publishers count
 	const { data: publishersData } = db.useQuery(
-		congregation ? {
-			publishers: {
-				$: {
-					where: {
-						congregation: congregation.id,
-						approved: true,
+		congregation
+			? {
+					publishers: {
+						$: {
+							where: {
+								congregation: congregation.id,
+								approved: true,
+							},
+						},
 					},
-				},
-			}
-		} : null
+				}
+			: null
 	)
 
 	const limits = useMemo(() => {
@@ -63,4 +66,4 @@ export const useLimits = () => {
 	}, [subscribed, mapsData, publishersData])
 
 	return limits
-} 
+}

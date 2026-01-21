@@ -34,12 +34,12 @@ class DistrictsService {
 		const { data } = await db.queryOnce({
 			districts: {
 				$: {
-					where: { id: districtId }
+					where: { id: districtId },
 				},
 				city: {
-					congregation: {}
-				}
-			}
+					congregation: {},
+				},
+			},
 		})
 		return data.districts[0] as District | null
 	}
@@ -49,4 +49,4 @@ class DistrictsService {
 	}
 }
 
-export const districtsService = new DistrictsService() 
+export const districtsService = new DistrictsService()

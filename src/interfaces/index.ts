@@ -1,5 +1,5 @@
-import { InstaQLEntity } from "@instantdb/react-native"
-import { AppSchema } from "./schema"
+import { InstaQLEntity } from '@instantdb/react-native'
+import { AppSchema } from './schema'
 
 type Congregation = InstaQLEntity<AppSchema, 'congregations'>
 type City = InstaQLEntity<AppSchema, 'cities'> & {

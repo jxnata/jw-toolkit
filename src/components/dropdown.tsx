@@ -1,17 +1,7 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { CheckCircle, ChevronDown, Circle, RefreshCcw, X } from 'lucide-react-native'
 import React, { useMemo, useState } from 'react'
-import {
-	ActivityIndicator,
-	Dimensions,
-	FlatList,
-	Modal,
-	Pressable,
-	SafeAreaView,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native'
+import { ActivityIndicator, Dimensions, FlatList, Modal, Pressable, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 
 const { height } = Dimensions.get('window')
 
@@ -26,22 +16,13 @@ type Props = {
 	onRefresh?: () => Promise<unknown>
 }
 
-const Dropdown = ({
-	selectedValue,
-	options,
-	label,
-	placeholder,
-	disabled = false,
-	onValueChange,
-	footerComponent,
-	onRefresh,
-}: Props) => {
+const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false, onValueChange, footerComponent, onRefresh }: Props) => {
 	const [open, setOpen] = useState(false)
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const { colors } = useThemedColors()
 
 	const toggle = () => {
-		setOpen(old => !old)
+		setOpen((old) => !old)
 	}
 
 	const handleRefresh = async () => {
@@ -64,7 +45,7 @@ const Dropdown = ({
 		if (!options) return
 		if (!options.length) return
 
-		const selected = options.find(o => o.value === selectedValue)
+		const selected = options.find((o) => o.value === selectedValue)
 
 		if (!selected) return
 
@@ -72,34 +53,29 @@ const Dropdown = ({
 	}, [selectedValue, options])
 
 	return (
-		<View className='mb-2.5'>
-			{!!label && <Text className='text-foreground text-sm font-medium mb-1 ml-1 opacity-70'>{label}</Text>}
+		<View className="mb-2.5">
+			{!!label && <Text className="mb-1 ml-1 font-medium text-sm text-foreground opacity-70">{label}</Text>}
 			<Pressable
 				onPress={toggle}
 				disabled={disabled}
 				accessibilityLabel={`${label || 'Dropdown'}: ${selectedLabel || placeholder}`}
-				accessibilityRole='button'
+				accessibilityRole="button"
 				accessibilityState={{ selected: selectedValue !== undefined }}
-				className={`flex-row justify-between items-center w-full px-4 py-4 rounded-xl border border-border bg-card ${disabled ? 'opacity-50' : ''}`}
-			>
-				<Text className='text-foreground font-medium'>{selectedLabel || placeholder}</Text>
+				className={`w-full flex-row items-center justify-between rounded-xl border border-border bg-card px-4 py-4 ${disabled ? 'opacity-50' : ''}`}>
+				<Text className="font-medium text-foreground">{selectedLabel || placeholder}</Text>
 				<ChevronDown size={16} color={colors.foreground + '80'} />
 			</Pressable>
 
-			<Modal animationType='fade' transparent visible={open} onRequestClose={toggle}>
-				<View className='flex justify-end w-full h-full' style={{ backgroundColor: colors.background + '90' }}>
-					<SafeAreaView
-						className='flex w-full items-center rounded-[10px] bg-card'
-						style={{ maxHeight: height * 0.6 }}
-					>
+			<Modal animationType="fade" transparent visible={open} onRequestClose={toggle}>
+				<View className="flex h-full w-full justify-end" style={{ backgroundColor: colors.background + '90' }}>
+					<SafeAreaView className="flex w-full items-center rounded-[10px] bg-card" style={{ maxHeight: height * 0.6 }}>
 						{!!onRefresh && (
 							<TouchableOpacity
 								onPress={handleRefresh}
 								disabled={isRefreshing}
-								className='absolute -top-[45px] left-2.5 bg-card border border-success-DEFAULT p-2 rounded-lg z-10'
-							>
+								className="border-success-DEFAULT absolute -top-[45px] left-2.5 z-10 rounded-lg border bg-card p-2">
 								{isRefreshing ? (
-									<ActivityIndicator size='small' color={colors.primary[600]} />
+									<ActivityIndicator size="small" color={colors.primary[600]} />
 								) : (
 									<RefreshCcw size={20} color={colors.foreground + '80'} />
 								)}
@@ -108,37 +84,35 @@ const Dropdown = ({
 
 						<TouchableOpacity
 							onPress={toggle}
-							className='absolute -top-[45px] right-2.5 bg-card border border-danger-500 p-2 rounded-lg z-10'
-						>
+							className="absolute -top-[45px] right-2.5 z-10 rounded-lg border border-danger-500 bg-card p-2">
 							<X size={20} color={colors.foreground + '80'} />
 						</TouchableOpacity>
 
 						<FlatList
-							className='w-full p-2'
+							className="w-full p-2"
 							data={options}
 							renderItem={({ item, index }) => (
 								<Pressable
 									onPress={() => onPress(item)}
-									className='flex-row items-center rounded-xl px-4 py-4 mt-[5px] gap-2.5'
+									className="mt-[5px] flex-row items-center gap-2.5 rounded-xl px-4 py-4"
 									style={{ backgroundColor: colors.background + '70' }}
 									accessibilityLabel={item.label}
-									accessibilityRole='button'
-									accessibilityState={{ selected: item.value === selectedValue }}
-								>
+									accessibilityRole="button"
+									accessibilityState={{ selected: item.value === selectedValue }}>
 									{item.value === selectedValue ? (
 										<CheckCircle size={20} color={colors.foreground + '80'} />
 									) : (
 										<Circle size={20} color={colors.foreground + '80'} />
 									)}
-									<Text className='text-foreground text-base font-medium'>{item.label}</Text>
+									<Text className="font-medium text-base text-foreground">{item.label}</Text>
 								</Pressable>
 							)}
 							keyExtractor={(item, index) => `${item.label}-${index}`}
 							ListFooterComponent={
 								<>
-									<View className='h-[30px]' />
+									<View className="h-[30px]" />
 									{footerComponent}
-									<View className='h-[30px]' />
+									<View className="h-[30px]" />
 								</>
 							}
 						/>

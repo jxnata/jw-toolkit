@@ -55,7 +55,6 @@
 
 - **Push Notifications**: Alertas instantâneos para mudanças de designação
 - **Sincronização**: Atualizações automáticas entre dispositivos
-- **OneSignal Integration**: Sistema robusto de notificações
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -83,11 +82,6 @@
 - **[Expo Maps](https://docs.expo.dev/versions/latest/sdk/maps/)** - Integração com mapas
 - **[Expo Location](https://docs.expo.dev/versions/latest/sdk/location/)** - Serviços de localização
 - **[Geolib](https://github.com/manuelbieh/geolib)** - Utilitários de geolocalização
-
-### Analytics & Notifications
-
-- **[OneSignal](https://onesignal.com/)** - Push notifications
-- **[Google Sign-In](https://developers.google.com/identity/sign-in/android)** - Autenticação social
 
 ## 📱 Capturas de Tela
 

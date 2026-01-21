@@ -23,7 +23,7 @@ const EditMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const { cities } = useCities()
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.id })), [cities])
+	const citiesList = useMemo(() => cities.map((c) => ({ label: c.name, value: c.id })), [cities])
 	const { colors } = useThemedColors()
 	const defaultValues: EditMapReq | undefined = useMemo(
 		() =>
@@ -45,10 +45,10 @@ const EditMap = () => {
 	const coordinates = watch('coordinates')
 
 	const toggleMap = () => {
-		setModalVisible(old => !old)
+		setModalVisible((old) => !old)
 	}
 
-	const save: SubmitHandler<EditMapReq> = async data => {
+	const save: SubmitHandler<EditMapReq> = async (data) => {
 		const [lat, lng] = setCoordinates(data.coordinates)
 
 		if (lat === 0 || lng === 0) {
@@ -81,18 +81,18 @@ const EditMap = () => {
 	}
 
 	return (
-		<View className='flex-1 bg-background'>
+		<View className="flex-1 bg-background">
 			<Stack.Screen options={{ title: 'Editar Mapa' }} />
 			<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName='p-3 w-full'>
+				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName="p-3 w-full">
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='name'
+						name="name"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Nome'
-								placeholder='Nome do mapa'
+								label="Nome"
+								placeholder="Nome do mapa"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -103,11 +103,11 @@ const EditMap = () => {
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='address'
+						name="address"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Endereço'
-								placeholder='Endereço'
+								label="Endereço"
+								placeholder="Endereço"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -118,11 +118,11 @@ const EditMap = () => {
 					<Controller
 						control={control}
 						rules={{ required: false }}
-						name='district'
+						name="district"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Bairro'
-								placeholder='Bairro'
+								label="Bairro"
+								placeholder="Bairro"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -133,11 +133,11 @@ const EditMap = () => {
 					<Controller
 						control={control}
 						rules={{ required: false }}
-						name='details'
+						name="details"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
-								label='Detalhes'
-								placeholder='Detalhes ou observações'
+								label="Detalhes"
+								placeholder="Detalhes ou observações"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -145,17 +145,17 @@ const EditMap = () => {
 							/>
 						)}
 					/>
-					<View className='flex-row gap-2 items-end'>
-						<View className='flex-1'>
+					<View className="flex-row items-end gap-2">
+						<View className="flex-1">
 							<Controller
 								control={control}
 								rules={{ required: true }}
-								name='coordinates'
+								name="coordinates"
 								render={({ field: { onChange, onBlur, value } }) => (
 									<Input
-										label='Coordenadas'
+										label="Coordenadas"
 										defaultValue={value}
-										placeholder='Coordenadas'
+										placeholder="Coordenadas"
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}
@@ -164,21 +164,18 @@ const EditMap = () => {
 								)}
 							/>
 						</View>
-						<TouchableOpacity
-							onPress={toggleMap}
-							className='mb-3 p-3 bg-card border border-border rounded-lg'
-						>
+						<TouchableOpacity onPress={toggleMap} className="mb-3 rounded-lg border border-border bg-card p-3">
 							<MapPinPlus size={24} color={colors.primary[500]} />
 						</TouchableOpacity>
 					</View>
 					<Controller
 						control={control}
 						rules={{ required: true }}
-						name='city'
+						name="city"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Dropdown
-								label='Cidade'
-								placeholder='Selecione uma cidade...'
+								label="Cidade"
+								placeholder="Selecione uma cidade..."
 								options={citiesList}
 								selectedValue={value}
 								onValueChange={onChange}
@@ -187,33 +184,26 @@ const EditMap = () => {
 					/>
 					<Controller
 						control={control}
-						name='tag'
+						name="tag"
 						rules={{ required: false }}
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Dropdown
-								label='Status'
-								placeholder='Selecione um status...'
+								label="Status"
+								placeholder="Selecione um status..."
 								options={STATUS_LIST}
 								selectedValue={value}
 								onValueChange={onChange}
 							/>
 						)}
 					/>
-					<Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
+					<Modal animationType="slide" transparent visible={modalVisible} onRequestClose={toggleMap}>
 						<SelectLocation
-							onSelect={coord => setValue('coordinates', getCoordinates(coord))}
+							onSelect={(coord) => setValue('coordinates', getCoordinates(coord))}
 							onClose={toggleMap}
-							initial={
-								coordinates ? { coordinates: getMapRegion(setCoordinates(coordinates)) } : undefined
-							}
+							initial={coordinates ? { coordinates: getMapRegion(setCoordinates(coordinates)) } : undefined}
 						/>
 					</Modal>
-					<Button
-						disabled={!formState.isValid}
-						loading={formState.isSubmitting}
-						onPress={handleSubmit(save)}
-						className='mt-4'
-					>
+					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)} className="mt-4">
 						Salvar
 					</Button>
 				</ScrollView>

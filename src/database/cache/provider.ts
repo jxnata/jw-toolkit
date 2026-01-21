@@ -1,5 +1,5 @@
 import { cache } from '@/database/index'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 
 const clientStorage = {
 	setItem: (key: string, value: boolean | string | number | Uint8Array<ArrayBufferLike>) => {
@@ -10,8 +10,8 @@ const clientStorage = {
 		return value === undefined ? null : value
 	},
 	removeItem: (key: string) => {
-		cache.delete(key)
+		cache.remove(key)
 	},
 }
 
-export const clientPersister = createSyncStoragePersister({ storage: clientStorage })
+export const clientPersister = createAsyncStoragePersister({ storage: clientStorage })

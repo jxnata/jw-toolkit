@@ -20,21 +20,23 @@ const useCities = ({ search, enabled = true }: Props = {}) => {
 	}
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			cities: {
-				$: {
-					where: whereConditions,
-					order: { serverCreatedAt: 'desc' }
-				},
-			}
-		} : null
+		active
+			? {
+					cities: {
+						$: {
+							where: whereConditions,
+							order: { serverCreatedAt: 'desc' },
+						},
+					},
+				}
+			: null
 	)
 
 	return {
 		cities: data?.cities || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

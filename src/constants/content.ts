@@ -10,7 +10,7 @@ export const STATUS_LIST = [
 ]
 
 export const STATUS_NAME = {
-	'estudante': 'Estudante',
+	estudante: 'Estudante',
 	'mudou-se': 'Mudou-se',
 	'nao-visitar': 'Não visitar',
 }

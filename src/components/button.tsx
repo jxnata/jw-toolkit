@@ -59,10 +59,9 @@ const Button = forwardRef<View, ButtonProps>(
 				{...touchableProps}
 				activeOpacity={0.7}
 				className={`flex-row items-center justify-center gap-2 rounded-xl px-8 ${getHeightClassName()} ${getVariantBgClassName()} ${touchableProps.className}`}
-				style={{ opacity: touchableProps.disabled ? 0.5 : 1 }}
-			>
+				style={{ opacity: touchableProps.disabled ? 0.5 : 1 }}>
 				{left && !loading && <View>{left}</View>}
-				{loading && <ActivityIndicator size='small' color={colors.foreground} />}
+				{loading && <ActivityIndicator size="small" color={colors.foreground} />}
 				{typeof children === 'string' ? (
 					<Text className={`font-bold text-${size} ${getVariantTextClassName()}`}>{children}</Text>
 				) : (

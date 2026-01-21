@@ -7,18 +7,20 @@ const useAssignment = (assignmentId: string) => {
 	const active = !!assignmentId && congregation
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			maps: {
-				$: {
-					where: {
-						id: assignmentId,
-						congregation: congregation ? congregation.id : null
-					}
-				},
-				city: {},
-				assigned: {},
-			},
-		} : null
+		active
+			? {
+					maps: {
+						$: {
+							where: {
+								id: assignmentId,
+								congregation: congregation ? congregation.id : null,
+							},
+						},
+						city: {},
+						assigned: {},
+					},
+				}
+			: null
 	)
 
 	return {
@@ -28,4 +30,4 @@ const useAssignment = (assignmentId: string) => {
 	}
 }
 
-export default useAssignment 
+export default useAssignment

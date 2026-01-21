@@ -26,7 +26,7 @@ const SelectCongregation = () => {
 
 	const changeCongregationDisabled = useMemo(() => {
 		return isUserSubscribed && !!initial
-	}, [isUserSubscribed])
+	}, [isUserSubscribed, initial])
 
 	const insets = useSafeAreaInsets()
 	const { colors } = useThemedColors()
@@ -65,7 +65,7 @@ const SelectCongregation = () => {
 
 			const publisher = await publishersService.searchByUserId(current.id)
 
-			const congregation = congregations.find(c => c.id === selectedCongregation)
+			const congregation = congregations.find((c) => c.id === selectedCongregation)
 			if (!congregation) {
 				Alert.alert('Erro', 'Congregação não encontrada')
 				return
@@ -113,14 +113,11 @@ const SelectCongregation = () => {
 
 	const renderCongregation = ({ item }: { item: any }) => (
 		<Pressable
-			className={`flex-row items-center justify-between rounded-xl px-4 py-4 mt-[5px] gap-2 border bg-card ${
+			className={`mt-[5px] flex-row items-center justify-between gap-2 rounded-xl border bg-card px-4 py-4 ${
 				selectedCongregation === item.id ? 'border-primary' : 'border-transparent'
 			}`}
-			onPress={() => setSelectedCongregation(item.id)}
-		>
-			<Text
-				className={`font-semibold text-base ${selectedCongregation === item.id ? 'text-primary' : 'text-foreground'}`}
-			>
+			onPress={() => setSelectedCongregation(item.id)}>
+			<Text className={`font-semibold text-base ${selectedCongregation === item.id ? 'text-primary' : 'text-foreground'}`}>
 				{item.name}
 			</Text>
 			{selectedCongregation === item.id ? (
@@ -132,28 +129,26 @@ const SelectCongregation = () => {
 	)
 
 	return (
-		<View className='flex-1'>
+		<View className="flex-1">
 			<Stack.Screen options={{ title: 'Selecionar Congregação', presentation: 'modal' }} />
 			{!changeCongregationDisabled ? (
-				<View className='px-4 flex-1'>
-					<Text className='font-regular text-center text-lg text-foreground mb-3'>
-						Selecione sua congregação para continuar
-					</Text>
+				<View className="flex-1 px-4">
+					<Text className="mb-3 text-center font-regular text-lg text-foreground">Selecione sua congregação para continuar</Text>
 
 					<Input
-						placeholder='Buscar congregação...'
+						placeholder="Buscar congregação..."
 						value={search}
 						onChangeText={handleSearchChange}
-						clearButtonMode='while-editing'
+						clearButtonMode="while-editing"
 					/>
 
 					{congregationsLoading || search !== debouncedSearch ? (
-						<View className='flex-1 justify-center items-center'>
-							<ActivityIndicator size='large' />
+						<View className="flex-1 items-center justify-center">
+							<ActivityIndicator size="large" />
 						</View>
 					) : congregations.length === 0 ? (
-						<View className='flex-1 justify-center items-center'>
-							<Text className='text-foreground text-center font-regular opacity-70'>
+						<View className="flex-1 items-center justify-center">
+							<Text className="text-center font-regular text-foreground opacity-70">
 								{debouncedSearch ? 'Nenhuma congregação encontrada' : 'Carregando congregações...'}
 							</Text>
 						</View>
@@ -161,31 +156,27 @@ const SelectCongregation = () => {
 						<FlatList
 							data={congregations}
 							renderItem={renderCongregation}
-							keyExtractor={item => item.id}
+							keyExtractor={(item) => item.id}
 							showsVerticalScrollIndicator={false}
-							className='flex-1 mt-3'
-							ListFooterComponent={() => <View className='h-12' />}
+							className="mt-3 flex-1"
+							ListFooterComponent={() => <View className="h-12" />}
 						/>
 					)}
 
-					<View className='pb-4 gap-4' style={{ paddingBottom: insets.bottom + 16 }}>
+					<View className="gap-4 pb-4" style={{ paddingBottom: insets.bottom + 16 }}>
 						{!initial && (
-							<Button variant='link' onPress={() => router.push('/add-congregation')}>
+							<Button variant="link" onPress={() => router.push('/add-congregation')}>
 								Criar nova congregação
 							</Button>
 						)}
-						<Button
-							onPress={handleSelectCongregation}
-							disabled={!selectedCongregation || loading}
-							loading={loading}
-						>
+						<Button onPress={handleSelectCongregation} disabled={!selectedCongregation || loading} loading={loading}>
 							{loading ? 'Criando perfil...' : 'Continuar'}
 						</Button>
 					</View>
 				</View>
 			) : (
-				<View className='px-4 flex-1'>
-					<Text className='font-regular text-center text-lg text-foreground my-3'>
+				<View className="flex-1 px-4">
+					<Text className="my-3 text-center font-regular text-lg text-foreground">
 						Você faz o pagamento da assinatura, por isso não é possível alterar a congregação.
 					</Text>
 				</View>

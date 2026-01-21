@@ -8,7 +8,6 @@ import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 import { AppleAuthenticationCredential } from 'expo-apple-authentication'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { Platform } from 'react-native'
-import { OneSignal } from 'react-native-onesignal'
 import Purchases from 'react-native-purchases'
 
 type LocalSession = {
@@ -129,9 +128,9 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		await db.auth.signOut()
 
 		// Clear storage
-		storage.delete('congregation.name')
-		storage.delete('congregation.id')
-		storage.delete('user.publisher')
+		storage.remove('congregation.name')
+		storage.remove('congregation.id')
+		storage.remove('user.publisher')
 	}
 
 	// Initialize session data when user changes
@@ -153,12 +152,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			}
 		}
 
-		if (user) {
-			getPublisherInfo()
-
-			OneSignal.login(user.id)
-			OneSignal.User.addEmail(user.email)
-		}
+		if (user) getPublisherInfo()
 	}, [user])
 
 	return (
@@ -172,8 +166,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 				appleAuthentication,
 				googleAuthentication,
 				logout,
-			}}
-		>
+			}}>
 			{props.children}
 		</SessionContext.Provider>
 	)

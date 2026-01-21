@@ -19,27 +19,29 @@ const useAllMaps = ({ search, enabled = true }: Props = {}) => {
 		whereConditions.or = [
 			{ name: { $like: `%${search}%` } },
 			{ district: { $like: `%${search}%` } },
-			{ address: { $like: `%${search}%` } }
+			{ address: { $like: `%${search}%` } },
 		]
 	}
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			maps: {
-				$: {
-					where: whereConditions,
-					order: { serverCreatedAt: 'desc' }
-				},
-				city: {}
-			}
-		} : null
+		active
+			? {
+					maps: {
+						$: {
+							where: whereConditions,
+							order: { serverCreatedAt: 'desc' },
+						},
+						city: {},
+					},
+				}
+			: null
 	)
 
 	return {
 		maps: data?.maps || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

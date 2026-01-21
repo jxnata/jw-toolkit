@@ -25,21 +25,23 @@ const useDistricts = ({ cityId, search, enabled = true }: Props = {}) => {
 	}
 
 	const { data, isLoading, error } = db.useQuery(
-		active ? {
-			districts: {
-				$: {
-					where: whereConditions,
-					order: { serverCreatedAt: 'desc' }
-				},
-			}
-		} : null
+		active
+			? {
+					districts: {
+						$: {
+							where: whereConditions,
+							order: { serverCreatedAt: 'desc' },
+						},
+					},
+				}
+			: null
 	)
 
 	return {
 		districts: data?.districts || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
+		mutate: () => {},
 	}
 }
 

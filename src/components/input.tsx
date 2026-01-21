@@ -6,9 +6,7 @@ const Input = (props: TextInputProps & { label?: React.ReactNode; error?: unknow
 
 	return (
 		<>
-			{typeof props.label === 'string' && (
-				<Text className='mb-2 font-semibold text-foreground opacity-75'>{props.label}</Text>
-			)}
+			{typeof props.label === 'string' && <Text className="mb-2 font-semibold text-foreground opacity-75">{props.label}</Text>}
 			{typeof props.label === 'object' && props.label}
 			<TextInput
 				{...props}

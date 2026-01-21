@@ -1,5 +1,4 @@
-import { api } from "@/lib/api"
-
+import { api } from '@/lib/api'
 
 export const identifierToSubscription = (identifier: string) => {
 	const normalized = identifier.toLowerCase()
@@ -17,11 +16,15 @@ export const patchSubscription = async (refreshToken: string) => {
 	try {
 		if (!api.defaults.baseURL) return { isPro: false, expired: false }
 
-		const { data } = await api.patch<{ is_pro: boolean, expired: boolean }>('/subscription/check', {}, {
-			headers: {
-				token: refreshToken,
-			},
-		})
+		const { data } = await api.patch<{ is_pro: boolean; expired: boolean }>(
+			'/subscription/check',
+			{},
+			{
+				headers: {
+					token: refreshToken,
+				},
+			}
+		)
 
 		return { isPro: data.is_pro, expired: data.expired }
 	} catch (error) {
