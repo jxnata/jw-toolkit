@@ -1,61 +1,49 @@
-import AssignmentItem from '@components/AssignmentItem'
-import useMyAssignments from '@hooks/useMyAssignments'
-import { useLocation } from '@hooks/useLocation'
+import AssignmentItem from '@/components/assignment-item'
+import { useLocation } from '@/hooks/use-location'
+import useMyAssignments from '@/hooks/use-my-assignments'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack, useRouter } from 'expo-router'
-import { useEffect } from 'react'
-import { OneSignal } from 'react-native-onesignal'
-import { FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
-
-import * as S from './styles'
-import React from 'react'
+import { Map } from 'lucide-react-native'
+import { FlatList, RefreshControl, Text, View } from 'react-native'
 
 const MyAssignments = () => {
 	const router = useRouter()
 	const { location } = useLocation()
 	const { assignments, loading, mutate } = useMyAssignments()
-
-	useEffect(() => {
-		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			event.preventDefault()
-			mutate()
-			event.getNotification().display()
-		})
-	}, [mutate])
+	const { colors } = useThemedColors()
 
 	return (
-		<S.Container>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Minhas designações' }} />
-			<S.Content>
-				{loading && !assignments.length ? (
-					<FlatList
-						data={Array.from({ length: 8 }, (_, index) => index + 1)}
-						keyExtractor={item => String(item)}
-						renderItem={() => <SkeletonItem height={100} />}
-					/>
-				) : (
-					<FlatList
-						data={assignments}
-						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
-						renderItem={({ item: assignment }) => (
-							<AssignmentItem
-								key={assignment.$id}
-								map={assignment}
-								location={location}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/my-assignments/view/${assignment.$id}`,
-										params: { data: JSON.stringify({ ...assignment }) },
-									})
-								}
-							/>
-						)}
-						ListEmptyComponent={<S.Paragraph>Nenhuma designação</S.Paragraph>}
-					/>
-				)}
-			</S.Content>
-		</S.Container>
+			<View className="flex h-full w-full bg-background p-2.5">
+				<FlatList
+					data={assignments}
+					keyExtractor={(item) => item.id}
+					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+					renderItem={({ item: assignment }) => (
+						<AssignmentItem
+							key={assignment.id}
+							map={assignment}
+							location={location}
+							onPress={() =>
+								router.push({
+									pathname: `/admin/my-assignments/${assignment.id}`,
+									params: { data: JSON.stringify({ ...assignment }) },
+								})
+							}
+						/>
+					)}
+					ListEmptyComponent={
+						<View className="flex flex-col items-center justify-center gap-3 pt-8">
+							<Map size={48} color={colors.border} strokeWidth={1.5} />
+							<Text className="px-3 text-center font-regular text-foreground opacity-70">
+								Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você receber uma designação.
+							</Text>
+						</View>
+					}
+				/>
+			</View>
+		</View>
 	)
 }
 

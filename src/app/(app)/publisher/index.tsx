@@ -1,72 +1,86 @@
-import AssignmentItem from '@components/AssignmentItem'
-import useMyAssignments from '@hooks/useMyAssignments'
-import { useLocation } from '@hooks/useLocation'
-import { Stack, useRouter } from 'expo-router'
-import { useCallback, useEffect } from 'react'
-import { OneSignal } from 'react-native-onesignal'
-import { FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
-
-import * as S from './styles'
+import AssignmentItem from '@/components/assignment-item'
+import SkeletonItem from '@/components/skeleton-item'
+import { storage } from '@/database/index'
+import { useLocation } from '@/hooks/use-location'
+import useMyAssignments from '@/hooks/use-my-assignments'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Redirect, Stack, useRouter } from 'expo-router'
+import { Map, UserCircle2 } from 'lucide-react-native'
+import { useCallback, useEffect, useState } from 'react'
+import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 const PublisherHome = () => {
 	const router = useRouter()
 	const { location } = useLocation()
 	const { assignments, loading, mutate } = useMyAssignments()
+	const { colors } = useThemedColors()
+	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
+
+	useEffect(() => {
+		const accepted = storage.getBoolean('privacy.policy.accepted') ?? false
+		setPrivacyAccepted(accepted)
+		if (!accepted) {
+			router.replace('/privacy-policy')
+		}
+	}, [router])
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/me')}>
-					<S.Icon name='person-circle-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View className="flex flex-row items-center justify-center gap-[15px]">
+				<Pressable onPress={() => router.push('/publisher/me')}>
+					<UserCircle2 size={24} color={colors.foreground} />
+				</Pressable>
+			</View>
 		),
-		[router]
+		[router, colors]
 	)
 
-	useEffect(() => {
-		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			event.preventDefault()
-			mutate()
-			event.getNotification().display()
-		})
-	}, [mutate])
+	if (!privacyAccepted) {
+		return <Redirect href="/privacy-blocked" />
+	}
 
 	return (
-		<S.Container>
+		<Animated.View className="flex" entering={FadeInDown}>
 			<Stack.Screen options={{ title: 'Minhas designações', headerRight: HeaderRight }} />
-			<S.Content>
+			<View className="flex h-full w-full bg-background p-3">
 				{loading && !assignments.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
-						keyExtractor={item => String(item)}
+						keyExtractor={(item) => String(item)}
 						renderItem={() => <SkeletonItem height={100} />}
 					/>
 				) : (
 					<FlatList
 						data={assignments}
-						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						keyExtractor={(item) => item.id}
+						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
 						renderItem={({ item: assignment }) => (
 							<AssignmentItem
-								key={assignment.$id}
+								key={assignment.id}
 								map={assignment}
 								location={location}
 								hidePublisher
 								onPress={() =>
 									router.push({
-										pathname: `/publisher/assignment/${assignment.$id}`,
+										pathname: `/publisher/assignment/${assignment.id}`,
 										params: { data: JSON.stringify({ ...assignment }) },
 									})
 								}
 							/>
 						)}
-						ListEmptyComponent={<S.Paragraph>Nenhuma designação</S.Paragraph>}
+						ListEmptyComponent={
+							<View className="flex flex-col items-center justify-center gap-3 pt-8">
+								<Map size={48} color={colors.border} strokeWidth={1.5} />
+								<Text className="px-3 text-center font-regular text-foreground opacity-70">
+									Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você receber uma designação.
+								</Text>
+							</View>
+						}
 					/>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</Animated.View>
 	)
 }
 

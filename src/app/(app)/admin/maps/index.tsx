@@ -1,167 +1,133 @@
-import Dropdown from '@components/Dropdown'
-import Input from '@components/Input'
-import MapItem from '@components/MapItem'
-import useCities from '@hooks/useCities'
-import useDistricts from '@hooks/useDistricts'
-import useMaps from '@hooks/useMaps'
-import { useLocation } from '@hooks/useLocation'
+import Dropdown from '@/components/dropdown'
+import Input from '@/components/input'
+import MapItem from '@/components/map-item'
+import useCities from '@/hooks/use-cities'
+import { useLocation } from '@/hooks/use-location'
+import useMaps from '@/hooks/use-maps'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack, useRouter } from 'expo-router'
-import debounce from 'lodash/debounce'
-import { useCallback, useMemo, useState } from 'react'
-import { FlatList } from 'react-native'
-import SkeletonItem from '@components/SkeletonItem'
-
-import * as S from './styles'
-import React from 'react'
+import { Funnel, PlusCircle } from 'lucide-react-native'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated'
+import { useDebounce } from 'use-debounce'
 
 const Maps = () => {
 	const router = useRouter()
-	const [searchTerm, setSearchTerm] = useState('')
+	const [searchInput, setSearchInput] = useState('')
 	const [searchCity, setSearchCity] = useState('')
-	const [searchDistrict, setSearchDistrict] = useState('')
-	const [status, setStatus] = useState<'assigned' | 'unassigned' | ''>('')
-	const [showFilter, setFilter] = useState(false)
-	const { maps, loading, mutate } = useMaps({
-		search: searchTerm,
+	const [status, setStatus] = useState<'assigned' | 'unassigned' | 'no-visit' | ''>('')
+	const [showFilter, setFilter] = useState(true)
+	const { colors } = useThemedColors()
+
+	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
+
+	const { maps } = useMaps({
+		search: debouncedSearchTerm,
 		city: searchCity,
-		district: searchDistrict,
 		status,
+		enabled: !!searchCity,
 	})
-	const { list } = useDistricts(maps)
+
 	const { cities } = useCities()
 	const { location } = useLocation()
 
-	const citiesList = useMemo(
-		() => [{ label: 'Todos', value: '' }, ...cities.map(c => ({ label: c.name, value: c.$id }))],
-		[cities]
-	)
+	const citiesList = useMemo(() => [...cities.map((c) => ({ label: c.name, value: c.id }))], [cities])
+
+	useEffect(() => {
+		if (cities.length > 0 && !searchCity) {
+			setSearchCity(cities[cities.length - 1].id)
+		}
+	}, [cities, searchCity])
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/maps/add')}>
-					<S.Ionicon name='add-circle-outline' />
-				</S.IconButton>
-				<S.IconButton onPress={() => router.push('/admin/maps/all')}>
-					<S.Ionicon name='map-outline' />
-				</S.IconButton>
-				<S.IconButton onPress={toggleFilter}>
-					<S.Ionicon name='funnel-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View className="flex-row">
+				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
+					<PlusCircle size={24} color={colors.foreground} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={toggleFilter} className="mx-2">
+					<Funnel size={24} color={colors.foreground} />
+				</TouchableOpacity>
+			</View>
 		),
-		[router]
+		[router, colors.foreground]
 	)
 
-	const ListHeaderComponent = () => {
-		return (
-			<>
+	const filterCity = (city: string) => {
+		setSearchInput('')
+		setSearchCity(city)
+	}
+
+	const toggleFilter = () => {
+		setFilter((old) => !old)
+	}
+
+	return (
+		<View className="flex-1">
+			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
+			<View className="h-full w-full bg-background p-4">
 				{showFilter && (
-					<>
-						<S.FilterContainer>
-							<S.FilterItemsContainer>
+					<Animated.View entering={SlideInUp} exiting={SlideOutUp}>
+						<Input
+							autoCorrect={false}
+							placeholder="Buscar por nome ou bairro"
+							onChangeText={setSearchInput}
+							value={searchInput}
+							clearButtonMode="always"
+							returnKeyType="search"
+						/>
+
+						<View className="flex-row gap-2">
+							<View className="flex-1">
 								<Dropdown
-									placeholder='Todos'
+									placeholder="Todos"
 									options={[
 										{ label: 'Todos', value: '' },
 										{ label: 'Designados', value: 'assigned' },
 										{ label: 'Livres', value: 'unassigned' },
+										{ label: 'Não visitar', value: 'no-visit' },
 									]}
 									selectedValue={status}
 									onValueChange={setStatus}
 								/>
-							</S.FilterItemsContainer>
-							<S.FilterItemsContainer>
-								<Input
-									autoCorrect={false}
-									placeholder='Buscar um mapa...'
-									onChangeText={debouncedSearch}
-									clearButtonMode='always'
-								/>
-							</S.FilterItemsContainer>
-						</S.FilterContainer>
-
-						<S.FilterContainer>
-							<S.FilterItemsContainer>
-								<Dropdown
-									placeholder='Cidade'
-									options={citiesList}
-									selectedValue={searchCity}
-									onValueChange={filterCity}
-								/>
-							</S.FilterItemsContainer>
-							<S.FilterItemsContainer>
-								<Dropdown
-									placeholder='Bairro'
-									options={list}
-									selectedValue={searchDistrict}
-									onValueChange={filterDistrict}
-									disabled={!searchCity}
-								/>
-							</S.FilterItemsContainer>
-						</S.FilterContainer>
-					</>
+							</View>
+							<View className="flex-1">
+								<Dropdown placeholder="Cidade" options={citiesList} selectedValue={searchCity} onValueChange={filterCity} />
+							</View>
+						</View>
+					</Animated.View>
 				)}
-			</>
-		)
-	}
-	const debouncedSearch = debounce(async term => {
-		setSearchTerm(term)
-	}, 500)
 
-	const filterCity = (city: string) => {
-		setSearchTerm('')
-		setSearchDistrict('')
-		setSearchCity(city)
-	}
-
-	const filterDistrict = (district: string) => {
-		setSearchTerm('')
-		setSearchDistrict(district)
-	}
-
-	const toggleFilter = () => {
-		setFilter(old => !old)
-	}
-
-	return (
-		<S.Container>
-			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
-			<S.Content>
-				{loading && !maps.length ? (
+				<View className="flex-1">
 					<FlatList
-						data={Array.from({ length: 8 }, (_, index) => index + 1)}
-						keyExtractor={item => String(item)}
-						ListHeaderComponent={<ListHeaderComponent />}
-						renderItem={() => <SkeletonItem height={100} />}
-						stickyHeaderIndices={[0]}
-					/>
-				) : (
-					<FlatList
-						ListHeaderComponent={<ListHeaderComponent />}
+						ListFooterComponent={<View className="h-14" />}
 						data={maps}
-						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
+						keyExtractor={(item) => item.id}
+						showsVerticalScrollIndicator={false}
+						keyboardDismissMode="none"
+						ListEmptyComponent={
+							<View className="flex-1 items-center justify-center py-8">
+								<Text className="font-regular text-foreground opacity-80">Nenhum mapa encontrado</Text>
+							</View>
+						}
 						renderItem={({ item }) => (
-							<S.ListContainer>
-								<MapItem
-									key={item.$id}
-									map={item}
-									location={location}
-									onPress={() =>
-										router.push({
-											pathname: `/admin/maps/${item.$id}`,
-											params: { data: JSON.stringify(item) },
-										})
-									}
-								/>
-							</S.ListContainer>
+							<MapItem
+								key={item.id}
+								map={item}
+								location={location}
+								onPress={() =>
+									router.push({
+										pathname: `/admin/maps/${item.id}`,
+										params: { data: JSON.stringify(item) },
+									})
+								}
+							/>
 						)}
-						stickyHeaderIndices={[0]}
 					/>
-				)}
-			</S.Content>
-		</S.Container>
+				</View>
+			</View>
+		</View>
 	)
 }
 

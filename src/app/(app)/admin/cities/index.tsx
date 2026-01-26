@@ -1,31 +1,31 @@
-import Input from '@components/Input'
-import useCities from '@hooks/useCities'
+import Input from '@/components/input'
+import ListItem from '@/components/list-item'
+import useCities from '@/hooks/use-cities'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
+import { PlusCircle } from 'lucide-react-native'
 import { useCallback, useState } from 'react'
-import { FlatList } from 'react-native'
-import { firstLetter } from '@utils/first-letter'
-import SkeletonItem from '@components/SkeletonItem'
-
-import * as S from './styles'
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Cities = () => {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const { cities, loading, mutate } = useCities({ search: searchTerm })
+	const { colors } = useThemedColors()
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/cities/add')}>
-					<S.Ionicon name='add-circle-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<View>
+				<TouchableOpacity onPress={() => router.push('/admin/cities/add')} className="mx-2">
+					<PlusCircle size={24} color={colors.foreground} />
+				</TouchableOpacity>
+			</View>
 		),
-		[router]
+		[router, colors.foreground]
 	)
 
-	const debouncedSearch = debounce(async term => {
+	const debouncedSearch = debounce(async (term) => {
 		setSearchTerm(term)
 	}, 500)
 
@@ -33,50 +33,45 @@ const Cities = () => {
 		return (
 			<Input
 				autoCorrect={false}
-				placeholder='Buscar uma cidade...'
+				placeholder="Buscar uma cidade/território..."
 				onChangeText={debouncedSearch}
-				clearButtonMode='always'
+				clearButtonMode="always"
 			/>
 		)
 	}
 
 	return (
-		<S.Container>
-			<Stack.Screen options={{ title: 'Cidades', headerRight: HeaderRight }} />
-			<S.Content>
-				{loading && !cities.length ? (
-					<FlatList
-						data={[1, 2, 3, 4, 5]}
-						keyExtractor={item => String(item)}
-						ListHeaderComponent={<ListHeaderComponent />}
-						renderItem={() => <SkeletonItem />}
-					/>
-				) : (
-					<FlatList
-						ListHeaderComponent={<ListHeaderComponent />}
-						data={cities}
-						keyExtractor={item => item.$id}
-						refreshControl={<S.RefreshControl onRefresh={mutate} refreshing={loading} />}
-						renderItem={({ item }) => (
-							<S.MenuItem
-								key={item.$id}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/cities/edit/${item.$id}`,
-										params: { data: JSON.stringify(item) },
-									})
-								}
-							>
-								<S.IconContainer>
-									<S.Icon>{firstLetter(item.name)}</S.Icon>
-								</S.IconContainer>
-								<S.MenuTitle>{item.name}</S.MenuTitle>
-							</S.MenuItem>
-						)}
-					/>
-				)}
-			</S.Content>
-		</S.Container>
+		<View className="flex">
+			<Stack.Screen options={{ title: 'Cidades/Territórios', headerRight: HeaderRight }} />
+			<View className="flex h-full w-full bg-background p-4">
+				<FlatList
+					ListHeaderComponent={<ListHeaderComponent />}
+					data={cities}
+					keyExtractor={(item) => item.id}
+					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+					contentContainerClassName="gap-2"
+					showsVerticalScrollIndicator={false}
+					renderItem={({ item }) => (
+						<ListItem
+							id={item.id}
+							name={item.name}
+							onPress={() =>
+								router.push({
+									pathname: `/admin/cities/edit/${item.id}`,
+									params: { data: JSON.stringify(item) },
+								})
+							}
+						/>
+					)}
+					ListFooterComponent={() => <View className="h-[60px]" />}
+					ListEmptyComponent={
+						<View className="flex-1 items-center justify-center py-8">
+							<Text className="font-regular text-foreground opacity-80">Nenhuma cidade/território encontrado</Text>
+						</View>
+					}
+				/>
+			</View>
+		</View>
 	)
 }
 

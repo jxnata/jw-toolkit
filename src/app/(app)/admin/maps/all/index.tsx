@@ -1,18 +1,17 @@
+import useAllMaps from '@/hooks/use-all-maps'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { getMapRegion } from '@/utils/get-map-region'
+import { getPinColor } from '@/utils/get-pin-color'
 import * as Location from 'expo-location'
 import { router, Stack } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { Platform } from 'react-native'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
-import { getMapRegion } from '@utils/get-map-region'
-import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-import { getPinColor } from '@utils/get-pin-color'
-
-import * as S from './styles'
-import useMaps from '@hooks/useMaps'
+import { ActivityIndicator, Text, View } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 
 const AllMaps = () => {
 	const [location, setLocation] = useState<any>()
-	const { maps, loading } = useMaps()
+	const { maps, loading } = useAllMaps()
+	const { colors } = useThemedColors()
 
 	const getLocation = useCallback(async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
@@ -29,60 +28,56 @@ const AllMaps = () => {
 	const renderMap = () => {
 		if (!location) return null
 
-		const markers = maps.map(map => ({
-			coordinates: getMarkerCoordinate([map.lat, map.lng]),
-			title: map.name,
-			description: map.address,
-			tintColor: getPinColor(map.assigned),
-			onCalloutPress: () => {
-				if (!map.last_assignment?.finished) {
-					router.push({
-						pathname: `/admin/maps/${map.$id}`,
-						params: { data: JSON.stringify(map) },
-					})
-				}
-			},
-			callout: {
-				title: map.name,
-				description: `${map.address}, ${map.city.name}`,
-				actions: map.last_assignment?.finished ? [] : [{ title: 'DESIGNAR' }],
-			},
-		}))
-
-		if (Platform.OS === 'ios') {
-			return (
-				<AppleMaps.View cameraPosition={location} style={{ width: '100%', height: '100%' }} markers={markers} />
-			)
-		}
-
 		return (
-			<GoogleMaps.View
-				userLocation={{
-					followUserLocation: true,
-					coordinates: { latitude: location.latitude, longitude: location.longitude },
-				}}
-				cameraPosition={location}
+			<MapView
 				style={{ width: '100%', height: '100%' }}
-				markers={markers}
-			/>
+				initialRegion={{
+					latitude: location.latitude,
+					longitude: location.longitude,
+					latitudeDelta: 0.01,
+					longitudeDelta: 0.01,
+				}}
+				showsUserLocation={true}
+				followsUserLocation={true}>
+				{maps.map((map: any) => (
+					<Marker
+						key={map.id}
+						coordinate={{
+							latitude: map.lat,
+							longitude: map.lng,
+						}}
+						title={map.name}
+						description={`${map.address}, ${map.city.name}`}
+						pinColor={getPinColor(map.assigned)}
+						onCalloutPress={() => {
+							if (!map.last_assignment?.finished) {
+								router.push({
+									pathname: `/admin/maps/${map.id}`,
+									params: { data: JSON.stringify(map) },
+								})
+							}
+						}}
+					/>
+				))}
+			</MapView>
 		)
 	}
 
 	return (
-		<S.Container>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Mapas da congregação' }} />
-			<S.Content>
-				<S.MapContainer>{renderMap()}</S.MapContainer>
+			<View className="flex h-full w-full bg-background">
+				<View className="flex-1">{renderMap()}</View>
 				{loading && (
-					<S.LoadingContainer>
-						<S.LoadingContent>
-							<S.Loading />
-							<S.Label>Carregando mapas...</S.Label>
-						</S.LoadingContent>
-					</S.LoadingContainer>
+					<View className="bg-background/80 absolute inset-0 items-center justify-center">
+						<View className="items-center">
+							<ActivityIndicator size="large" color={colors.primary[600]} />
+							<Text className="py-2.5 font-medium text-xs text-foreground">Carregando mapas...</Text>
+						</View>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

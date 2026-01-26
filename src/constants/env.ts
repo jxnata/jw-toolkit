@@ -2,4 +2,13 @@ export const TOMTOM_API_KEY = process.env.EXPO_PUBLIC_TOMTOM_API_KEY
 
 export const ENCRYPT_STORAGE = process.env.EXPO_PUBLIC_ENCRYPT_STORAGE
 
-export const ONESIGNAL_APP_ID = process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID
+export const INSTANT_APP_ID = process.env.EXPO_PUBLIC_INSTANT_APP_ID
+
+export const REVENUECAT_APPLE_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY
+
+export const REVENUECAT_GOOGLE_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_GOOGLE_API_KEY
+
+export const FREE_LIMITS = {
+	maps: process.env.EXPO_PUBLIC_LIMIT_MAPS,
+	publishers: process.env.EXPO_PUBLIC_LIMIT_PUBLISHERS,
+}

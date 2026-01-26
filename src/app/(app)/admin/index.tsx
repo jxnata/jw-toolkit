@@ -1,78 +1,169 @@
-import { APP_VERSION } from '@constants/content'
-import { useSession } from '@contexts/session'
-import { Link, Stack, useRouter } from 'expo-router'
-import { useCallback } from 'react'
-
-import * as S from './styles'
+import Button from '@/components/button'
+import { APP_VERSION } from '@/constants/content'
+import { useSession } from '@/contexts/session-provider'
+import { storage } from '@/database/index'
+import { useSubscription } from '@/hooks/use-subscription'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Link, Redirect, Stack, useRouter } from 'expo-router'
+import { CircleAlert, UserCircle2 } from 'lucide-react-native'
+import { useCallback, useEffect, useState } from 'react'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const Admin = () => {
 	const router = useRouter()
-	const { congregation } = useSession()
+	const insets = useSafeAreaInsets()
+	const { expired } = useSubscription()
+	const { congregation, logout } = useSession()
+	const { colors } = useThemedColors()
+	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
+
+	useEffect(() => {
+		const accepted = storage.getBoolean('privacy.policy.accepted') ?? false
+		setPrivacyAccepted(accepted)
+		if (!accepted) {
+			router.replace('/privacy-policy')
+		}
+	}, [router])
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton onPress={() => router.push('/admin/me')}>
-					<S.Ionicon name='person-circle-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+			<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className="p-2">
+				<UserCircle2 size={24} color={colors.foreground} />
+			</TouchableOpacity>
 		),
-		[router]
+		[router, colors]
 	)
 
-	if (!congregation) return null
+	const confirmExport = () => {
+		Alert.alert(
+			'Exportar mapas',
+			'Exportar os mapas é uma operação custosa, por favor, faça somente quando realmente necessário. Deseja continuar?',
+			[
+				{ text: 'Cancelar', style: 'cancel' },
+				{ text: 'Exportar', onPress: () => router.push('/admin/export') },
+			]
+		)
+	}
+
+	if (!privacyAccepted) {
+		return <Redirect href="/privacy-blocked" />
+	}
+
+	if (!congregation)
+		return (
+			<View className="flex-1 items-center justify-center">
+				<Button onPress={logout}>Sair</Button>
+			</View>
+		)
 
 	return (
-		<S.Container>
+		<Animated.View className="flex" entering={FadeInDown}>
 			<Stack.Screen options={{ title: congregation.name, headerRight: HeaderRight }} />
-			<S.Content>
-				<Link href='/admin/publishers' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Publicadores</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+			<ScrollView className="flex h-full w-full bg-background p-3" contentContainerClassName="gap-2">
+				<View className="my-2 flex w-full flex-row items-center gap-2">
+					<Text className="py-2 font-medium text-sm text-foreground opacity-70">ADMINISTRADOR</Text>
+					<View className="h-[1px] w-full bg-foreground opacity-20" />
+				</View>
+
+				<Link href="/admin/publishers" asChild>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Publicadores</Text>
+						</View>
+						<View className="flex flex-row items-center gap-3"></View>
+					</TouchableOpacity>
 				</Link>
-				<Link href='/admin/maps' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Mapas</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+
+				<Link href="/admin/maps" asChild>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Mapas</Text>
+						</View>
+						<View className="flex flex-row items-center gap-3"></View>
+					</TouchableOpacity>
 				</Link>
-				<Link href='/admin/assignments' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Designações</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+
+				<Link href="/admin/assignments" asChild>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Designações</Text>
+						</View>
+						<View className="flex flex-row items-center gap-3"></View>
+					</TouchableOpacity>
 				</Link>
-				<Link href='/admin/cities' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Cidades</S.MenuTitle>
-						</S.Column>
-						<S.Column></S.Column>
-					</S.MenuItem>
+
+				<Link href="/admin/cities" asChild>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Cidades/Territórios</Text>
+						</View>
+						<View className="flex flex-row items-center gap-3"></View>
+					</TouchableOpacity>
 				</Link>
-				<Link href='/admin/export' asChild>
-					<S.MenuItem>
-						<S.Column>
-							<S.Icon></S.Icon>
-							<S.MenuTitle>Exportar mapas</S.MenuTitle>
-						</S.Column>
-					</S.MenuItem>
+
+				<TouchableOpacity
+					activeOpacity={0.7}
+					onPress={confirmExport}
+					className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+					<View className="flex flex-row items-center gap-3">
+						<Text className="font-icons text-4xl text-primary"></Text>
+						<Text className="font-semibold text-base text-foreground">Exportar mapas</Text>
+					</View>
+				</TouchableOpacity>
+
+				<View className="my-2 flex w-full flex-row items-center gap-2">
+					<Text className="py-2 font-medium text-sm text-foreground opacity-70">PUBLICADOR</Text>
+					<View className="h-[1px] w-full bg-foreground opacity-20" />
+				</View>
+
+				<Link href="/admin/my-assignments" asChild>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<Text className="font-icons text-4xl text-primary"></Text>
+							<Text className="font-semibold text-base text-foreground">Minhas designações</Text>
+						</View>
+					</TouchableOpacity>
 				</Link>
-			</S.Content>
-			<S.Version>Versão: {APP_VERSION}</S.Version>
-		</S.Container>
+
+				{expired && (
+					<View className="flex flex-col gap-4">
+						<View className="mt-2 h-[1px] w-full bg-foreground opacity-20" />
+						<Link href="/subscription" asChild>
+							<TouchableOpacity
+								activeOpacity={0.7}
+								className="flex w-full flex-row items-center justify-between gap-3 rounded-xl border border-danger bg-card p-4">
+								<View className="flex flex-row items-center gap-3">
+									<CircleAlert size={24} color={colors.danger[500]} />
+									<Text className="flex-1 font-semibold text-base text-foreground">
+										A assinatura da sua congregação está expirada, toque aqui para renová-la.
+									</Text>
+								</View>
+							</TouchableOpacity>
+						</Link>
+					</View>
+				)}
+			</ScrollView>
+
+			<Text className="absolute self-center font-medium text-xs text-foreground" style={{ bottom: insets.bottom + 10 }}>
+				Versão: {APP_VERSION}
+			</Text>
+		</Animated.View>
 	)
 }
 

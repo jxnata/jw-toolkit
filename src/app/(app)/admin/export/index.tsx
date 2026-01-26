@@ -1,32 +1,33 @@
-import Button from '@components/Button'
-import { useSession } from '@contexts/session'
-import useMaps from '@hooks/useMaps'
+import Button from '@/components/button'
+import { useSession } from '@/contexts/session-provider'
+import useAllMaps from '@/hooks/use-all-maps'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'
+import { Download } from 'lucide-react-native'
 import { useState } from 'react'
-import { Platform, Share } from 'react-native'
-import RNHTMLtoPDF from 'react-native-html-to-pdf'
-
-import * as S from './styles'
-import { Models } from 'react-native-appwrite'
+import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
+import { generatePDF } from 'react-native-html-to-pdf'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
-	const { maps, loading } = useMaps()
+	const { maps, loading } = useAllMaps()
 	const { congregation } = useSession()
+	const { colors } = useThemedColors()
 
-	const generatePDF = async () => {
+	const createPDF = async () => {
 		if (!congregation) return
 
 		setGenerating(true)
 
-		const groupedMaps: Record<string, Models.Document[]> = maps.reduce(
+		const groupedMaps: Record<string, Map[]> = maps.reduce(
 			(acc, map) => {
-				const city = map.city.name
+				const city = map.city?.name || 'Sem cidade'
 				if (!acc[city]) acc[city] = []
-				acc[city].push(map)
+				acc[city].push(map as Map)
 				return acc
 			},
-			{} as Record<string, Models.Document[]>
+			{} as Record<string, Map[]>
 		)
 
 		let mapIndex = 1
@@ -91,10 +92,8 @@ const ExportMaps = () => {
 						<div class="section">
 							<h2>${city}</h2>
 							${cityMaps
-								.map(map => {
-									const googleMapsLink = map.coordinates
-										? `https://www.google.com/maps?q=${map.coordinates[0]},${map.coordinates[1]}`
-										: null
+								.map((map) => {
+									const googleMapsLink = map.lat && map.lng ? `https://www.google.com/maps?q=${map.lat},${map.lng}` : null
 									return `
 								<div class="card">
 									<span class="index">${mapIndex++}</span> <!-- Número do mapa -->
@@ -116,7 +115,7 @@ const ExportMaps = () => {
 		`
 
 		try {
-			const file = await RNHTMLtoPDF.convert({
+			const file = await generatePDF({
 				html: htmlContent,
 				fileName: `Mapas da congregação ${congregation.name}`,
 				base64: true,
@@ -135,32 +134,36 @@ const ExportMaps = () => {
 	}
 
 	return (
-		<S.Container>
+		<View className="flex">
 			<Stack.Screen options={{ title: 'Exportar Mapas' }} />
-			<S.Content>
+			<View className="flex h-full w-full bg-background p-4">
 				{loading && (
-					<S.LoadingContainer>
-						<S.LoadingContent>
-							<S.Loading />
-							<S.Label>Carregando mapas...</S.Label>
-						</S.LoadingContent>
-					</S.LoadingContainer>
+					<View className="flex-1 items-center justify-center">
+						<View className="items-center">
+							<ActivityIndicator size="large" color={colors.primary[600]} />
+							<Text className="py-2.5 font-medium text-foreground">Carregando mapas...</Text>
+						</View>
+					</View>
 				)}
-				{!loading && maps.length === 0 && <S.Label>Não há mapas para exportar.</S.Label>}
+				{!loading && maps.length === 0 && (
+					<View className="flex-1 items-center justify-center py-8">
+						<Text className="font-light text-foreground opacity-80">Não há mapas para exportar.</Text>
+					</View>
+				)}
 				{!loading && maps.length > 0 && (
-					<S.ExportContent>
-						<S.Label>
+					<View className="flex-1 items-center justify-center">
+						<Text className="mb-5 py-2.5 text-center font-medium text-foreground">
 							{maps.length} mapas encontrados. Pressione o botão abaixo para exportar em PDF.
-						</S.Label>
-						<S.ButtonContainer>
-							<Button loading={loading || generating} onPress={generatePDF}>
+						</Text>
+						<View className="w-full">
+							<Button loading={loading || generating} onPress={createPDF} left={<Download size={20} color="white" />}>
 								Exportar
 							</Button>
-						</S.ButtonContainer>
-					</S.ExportContent>
+						</View>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

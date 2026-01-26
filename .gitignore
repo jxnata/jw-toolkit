@@ -8,6 +8,9 @@ node_modules/
 dist/
 web-build/
 
+# expo router
+expo-env.d.ts
+
 # Native
 *.orig.*
 *.jks
@@ -41,3 +44,6 @@ ios/
 # Environment variables
 .env
 .env.*
+!.env.example
+
+jw-toolkit-6006743b08d0.json

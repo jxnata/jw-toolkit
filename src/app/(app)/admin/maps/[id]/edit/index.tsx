@@ -1,34 +1,30 @@
-import Button from '@components/Button'
-import Dropdown from '@components/Dropdown'
-import IconButton from '@components/IconButton'
-import Input from '@components/Input'
-import SelectLocation from '@components/SelectLocation'
-import useCities from '@hooks/useCities'
-import useMap from '@hooks/useMap'
-import useMaps from '@hooks/useMaps'
-import { EditMapReq } from '@interfaces/api/maps'
+import Button from '@/components/button'
+import Dropdown from '@/components/dropdown'
+import Input from '@/components/input'
+import SelectLocation from '@/components/select-location'
+import { STATUS_LIST } from '@/constants/content'
+import useCities from '@/hooks/use-cities'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
+import { EditMapReq } from '@/interfaces/api/maps'
+import { error, success } from '@/messages/edit'
+import { mapsService } from '@/services/instantdb'
+import { getCoordinates } from '@/utils/get-coordinates'
+import { getMapRegion } from '@/utils/get-map-region'
+import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { error, success } from '@messages/edit'
+import { MapPinPlus } from 'lucide-react-native'
 import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Modal } from 'react-native'
-import { getCoordinates } from '@utils/get-coordinates'
-import { setCoordinates } from '@utils/set-coordinates'
-import { database } from '@services/appwrite'
-import { Models } from 'react-native-appwrite'
-
-import * as S from './styles'
+import { KeyboardAvoidingView, Modal, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
 const EditMap = () => {
-	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
 	const [modalVisible, setModalVisible] = useState(false)
-	const { mutate } = useMap(params.$id)
-	const { mutate: mutateMaps } = useMaps({ search: '' })
+	const { data } = useLocalSearchParams()
+	const params = JSON.parse((data as string) || '{}') as Map
 	const { cities } = useCities()
-
-	const citiesList = useMemo(() => cities.map(c => ({ label: c.name, value: c.$id })), [cities])
-
+	const citiesList = useMemo(() => cities.map((c) => ({ label: c.name, value: c.id })), [cities])
+	const { colors } = useThemedColors()
 	const defaultValues: EditMapReq | undefined = useMemo(
 		() =>
 			params
@@ -37,16 +33,22 @@ const EditMap = () => {
 						address: params.address,
 						district: params.district,
 						details: params.details,
-						city: params.city.$id,
+						city: params.city.id,
 						coordinates: getCoordinates([params.lat, params.lng]),
+						tag: params.tag,
 					}
 				: undefined,
 		[params]
 	)
 
-	const { control, formState, handleSubmit, setValue, getValues } = useForm<EditMapReq>({ defaultValues })
+	const { control, formState, handleSubmit, setValue, watch } = useForm<EditMapReq>({ defaultValues })
+	const coordinates = watch('coordinates')
 
-	const save: SubmitHandler<EditMapReq> = async data => {
+	const toggleMap = () => {
+		setModalVisible((old) => !old)
+	}
+
+	const save: SubmitHandler<EditMapReq> = async (data) => {
 		const [lat, lng] = setCoordinates(data.coordinates)
 
 		if (lat === 0 || lng === 0) {
@@ -55,19 +57,22 @@ const EditMap = () => {
 		}
 
 		try {
-			await database.updateDocument('production', 'maps', params.$id, {
-				name: data.name,
-				address: data.address,
-				district: data.district,
-				details: data.details,
-				city: data.city,
-				lat,
-				lng,
-			})
+			await mapsService.updateMap(
+				params.id,
+				{
+					name: data.name,
+					address: data.address,
+					district: data.district,
+					details: data.details,
+					lat,
+					lng,
+					tag: data.tag,
+				},
+				data.city ? { city: data.city } : undefined
+			)
 
 			success('mapa')
-			mutate()
-			mutateMaps()
+
 			router.back()
 		} catch (err) {
 			error('mapa')
@@ -75,115 +80,135 @@ const EditMap = () => {
 		}
 	}
 
-	const toggleMap = () => {
-		setModalVisible(old => !old)
-	}
-
 	return (
-		<S.Container>
+		<View className="flex-1 bg-background">
 			<Stack.Screen options={{ title: 'Editar Mapa' }} />
-			<S.Content>
-				<Controller
-					control={control}
-					rules={{ required: true }}
-					name='name'
-					render={({ field: { onChange, onBlur, value } }) => (
-						<Input
-							placeholder='Nome do mapa'
-							onBlur={onBlur}
-							onChangeText={onChange}
-							value={value}
-							editable={!formState.isSubmitting}
-						/>
-					)}
-				/>
-				<Controller
-					control={control}
-					rules={{ required: true }}
-					name='address'
-					render={({ field: { onChange, onBlur, value } }) => (
-						<Input
-							placeholder='Endereço'
-							onBlur={onBlur}
-							onChangeText={onChange}
-							value={value}
-							editable={!formState.isSubmitting}
-						/>
-					)}
-				/>
-				<Controller
-					control={control}
-					rules={{ required: true }}
-					name='district'
-					render={({ field: { onChange, onBlur, value } }) => (
-						<Input
-							placeholder='Bairro'
-							onBlur={onBlur}
-							onChangeText={onChange}
-							value={value}
-							editable={!formState.isSubmitting}
-						/>
-					)}
-				/>
-				<Controller
-					control={control}
-					rules={{ required: false }}
-					name='details'
-					render={({ field: { onChange, onBlur, value } }) => (
-						<Input
-							placeholder='Detalhes ou observações'
-							onBlur={onBlur}
-							onChangeText={onChange}
-							value={value}
-							editable={!formState.isSubmitting}
-						/>
-					)}
-				/>
-				<S.Row>
-					<S.MaxWidth>
-						<Controller
-							control={control}
-							rules={{ required: true }}
-							name='coordinates'
-							render={({ field: { onChange, onBlur, value } }) => (
-								<Input
-									defaultValue={value}
-									placeholder='Coordenadas'
-									onBlur={onBlur}
-									onChangeText={onChange}
-									value={value}
-									editable={!formState.isSubmitting}
-								/>
-							)}
-						/>
-					</S.MaxWidth>
-					{/* <IconButton icon='locate-outline' onPress={toggleMap} /> */}
-				</S.Row>
-				<Controller
-					control={control}
-					rules={{ required: true }}
-					name='city'
-					render={({ field: { onChange, onBlur, value } }) => (
-						<Dropdown
-							placeholder='Selecione uma cidade...'
-							options={citiesList}
-							selectedValue={value}
-							onValueChange={onChange}
-						/>
-					)}
-				/>
-				{/* <Modal animationType='slide' transparent visible={modalVisible} onRequestClose={toggleMap}>
-					<SelectLocation
-						onSelect={coord => setValue('coordinates', getCoordinates(coord))}
-						onClose={toggleMap}
-						initial={setCoordinates(getValues('coordinates'))}
+			<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+				<ScrollView bounces={false} showsVerticalScrollIndicator={false} contentContainerClassName="p-3 w-full">
+					<Controller
+						control={control}
+						rules={{ required: true }}
+						name="name"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Input
+								label="Nome"
+								placeholder="Nome do mapa"
+								onBlur={onBlur}
+								onChangeText={onChange}
+								value={value}
+								editable={!formState.isSubmitting}
+							/>
+						)}
 					/>
-				</Modal> */}
-				<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
-					Salvar
-				</Button>
-			</S.Content>
-		</S.Container>
+					<Controller
+						control={control}
+						rules={{ required: true }}
+						name="address"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Input
+								label="Endereço"
+								placeholder="Endereço"
+								onBlur={onBlur}
+								onChangeText={onChange}
+								value={value}
+								editable={!formState.isSubmitting}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						rules={{ required: false }}
+						name="district"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Input
+								label="Bairro"
+								placeholder="Bairro"
+								onBlur={onBlur}
+								onChangeText={onChange}
+								value={value}
+								editable={!formState.isSubmitting}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						rules={{ required: false }}
+						name="details"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Input
+								label="Detalhes"
+								placeholder="Detalhes ou observações"
+								onBlur={onBlur}
+								onChangeText={onChange}
+								value={value}
+								editable={!formState.isSubmitting}
+							/>
+						)}
+					/>
+					<View className="flex-row items-end gap-2">
+						<View className="flex-1">
+							<Controller
+								control={control}
+								rules={{ required: true }}
+								name="coordinates"
+								render={({ field: { onChange, onBlur, value } }) => (
+									<Input
+										label="Coordenadas"
+										defaultValue={value}
+										placeholder="Coordenadas"
+										onBlur={onBlur}
+										onChangeText={onChange}
+										value={value}
+										editable={!formState.isSubmitting}
+									/>
+								)}
+							/>
+						</View>
+						<TouchableOpacity onPress={toggleMap} className="mb-3 rounded-lg border border-border bg-card p-3">
+							<MapPinPlus size={24} color={colors.primary[500]} />
+						</TouchableOpacity>
+					</View>
+					<Controller
+						control={control}
+						rules={{ required: true }}
+						name="city"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Dropdown
+								label="Cidade"
+								placeholder="Selecione uma cidade..."
+								options={citiesList}
+								selectedValue={value}
+								onValueChange={onChange}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						name="tag"
+						rules={{ required: false }}
+						render={({ field: { onChange, onBlur, value } }) => (
+							<Dropdown
+								label="Status"
+								placeholder="Selecione um status..."
+								options={STATUS_LIST}
+								selectedValue={value}
+								onValueChange={onChange}
+							/>
+						)}
+					/>
+					<Modal animationType="slide" transparent visible={modalVisible} onRequestClose={toggleMap}>
+						<SelectLocation
+							onSelect={(coord) => setValue('coordinates', getCoordinates(coord))}
+							onClose={toggleMap}
+							initial={coordinates ? { coordinates: getMapRegion(setCoordinates(coordinates)) } : undefined}
+						/>
+					</Modal>
+					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)} className="mt-4">
+						Salvar
+					</Button>
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</View>
 	)
 }
 

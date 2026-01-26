@@ -3,7 +3,7 @@
 		"name": "LS Mapas",
 		"slug": "jw-toolkit",
 		"scheme": "jw-toolkit",
-		"version": "1.0.23",
+		"version": "1.2.0",
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
@@ -22,9 +22,13 @@
 				"NSLocationWhenInUseUsageDescription": "Habilitar a localização vai permitir mostrar os mapas mais próximos de você. Essa informação não fica salva externamente nem é compartilhada.",
 				"ITSAppUsesNonExemptEncryption": false
 			},
-			"appleTeamId": "N9G6UA9982"
+			"appleTeamId": "N9G6UA9982",
+			"config": {
+				"googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+			}
 		},
 		"android": {
+			"edgeToEdgeEnabled": true,
 			"adaptiveIcon": {
 				"foregroundImage": "./src/assets/adaptive-icon.png",
 				"backgroundColor": "#D08129"
@@ -38,21 +42,24 @@
 				"android.permission.VIBRATE",
 				"android.permission.WRITE_EXTERNAL_STORAGE",
 				"android.permission.ACCESS_FINE_LOCATION",
-				"android.permission.ACCESS_COARSE_LOCATION"
+				"android.permission.ACCESS_COARSE_LOCATION",
+				"com.android.vending.BILLING"
 			],
 			"config": {
 				"googleMaps": {
-					"apiKey": ""
+					"apiKey": "process.env.GOOGLE_MAPS_API_KEY"
 				}
 			}
 		},
 		"web": {
-			"favicon": "./src/assets/favicon.png"
+			"favicon": "./src/assets/favicon.png",
+			"bundler": "metro"
 		},
 		"plugins": [
 			"expo-router",
 			"expo-font",
 			"expo-apple-authentication",
+			"expo-notifications",
 			[
 				"@react-native-google-signin/google-signin",
 				{
@@ -60,9 +67,11 @@
 				}
 			],
 			[
-				"onesignal-expo-plugin",
+				"expo-build-properties",
 				{
-					"mode": "development"
+					"ios": {
+						"useFrameworks": "static"
+					}
 				}
 			]
 		],
@@ -74,23 +83,6 @@
 				"origin": false
 			},
 			"eas": {
-				"build": {
-					"experimental": {
-						"ios": {
-							"appExtensions": [
-								{
-									"targetName": "OneSignalNotificationServiceExtension",
-									"bundleIdentifier": "dev.jxnata.jwtoolkit.OneSignalNotificationServiceExtension",
-									"entitlements": {
-										"com.apple.security.application-groups": [
-											"group.dev.jxnata.jwtoolkit.onesignal"
-										]
-									}
-								}
-							]
-						}
-					}
-				},
 				"projectId": "fd11d33c-dc78-4e42-8f4f-71f7de1cd229"
 			}
 		},

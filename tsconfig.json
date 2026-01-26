@@ -2,24 +2,12 @@
 	"extends": "expo/tsconfig.base",
 	"compilerOptions": {
 		"strict": true,
+		"jsx": "react-jsx",
 		"baseUrl": ".",
+		"resolveJsonModule": true,
 		"paths": {
-			"@app/*": ["src/app/*"],
-			"@assets/*": ["src/assets/*"],
-			"@components/*": ["src/components/*"],
-			"@constants/*": ["src/constants/*"],
-			"@contexts/*": ["src/contexts/*"],
-			"@database/*": ["src/database/*"],
-			"@interfaces/*": ["src/interfaces/*"],
-			"@hooks/*": ["src/hooks/*"],
-			"@messages/*": ["src/messages/*"],
-			"@services/*": ["src/services/*"],
-			"@themes/*": ["src/themes/*"],
-			"@utils/*": ["src/utils/*"]
+			"@/*": ["./src/*"]
 		}
 	},
-	"exclude": ["node_modules"],
-	"include": ["src/**/*"],
-	"files": [],
-	"overrides": [{ "files": ["**/*styles.ts"], "rules": { "@typescript-eslint/no-implicit-any": "off" } }]
+	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
 }

@@ -1,24 +1,27 @@
-import LocationRequest from '@components/LocationRequest'
-import { useSession } from '@contexts/session'
-import theme from '@themes/index'
+import { Loading } from '@/components/loading'
+import LocationRequest from '@/components/location-request'
+import { useSession } from '@/contexts/session-provider'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack'
 import { useForegroundPermissions } from 'expo-location'
-import { Redirect, Stack } from 'expo-router'
-import { useEffect } from 'react'
-import { useColorScheme } from 'react-native'
-import { OneSignal } from 'react-native-onesignal'
+import { Stack } from 'expo-router'
 
 export default function Layout() {
-	const scheme = useColorScheme()
-	const { current } = useSession()
+	const { congregation, current } = useSession()
 	const [status] = useForegroundPermissions()
+	const { colors } = useThemedColors()
 
-	useEffect(() => {
-		if (current) OneSignal.login(current.$id)
-	}, [current])
-
-	if (!current) {
-		return <Redirect href='/sign-in' />
+	const screenOptions: NativeStackNavigationOptions = {
+		headerStyle: { backgroundColor: colors.background },
+		headerShadowVisible: false,
+		headerTintColor: colors.foreground,
+		headerTitleStyle: { fontFamily: 'urbanist-bold' },
+		headerBackButtonDisplayMode: 'generic',
+		headerTitleAlign: 'center',
+		contentStyle: { backgroundColor: colors.background },
 	}
+
+	if (!current) return <Loading />
 
 	if (status) {
 		if (!status.granted) {
@@ -26,28 +29,25 @@ export default function Layout() {
 		}
 	}
 
+	if (!congregation)
+		return (
+			<Stack screenOptions={screenOptions}>
+				<Stack.Screen name="select-congregation" options={{ presentation: 'modal' }} />
+				<Stack.Screen name="add-congregation" options={{ presentation: 'modal' }} />
+			</Stack>
+		)
+
 	return (
-		<Stack
-			screenOptions={{
-				headerStyle: { backgroundColor: theme[scheme || 'light'].background },
-				headerShadowVisible: false,
-				headerTintColor: theme[scheme || 'light'].text,
-				headerTitleStyle: { fontFamily: 'urbanist-bold' },
-				headerBackButtonDisplayMode: 'generic',
-				headerTitleAlign: 'center',
-				contentStyle: { backgroundColor: theme[scheme || 'light'].background },
-			}}
-		>
-			<Stack.Screen name='admin/me/index' options={{ presentation: 'modal' }} />
-			<Stack.Screen name='publisher/me/index' options={{ presentation: 'modal' }} />
-			<Stack.Screen
-				name='publisher/assignment/[id]/index'
-				options={{ presentation: 'modal', headerShown: false }}
-			/>
-			<Stack.Screen
-				name='admin/my-assignments/view/[id]/index'
-				options={{ presentation: 'modal', headerShown: false }}
-			/>
+		<Stack screenOptions={screenOptions}>
+			<Stack.Screen name="index" />
+			<Stack.Screen name="admin/me" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="publisher/me" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="publisher/assignment/[id]" options={{ presentation: 'modal', headerShown: false }} />
+			<Stack.Screen name="admin/my-assignments/[id]" options={{ presentation: 'modal', headerShown: false }} />
+			<Stack.Screen name="select-congregation" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="limit-alert" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="privacy-policy" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="privacy-blocked" options={{ presentation: 'modal' }} />
 		</Stack>
 	)
 }

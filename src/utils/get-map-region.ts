@@ -1,6 +1,4 @@
-import { AppleMaps } from 'expo-maps'
-
-export const getMapRegion = (coordinates: [number, number]): AppleMaps.CameraPosition => {
+export const getMapRegion = (coordinates: [number, number]): { latitude: number; longitude: number } => {
 	if (!coordinates) {
 		coordinates = [0, 0]
 	}
@@ -9,10 +7,7 @@ export const getMapRegion = (coordinates: [number, number]): AppleMaps.CameraPos
 	}
 
 	return {
-		coordinates: {
-			latitude: coordinates[0],
-			longitude: coordinates[1],
-		},
-		zoom: 17,
+		latitude: coordinates[0],
+		longitude: coordinates[1],
 	}
 }

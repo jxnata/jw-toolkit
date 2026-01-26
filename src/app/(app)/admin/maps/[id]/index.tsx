@@ -1,49 +1,42 @@
-import Button from '@components/Button'
-import Dropdown from '@components/Dropdown'
-import MapViewDetails from '@components/MapViewDetails'
-import useMap from '@hooks/useMap'
-import useMaps from '@hooks/useMaps'
-import usePublishers from '@hooks/usePublishers'
-import { AddAssignmentReq } from '@interfaces/api/assignments'
+import Button from '@/components/button'
+import Dropdown from '@/components/dropdown'
+import MapViewDetails from '@/components/map-view-details'
+import useMap from '@/hooks/use-map'
+import usePublishers from '@/hooks/use-publishers'
+import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
+import { AddAssignmentReq } from '@/interfaces/api/assignments'
+import { error, success } from '@/messages/add'
+import { error as removeError, success as removeSuccess } from '@/messages/delete'
+import { mapsService } from '@/services/instantdb'
+import { getMapRegion } from '@/utils/get-map-region'
+import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { error, success } from '@messages/add'
-import { error as removeError, success as removeSuccess } from '@messages/delete'
-import { useCallback, useEffect, useMemo } from 'react'
+import { Pencil, Trash } from 'lucide-react-native'
+import { useCallback, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Platform } from 'react-native'
-import { AppleMaps, GoogleMaps } from 'expo-maps'
-import { OneSignal } from 'react-native-onesignal'
-import { getMapRegion } from '@utils/get-map-region'
-import { getMarkerCoordinate } from '@utils/get-marker-coordinate'
-
-import * as S from './styles'
-import React from 'react'
-import { Models } from 'react-native-appwrite'
-import { database } from '@services/appwrite'
+import { Alert, Text, TouchableOpacity, View } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 
 const ViewMap = () => {
 	const { data } = useLocalSearchParams()
-	const params = JSON.parse((data as string) || '{}') as Models.Document
-	const { map, mutate } = useMap(params.$id)
-	const { mutate: mutateMaps } = useMaps({ search: '' })
+	const params = JSON.parse((data as string) || '{}') as Map
+	const { map } = useMap({ mapId: params.id })
 	const { publishers } = usePublishers()
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({
-		defaultValues: { assigned: params.assigned },
+		defaultValues: { assigned: typeof params.assigned === 'object' ? params.assigned!.id : params.assigned },
 	})
+	const { colors } = useThemedColors()
 
-	const publisherList = useMemo(() => publishers.map(p => ({ label: p.name, value: p.$id })), [publishers])
+	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
 	const marker = getMarkerCoordinate(map ? [map.lat, map.lng] : [0, 0])
 
-	const save: SubmitHandler<AddAssignmentReq> = async data => {
+	const save: SubmitHandler<AddAssignmentReq> = async (data) => {
 		try {
-			await database.updateDocument('production', 'maps', params.$id, {
-				assigned: data.assigned,
-			})
+			await mapsService.assignMap(params.id, data.assigned)
 
 			success('designação')
-			mutate()
-			mutateMaps()
 			router.back()
 		} catch (err) {
 			error('designação')
@@ -53,136 +46,132 @@ const ViewMap = () => {
 
 	const deleteMap = useCallback(async () => {
 		try {
-			await database.deleteDocument('production', 'maps', params.$id)
+			await mapsService.deleteMap(params.id)
 
 			removeSuccess('maps')
-			mutate()
 			router.back()
 		} catch (err) {
 			removeError('maps')
 			console.error('Failed to delete map:', err)
 		}
-	}, [params.$id, mutate])
+	}, [params.id])
 
 	const showDeleteAlert = useCallback(
 		() =>
-			Alert.alert(
-				'Excluir',
-				'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.',
-				[
-					{
-						text: 'Cancelar',
-						style: 'cancel',
-					},
-					{
-						text: 'Sim, excluir',
-						onPress: () => deleteMap(),
-						style: 'default',
-					},
-				]
-			),
+			Alert.alert('Excluir', 'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.', [
+				{
+					text: 'Cancelar',
+					style: 'cancel',
+				},
+				{
+					text: 'Sim, excluir',
+					onPress: () => deleteMap(),
+					style: 'default',
+				},
+			]),
 		[deleteMap]
 	)
 
 	const HeaderRight = useCallback(
 		() => (
-			<S.HeaderContainer>
-				<S.IconButton
+			<View className="flex-row">
+				<TouchableOpacity
 					onPress={() =>
 						router.replace({
-							pathname: `/admin/maps/${params.$id}/edit`,
+							pathname: `/admin/maps/${params.id}/edit`,
 							params: { data: JSON.stringify(map) },
 						})
 					}
 					disabled={!map}
-				>
-					<S.Ionicon name='create-outline' />
-				</S.IconButton>
-				<S.IconButton onPress={showDeleteAlert}>
-					<S.Ionicon name='trash-outline' />
-				</S.IconButton>
-			</S.HeaderContainer>
+					className="mx-2">
+					<Pencil size={24} color={colors.foreground} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={showDeleteAlert} className="mx-2">
+					<Trash size={24} color={colors.foreground} />
+				</TouchableOpacity>
+			</View>
 		),
-		[params.$id, showDeleteAlert, map]
+		[map, showDeleteAlert, params.id, colors]
 	)
 
-	useEffect(() => {
-		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			event.preventDefault()
-			mutate()
-		})
-	}, [mutate])
-
 	return (
-		<S.Container>
+		<View className="flex">
 			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
-			<S.Content>
-				<S.DetailsContainer>
+			<View className="flex h-full w-full bg-background">
+				<View className="p-4">
 					{!!map && (
 						<>
 							<MapViewDetails map={map} />
 							{!map.assigned ? (
-								<S.Columm>
-									<S.Label>Designar mapa</S.Label>
+								<View>
+									<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>
 									<Controller
 										control={control}
 										rules={{ required: true }}
-										name='assigned'
+										name="assigned"
 										render={({ field: { onChange, onBlur, value } }) => (
 											<Dropdown
-												placeholder='Selecione uma publicador...'
+												placeholder="Selecione um publicador..."
 												options={publisherList}
 												selectedValue={value}
 												onValueChange={onChange}
+												disabled={map.tag === 'nao-visitar'}
 											/>
 										)}
 									/>
-									<S.Row>
+									{map.tag === 'nao-visitar' && (
+										<Text className="py-2 font-medium text-danger-500">
+											Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
+										</Text>
+									)}
+									<View className="mt-2">
 										{formState.isValid && (
 											<Button
 												disabled={!formState.isValid}
 												loading={formState.isSubmitting}
-												onPress={handleSubmit(save)}
-											>
+												onPress={handleSubmit(save)}>
 												Designar
 											</Button>
 										)}
-									</S.Row>
-								</S.Columm>
+									</View>
+								</View>
 							) : (
-								<S.Row>
-									<S.Columm>
-										<S.Label>Designado para:</S.Label>
-									</S.Columm>
-									<S.Columm>
+								<View className="ml-2 mt-2 flex-row items-baseline">
+									<View>
+										<Text className="font-medium text-sm text-foreground">Designado para:</Text>
+									</View>
+									<View className="ml-2.5">
 										{typeof map.assigned === 'object' && (
-											<S.ParagraphSpace>{map.assigned.name}</S.ParagraphSpace>
+											<Text className="font-medium text-[15px] text-foreground">{map.assigned.name}</Text>
 										)}
-									</S.Columm>
-								</S.Row>
+									</View>
+								</View>
 							)}
 						</>
 					)}
-				</S.DetailsContainer>
+				</View>
 				{!!map && (
-					<S.MapContainer>
-						{Platform.OS === 'ios' ? (
-							<AppleMaps.View
-								cameraPosition={region}
-								style={{ width: '100%', height: '100%' }}
-								markers={[{ coordinates: marker, title: map.name }]}
+					<View className="m-2.5 flex-1 overflow-hidden rounded-lg">
+						<MapView
+							style={{ width: '100%', height: '100%' }}
+							initialRegion={{
+								latitude: region.latitude,
+								longitude: region.longitude,
+								latitudeDelta: 0.01,
+								longitudeDelta: 0.01,
+							}}>
+							<Marker
+								coordinate={{
+									latitude: marker.latitude,
+									longitude: marker.longitude,
+								}}
+								title={map.name}
 							/>
-						) : (
-							<GoogleMaps.View
-								cameraPosition={region}
-								style={{ width: '100%', height: '100%' }}
-								markers={[{ coordinates: marker, title: map.name }]}
-							/>
-						)}
-					</S.MapContainer>
+						</MapView>
+					</View>
 				)}
-			</S.Content>
-		</S.Container>
+			</View>
+		</View>
 	)
 }
 

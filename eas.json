@@ -1,7 +1,8 @@
 {
 	"cli": {
 		"version": ">= 15.0.10",
-		"appVersionSource": "remote"
+		"appVersionSource": "remote",
+		"promptToConfigurePushNotifications": false
 	},
 	"build": {
 		"development": {
@@ -18,7 +19,6 @@
 	"submit": {
 		"production": {
 			"android": {
-				"serviceAccountKeyPath": "../path/to/api-xxx-yyy-zzz.json",
 				"track": "internal"
 			},
 			"ios": {

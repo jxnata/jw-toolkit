@@ -1,6 +1,6 @@
-import 'dotenv/config'
+require('dotenv/config')
 
-export default ({ config }) => {
+module.exports = ({ config }) => {
 	const appConfig = { ...config }
 
 	if (appConfig.android && appConfig.android.config && appConfig.android.config.googleMaps) {
