@@ -2,16 +2,16 @@ import { Loading } from '@/components/loading'
 import LocationRequest from '@/components/location-request'
 import { useSession } from '@/contexts/session-provider'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack'
 import { useForegroundPermissions } from 'expo-location'
 import { Stack } from 'expo-router'
+import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient'
 
 export default function Layout() {
 	const { congregation, current } = useSession()
 	const [status] = useForegroundPermissions()
 	const { colors } = useThemedColors()
 
-	const screenOptions: NativeStackNavigationOptions = {
+	const screenOptions: ExtendedStackNavigationOptions = {
 		headerStyle: { backgroundColor: colors.background },
 		headerShadowVisible: false,
 		headerTintColor: colors.foreground,

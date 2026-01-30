@@ -43,11 +43,19 @@
 				"android.permission.WRITE_EXTERNAL_STORAGE",
 				"android.permission.ACCESS_FINE_LOCATION",
 				"android.permission.ACCESS_COARSE_LOCATION",
+				"com.android.vending.BILLING",
+				"android.permission.INTERNET",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.SYSTEM_ALERT_WINDOW",
+				"android.permission.VIBRATE",
+				"android.permission.WRITE_EXTERNAL_STORAGE",
+				"android.permission.ACCESS_FINE_LOCATION",
+				"android.permission.ACCESS_COARSE_LOCATION",
 				"com.android.vending.BILLING"
 			],
 			"config": {
 				"googleMaps": {
-					"apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+					"apiKey": "AIzaSyBJJ6XnME22X2XA14CeyigGChZpijG15b0"
 				}
 			}
 		},
@@ -86,6 +94,12 @@
 				"projectId": "fd11d33c-dc78-4e42-8f4f-71f7de1cd229"
 			}
 		},
-		"owner": "jxnata"
+		"owner": "jxnata",
+		"runtimeVersion": {
+			"policy": "appVersion"
+		},
+		"updates": {
+			"url": "https://u.expo.dev/fd11d33c-dc78-4e42-8f4f-71f7de1cd229"
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import { i } from '@instantdb/core'
+import { i } from '@instantdb/react-native'
 
 const _schema = i.schema({
 	entities: {
@@ -141,7 +141,7 @@ const _schema = i.schema({
 // This helps Typescript display nicer intellisense
 type _AppSchema = typeof _schema
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface AppSchema extends _AppSchema {}
+interface AppSchema extends _AppSchema { }
 const schema: AppSchema = _schema
 
 export type { AppSchema }
