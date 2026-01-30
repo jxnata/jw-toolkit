@@ -87,6 +87,7 @@ const Maps = () => {
 										{ label: 'Designados', value: 'assigned' },
 										{ label: 'Livres', value: 'unassigned' },
 										{ label: 'Não visitar', value: 'no-visit' },
+										{ label: 'Estudante', value: 'student' },
 									]}
 									selectedValue={status}
 									onValueChange={setStatus}

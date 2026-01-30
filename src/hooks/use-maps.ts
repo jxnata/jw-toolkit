@@ -6,7 +6,7 @@ type Props = {
 	search?: string
 	city?: string
 	district?: string
-	status?: 'assigned' | 'unassigned' | 'no-visit' | ''
+	status?: 'assigned' | 'unassigned' | 'no-visit' | 'student' | ''
 	enabled?: boolean
 	limit?: number
 	offset?: number
@@ -57,20 +57,22 @@ const useMaps = (
 		whereConditions.assigned = { $isNull: true }
 	} else if (status === 'no-visit') {
 		whereConditions.tag = 'nao-visitar'
+	} else if (status === 'student') {
+		whereConditions.tag = 'estudante'
 	}
 
 	const { data, isLoading, error } = db.useQuery(
 		active
 			? {
-					maps: {
-						$: {
-							where: whereConditions,
-							order: { visited: 'asc' },
-						},
-						city: {},
-						assigned: {},
+				maps: {
+					$: {
+						where: whereConditions,
+						order: { visited: 'asc' },
 					},
-				}
+					city: {},
+					assigned: {},
+				},
+			}
 			: null
 	)
 
@@ -78,8 +80,8 @@ const useMaps = (
 		maps: (data?.maps as Map[]) || [],
 		loading: isLoading,
 		error,
-		mutate: () => {},
-		loadMore: () => {},
+		mutate: () => { },
+		loadMore: () => { },
 		loadingMore: false,
 		hasMore: false,
 		total: data?.maps?.length || 0,
