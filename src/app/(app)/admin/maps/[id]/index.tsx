@@ -1,6 +1,7 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import MapViewDetails from '@/components/map-view-details'
+import PersonalAnnotation from '@/components/personal-annotation'
 import useMap from '@/hooks/use-map'
 import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -102,6 +103,7 @@ const ViewMap = () => {
 					{!!map && (
 						<>
 							<MapViewDetails map={map} />
+							<PersonalAnnotation map={map} />
 							{!map.assigned ? (
 								<View>
 									<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>

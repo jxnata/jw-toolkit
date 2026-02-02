@@ -1,5 +1,6 @@
 import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
+import PersonalAnnotation from '@/components/personal-annotation'
 import useAssignment from '@/hooks/use-assignment'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
@@ -50,6 +51,8 @@ const AssigmentDetails = () => {
 						style={{ top: insets.top }}>
 						<ArrowLeft color={colors.foreground} />
 					</Pressable>
+
+					<PersonalAnnotation map={assignment as Map} />
 
 					<MapView
 						style={{ width: '100%', height: '100%' }}
