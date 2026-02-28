@@ -18,9 +18,10 @@ interface MapProps {
 	map: Map
 	location: LocationObjectCoords | null
 	onPress: () => void
+	extraMapsCount?: number
 }
 
-const MapItem = ({ map, location, onPress }: MapProps) => {
+const MapItem = ({ map, location, onPress, extraMapsCount }: MapProps) => {
 	const { colors } = useThemedColors()
 
 	const { data: distance } = useQuery({
@@ -104,6 +105,14 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 					{distance}
 				</Text>
 			</View>
+
+			{!!extraMapsCount && extraMapsCount > 0 && (
+				<View className="absolute bottom-10 right-2">
+					<Text className="font-medium text-[10px]" style={{ color: colors.foreground + '80' }}>
+						+{extraMapsCount} {extraMapsCount === 1 ? 'mapa adicional' : 'mapas adicionais'}
+					</Text>
+				</View>
+			)}
 		</Pressable>
 	)
 }

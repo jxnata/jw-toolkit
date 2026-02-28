@@ -117,6 +117,7 @@ const Maps = () => {
 								key={item.id}
 								map={item}
 								location={location}
+								extraMapsCount={(item as any).extra_maps?.length}
 								onPress={() =>
 									router.push({
 										pathname: `/admin/maps/${item.id}`,

@@ -32,6 +32,7 @@ const useAllMaps = ({ search, enabled = true }: Props = {}) => {
 							order: { serverCreatedAt: 'desc' },
 						},
 						city: {},
+						extra_maps: {},
 					},
 				}
 			: null

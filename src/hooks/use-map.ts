@@ -22,6 +22,7 @@ const useMap = ({ mapId, enabled = true }: Props) => {
 						},
 						city: {},
 						assigned: {},
+						extra_maps: {},
 					},
 				}
 			: null

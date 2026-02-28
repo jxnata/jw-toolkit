@@ -8,10 +8,12 @@ type City = InstaQLEntity<AppSchema, 'cities'> & {
 type District = InstaQLEntity<AppSchema, 'districts'> & {
 	city: City
 }
+type ExtraMap = InstaQLEntity<AppSchema, 'extra_maps'>
 type Map = InstaQLEntity<AppSchema, 'maps'> & {
 	assigned: Publisher | null
 	congregation: Congregation
 	city: City
+	extra_maps?: ExtraMap[]
 }
 type Publisher = InstaQLEntity<AppSchema, 'publishers'> & {
 	congregation: Congregation
@@ -20,4 +22,4 @@ type User = InstaQLEntity<AppSchema, '$users'> & {
 	congregation: Congregation
 }
 
-export type { City, Congregation, District, Map, Publisher, User }
+export type { City, Congregation, District, ExtraMap, Map, Publisher, User }

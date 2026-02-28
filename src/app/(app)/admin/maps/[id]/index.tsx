@@ -1,7 +1,10 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
+import ExtraMapItem from '@/components/extra-map-item'
+import ExtraMapViewModal from '@/components/extra-map-view-modal'
 import MapViewDetails from '@/components/map-view-details'
 import PersonalAnnotation from '@/components/personal-annotation'
+import useExtraMaps from '@/hooks/use-extra-maps'
 import useMap from '@/hooks/use-map'
 import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -14,20 +17,22 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Pencil, Trash } from 'lucide-react-native'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 const ViewMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const { map } = useMap({ mapId: params.id })
+	const { extraMaps } = useExtraMaps(params.id)
 	const { publishers } = usePublishers()
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({
 		defaultValues: { assigned: typeof params.assigned === 'object' ? params.assigned!.id : params.assigned },
 	})
 	const { colors } = useThemedColors()
+	const [selectedExtraMap, setSelectedExtraMap] = useState<{ id: string; address: string; details?: string; lat: number; lng: number } | null>(null)
 
 	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
@@ -96,64 +101,80 @@ const ViewMap = () => {
 	)
 
 	return (
-		<View className="flex">
+		<View className="flex-1">
 			<Stack.Screen options={{ title: map ? map.name : '', headerRight: HeaderRight }} />
-			<View className="flex h-full w-full bg-background">
-				<View className="p-4">
-					{!!map && (
-						<>
-							<MapViewDetails map={map} />
-							<PersonalAnnotation map={map} />
-							{!map.assigned ? (
-								<View>
-									<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>
-									<Controller
-										control={control}
-										rules={{ required: true }}
-										name="assigned"
-										render={({ field: { onChange, onBlur, value } }) => (
-											<Dropdown
-												placeholder="Selecione um publicador..."
-												options={publisherList}
-												selectedValue={value}
-												onValueChange={onChange}
-												disabled={map.tag === 'nao-visitar'}
-											/>
-										)}
-									/>
-									{map.tag === 'nao-visitar' && (
-										<Text className="py-2 font-medium text-danger-500">
-											Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
-										</Text>
-									)}
-									<View className="mt-2">
-										{formState.isValid && (
-											<Button
-												disabled={!formState.isValid}
-												loading={formState.isSubmitting}
-												onPress={handleSubmit(save)}>
-												Designar
-											</Button>
-										)}
-									</View>
-								</View>
-							) : (
-								<View className="ml-2 mt-2 flex-row items-baseline">
+			<View className="flex-1 bg-background">
+				<ScrollView className="flex-1" contentContainerClassName="pb-4">
+					<View className="p-4">
+						{!!map && (
+							<>
+								<MapViewDetails map={map} />
+								<PersonalAnnotation map={map} />
+								{!map.assigned ? (
 									<View>
-										<Text className="font-medium text-sm text-foreground">Designado para:</Text>
-									</View>
-									<View className="ml-2.5">
-										{typeof map.assigned === 'object' && (
-											<Text className="font-medium text-[15px] text-foreground">{map.assigned.name}</Text>
+										<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>
+										<Controller
+											control={control}
+											rules={{ required: true }}
+											name="assigned"
+											render={({ field: { onChange, onBlur, value } }) => (
+												<Dropdown
+													placeholder="Selecione um publicador..."
+													options={publisherList}
+													selectedValue={value}
+													onValueChange={onChange}
+													disabled={map.tag === 'nao-visitar'}
+												/>
+											)}
+										/>
+										{map.tag === 'nao-visitar' && (
+											<Text className="py-2 font-medium text-danger-500">
+												Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
+											</Text>
 										)}
+										<View className="mt-2">
+											{formState.isValid && (
+												<Button
+													disabled={!formState.isValid}
+													loading={formState.isSubmitting}
+													onPress={handleSubmit(save)}>
+													Designar
+												</Button>
+											)}
+										</View>
 									</View>
-								</View>
-							)}
-						</>
+								) : (
+									<View className="ml-2 mt-2 flex-row items-baseline">
+										<View>
+											<Text className="font-medium text-sm text-foreground">Designado para:</Text>
+										</View>
+										<View className="ml-2.5">
+											{typeof map.assigned === 'object' && (
+												<Text className="font-medium text-[15px] text-foreground">{map.assigned.name}</Text>
+											)}
+										</View>
+									</View>
+								)}
+							</>
+						)}
+					</View>
+
+					{!!map && extraMaps.length > 0 && (
+						<View className="px-4">
+							<Text className="mb-2 font-semibold text-foreground opacity-75">Localizações</Text>
+							<ExtraMapItem
+								extraMap={{ id: map.id, address: map.address, details: map.details, lat: map.lat, lng: map.lng }}
+								onPress={() => setSelectedExtraMap({ id: map.id, address: map.address, details: map.details, lat: map.lat, lng: map.lng })}
+							/>
+							{extraMaps.map((em) => (
+								<ExtraMapItem key={em.id} extraMap={em} onPress={() => setSelectedExtraMap(em)} />
+							))}
+						</View>
 					)}
-				</View>
+				</ScrollView>
+
 				{!!map && (
-					<View className="m-2.5 flex-1 overflow-hidden rounded-lg">
+					<View className="m-2.5 h-64 overflow-hidden rounded-lg">
 						<MapView
 							style={{ width: '100%', height: '100%' }}
 							initialRegion={{
@@ -173,6 +194,13 @@ const ViewMap = () => {
 					</View>
 				)}
 			</View>
+
+			<ExtraMapViewModal
+				visible={!!selectedExtraMap}
+				onClose={() => setSelectedExtraMap(null)}
+				extraMap={selectedExtraMap}
+				showNavigation={false}
+			/>
 		</View>
 	)
 }
