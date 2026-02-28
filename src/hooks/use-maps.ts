@@ -1,4 +1,5 @@
 import { useSession } from '@/contexts/session-provider'
+import { MAP_TAGS } from '@/constants/content'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
 
@@ -29,10 +30,9 @@ const useMaps = (
 
 	const active = !!(enabled && congregation)
 
-	// Build where conditions
 	const whereConditions: any = {
 		congregation: congregation!.id,
-		tag: { $not: 'nao-visitar' },
+		tag: { $not: MAP_TAGS.NO_VISIT },
 	}
 
 	if (search) {
@@ -56,9 +56,9 @@ const useMaps = (
 	} else if (status === 'unassigned') {
 		whereConditions.assigned = { $isNull: true }
 	} else if (status === 'no-visit') {
-		whereConditions.tag = 'nao-visitar'
+		whereConditions.tag = MAP_TAGS.NO_VISIT
 	} else if (status === 'student') {
-		whereConditions.tag = 'estudante'
+		whereConditions.tag = MAP_TAGS.STUDENT
 	}
 
 	const { data, isLoading, error } = db.useQuery(

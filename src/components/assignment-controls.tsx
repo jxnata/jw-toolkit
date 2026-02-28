@@ -4,8 +4,17 @@ import { MapPin } from 'lucide-react-native'
 import React from 'react'
 import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native'
 
+interface AssignmentMap {
+	name: string
+	lat: number
+	lng: number
+	address: string
+	details?: string
+	city?: { name: string }
+}
+
 interface AssignmentProps {
-	assignment: any
+	assignment: AssignmentMap
 	onFinish: () => void
 }
 
@@ -34,7 +43,7 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 			<View className="gap-2 rounded-[10px] bg-background px-4 py-2">
 				<Text className="pt-2 font-bold text-base text-foreground">Endereço</Text>
 				<Text className="font-medium text-base text-foreground">
-					{assignment.address} - {assignment.city.name}
+					{assignment.address} - {assignment.city?.name}
 				</Text>
 				{!!assignment.details && <Text className="font-medium text-base text-foreground">{assignment.details}</Text>}
 				<View className="mt-2 flex-row gap-2">

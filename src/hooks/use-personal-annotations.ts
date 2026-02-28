@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { storage } from '@/database'
+import { STORAGE_KEYS } from '@/constants/storage-keys'
 
 export const usePersonalAnnotations = (mapId: string, userId: string) => {
 	const [annotation, setAnnotation] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 
-	const storageKey = `annotations.${mapId}.${userId}`
+	const storageKey = STORAGE_KEYS.annotations(mapId, userId)
 
 	const loadAnnotation = useCallback(() => {
 		try {

@@ -7,7 +7,7 @@ import { LocationObjectCoords } from 'expo-location'
 import { useMemo } from 'react'
 import { Dimensions, Image, Pressable, Text, View } from 'react-native'
 
-import { STATUS_NAME } from '@/constants/content'
+import { MAP_STATUS_LABELS, STATUS_NAME } from '@/constants/content'
 import { Map } from '@/interfaces'
 import { firstName } from '@/utils/first-name'
 import { getBadgeColor } from '@/utils/get-badge-color'
@@ -48,13 +48,13 @@ const MapItem = ({ map, location, onPress, extraMapsCount }: MapProps) => {
 				<View
 					className="absolute bottom-2 right-2 z-10 rounded-[5px] px-[5px] py-0.5"
 					style={{ backgroundColor: colors.primary[600] }}>
-					<Text className="font-semibold text-[10px] text-white">DESIGNADO</Text>
+					<Text className="font-semibold text-[10px] text-white">{MAP_STATUS_LABELS.ASSIGNED}</Text>
 				</View>
 			) : (
 				<View
 					className="absolute bottom-2 right-2 z-10 rounded-[5px] px-[5px] py-0.5"
 					style={{ backgroundColor: colors.success.DEFAULT }}>
-					<Text className="font-semibold text-[10px] text-white">LIVRE</Text>
+					<Text className="font-semibold text-[10px] text-white">{MAP_STATUS_LABELS.FREE}</Text>
 				</View>
 			)}
 

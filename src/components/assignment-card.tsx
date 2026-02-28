@@ -8,8 +8,13 @@ import { XCircle } from 'lucide-react-native'
 import { useState } from 'react'
 import { Pressable, Text, TouchableOpacity, View } from 'react-native'
 
+interface AssignmentMap {
+	id: string
+	assigned?: { id: string; name: string } | null
+}
+
 interface AssignmentProps {
-	assignment: any
+	assignment: AssignmentMap
 	onCancel: () => void
 }
 

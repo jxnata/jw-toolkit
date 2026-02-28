@@ -1,6 +1,7 @@
 import { storage } from '@/database/index'
 import usePublisher from '@/hooks/use-publisher'
 import { Congregation, Publisher } from '@/interfaces'
+import { STORAGE_KEYS } from '@/constants/storage-keys'
 import db from '@/lib/db'
 import { publishersService } from '@/services/instantdb/publishers-service'
 import { User as InstantUser } from '@instantdb/react-native'
@@ -128,9 +129,9 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		await db.auth.signOut()
 
 		// Clear storage
-		storage.remove('congregation.name')
-		storage.remove('congregation.id')
-		storage.remove('user.publisher')
+		storage.remove(STORAGE_KEYS.CONGREGATION_NAME)
+		storage.remove(STORAGE_KEYS.CONGREGATION_ID)
+		storage.remove(STORAGE_KEYS.USER_PUBLISHER)
 	}
 
 	// Initialize session data when user changes
@@ -144,11 +145,11 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 
 			if (!pub) return
 
-			storage.set('user.publisher', pub.id)
+			storage.set(STORAGE_KEYS.USER_PUBLISHER, pub.id)
 
 			if (pub.congregation) {
-				storage.set('congregation.id', pub.congregation.id)
-				storage.set('congregation.name', pub.congregation.name)
+				storage.set(STORAGE_KEYS.CONGREGATION_ID, pub.congregation.id)
+				storage.set(STORAGE_KEYS.CONGREGATION_NAME, pub.congregation.name)
 			}
 		}
 
