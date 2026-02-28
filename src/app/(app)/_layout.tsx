@@ -43,6 +43,7 @@ export default function Layout() {
 			<Stack.Screen name="admin/me" options={{ presentation: 'modal' }} />
 			<Stack.Screen name="publisher/me" options={{ presentation: 'modal' }} />
 			<Stack.Screen name="publisher/assignment/[id]" options={{ presentation: 'modal', headerShown: false }} />
+			<Stack.Screen name="publisher/assignment/finish" options={{ presentation: 'modal', headerShown: false }} />
 			<Stack.Screen name="admin/my-assignments/[id]" options={{ presentation: 'modal', headerShown: false }} />
 			<Stack.Screen name="select-congregation" options={{ presentation: 'modal' }} />
 			<Stack.Screen name="limit-alert" options={{ presentation: 'modal' }} />

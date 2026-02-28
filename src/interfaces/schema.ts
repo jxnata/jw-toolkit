@@ -24,6 +24,7 @@ const _schema = i.schema({
 			details: i.string().optional(),
 			district: i.string().optional().indexed(),
 			found: i.boolean().optional(),
+			found_info: i.string().optional(),
 			lat: i.number(),
 			lng: i.number(),
 			name: i.string().indexed(),

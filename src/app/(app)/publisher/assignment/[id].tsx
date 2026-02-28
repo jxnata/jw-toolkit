@@ -1,4 +1,3 @@
-import AssignmentMapCard from '@/components/assignment-card'
 import AssignmentControls from '@/components/assignment-controls'
 import PersonalAnnotation from '@/components/personal-annotation'
 import useAssignment from '@/hooks/use-assignment'
@@ -8,7 +7,6 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { ArrowLeft } from 'lucide-react-native'
-import { useState } from 'react'
 import { ActivityIndicator, Pressable, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -19,11 +17,13 @@ const AssigmentDetails = () => {
 	const router = useRouter()
 	const { colors } = useThemedColors()
 	const insets = useSafeAreaInsets()
-	const [showFinish, setShowFinish] = useState(false)
 	const { assignment } = useAssignment(params.id)
 
-	const toggleModal = () => {
-		setShowFinish((old) => !old)
+	const onFinish = () => {
+		router.push({
+			pathname: '/publisher/assignment/finish',
+			params: { assignmentId: assignment!.id, assignmentName: assignment!.assigned?.name },
+		})
 	}
 
 	if (!assignment) {
@@ -73,11 +73,7 @@ const AssigmentDetails = () => {
 						/>
 					</MapView>
 
-					{showFinish ? (
-						<AssignmentMapCard assignment={assignment} onCancel={toggleModal} />
-					) : (
-						<AssignmentControls assignment={assignment} onFinish={toggleModal} />
-					)}
+					<AssignmentControls assignment={assignment} onFinish={onFinish} />
 				</View>
 			)}
 		</View>
