@@ -13,7 +13,7 @@ const useAssignment = (assignmentId: string) => {
 						$: {
 							where: {
 								id: assignmentId,
-								congregation: congregation ? congregation.id : null,
+								congregation: congregation!.id,
 							},
 						},
 						city: {},
@@ -24,7 +24,7 @@ const useAssignment = (assignmentId: string) => {
 	)
 
 	return {
-		assignment: data?.maps[0] || null,
+		assignment: data?.maps?.[0] || null,
 		loading: isLoading,
 		error,
 	}

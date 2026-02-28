@@ -31,7 +31,7 @@ const useMaps = (
 
 	// Build where conditions
 	const whereConditions: any = {
-		congregation: congregation ? congregation.id : null,
+		congregation: congregation!.id,
 		tag: { $not: 'nao-visitar' },
 	}
 

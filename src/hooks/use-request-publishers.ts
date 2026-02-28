@@ -16,7 +16,7 @@ const useRequestPublishers = ({ enabled = true }: Props = {}) => {
 					publishers: {
 						$: {
 							where: {
-								congregation: congregation ? congregation.id : null,
+								congregation: congregation!.id,
 								approved: false, // Only unapproved publishers
 							},
 							order: { serverCreatedAt: 'desc' },

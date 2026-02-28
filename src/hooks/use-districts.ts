@@ -17,7 +17,7 @@ const useDistricts = ({ cityId, search, enabled = true }: Props = {}) => {
 	if (cityId) {
 		whereConditions.city = { id: cityId }
 	} else {
-		whereConditions.city = { congregation: congregation ? congregation.id : null }
+		whereConditions.city = { congregation: congregation!.id }
 	}
 
 	if (search) {

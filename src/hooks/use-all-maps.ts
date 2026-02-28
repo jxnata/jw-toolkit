@@ -12,7 +12,7 @@ const useAllMaps = ({ search, enabled = true }: Props = {}) => {
 	const active = enabled && congregation
 
 	const whereConditions: any = {
-		congregation: congregation ? congregation.id : null,
+		congregation: congregation!.id,
 	}
 
 	if (search) {
