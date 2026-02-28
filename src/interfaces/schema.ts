@@ -1,4 +1,6 @@
-import { i } from '@instantdb/react-native'
+// Docs: https://www.instantdb.com/docs/modeling-data
+
+import { i } from "@instantdb/react-native";
 
 const _schema = i.schema({
 	entities: {
@@ -8,6 +10,8 @@ const _schema = i.schema({
 		}),
 		$users: i.entity({
 			email: i.string().unique().indexed().optional(),
+			imageURL: i.string().optional(),
+			type: i.string().optional(),
 		}),
 		cities: i.entity({
 			name: i.string(),
@@ -19,131 +23,190 @@ const _schema = i.schema({
 		districts: i.entity({
 			name: i.string(),
 		}),
+		extra_maps: i.entity({
+			address: i.string(),
+			details: i.string().optional(),
+			lat: i.number(),
+			lng: i.number(),
+		}),
 		maps: i.entity({
 			address: i.string(),
 			details: i.string().optional(),
-			district: i.string().optional().indexed(),
+			district: i.string().indexed().optional(),
 			found: i.boolean().optional(),
 			found_info: i.string().optional(),
 			lat: i.number(),
 			lng: i.number(),
 			name: i.string().indexed(),
-			visited: i.date().optional().indexed(),
+			tag: i.string().indexed().optional(),
+			visited: i.date().indexed().optional(),
 			visited_by: i.string().optional(),
-			tag: i.string().optional().indexed(),
 		}),
 		publishers: i.entity({
 			approved: i.boolean().optional(),
 			level: i.number(),
 			name: i.string().indexed(),
 		}),
+		subscriptions: i.entity({
+			subscribed: i.boolean().optional(),
+		}),
 	},
 	links: {
-		citiesCongregation: {
+		$usersLinkedPrimaryUser: {
 			forward: {
-				on: 'cities',
-				has: 'one',
-				label: 'congregation',
-				required: true,
-				onDelete: 'cascade',
+				on: "$users",
+				has: "one",
+				label: "linkedPrimaryUser",
+				onDelete: "cascade"
 			},
 			reverse: {
-				on: 'congregations',
-				has: 'many',
-				label: 'cities',
+				on: "$users",
+				has: "many",
+				label: "linkedGuestUsers"
+			}
+		},
+		citiesCongregation: {
+			forward: {
+				on: "cities",
+				has: "one",
+				label: "congregation",
+				required: true,
+				onDelete: "cascade"
 			},
+			reverse: {
+				on: "congregations",
+				has: "many",
+				label: "cities"
+			}
 		},
 		districtsCity: {
 			forward: {
-				on: 'districts',
-				has: 'one',
-				label: 'city',
+				on: "districts",
+				has: "one",
+				label: "city",
 				required: true,
-				onDelete: 'cascade',
+				onDelete: "cascade"
 			},
 			reverse: {
-				on: 'cities',
-				has: 'many',
-				label: 'districts',
-			},
+				on: "cities",
+				has: "many",
+				label: "districts"
+			}
 		},
 		mapsAssigned: {
 			forward: {
-				on: 'maps',
-				has: 'one',
-				label: 'assigned',
+				on: "maps",
+				has: "one",
+				label: "assigned"
 			},
 			reverse: {
-				on: 'publishers',
-				has: 'many',
-				label: 'maps',
-			},
+				on: "publishers",
+				has: "many",
+				label: "maps"
+			}
 		},
 		mapsCity: {
 			forward: {
-				on: 'maps',
-				has: 'one',
-				label: 'city',
+				on: "maps",
+				has: "one",
+				label: "city",
 				required: true,
-				onDelete: 'cascade',
+				onDelete: "cascade"
 			},
 			reverse: {
-				on: 'cities',
-				has: 'many',
-				label: 'maps',
-			},
+				on: "cities",
+				has: "many",
+				label: "maps"
+			}
 		},
 		mapsCongregation: {
 			forward: {
-				on: 'maps',
-				has: 'one',
-				label: 'congregation',
+				on: "maps",
+				has: "one",
+				label: "congregation",
 				required: true,
-				onDelete: 'cascade',
+				onDelete: "cascade"
 			},
 			reverse: {
-				on: 'congregations',
-				has: 'many',
-				label: 'maps',
+				on: "congregations",
+				has: "many",
+				label: "maps"
+			}
+		},
+		mapsExtra_maps: {
+			forward: {
+				on: "maps",
+				has: "many",
+				label: "extra_maps"
 			},
+			reverse: {
+				on: "extra_maps",
+				has: "one",
+				label: "map",
+				onDelete: "cascade"
+			}
 		},
 		publishersCongregation: {
 			forward: {
-				on: 'publishers',
-				has: 'one',
-				label: 'congregation',
-				required: true,
-				onDelete: 'cascade',
+				on: "publishers",
+				has: "one",
+				label: "congregation",
+				onDelete: "cascade"
 			},
 			reverse: {
-				on: 'congregations',
-				has: 'many',
-				label: 'publishers',
-			},
+				on: "congregations",
+				has: "many",
+				label: "publishers"
+			}
 		},
 		publishersUser: {
 			forward: {
-				on: 'publishers',
-				has: 'one',
-				label: 'user',
+				on: "publishers",
+				has: "one",
+				label: "user",
 				required: true,
-				onDelete: 'cascade',
+				onDelete: "cascade"
 			},
 			reverse: {
-				on: '$users',
-				has: 'one',
-				label: 'publisher',
-			},
+				on: "$users",
+				has: "one",
+				label: "publisher"
+			}
 		},
+		subscriptionsCongregation: {
+			forward: {
+				on: "subscriptions",
+				has: "one",
+				label: "congregation",
+				required: true,
+				onDelete: "cascade"
+			},
+			reverse: {
+				on: "congregations",
+				has: "one",
+				label: "subscription"
+			}
+		},
+		subscriptionsUser: {
+			forward: {
+				on: "subscriptions",
+				has: "one",
+				label: "user"
+			},
+			reverse: {
+				on: "$users",
+				has: "one",
+				label: "subscription"
+			}
+		}
 	},
-	rooms: {},
-})
+	rooms: {}
+});
 
-// This helps Typescript display nicer intellisense
-type _AppSchema = typeof _schema
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// This helps TypeScript display nicer intellisense
+type _AppSchema = typeof _schema;
 interface AppSchema extends _AppSchema { }
-const schema: AppSchema = _schema
+const schema: AppSchema = _schema;
 
-export type { AppSchema }
-export default schema
+export type { AppSchema };
+export default schema;
