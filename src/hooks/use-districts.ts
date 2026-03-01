@@ -21,7 +21,7 @@ const useDistricts = ({ cityId, search, enabled = true }: Props = {}) => {
 	}
 
 	if (search) {
-		whereConditions.name = { $like: `%${search}%` }
+		whereConditions.name = { $ilike: `%${search}%` }
 	}
 
 	const { data, isLoading, error } = db.useQuery(

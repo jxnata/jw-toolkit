@@ -17,9 +17,9 @@ const useAllMaps = ({ search, enabled = true }: Props = {}) => {
 
 	if (search) {
 		whereConditions.or = [
-			{ name: { $like: `%${search}%` } },
-			{ district: { $like: `%${search}%` } },
-			{ address: { $like: `%${search}%` } },
+			{ name: { $ilike: `%${search}%` } },
+			{ district: { $ilike: `%${search}%` } },
+			{ address: { $ilike: `%${search}%` } },
 		]
 	}
 

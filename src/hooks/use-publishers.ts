@@ -17,7 +17,7 @@ const usePublishers = ({ search }: Props = { search: '' }) => {
 								approved: true,
 								congregation: congregation.id,
 								...(search && {
-									name: { $like: `%${search}%` },
+									name: { $ilike: `%${search}%` },
 								}),
 							},
 							order: { name: 'asc' },
