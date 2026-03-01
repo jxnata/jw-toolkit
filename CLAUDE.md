@@ -9,14 +9,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm start          # Start Expo dev server
-pnpm run ios        # Run on iOS simulator
-pnpm run android    # Run on Android emulator
-pnpm run web        # Run web version
-pnpm run lint       # Run ESLint
-pnpm run lint-fix   # Fix linting issues
-pnpm run format     # Format with Prettier
-pnpm run ts:check   # TypeScript type checking
+bun start           # Start Expo dev server
+bun ios             # Run on iOS simulator
+bun android         # Run on Android emulator
+bun web             # Run web version
+bun lint            # Run ESLint
+bun lint-fix        # Fix linting issues
+bun format          # Format with Prettier
+bun run ts:check    # TypeScript type checking
 ```
 
 No test suite is configured in this project.
