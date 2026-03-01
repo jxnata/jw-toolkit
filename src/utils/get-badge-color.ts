@@ -6,5 +6,7 @@ export const getBadgeColor = (tag: string) => {
 			return 'bg-border'
 		case 'nao-visitar':
 			return 'bg-danger-500'
+		default:
+			return 'bg-border'
 	}
 }

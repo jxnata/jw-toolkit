@@ -13,6 +13,8 @@ import { firstName } from '@/utils/first-name'
 import { getBadgeColor } from '@/utils/get-badge-color'
 
 const screenWidth = Dimensions.get('screen').width
+// horizontal padding (10+10) + gap (10) + thumbnail (80) + badge margin (20)
+const TEXT_MAX_WIDTH = screenWidth - 130
 
 interface MapProps {
 	map: Map
@@ -63,14 +65,14 @@ const MapItem = ({ map, location, onPress, extraMapsCount }: MapProps) => {
 			</View>
 
 			<View className="flex-1 flex-col gap-1">
-				<Text className="flex-wrap font-medium text-foreground" style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}>
+				<Text className="flex-wrap font-medium text-foreground" style={{ maxWidth: TEXT_MAX_WIDTH }}>
 					{map.city.name} - {map.name}
 				</Text>
 				<Text
 					numberOfLines={2}
 					ellipsizeMode="tail"
 					className="flex-wrap font-medium text-foreground"
-					style={{ maxWidth: screenWidth - 10 - 10 - 10 - 80 - 20 }}>
+					style={{ maxWidth: TEXT_MAX_WIDTH }}>
 					{map.address}
 				</Text>
 				{!!map.visited ? (

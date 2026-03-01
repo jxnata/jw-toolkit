@@ -18,6 +18,8 @@ export interface CreateMapInput {
 	tag?: string
 }
 
+const UNASSIGN_BATCH_LIMIT = 25
+
 class MapsService {
 	async createMap(input: CreateMapInput): Promise<string> {
 		const mapId = id()
@@ -62,8 +64,6 @@ class MapsService {
 	}
 
 	async unassignAllMaps(congregationId: string): Promise<void> {
-		const batchLimit = 25
-
 		const { data } = await db.queryOnce({
 			maps: {
 				$: {
@@ -84,8 +84,8 @@ class MapsService {
 
 		const batches = []
 
-		for (let i = 0; i < assignedMaps.length; i += batchLimit) {
-			const batch = assignedMaps.slice(i, i + batchLimit).map((map) => {
+		for (let i = 0; i < assignedMaps.length; i += UNASSIGN_BATCH_LIMIT) {
+			const batch = assignedMaps.slice(i, i + UNASSIGN_BATCH_LIMIT).map((map) => {
 				return db.tx.maps[map.id].unlink({ assigned: map.assigned!.id })
 			})
 			batches.push(batch)
