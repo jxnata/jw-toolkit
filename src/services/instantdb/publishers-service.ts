@@ -11,7 +11,8 @@ export interface CreatePublisherInput {
 }
 
 class PublishersService {
-	async createPublisher(input: CreatePublisherInput): Promise<void> {
+	async createPublisher(input: CreatePublisherInput): Promise<string> {
+		const publisherId = id()
 		const publisherData = {
 			name: input.name,
 			level: input.level,
@@ -26,7 +27,8 @@ class PublishersService {
 			links.congregation = input.congregationId
 		}
 
-		await db.transact(db.tx.publishers[id()].update(publisherData).link(links))
+		await db.transact(db.tx.publishers[publisherId].update(publisherData).link(links))
+		return publisherId
 	}
 
 	async updatePublisher(publisherId: string, updates: Partial<Publisher>, links?: Record<string, string>): Promise<void> {

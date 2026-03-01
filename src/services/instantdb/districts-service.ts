@@ -8,12 +8,14 @@ export interface CreateDistrictInput {
 }
 
 class DistrictsService {
-	async createDistrict(input: CreateDistrictInput): Promise<void> {
+	async createDistrict(input: CreateDistrictInput): Promise<string> {
+		const districtId = id()
 		const districtData = {
 			name: input.name,
 		}
 
-		await db.transact(db.tx.districts[id()].update(districtData).link({ city: input.cityId }))
+		await db.transact(db.tx.districts[districtId].update(districtData).link({ city: input.cityId }))
+		return districtId
 	}
 
 	async updateDistrict(districtId: string, updates: Partial<District>): Promise<void> {

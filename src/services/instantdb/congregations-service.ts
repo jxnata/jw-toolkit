@@ -8,13 +8,15 @@ export interface CreateCongregationInput {
 }
 
 class CongregationsService {
-	async createCongregation(input: CreateCongregationInput): Promise<void> {
+	async createCongregation(input: CreateCongregationInput): Promise<string> {
+		const congregationId = id()
 		const congregationData: Omit<Congregation, 'id'> = {
 			name: input.name,
 			enabled: input.enabled,
 		}
 
-		await db.transact(db.tx.congregations[id()].update(congregationData))
+		await db.transact(db.tx.congregations[congregationId].update(congregationData))
+		return congregationId
 	}
 
 	async updateCongregation(congregationId: string, updates: Partial<Congregation>): Promise<void> {

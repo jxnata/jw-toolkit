@@ -8,12 +8,14 @@ export interface CreateCityInput {
 }
 
 class CitiesService {
-	async createCity(input: CreateCityInput): Promise<void> {
+	async createCity(input: CreateCityInput): Promise<string> {
+		const cityId = id()
 		const cityData = {
 			name: input.name,
 		}
 
-		await db.transact(db.tx.cities[id()].update(cityData).link({ congregation: input.congregationId }))
+		await db.transact(db.tx.cities[cityId].update(cityData).link({ congregation: input.congregationId }))
+		return cityId
 	}
 
 	async updateCity(cityId: string, updates: Partial<City>): Promise<void> {
