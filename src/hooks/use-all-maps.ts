@@ -42,7 +42,6 @@ const useAllMaps = ({ search, enabled = true }: Props = {}) => {
 		maps: data?.maps || [],
 		loading: isLoading,
 		error,
-		mutate: () => {},
 	}
 }
 

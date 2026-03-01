@@ -7,16 +7,6 @@ export interface CreateCityInput {
 	congregationId: string
 }
 
-export interface CityResponse {
-	data: City | null
-	error: string | null
-}
-
-export interface CitiesResponse {
-	data: City[] | null
-	error: string | null
-}
-
 class CitiesService {
 	async createCity(input: CreateCityInput): Promise<void> {
 		const cityData = {

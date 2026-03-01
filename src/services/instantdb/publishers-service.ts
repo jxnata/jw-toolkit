@@ -10,16 +10,6 @@ export interface CreatePublisherInput {
 	userId: string
 }
 
-export interface PublisherResponse {
-	data: Publisher | null
-	error: string | null
-}
-
-export interface PublishersResponse {
-	data: Publisher[] | null
-	error: string | null
-}
-
 class PublishersService {
 	async createPublisher(input: CreatePublisherInput): Promise<void> {
 		const publisherData = {

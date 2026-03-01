@@ -41,7 +41,6 @@ const useDistricts = ({ cityId, search, enabled = true }: Props = {}) => {
 		districts: data?.districts || [],
 		loading: isLoading,
 		error,
-		mutate: () => {},
 	}
 }
 

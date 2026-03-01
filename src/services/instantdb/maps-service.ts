@@ -18,16 +18,6 @@ export interface CreateMapInput {
 	tag?: string
 }
 
-export interface MapResponse {
-	data: Map | null
-	error: string | null
-}
-
-export interface MapsResponse {
-	data: Map[] | null
-	error: string | null
-}
-
 class MapsService {
 	async createMap(input: CreateMapInput): Promise<string> {
 		const mapId = id()

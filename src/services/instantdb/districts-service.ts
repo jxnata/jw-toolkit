@@ -7,16 +7,6 @@ export interface CreateDistrictInput {
 	cityId: string
 }
 
-export interface DistrictResponse {
-	data: District | null
-	error: string | null
-}
-
-export interface DistrictsResponse {
-	data: District[] | null
-	error: string | null
-}
-
 class DistrictsService {
 	async createDistrict(input: CreateDistrictInput): Promise<void> {
 		const districtData = {

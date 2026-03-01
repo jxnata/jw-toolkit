@@ -81,10 +81,6 @@ const useMaps = (
 		maps: (data?.maps as Map[]) || [],
 		loading: isLoading,
 		error,
-		mutate: () => { },
-		loadMore: () => { },
-		loadingMore: false,
-		hasMore: false,
 		total: data?.maps?.length || 0,
 		queryKey: ['maps', search, city, district, status, congregation],
 	}

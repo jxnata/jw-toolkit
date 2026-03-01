@@ -7,16 +7,6 @@ export interface CreateCongregationInput {
 	enabled?: boolean
 }
 
-export interface CongregationResponse {
-	data: Congregation | null
-	error: string | null
-}
-
-export interface CongregationsResponse {
-	data: Congregation[] | null
-	error: string | null
-}
-
 class CongregationsService {
 	async createCongregation(input: CreateCongregationInput): Promise<void> {
 		const congregationData: Omit<Congregation, 'id'> = {
