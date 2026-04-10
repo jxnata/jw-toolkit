@@ -1,5 +1,6 @@
 import Dropdown from '@/components/dropdown'
 import Input from '@/components/input'
+import MapGroupItem from '@/components/map-group-item'
 import MapItem from '@/components/map-item'
 import useCities from '@/hooks/use-cities'
 import { useLocation } from '@/hooks/use-location'
@@ -26,7 +27,7 @@ const Maps = () => {
 
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
 
-	const { maps } = useMaps({
+	const { grouped } = useMaps({
 		search: debouncedSearchTerm,
 		city: searchCity,
 		status,
@@ -164,8 +165,8 @@ const Maps = () => {
 				<View className="flex-1">
 					<FlatList
 						ListFooterComponent={<View className="h-14" />}
-						data={maps}
-						keyExtractor={(item) => item.id}
+						data={grouped}
+						keyExtractor={(item) => item.group_code}
 						showsVerticalScrollIndicator={false}
 						keyboardDismissMode="none"
 						ListEmptyComponent={
@@ -173,22 +174,30 @@ const Maps = () => {
 								<Text className="font-regular text-foreground opacity-80">Nenhum mapa encontrado</Text>
 							</View>
 						}
-						renderItem={({ item }) => (
-							<MapItem
-								key={item.id}
-								map={item}
-								location={location}
-								selectionMode={selectionMode}
-								selected={selectedIds.includes(item.id)}
-								onToggleSelect={toggleSelect}
-								onPress={() =>
-									router.push({
-										pathname: `/admin/maps/${item.id}`,
-										params: { data: JSON.stringify(item) },
-									})
-								}
-							/>
-						)}
+						renderItem={({ item }) =>
+							item.maps.length > 1 ? (
+								<MapGroupItem
+									group={item}
+									location={location}
+									onPress={() => router.push(`/admin/maps/group/${item.group_code}`)}
+								/>
+							) : (
+								<MapItem
+									key={item.maps[0].id}
+									map={item.maps[0]}
+									location={location}
+									selectionMode={selectionMode}
+									selected={selectedIds.includes(item.maps[0].id)}
+									onToggleSelect={toggleSelect}
+									onPress={() =>
+										router.push({
+											pathname: `/admin/maps/${item.maps[0].id}`,
+											params: { data: JSON.stringify(item.maps[0]) },
+										})
+									}
+								/>
+							)
+						}
 					/>
 				</View>
 			</View>
