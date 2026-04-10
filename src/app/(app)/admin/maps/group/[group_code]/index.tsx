@@ -15,6 +15,7 @@ import { Minus, PlusCircle } from 'lucide-react-native'
 import { useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 const GroupDetail = () => {
 	const { group_code } = useLocalSearchParams<{ group_code: string }>()
@@ -54,6 +55,8 @@ const GroupDetail = () => {
 	)
 
 	const ungroupedMaps = (ungroupedData?.maps as Map[]) || []
+	const assignedMaps = maps.filter((m) => !!m.assigned)
+	const hasAssigned = assignedMaps.length > 0
 
 	const handleRemove = async (mapId: string) => {
 		try {
@@ -65,6 +68,29 @@ const GroupDetail = () => {
 			}
 		} catch {
 			Alert.alert('Erro', 'Não foi possível remover o mapa do grupo.')
+		}
+	}
+
+	const handleUnassign = async () => {
+		try {
+			if (!assignedMaps.length) return
+			const assignedMapsData = assignedMaps.map((m) => ({ id: m.id, assigned: m.assigned!.id }))
+
+			await mapsService.unassignMaps(assignedMapsData)
+
+			reset()
+
+			Toast.show({
+				type: 'success',
+				text1: 'Sucesso',
+				text2: 'Designações removidas com sucesso',
+			})
+		} catch {
+			Toast.show({
+				type: 'error',
+				text1: 'Erro',
+				text2: 'Não foi possível remover as designações.',
+			})
 		}
 	}
 
@@ -126,7 +152,8 @@ const GroupDetail = () => {
 					headerLeft: editMode ? HeaderLeft : undefined,
 				}}
 			/>
-			<View className="flex-1 bg-background px-4 pt-4">
+			<View className="flex-1 bg-background pt-4">
+				<Text className="px-4 pb-4 pt-2 font-bold text-primary">Mapas do grupo {group_code.toUpperCase()}:</Text>
 				<FlatList
 					ListFooterComponent={<View className="h-4" />}
 					data={maps}
@@ -154,7 +181,7 @@ const GroupDetail = () => {
 							{editMode && (
 								<TouchableOpacity
 									onPress={() => handleRemove(item.id)}
-									className="mb-2 rounded-full p-2"
+									className="mb-2 mr-2 rounded-full p-2"
 									style={{ backgroundColor: colors.danger[500] + '20' }}>
 									<Minus size={18} color={colors.danger[500]} />
 								</TouchableOpacity>
@@ -163,8 +190,8 @@ const GroupDetail = () => {
 					)}
 				/>
 			</View>
-			<View className="bg-background px-4 pb-8 pt-2">
-				<Text className="py-2 font-medium text-sm text-foreground">Designar mapas</Text>
+			<View className="rounded-t-2xl bg-card px-4 pb-8 pt-4">
+				<Text className="py-2 font-medium text-foreground">Designar para:</Text>
 				<Controller
 					control={control}
 					rules={{ required: true }}
@@ -178,10 +205,22 @@ const GroupDetail = () => {
 						/>
 					)}
 				/>
-				<View className="mt-2">
-					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(assign)}>
-						Designar
-					</Button>
+				<View className="mt-2 flex-row gap-2">
+					<View className="flex-1">
+						<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(assign)}>
+							Designar
+						</Button>
+					</View>
+					{hasAssigned && (
+						<View className="flex-1">
+							<TouchableOpacity
+								activeOpacity={0.8}
+								onPress={() => handleUnassign()}
+								className="h-14 items-center justify-center rounded-xl border border-danger-500 bg-card">
+								<Text className="font-medium text-foreground">Remover designações</Text>
+							</TouchableOpacity>
+						</View>
+					)}
 				</View>
 			</View>
 

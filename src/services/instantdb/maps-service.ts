@@ -67,6 +67,10 @@ class MapsService {
 		await db.transact(db.tx.maps[mapId].unlink({ assigned: publisherId }))
 	}
 
+	async unassignMaps(maps: { id: string; assigned: string }[]): Promise<void> {
+		await db.transact(maps.map((map) => db.tx.maps[map.id].unlink({ assigned: map.assigned })))
+	}
+
 	async unassignAllMaps(congregationId: string): Promise<void> {
 		const { data } = await db.queryOnce({
 			maps: {
@@ -120,7 +124,7 @@ class MapsService {
 	}
 
 	async removeFromGroup(mapId: string): Promise<void> {
-		await db.transact(db.tx.maps[mapId].update({ group_code: undefined }))
+		await db.transact(db.tx.maps[mapId].update({ group_code: null }))
 	}
 
 	async dissolveGroup(groupCode: string): Promise<void> {
@@ -135,7 +139,7 @@ class MapsService {
 		const maps = data.maps || []
 		if (maps.length === 0) return
 
-		await db.transact(maps.map((map) => db.tx.maps[map.id].update({ group_code: undefined })))
+		await db.transact(maps.map((map) => db.tx.maps[map.id].update({ group_code: null })))
 	}
 }
 
