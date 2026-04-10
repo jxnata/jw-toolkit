@@ -22,9 +22,12 @@ interface MapProps {
 	map: Map
 	location: LocationObjectCoords | null
 	onPress: () => void
+	selectionMode?: boolean
+	selected?: boolean
+	onToggleSelect?: (id: string) => void
 }
 
-const MapItem = ({ map, location, onPress }: MapProps) => {
+const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSelect }: MapProps) => {
 	const { colors } = useThemedColors()
 	const { current } = useSession()
 	const { hasAnnotation, annotation } = usePersonalAnnotations(map.id, current!.id)
@@ -47,9 +50,25 @@ const MapItem = ({ map, location, onPress }: MapProps) => {
 		return false
 	}, [map])
 
+	const handlePress = () => {
+		if (selectionMode && !map.group_code) {
+			onToggleSelect?.(map.id)
+		} else if (!selectionMode) {
+			onPress()
+		}
+	}
+
 	return (
-		<TouchableOpacity activeOpacity={0.8} onPress={onPress} className="mb-2">
+		<TouchableOpacity activeOpacity={0.8} onPress={handlePress} className="mb-2">
 			<View className="flex w-full flex-row gap-2.5 rounded-xl border border-border bg-card p-2.5">
+				{selectionMode && !map.group_code && (
+					<View className="justify-center pr-1">
+						<View
+							className={`h-5 w-5 rounded-full border-2 items-center justify-center ${selected ? 'border-primary bg-primary' : 'border-border bg-transparent'}`}>
+							{selected && <View className="h-2 w-2 rounded-full bg-white" />}
+						</View>
+					</View>
+				)}
 				{map.assigned ? (
 					<View
 						className="absolute bottom-2 right-2 z-10 rounded-[5px] px-[5px] py-0.5"

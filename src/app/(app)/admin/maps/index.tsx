@@ -5,10 +5,12 @@ import useCities from '@/hooks/use-cities'
 import { useLocation } from '@/hooks/use-location'
 import useMaps from '@/hooks/use-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { mapsService } from '@/services/instantdb/maps-service'
+import { toHex } from '@/utils/to-hex'
 import { Stack, useRouter } from 'expo-router'
 import { Funnel, PlusCircle } from 'lucide-react-native'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated'
 import { useDebounce } from 'use-debounce'
 
@@ -18,6 +20,8 @@ const Maps = () => {
 	const [searchCity, setSearchCity] = useState('')
 	const [status, setStatus] = useState<'assigned' | 'unassigned' | 'no-visit' | ''>('')
 	const [showFilter, setFilter] = useState(true)
+	const [selectionMode, setSelectionMode] = useState(false)
+	const [selectedIds, setSelectedIds] = useState<string[]>([])
 	const { colors } = useThemedColors()
 
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
@@ -40,18 +44,69 @@ const Maps = () => {
 		}
 	}, [cities, searchCity])
 
+	const enterSelectionMode = useCallback(() => {
+		setSelectionMode(true)
+		setSelectedIds([])
+	}, [])
+
+	const exitSelectionMode = useCallback(() => {
+		setSelectionMode(false)
+		setSelectedIds([])
+	}, [])
+
+	const toggleSelect = useCallback((id: string) => {
+		setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]))
+	}, [])
+
+	const handleGroup = useCallback(async () => {
+		if (selectedIds.length < 2) return
+		const groupCode = toHex(Date.now() + '' + Math.random())
+		try {
+			await mapsService.setGroupCode(selectedIds, groupCode)
+			exitSelectionMode()
+		} catch {
+			Alert.alert('Erro', 'Não foi possível agrupar os mapas.')
+		}
+	}, [selectedIds, exitSelectionMode])
+
 	const HeaderRight = useCallback(
-		() => (
-			<View className="flex-row">
-				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
-					<PlusCircle size={24} color={colors.foreground} />
+		() =>
+			selectionMode ? (
+				<TouchableOpacity onPress={handleGroup} className="mx-2" disabled={selectedIds.length < 2}>
+					<Text
+						className="font-semibold text-base"
+						style={{ color: selectedIds.length >= 2 ? colors.foreground : colors.foreground + '40' }}>
+						Agrupar
+					</Text>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={toggleFilter} className="mx-2">
-					<Funnel size={24} color={colors.foreground} />
+			) : (
+				<View className="flex-row">
+					<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
+						<PlusCircle size={24} color={colors.foreground} />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={toggleFilter} className="mx-2">
+						<Funnel size={24} color={colors.foreground} />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={enterSelectionMode} className="mx-2">
+						<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
+							Selecionar
+						</Text>
+					</TouchableOpacity>
+				</View>
+			),
+		[router, colors.foreground, selectionMode, selectedIds.length, handleGroup, enterSelectionMode]
+	)
+
+	const HeaderLeft = useCallback(
+		() =>
+			selectionMode ? (
+				<TouchableOpacity onPress={exitSelectionMode} className="mx-2">
+					<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
+						Cancelar
+					</Text>
 				</TouchableOpacity>
-			</View>
-		),
-		[router, colors.foreground]
+			) : null,
+		[selectionMode, exitSelectionMode, colors.foreground]
 	)
 
 	const filterCity = (city: string) => {
@@ -65,9 +120,15 @@ const Maps = () => {
 
 	return (
 		<View className="flex-1">
-			<Stack.Screen options={{ title: 'Mapas', headerRight: HeaderRight }} />
+			<Stack.Screen
+				options={{
+					title: 'Mapas',
+					headerRight: HeaderRight,
+					headerLeft: selectionMode ? HeaderLeft : undefined,
+				}}
+			/>
 			<View className="h-full w-full bg-background p-4">
-				{showFilter && (
+				{showFilter && !selectionMode && (
 					<Animated.View entering={SlideInUp} exiting={SlideOutUp}>
 						<Input
 							autoCorrect={false}
@@ -117,6 +178,9 @@ const Maps = () => {
 								key={item.id}
 								map={item}
 								location={location}
+								selectionMode={selectionMode}
+								selected={selectedIds.includes(item.id)}
+								onToggleSelect={toggleSelect}
 								onPress={() =>
 									router.push({
 										pathname: `/admin/maps/${item.id}`,
