@@ -50,8 +50,8 @@
 			"id": 6,
 			"title": "Admin group detail screen",
 			"file": "tasks/6.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["e584082"],
 			"pull_request": null
 		},
 		{
