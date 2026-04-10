@@ -1,6 +1,8 @@
 import { useSession } from '@/contexts/session-provider'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
+import { groupMaps, MapGroup } from '@/utils/group-maps'
+import { useMemo } from 'react'
 
 type Props = {
 	enabled?: boolean
@@ -30,8 +32,12 @@ const useMyAssignments = ({ enabled = true }: Props = {}) => {
 			: null
 	)
 
+	const assignments = useMemo<Map[]>(() => (data?.maps as Map[]) || [], [data?.maps])
+	const grouped = useMemo<MapGroup[]>(() => groupMaps(assignments), [assignments])
+
 	return {
-		assignments: (data?.maps as Map[]) || [],
+		assignments,
+		grouped,
 		loading: isLoading,
 		error,
 		mutate: () => {},

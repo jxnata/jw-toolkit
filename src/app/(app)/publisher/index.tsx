@@ -1,9 +1,11 @@
 import AssignmentItem from '@/components/assignment-item'
+import MapGroupItem from '@/components/map-group-item'
 import SkeletonItem from '@/components/skeleton-item'
 import { storage } from '@/database/index'
 import { useLocation } from '@/hooks/use-location'
 import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { MapGroup } from '@/utils/group-maps'
 import { Redirect, Stack, useRouter } from 'expo-router'
 import { Map, UserCircle2 } from 'lucide-react-native'
 import { useCallback, useEffect, useState } from 'react'
@@ -13,7 +15,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated'
 const PublisherHome = () => {
 	const router = useRouter()
 	const { location } = useLocation()
-	const { assignments, loading, mutate } = useMyAssignments()
+	const { grouped, loading, mutate } = useMyAssignments()
 	const { colors } = useThemedColors()
 	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
 
@@ -44,7 +46,7 @@ const PublisherHome = () => {
 		<Animated.View className="flex" entering={FadeInDown}>
 			<Stack.Screen options={{ title: 'Minhas designações', headerRight: HeaderRight }} />
 			<View className="flex h-full w-full bg-background p-3">
-				{loading && !assignments.length ? (
+				{loading && !grouped.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}
 						keyExtractor={(item) => String(item)}
@@ -52,23 +54,39 @@ const PublisherHome = () => {
 					/>
 				) : (
 					<FlatList
-						data={assignments}
-						keyExtractor={(item) => item.id}
+						data={grouped}
+						keyExtractor={(item) => item.group_code}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
-						renderItem={({ item: assignment }) => (
-							<AssignmentItem
-								key={assignment.id}
-								map={assignment}
-								location={location}
-								hidePublisher
-								onPress={() =>
-									router.push({
-										pathname: `/publisher/assignment/${assignment.id}`,
-										params: { data: JSON.stringify({ ...assignment }) },
-									})
-								}
-							/>
-						)}
+						renderItem={({ item: group }: { item: MapGroup }) => {
+							if (group.maps.length > 1) {
+								return (
+									<MapGroupItem
+										group={group}
+										location={location}
+										onPress={() =>
+											router.push({
+												pathname: `/publisher/assignment/group/${group.group_code}`,
+											})
+										}
+									/>
+								)
+							}
+							const assignment = group.maps[0]
+							return (
+								<AssignmentItem
+									key={assignment.id}
+									map={assignment}
+									location={location}
+									hidePublisher
+									onPress={() =>
+										router.push({
+											pathname: `/publisher/assignment/${assignment.id}`,
+											params: { data: JSON.stringify({ ...assignment }) },
+										})
+									}
+								/>
+							)
+						}}
 						ListEmptyComponent={
 							<View className="flex flex-col items-center justify-center gap-3 pt-8">
 								<Map size={48} color={colors.border} strokeWidth={1.5} />
