@@ -9,11 +9,12 @@ interface ThemeProviderProps {
 export const ThemeContext = createContext<{ theme: 'light' | 'dark' }>({ theme: 'dark' })
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-	const scheme = useColorScheme()
+	const _scheme = useColorScheme()
+	const scheme: 'light' | 'dark' = _scheme === 'dark' ? 'dark' : 'light'
 
 	return (
-		<ThemeContext.Provider value={{ theme: scheme || 'dark' }}>
-			<View style={themes[scheme || 'dark']} className="flex-1">
+		<ThemeContext.Provider value={{ theme: scheme }}>
+			<View style={themes[scheme]} className="flex-1">
 				{children}
 			</View>
 		</ThemeContext.Provider>

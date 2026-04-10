@@ -76,7 +76,8 @@
 			]
 		],
 		"experiments": {
-			"tsconfigPaths": true
+			"tsconfigPaths": true,
+			"reactCompiler": true
 		},
 		"extra": {
 			"router": {

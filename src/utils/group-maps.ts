@@ -1,12 +1,12 @@
-import { Map } from '@/interfaces'
+import { Map as MapInterface } from '@/interfaces'
 
 export type MapGroup = {
 	group_code: string
-	maps: Map[]
+	maps: MapInterface[]
 }
 
-export function groupMaps(maps: Map[]): MapGroup[] {
-	const grouped = new Map<string, Map[]>()
+export function groupMaps(maps: MapInterface[]): MapGroup[] {
+	const grouped = new Map<string, MapInterface[]>()
 
 	for (const map of maps) {
 		const key = map.group_code ?? map.id

@@ -17,7 +17,7 @@ describe('getLocationDistance', () => {
 	})
 
 	it('returns undefined when to array is short', () => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		 
 		expect(getLocationDistance(makeCoords(0, 0), [1] as any)).toBeUndefined()
 	})
 
