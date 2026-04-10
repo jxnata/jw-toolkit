@@ -9,10 +9,10 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { mapsService } from '@/services/instantdb/maps-service'
 import { toHex } from '@/utils/to-hex'
 import { Stack, useRouter } from 'expo-router'
-import { FilterIcon, PinIcon, PlusCircle, Search } from 'lucide-react-native'
+import { FilterIcon, ListChecks, PinIcon, PlusCircle, Search, SearchX, Settings2 } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
 import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
-import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated'
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { useDebounce } from 'use-debounce'
 
 const Maps = () => {
@@ -80,6 +80,10 @@ const Maps = () => {
 		}
 	}
 
+	const handleOptions = () => {
+		router.push('/admin/maps/options')
+	}
+
 	const HeaderRight = () =>
 		selectionMode ? (
 			<TouchableOpacity onPress={handleGroup} className="mx-2" disabled={selectedIds.length < 2}>
@@ -94,13 +98,11 @@ const Maps = () => {
 				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
 					<PlusCircle size={24} color={colors.foreground} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={toggleFilter} className="mx-2">
-					<Search size={24} color={colors.foreground} />
-				</TouchableOpacity>
 				<TouchableOpacity onPress={enterSelectionMode} className="mx-2">
-					<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
-						Selecionar
-					</Text>
+					<ListChecks size={24} color={colors.foreground} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={handleOptions} className="mx-2">
+					<Settings2 size={24} color={colors.foreground} />
 				</TouchableOpacity>
 			</View>
 		)
@@ -121,6 +123,9 @@ const Maps = () => {
 
 	const toggleFilter = () => {
 		setFilter((old) => !old)
+		if (searchInput) {
+			setSearchInput('')
+		}
 	}
 
 	return (
@@ -133,34 +138,50 @@ const Maps = () => {
 				}}
 			/>
 			<View className="h-full w-full bg-background">
-				<View className="flex-row gap-4 px-4 py-2">
-					<Dropdown
-						placeholder="Todos"
-						options={statusList}
-						selectedValue={status}
-						onValueChange={setStatus}
-						TriggerComponent={
-							<View className="flex-row items-center gap-1">
-								<FilterIcon size={16} color={colors.primary[600]} fill={colors.primary[600]} />
-								<Text className="font-bold text-lg text-primary underline">{selectedStatus}</Text>
-							</View>
-						}
-					/>
-					<Dropdown
-						placeholder="Cidade"
-						options={citiesList}
-						selectedValue={searchCity}
-						onValueChange={filterCity}
-						TriggerComponent={
-							<View className="flex-row items-center gap-1">
-								<PinIcon size={16} color={colors.primary[600]} fill={colors.primary[600]} />
-								<Text className="font-bold text-lg text-primary underline">{selectedCity}</Text>
-							</View>
-						}
-					/>
-				</View>
+				{!selectionMode ? (
+					<View className="flex-row items-center justify-between px-4 py-2">
+						<View className="flex-row gap-4">
+							<Dropdown
+								placeholder="Todos"
+								options={statusList}
+								selectedValue={status}
+								onValueChange={setStatus}
+								TriggerComponent={
+									<View className="flex-row items-center gap-1">
+										<FilterIcon size={16} color={colors.primary[600]} fill={colors.primary[600]} />
+										<Text className="font-bold text-lg text-primary underline">{selectedStatus}</Text>
+									</View>
+								}
+							/>
+							<Dropdown
+								placeholder="Cidade"
+								options={citiesList}
+								selectedValue={searchCity}
+								onValueChange={filterCity}
+								TriggerComponent={
+									<View className="flex-row items-center gap-1">
+										<PinIcon size={16} color={colors.primary[600]} fill={colors.primary[600]} />
+										<Text className="font-bold text-lg text-primary underline">{selectedCity}</Text>
+									</View>
+								}
+							/>
+						</View>
+						<TouchableOpacity onPress={toggleFilter} className="mb-2 flex-row items-center gap-1">
+							{showFilter ? (
+								<SearchX size={16} color={colors.primary[600]} />
+							) : (
+								<Search size={16} color={colors.primary[600]} />
+							)}
+							<Text className="font-bold text-lg text-primary underline">{showFilter ? 'Fechar' : 'Buscar'}</Text>
+						</TouchableOpacity>
+					</View>
+				) : (
+					<View className="flex-row items-center justify-between px-4 py-2">
+						<Text className="font-bold text-lg text-primary">Selecione os mapas para agrupar:</Text>
+					</View>
+				)}
 				{showFilter && !selectionMode && (
-					<Animated.View entering={SlideInUp} exiting={SlideOutUp} className={`px-4`}>
+					<Animated.View entering={FadeIn} exiting={FadeOut} className={`px-4`}>
 						<Input
 							autoCorrect={false}
 							placeholder="Buscar por nome ou bairro"
