@@ -19,8 +19,6 @@ export default function AdminLayout() {
 		<Stack screenOptions={screenOptions}>
 			<Stack.Screen name="index" />
 			<Stack.Screen name="me" options={{ presentation: 'modal' }} />
-			<Stack.Screen name="assignments/index" />
-			<Stack.Screen name="assignments/edit/[id]" />
 			<Stack.Screen name="cities/index" />
 			<Stack.Screen name="cities/add" />
 			<Stack.Screen name="cities/edit/[id]" />
@@ -35,7 +33,8 @@ export default function AdminLayout() {
 			<Stack.Screen name="my-assignments/finish" options={{ presentation: 'modal' }} />
 			<Stack.Screen name="maps/index" />
 			<Stack.Screen name="maps/add" />
-			<Stack.Screen name="maps/all/index" />
+			<Stack.Screen name="maps/options" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="maps/group/[group_code]/index" />
 			<Stack.Screen name="maps/[id]/index" />
 			<Stack.Screen name="maps/[id]/edit/index" />
 			<Stack.Screen name="export/index" />

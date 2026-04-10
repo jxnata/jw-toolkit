@@ -82,19 +82,7 @@ const Admin = () => {
 						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
 						<View className="flex flex-row items-center gap-3">
 							<Text className="font-icons text-4xl text-primary"></Text>
-							<Text className="font-semibold text-base text-foreground">Mapas</Text>
-						</View>
-						<View className="flex flex-row items-center gap-3"></View>
-					</TouchableOpacity>
-				</Link>
-
-				<Link href="/admin/assignments" asChild>
-					<TouchableOpacity
-						activeOpacity={0.7}
-						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
-						<View className="flex flex-row items-center gap-3">
-							<Text className="font-icons text-4xl text-primary"></Text>
-							<Text className="font-semibold text-base text-foreground">Designações</Text>
+							<Text className="font-semibold text-base text-foreground">Mapas & Designações</Text>
 						</View>
 						<View className="flex flex-row items-center gap-3"></View>
 					</TouchableOpacity>
