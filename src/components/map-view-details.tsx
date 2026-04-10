@@ -2,7 +2,6 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { formatDate } from '@/utils/date-format'
 import { mapImage } from '@/utils/map-image'
-import { useMemo } from 'react'
 import { Dimensions, Image, Text, View } from 'react-native'
 
 import { firstName } from '@/utils/first-name'
@@ -17,17 +16,7 @@ interface MapProps {
 const MapViewDetails = ({ map, showImage }: MapProps) => {
 	const { colors } = useThemedColors()
 
-	const found = useMemo(() => {
-		if (map) {
-			if (map.visited) {
-				if (map.found) {
-					return true
-				}
-			}
-		}
-
-		return false
-	}, [map])
+	const found = !!(map?.visited && map.found)
 
 	return (
 		<View className="mb-2 flex w-full flex-row gap-2 p-2">

@@ -1,6 +1,6 @@
 import { checkSubscription } from '@/lib/revenuecat'
 import { patchSubscription } from '@/utils/subscriptions'
-import React, { createContext, useCallback, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { useSession } from './session-provider'
 
 export const SubscriptionContext = createContext<{
@@ -21,7 +21,7 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(false)
 	const { type, current } = useSession()
 
-	const fetchSubscription = useCallback(async () => {
+	const fetchSubscription = async () => {
 		try {
 			if (!current) return
 
@@ -31,9 +31,9 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 		} catch (error) {
 			console.error(error)
 		}
-	}, [current])
+	}
 
-	const checkUserSubscription = useCallback(async () => {
+	const checkUserSubscription = async () => {
 		try {
 			if (!current) return
 			const isSubscribed = await checkSubscription()
@@ -41,7 +41,7 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 		} catch (error) {
 			console.error(error)
 		}
-	}, [current])
+	}
 
 	useEffect(() => {
 		if (!current) {
@@ -53,7 +53,7 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 
 		fetchSubscription()
 		checkUserSubscription()
-	}, [current, type, fetchSubscription, checkUserSubscription])
+	}, [current, type])
 
 	return (
 		<SubscriptionContext.Provider value={{ subscribed, checkSubscription: fetchSubscription, isUserSubscribed, expired }}>

@@ -15,7 +15,6 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Pencil, Trash } from 'lucide-react-native'
-import { useCallback, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
@@ -31,7 +30,7 @@ const ViewMap = () => {
 	})
 	const { colors } = useThemedColors()
 
-	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
+	const publisherList = publishers.map((p) => ({ label: p.name, value: p.id }))
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
 	const marker = getMarkerCoordinate(map ? [map.lat, map.lng] : [0, 0])
 
@@ -53,7 +52,7 @@ const ViewMap = () => {
 		}
 	}
 
-	const deleteMap = useCallback(async () => {
+	const deleteMap = async () => {
 		try {
 			await mapsService.deleteMap(params.id)
 
@@ -63,44 +62,38 @@ const ViewMap = () => {
 			removeError('maps')
 			console.error('Failed to delete map:', err)
 		}
-	}, [params.id])
+	}
 
-	const showDeleteAlert = useCallback(
-		() =>
-			Alert.alert('Excluir', 'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.', [
-				{
-					text: 'Cancelar',
-					style: 'cancel',
-				},
-				{
-					text: 'Sim, excluir',
-					onPress: () => deleteMap(),
-					style: 'default',
-				},
-			]),
-		[deleteMap]
-	)
+	const showDeleteAlert = () =>
+		Alert.alert('Excluir', 'Deseja excluir o mapa e todas as designações relacionadas? Essa opção não pode ser revertida.', [
+			{
+				text: 'Cancelar',
+				style: 'cancel',
+			},
+			{
+				text: 'Sim, excluir',
+				onPress: () => deleteMap(),
+				style: 'default',
+			},
+		])
 
-	const HeaderRight = useCallback(
-		() => (
-			<View className="flex-row">
-				<TouchableOpacity
-					onPress={() =>
-						router.replace({
-							pathname: `/admin/maps/${params.id}/edit`,
-							params: { data: JSON.stringify(map) },
-						})
-					}
-					disabled={!map}
-					className="mx-2">
-					<Pencil size={24} color={colors.foreground} />
-				</TouchableOpacity>
-				<TouchableOpacity onPress={showDeleteAlert} className="mx-2">
-					<Trash size={24} color={colors.foreground} />
-				</TouchableOpacity>
-			</View>
-		),
-		[map, showDeleteAlert, params.id, colors]
+	const HeaderRight = () => (
+		<View className="flex-row">
+			<TouchableOpacity
+				onPress={() =>
+					router.replace({
+						pathname: `/admin/maps/${params.id}/edit`,
+						params: { data: JSON.stringify(map) },
+					})
+				}
+				disabled={!map}
+				className="mx-2">
+				<Pencil size={24} color={colors.foreground} />
+			</TouchableOpacity>
+			<TouchableOpacity onPress={showDeleteAlert} className="mx-2">
+				<Trash size={24} color={colors.foreground} />
+			</TouchableOpacity>
+		</View>
 	)
 
 	return (
@@ -113,49 +106,59 @@ const ViewMap = () => {
 							<>
 								<MapViewDetails map={map} />
 								<PersonalAnnotation map={map} />
-								{!map.assigned ? (
-									<View>
-										<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>
-										<Controller
-											control={control}
-											rules={{ required: true }}
-											name="assigned"
-											render={({ field: { onChange, onBlur, value } }) => (
-												<Dropdown
-													placeholder="Selecione um publicador..."
-													options={publisherList}
-													selectedValue={value}
-													onValueChange={onChange}
-													disabled={map.tag === 'nao-visitar'}
+								{!map.group_code ? (
+									<>
+										{!map.assigned ? (
+											<View>
+												<Text className="py-2 font-medium text-sm text-foreground">Designar mapa</Text>
+												<Controller
+													control={control}
+													rules={{ required: true }}
+													name="assigned"
+													render={({ field: { onChange, onBlur, value } }) => (
+														<Dropdown
+															placeholder="Selecione um publicador..."
+															options={publisherList}
+															selectedValue={value}
+															onValueChange={onChange}
+															disabled={map.tag === 'nao-visitar'}
+														/>
+													)}
 												/>
-											)}
-										/>
-										{map.tag === 'nao-visitar' && (
-											<Text className="py-2 font-medium text-danger-500">
-												Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
-											</Text>
+												{map.tag === 'nao-visitar' && (
+													<Text className="py-2 font-medium text-danger-500">
+														Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
+													</Text>
+												)}
+												<View className="mt-2">
+													{formState.isValid && (
+														<Button
+															disabled={!formState.isValid}
+															loading={formState.isSubmitting}
+															onPress={handleSubmit(save)}>
+															Designar
+														</Button>
+													)}
+												</View>
+											</View>
+										) : (
+											<View className="ml-2 mt-2 flex-row items-baseline">
+												<View>
+													<Text className="font-medium text-sm text-foreground">Designado para:</Text>
+												</View>
+												<View className="ml-2.5">
+													{typeof map.assigned === 'object' && (
+														<Text className="font-medium text-[15px] text-foreground">{map.assigned.name}</Text>
+													)}
+												</View>
+											</View>
 										)}
-										<View className="mt-2">
-											{formState.isValid && (
-												<Button
-													disabled={!formState.isValid}
-													loading={formState.isSubmitting}
-													onPress={handleSubmit(save)}>
-													Designar
-												</Button>
-											)}
-										</View>
-									</View>
+									</>
 								) : (
-									<View className="ml-2 mt-2 flex-row items-baseline">
-										<View>
-											<Text className="font-medium text-sm text-foreground">Designado para:</Text>
-										</View>
-										<View className="ml-2.5">
-											{typeof map.assigned === 'object' && (
-												<Text className="font-medium text-[15px] text-foreground">{map.assigned.name}</Text>
-											)}
-										</View>
+									<View>
+										<Text className="py-2 font-medium text-sm text-foreground">
+											Esse mapa faz parte do grupo {map.group_code.toUpperCase()}
+										</Text>
 									</View>
 								)}
 							</>

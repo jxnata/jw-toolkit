@@ -6,7 +6,7 @@ import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Link, Redirect, Stack, useRouter } from 'expo-router'
 import { CircleAlert, UserCircle2 } from 'lucide-react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -27,13 +27,10 @@ const Admin = () => {
 		}
 	}, [router])
 
-	const HeaderRight = useCallback(
-		() => (
-			<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className="p-2">
-				<UserCircle2 size={24} color={colors.foreground} />
-			</TouchableOpacity>
-		),
-		[router, colors]
+	const HeaderRight = () => (
+		<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className="p-2">
+			<UserCircle2 size={24} color={colors.foreground} />
+		</TouchableOpacity>
 	)
 
 	const confirmExport = () => {

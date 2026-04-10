@@ -18,7 +18,7 @@ import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Platform, useColorScheme } from 'react-native'
 import { useMMKVListener } from 'react-native-mmkv'
 import Purchases from 'react-native-purchases'
@@ -34,11 +34,12 @@ export default function Layout() {
 	const [isLoaded] = useFonts(fonts)
 	const config = configToast()
 
-	const handleOnLayout = useCallback(async () => {
+	const handleOnLayout = async () => {
 		if (isLoaded) await SplashScreen.hideAsync()
-	}, [isLoaded])
+	}
 
 	useEffect(() => {
+		Purchases.setLogLevel(Purchases.LOG_LEVEL.ERROR)
 		if (Platform.OS === 'ios') {
 			Purchases.configure({ apiKey: REVENUECAT_APPLE_API_KEY })
 		} else if (Platform.OS === 'android') {

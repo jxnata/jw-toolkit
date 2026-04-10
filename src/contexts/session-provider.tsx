@@ -1,13 +1,13 @@
+import { STORAGE_KEYS } from '@/constants/storage-keys'
 import { storage } from '@/database/index'
 import usePublisher from '@/hooks/use-publisher'
 import { Congregation, Publisher } from '@/interfaces'
-import { STORAGE_KEYS } from '@/constants/storage-keys'
 import db from '@/lib/db'
 import { publishersService } from '@/services/instantdb/publishers-service'
 import { User as InstantUser } from '@instantdb/react-native'
 import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 import { AppleAuthenticationCredential } from 'expo-apple-authentication'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
 import Purchases from 'react-native-purchases'
 
@@ -46,20 +46,11 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 		enabled: !!user,
 	})
 
-	const type = useMemo(() => {
-		if (!publisher) return null
-		return publisher.level === 1 ? 'admin' : 'publisher'
-	}, [publisher])
+	const type = publisher ? (publisher.level === 1 ? 'admin' : 'publisher') : null
 
-	const congregation = useMemo(() => {
-		if (!publisher) return null
-		return publisher.congregation
-	}, [publisher])
+	const congregation = publisher ? publisher.congregation : null
 
-	const isLoadingSession = useMemo(() => {
-		if (!user) return isLoading
-		return isLoading || publisherLoading
-	}, [user, isLoading, publisherLoading])
+	const isLoadingSession = !user ? isLoading : isLoading || publisherLoading
 
 	async function appleAuthentication(appleRequestResponse: AppleAuthenticationCredential) {
 		try {
@@ -75,7 +66,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			await createPublisherIfNotExists(
 				user.id,
 				appleRequestResponse.fullName
-					? appleRequestResponse.fullName.givenName + ' ' + appleRequestResponse.fullName.familyName
+					? appleRequestResponse.fullName.givenName + ' ' + appleRequestResponse.fullName.familyName || ''
 					: 'Apple User'
 			)
 		} catch (error) {
@@ -98,7 +89,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			await createPublisherIfNotExists(
 				user.id,
 				googleRequestResponse.user
-					? googleRequestResponse.user.givenName + ' ' + googleRequestResponse.user.familyName
+					? googleRequestResponse.user.givenName + ' ' + googleRequestResponse.user.familyName || ''
 					: 'Google User'
 			)
 		} catch (error) {

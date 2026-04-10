@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { storage } from '@/database'
 import { STORAGE_KEYS } from '@/constants/storage-keys'
 
@@ -8,7 +8,7 @@ export const usePersonalAnnotations = (mapId: string, userId: string) => {
 
 	const storageKey = STORAGE_KEYS.annotations(mapId, userId)
 
-	const loadAnnotation = useCallback(() => {
+	const loadAnnotation = () => {
 		try {
 			const savedAnnotation = storage.getString(storageKey)
 			setAnnotation(savedAnnotation || null)
@@ -17,11 +17,11 @@ export const usePersonalAnnotations = (mapId: string, userId: string) => {
 		} finally {
 			setIsLoading(false)
 		}
-	}, [storageKey])
+	}
 
 	useEffect(() => {
 		loadAnnotation()
-	}, [mapId, userId, loadAnnotation])
+	}, [mapId, userId])
 
 	const saveAnnotation = (text: string) => {
 		try {

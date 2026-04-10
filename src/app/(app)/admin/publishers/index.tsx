@@ -6,7 +6,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { Mail, MailWarning } from 'lucide-react-native'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Publishers = () => {
@@ -16,19 +16,16 @@ const Publishers = () => {
 	const { requestPublishers } = useRequestPublishers()
 	const { colors } = useThemedColors()
 
-	const HeaderRight = useCallback(
-		() => (
-			<View>
-				<TouchableOpacity onPress={() => router.push('/admin/publishers/review')} className="mx-2">
-					{requestPublishers.length ? (
-						<MailWarning size={24} color={colors.primary[500]} />
-					) : (
-						<Mail size={24} color={colors.foreground} />
-					)}
-				</TouchableOpacity>
-			</View>
-		),
-		[router, colors.foreground, colors.primary, requestPublishers.length]
+	const HeaderRight = () => (
+		<View>
+			<TouchableOpacity onPress={() => router.push('/admin/publishers/review')} className="mx-2">
+				{requestPublishers.length ? (
+					<MailWarning size={24} color={colors.primary[500]} />
+				) : (
+					<Mail size={24} color={colors.foreground} />
+				)}
+			</TouchableOpacity>
+		</View>
 	)
 
 	const ListHeaderComponent = () => {

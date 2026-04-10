@@ -1,15 +1,19 @@
+import Button from '@/components/button'
+import Dropdown from '@/components/dropdown'
 import MapItem from '@/components/map-item'
 import SheetModal from '@/components/sheet-modal'
 import { useSession } from '@/contexts/session-provider'
 import useGroupMaps from '@/hooks/use-group-maps'
 import { useLocation } from '@/hooks/use-location'
+import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
 import { mapsService } from '@/services/instantdb/maps-service'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { Minus, PlusCircle } from 'lucide-react-native'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 
 const GroupDetail = () => {
@@ -19,8 +23,15 @@ const GroupDetail = () => {
 	const { congregation } = useSession()
 	const { location } = useLocation()
 	const [modalVisible, setModalVisible] = useState(false)
+	const [editMode, setEditMode] = useState(false)
 
 	const { maps } = useGroupMaps(group_code)
+	const { publishers } = usePublishers()
+	const publisherList = publishers.map((p) => ({ label: p.name, value: p.id }))
+
+	const { control, formState, handleSubmit, reset } = useForm<{ assigned: string }>({
+		defaultValues: { assigned: '' },
+	})
 
 	const cityId = maps[0]?.city?.id
 
@@ -44,54 +55,80 @@ const GroupDetail = () => {
 
 	const ungroupedMaps = (ungroupedData?.maps as Map[]) || []
 
-	const handleRemove = useCallback(
-		async (mapId: string) => {
-			try {
-				if (maps.length <= 2) {
-					await mapsService.dissolveGroup(group_code)
-					router.back()
-				} else {
-					await mapsService.removeFromGroup(mapId)
-				}
-			} catch {
-				Alert.alert('Erro', 'Não foi possível remover o mapa do grupo.')
+	const handleRemove = async (mapId: string) => {
+		try {
+			if (maps.length <= 2) {
+				await mapsService.dissolveGroup(group_code)
+				router.back()
+			} else {
+				await mapsService.removeFromGroup(mapId)
 			}
-		},
-		[maps.length, group_code, router]
-	)
+		} catch {
+			Alert.alert('Erro', 'Não foi possível remover o mapa do grupo.')
+		}
+	}
 
-	const handleAddMap = useCallback(
-		async (mapId: string) => {
-			try {
-				await mapsService.setGroupCode([mapId], group_code)
-				setModalVisible(false)
-			} catch {
-				Alert.alert('Erro', 'Não foi possível adicionar o mapa ao grupo.')
-			}
-		},
-		[group_code]
-	)
+	const handleAddMap = async (mapId: string) => {
+		try {
+			await mapsService.setGroupCode([mapId], group_code)
+			setModalVisible(false)
+		} catch {
+			Alert.alert('Erro', 'Não foi possível adicionar o mapa ao grupo.')
+		}
+	}
 
-	const HeaderRight = useCallback(
-		() => (
+	const assign: SubmitHandler<{ assigned: string }> = async (data) => {
+		try {
+			const mapIds = maps.map((m) => m.id)
+			await mapsService.assignMaps(mapIds, data.assigned)
+			reset()
+		} catch {
+			Alert.alert('Erro', 'Não foi possível designar os mapas.')
+		}
+	}
+
+	const enterEditMode = () => {
+		setEditMode(true)
+	}
+
+	const exitEditMode = () => {
+		setEditMode(false)
+	}
+
+	const HeaderRight = () =>
+		editMode ? (
 			<TouchableOpacity onPress={() => setModalVisible(true)} className="mx-2">
 				<PlusCircle size={24} color={colors.foreground} />
 			</TouchableOpacity>
-		),
-		[colors.foreground]
-	)
+		) : (
+			<TouchableOpacity onPress={enterEditMode} className="mx-2">
+				<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
+					Editar
+				</Text>
+			</TouchableOpacity>
+		)
+
+	const HeaderLeft = () =>
+		editMode ? (
+			<TouchableOpacity onPress={exitEditMode} className="mx-2">
+				<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
+					Cancelar
+				</Text>
+			</TouchableOpacity>
+		) : null
 
 	return (
 		<View className="flex-1">
 			<Stack.Screen
 				options={{
-					title: `${maps.length} mapas`,
+					title: `Grupo de mapas`,
 					headerRight: HeaderRight,
+					headerLeft: editMode ? HeaderLeft : undefined,
 				}}
 			/>
-			<View className="h-full w-full bg-background p-4">
+			<View className="flex-1 bg-background px-4 pt-4">
 				<FlatList
-					ListFooterComponent={<View className="h-14" />}
+					ListFooterComponent={<View className="h-4" />}
 					data={maps}
 					keyExtractor={(item) => item.id}
 					showsVerticalScrollIndicator={false}
@@ -114,15 +151,38 @@ const GroupDetail = () => {
 									}
 								/>
 							</View>
-							<TouchableOpacity
-								onPress={() => handleRemove(item.id)}
-								className="mb-2 rounded-full p-2"
-								style={{ backgroundColor: colors.danger[500] + '20' }}>
-								<Minus size={18} color={colors.danger[500]} />
-							</TouchableOpacity>
+							{editMode && (
+								<TouchableOpacity
+									onPress={() => handleRemove(item.id)}
+									className="mb-2 rounded-full p-2"
+									style={{ backgroundColor: colors.danger[500] + '20' }}>
+									<Minus size={18} color={colors.danger[500]} />
+								</TouchableOpacity>
+							)}
 						</View>
 					)}
 				/>
+			</View>
+			<View className="bg-background px-4 pb-8 pt-2">
+				<Text className="py-2 font-medium text-sm text-foreground">Designar mapas</Text>
+				<Controller
+					control={control}
+					rules={{ required: true }}
+					name="assigned"
+					render={({ field: { onChange, value } }) => (
+						<Dropdown
+							placeholder="Selecione um publicador..."
+							options={publisherList}
+							selectedValue={value}
+							onValueChange={onChange}
+						/>
+					)}
+				/>
+				<View className="mt-2">
+					<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(assign)}>
+						Designar
+					</Button>
+				</View>
 			</View>
 
 			<SheetModal title="Adicionar mapa" visible={modalVisible} onClose={() => setModalVisible(false)}>

@@ -5,7 +5,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { validCoordinates } from '@/utils/valid-coordinates'
 import { X } from 'lucide-react-native'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import MapView, { MapViewProps, Marker } from 'react-native-maps'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -29,24 +29,19 @@ const SelectLocation = ({ onSelect, onClose, initial }: Props) => {
 	)
 	const { CheckboxComponent: MapOptions, selectedValues } = useCheckbox(mapTypes, ['hybrid'], true)
 
-	const mapType = useMemo(() => selectedValues[0], [selectedValues])
-	const marker = useMemo(() => getMarkerCoordinate(pin), [pin])
+	const mapType = selectedValues[0]
+	const marker = getMarkerCoordinate(pin)
 
-	const initialLocation = useMemo(() => {
-		return {
-			latitude: initial ? initial.coordinates.latitude : location?.latitude || 0,
-			longitude: initial ? initial.coordinates.longitude : location?.longitude || 0,
-		}
-	}, [initial, location])
+	const initialLocation = {
+		latitude: initial ? initial.coordinates.latitude : location?.latitude || 0,
+		longitude: initial ? initial.coordinates.longitude : location?.longitude || 0,
+	}
 
-	const onSelectLocation = useCallback(
-		(e: any) => {
-			const coordinates: [number, number] = [e.nativeEvent.coordinate.latitude || 0, e.nativeEvent.coordinate.longitude || 0]
-			setPin([e.nativeEvent.coordinate.latitude || 0, e.nativeEvent.coordinate.longitude || 0])
-			onSelect(coordinates)
-		},
-		[onSelect]
-	)
+	const onSelectLocation = (e: any) => {
+		const coordinates: [number, number] = [e.nativeEvent.coordinate.latitude || 0, e.nativeEvent.coordinate.longitude || 0]
+		setPin([e.nativeEvent.coordinate.latitude || 0, e.nativeEvent.coordinate.longitude || 0])
+		onSelect(coordinates)
+	}
 
 	useEffect(() => {
 		if (!pin) return

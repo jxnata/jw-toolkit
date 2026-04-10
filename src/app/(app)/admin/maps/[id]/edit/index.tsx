@@ -14,7 +14,7 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { MapPinPlus } from 'lucide-react-native'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
@@ -23,23 +23,19 @@ const EditMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const { cities } = useCities()
-	const citiesList = useMemo(() => cities.map((c) => ({ label: c.name, value: c.id })), [cities])
+	const citiesList = cities.map((c) => ({ label: c.name, value: c.id }))
 	const { colors } = useThemedColors()
-	const defaultValues: EditMapReq | undefined = useMemo(
-		() =>
-			params
-				? {
-						name: params.name,
-						address: params.address,
-						district: params.district,
-						details: params.details,
-						city: params.city.id,
-						coordinates: getCoordinates([params.lat, params.lng]),
-						tag: params.tag,
-					}
-				: undefined,
-		[params]
-	)
+	const defaultValues: EditMapReq | undefined = params
+		? {
+				name: params.name,
+				address: params.address,
+				district: params.district,
+				details: params.details,
+				city: params.city.id,
+				coordinates: getCoordinates([params.lat, params.lng]),
+				tag: params.tag,
+			}
+		: undefined
 
 	const { control, formState, handleSubmit, setValue, watch } = useForm<EditMapReq>({ defaultValues })
 	const coordinates = watch('coordinates')

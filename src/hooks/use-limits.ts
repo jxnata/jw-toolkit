@@ -2,7 +2,6 @@ import { FREE_LIMITS } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
 import { useSubscription } from '@/hooks/use-subscription'
 import db from '@/lib/db'
-import { useMemo } from 'react'
 
 export const useLimits = () => {
 	const { congregation } = useSession()
@@ -39,31 +38,27 @@ export const useLimits = () => {
 			: null
 	)
 
-	const limits = useMemo(() => {
-		if (subscribed) {
-			return {
-				mapsReached: false,
-				publishersReached: false,
-				anyLimitReached: false,
-				mapsCount: mapsData?.maps?.length || 0,
-				publishersCount: publishersData?.publishers?.length || 0,
-			}
-		}
-
-		const mapsCount = mapsData?.maps?.length || 0
-		const publishersCount = publishersData?.publishers?.length || 0
-
-		const mapsReached = mapsCount >= Number(FREE_LIMITS.maps)
-		const publishersReached = publishersCount >= Number(FREE_LIMITS.publishers)
-
+	if (subscribed) {
 		return {
-			mapsReached,
-			publishersReached,
-			anyLimitReached: mapsReached || publishersReached,
-			mapsCount,
-			publishersCount,
+			mapsReached: false,
+			publishersReached: false,
+			anyLimitReached: false,
+			mapsCount: mapsData?.maps?.length || 0,
+			publishersCount: publishersData?.publishers?.length || 0,
 		}
-	}, [subscribed, mapsData, publishersData])
+	}
 
-	return limits
+	const mapsCount = mapsData?.maps?.length || 0
+	const publishersCount = publishersData?.publishers?.length || 0
+
+	const mapsReached = mapsCount >= Number(FREE_LIMITS.maps)
+	const publishersReached = publishersCount >= Number(FREE_LIMITS.publishers)
+
+	return {
+		mapsReached,
+		publishersReached,
+		anyLimitReached: mapsReached || publishersReached,
+		mapsCount,
+		publishersCount,
+	}
 }

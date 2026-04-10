@@ -9,7 +9,7 @@ import { publishersService } from '@/services/instantdb/publishers-service'
 import { id } from '@instantdb/react-native'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { CheckCircle2, Circle } from 'lucide-react-native'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { ActivityIndicator, Alert, FlatList, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useDebouncedCallback } from 'use-debounce'
@@ -24,9 +24,7 @@ const SelectCongregation = () => {
 	const { congregations, loading: congregationsLoading } = useCongregations({ search: debouncedSearch })
 	const { isUserSubscribed } = useSubscription()
 
-	const changeCongregationDisabled = useMemo(() => {
-		return isUserSubscribed && !!initial
-	}, [isUserSubscribed, initial])
+	const changeCongregationDisabled = isUserSubscribed && !!initial
 
 	const insets = useSafeAreaInsets()
 	const { colors } = useThemedColors()

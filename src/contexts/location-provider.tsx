@@ -1,5 +1,5 @@
 import { LocationAccuracy, LocationObjectCoords, getCurrentPositionAsync, requestForegroundPermissionsAsync } from 'expo-location'
-import { createContext, useCallback, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 interface LocationContextData {
 	location: LocationObjectCoords | null
@@ -21,7 +21,7 @@ export const LocationProvider = ({ children }: LocationProviderProps) => {
 	const [error, setError] = useState<string | null>(null)
 	const [hasPermission, setHasPermission] = useState(false)
 
-	const getLocation = useCallback(async () => {
+	const getLocation = async () => {
 		try {
 			setIsLoading(true)
 			setError(null)
@@ -47,11 +47,11 @@ export const LocationProvider = ({ children }: LocationProviderProps) => {
 		} finally {
 			setIsLoading(false)
 		}
-	}, [])
+	}
 
 	useEffect(() => {
 		getLocation()
-	}, [getLocation])
+	}, [])
 
 	return (
 		<LocationContext.Provider

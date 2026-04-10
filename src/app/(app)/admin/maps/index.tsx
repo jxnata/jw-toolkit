@@ -9,8 +9,8 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { mapsService } from '@/services/instantdb/maps-service'
 import { toHex } from '@/utils/to-hex'
 import { Stack, useRouter } from 'expo-router'
-import { Funnel, PlusCircle } from 'lucide-react-native'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FilterIcon, PinIcon, PlusCircle, Search } from 'lucide-react-native'
+import { useEffect, useState } from 'react'
 import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated'
 import { useDebounce } from 'use-debounce'
@@ -20,7 +20,7 @@ const Maps = () => {
 	const [searchInput, setSearchInput] = useState('')
 	const [searchCity, setSearchCity] = useState('')
 	const [status, setStatus] = useState<'assigned' | 'unassigned' | 'no-visit' | ''>('')
-	const [showFilter, setFilter] = useState(true)
+	const [showFilter, setFilter] = useState(false)
 	const [selectionMode, setSelectionMode] = useState(false)
 	const [selectedIds, setSelectedIds] = useState<string[]>([])
 	const { colors } = useThemedColors()
@@ -37,7 +37,17 @@ const Maps = () => {
 	const { cities } = useCities()
 	const { location } = useLocation()
 
-	const citiesList = useMemo(() => [...cities.map((c) => ({ label: c.name, value: c.id }))], [cities])
+	const citiesList = cities.map((c) => ({ label: c.name, value: c.id }))
+	const selectedCity = citiesList.find((c) => c.value === searchCity)?.label
+
+	const statusList = [
+		{ label: 'Todos', value: '' },
+		{ label: 'Designados', value: 'assigned' },
+		{ label: 'Livres', value: 'unassigned' },
+		{ label: 'Não visitar', value: 'no-visit' },
+		{ label: 'Estudante', value: 'student' },
+	]
+	const selectedStatus = statusList.find((s) => s.value === status)?.label
 
 	useEffect(() => {
 		if (cities.length > 0 && !searchCity) {
@@ -45,21 +55,21 @@ const Maps = () => {
 		}
 	}, [cities, searchCity])
 
-	const enterSelectionMode = useCallback(() => {
+	const enterSelectionMode = () => {
 		setSelectionMode(true)
 		setSelectedIds([])
-	}, [])
+	}
 
-	const exitSelectionMode = useCallback(() => {
+	const exitSelectionMode = () => {
 		setSelectionMode(false)
 		setSelectedIds([])
-	}, [])
+	}
 
-	const toggleSelect = useCallback((id: string) => {
+	const toggleSelect = (id: string) => {
 		setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]))
-	}, [])
+	}
 
-	const handleGroup = useCallback(async () => {
+	const handleGroup = async () => {
 		if (selectedIds.length < 2) return
 		const groupCode = toHex(Date.now() + '' + Math.random())
 		try {
@@ -68,47 +78,41 @@ const Maps = () => {
 		} catch {
 			Alert.alert('Erro', 'Não foi possível agrupar os mapas.')
 		}
-	}, [selectedIds, exitSelectionMode])
+	}
 
-	const HeaderRight = useCallback(
-		() =>
-			selectionMode ? (
-				<TouchableOpacity onPress={handleGroup} className="mx-2" disabled={selectedIds.length < 2}>
-					<Text
-						className="font-semibold text-base"
-						style={{ color: selectedIds.length >= 2 ? colors.foreground : colors.foreground + '40' }}>
-						Agrupar
-					</Text>
+	const HeaderRight = () =>
+		selectionMode ? (
+			<TouchableOpacity onPress={handleGroup} className="mx-2" disabled={selectedIds.length < 2}>
+				<Text
+					className="font-semibold text-base"
+					style={{ color: selectedIds.length >= 2 ? colors.foreground : colors.foreground + '40' }}>
+					Agrupar
+				</Text>
+			</TouchableOpacity>
+		) : (
+			<View className="flex-row">
+				<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
+					<PlusCircle size={24} color={colors.foreground} />
 				</TouchableOpacity>
-			) : (
-				<View className="flex-row">
-					<TouchableOpacity onPress={() => router.push('/admin/maps/add')} className="mx-2">
-						<PlusCircle size={24} color={colors.foreground} />
-					</TouchableOpacity>
-					<TouchableOpacity onPress={toggleFilter} className="mx-2">
-						<Funnel size={24} color={colors.foreground} />
-					</TouchableOpacity>
-					<TouchableOpacity onPress={enterSelectionMode} className="mx-2">
-						<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
-							Selecionar
-						</Text>
-					</TouchableOpacity>
-				</View>
-			),
-		[router, colors.foreground, selectionMode, selectedIds.length, handleGroup, enterSelectionMode]
-	)
-
-	const HeaderLeft = useCallback(
-		() =>
-			selectionMode ? (
-				<TouchableOpacity onPress={exitSelectionMode} className="mx-2">
+				<TouchableOpacity onPress={toggleFilter} className="mx-2">
+					<Search size={24} color={colors.foreground} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={enterSelectionMode} className="mx-2">
 					<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
-						Cancelar
+						Selecionar
 					</Text>
 				</TouchableOpacity>
-			) : null,
-		[selectionMode, exitSelectionMode, colors.foreground]
-	)
+			</View>
+		)
+
+	const HeaderLeft = () =>
+		selectionMode ? (
+			<TouchableOpacity onPress={exitSelectionMode} className="mx-2">
+				<Text className="font-semibold text-base" style={{ color: colors.foreground }}>
+					Cancelar
+				</Text>
+			</TouchableOpacity>
+		) : null
 
 	const filterCity = (city: string) => {
 		setSearchInput('')
@@ -128,9 +132,35 @@ const Maps = () => {
 					headerLeft: selectionMode ? HeaderLeft : undefined,
 				}}
 			/>
-			<View className="h-full w-full bg-background p-4">
+			<View className="h-full w-full bg-background">
+				<View className="flex-row gap-4 px-4 py-2">
+					<Dropdown
+						placeholder="Todos"
+						options={statusList}
+						selectedValue={status}
+						onValueChange={setStatus}
+						TriggerComponent={
+							<View className="flex-row items-center gap-1">
+								<FilterIcon size={16} color={colors.primary[600]} fill={colors.primary[600]} />
+								<Text className="font-bold text-lg text-primary underline">{selectedStatus}</Text>
+							</View>
+						}
+					/>
+					<Dropdown
+						placeholder="Cidade"
+						options={citiesList}
+						selectedValue={searchCity}
+						onValueChange={filterCity}
+						TriggerComponent={
+							<View className="flex-row items-center gap-1">
+								<PinIcon size={16} color={colors.primary[600]} fill={colors.primary[600]} />
+								<Text className="font-bold text-lg text-primary underline">{selectedCity}</Text>
+							</View>
+						}
+					/>
+				</View>
 				{showFilter && !selectionMode && (
-					<Animated.View entering={SlideInUp} exiting={SlideOutUp}>
+					<Animated.View entering={SlideInUp} exiting={SlideOutUp} className={`px-4`}>
 						<Input
 							autoCorrect={false}
 							placeholder="Buscar por nome ou bairro"
@@ -139,26 +169,6 @@ const Maps = () => {
 							clearButtonMode="always"
 							returnKeyType="search"
 						/>
-
-						<View className="flex-row gap-2">
-							<View className="flex-1">
-								<Dropdown
-									placeholder="Todos"
-									options={[
-										{ label: 'Todos', value: '' },
-										{ label: 'Designados', value: 'assigned' },
-										{ label: 'Livres', value: 'unassigned' },
-										{ label: 'Não visitar', value: 'no-visit' },
-										{ label: 'Estudante', value: 'student' },
-									]}
-									selectedValue={status}
-									onValueChange={setStatus}
-								/>
-							</View>
-							<View className="flex-1">
-								<Dropdown placeholder="Cidade" options={citiesList} selectedValue={searchCity} onValueChange={filterCity} />
-							</View>
-						</View>
 					</Animated.View>
 				)}
 

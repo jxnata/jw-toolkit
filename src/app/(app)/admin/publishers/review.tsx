@@ -7,7 +7,7 @@ import { publishersService } from '@/services/instantdb'
 import { firstLetter } from '@/utils/first-letter'
 import { Stack, useRouter } from 'expo-router'
 import { CheckCircle, XCircle } from 'lucide-react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Publishers = () => {
@@ -19,46 +19,40 @@ const Publishers = () => {
 	const { colors } = useThemedColors()
 	const { congregation } = useSession()
 
-	const approve = useCallback(
-		async (publisherId: string) => {
-			// Check if publisher limit is reached
-			if (!checkPublisherLimit()) {
-				return
-			}
+	const approve = async (publisherId: string) => {
+		// Check if publisher limit is reached
+		if (!checkPublisherLimit()) {
+			return
+		}
 
-			try {
-				setList(list.filter((p) => p.id !== publisherId))
+		try {
+			setList(list.filter((p) => p.id !== publisherId))
 
-				await publishersService.updatePublisher(publisherId, {
-					approved: true,
-				})
-			} catch (err) {
-				console.error('Failed to approve publisher:', err)
-				mutate()
-			}
-		},
-		[list, mutate, checkPublisherLimit]
-	)
+			await publishersService.updatePublisher(publisherId, {
+				approved: true,
+			})
+		} catch (err) {
+			console.error('Failed to approve publisher:', err)
+			mutate()
+		}
+	}
 
-	const deny = useCallback(
-		async (publisherId: string) => {
-			if (!congregation) return
+	const deny = async (publisherId: string) => {
+		if (!congregation) return
 
-			try {
-				setList(list.filter((p) => p.id !== publisherId))
+		try {
+			setList(list.filter((p) => p.id !== publisherId))
 
-				await publishersService.updatePublisher(publisherId, {
-					approved: false,
-				})
+			await publishersService.updatePublisher(publisherId, {
+				approved: false,
+			})
 
-				await publishersService.unlinkCongregation(publisherId, congregation.id)
-			} catch (err) {
-				console.error('Failed to deny publisher:', err)
-				mutate()
-			}
-		},
-		[list, mutate, congregation]
-	)
+			await publishersService.unlinkCongregation(publisherId, congregation.id)
+		} catch (err) {
+			console.error('Failed to deny publisher:', err)
+			mutate()
+		}
+	}
 
 	useEffect(() => {
 		setList(publishers)

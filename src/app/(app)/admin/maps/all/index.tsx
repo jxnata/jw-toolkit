@@ -4,7 +4,7 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { getPinColor } from '@/utils/get-pin-color'
 import * as Location from 'expo-location'
 import { router, Stack } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
@@ -13,17 +13,17 @@ const AllMaps = () => {
 	const { maps, loading } = useAllMaps()
 	const { colors } = useThemedColors()
 
-	const getLocation = useCallback(async () => {
+	const getLocation = async () => {
 		const { status } = await Location.requestForegroundPermissionsAsync()
 		if (status !== 'granted') return
 
 		const { coords } = await Location.getCurrentPositionAsync({})
 		setLocation(getMapRegion([coords.latitude, coords.longitude]))
-	}, [])
+	}
 
 	useEffect(() => {
 		getLocation()
-	}, [getLocation])
+	}, [])
 
 	const renderMap = () => {
 		if (!location) return null

@@ -15,7 +15,7 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router } from 'expo-router'
 import { MapPinPlus, Save } from 'lucide-react-native'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
@@ -29,7 +29,7 @@ const AddMap = () => {
 
 	const coordinates = watch('coordinates')
 
-	const citiesList = useMemo(() => cities.map((c) => ({ label: c.name, value: c.id })), [cities])
+	const citiesList = cities.map((c) => ({ label: c.name, value: c.id }))
 
 	const toggleMap = () => {
 		setModalVisible((old) => !old)
@@ -50,7 +50,7 @@ const AddMap = () => {
 		}
 
 		try {
-			const mapId = await mapsService.createMap({
+			await mapsService.createMap({
 				name: data.name,
 				address: data.address,
 				district: data.district,

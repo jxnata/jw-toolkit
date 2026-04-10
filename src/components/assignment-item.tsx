@@ -8,7 +8,6 @@ import { Dimensions, Image, Pressable, Text, View } from 'react-native'
 import { Map } from '@/interfaces'
 import { formatDate } from '@/utils/date-format'
 import { firstName } from '@/utils/first-name'
-import { useMemo } from 'react'
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -23,17 +22,7 @@ const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentPro
 	const { colors } = useThemedColors()
 	const coordinates: [number, number] = [map.lat, map.lng]
 
-	const found = useMemo(() => {
-		if (map) {
-			if (map.visited) {
-				if (map.found) {
-					return true
-				}
-			}
-		}
-
-		return false
-	}, [map])
+	const found = !!(map?.visited && map.found)
 
 	const { data: distance } = useQuery({
 		queryKey: [

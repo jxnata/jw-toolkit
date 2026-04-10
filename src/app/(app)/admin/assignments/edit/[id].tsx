@@ -10,7 +10,6 @@ import { error as removeError, success as removeSuccess } from '@/messages/delet
 import { error, success } from '@/messages/edit'
 import { mapsService } from '@/services/instantdb'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native'
 
@@ -21,16 +20,13 @@ const EditAssignment = () => {
 	const { publishers } = usePublishers()
 	const { colors } = useThemedColors()
 
-	const defaultValues: EditAssignmentReq = useMemo(
-		() => ({
-			assigned: typeof params.assigned === 'object' ? params!.assigned!.id : params.assigned,
-		}),
-		[params]
-	)
+	const defaultValues: EditAssignmentReq = {
+		assigned: typeof params.assigned === 'object' ? params!.assigned!.id : params.assigned,
+	}
 
 	const { control, formState, handleSubmit } = useForm<EditAssignmentReq>({ defaultValues })
 
-	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
+	const publisherList = publishers.map((p) => ({ label: p.name, value: p.id }))
 
 	const save: SubmitHandler<EditAssignmentReq> = async (data) => {
 		try {

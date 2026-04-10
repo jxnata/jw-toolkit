@@ -5,7 +5,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Stack, useRouter } from 'expo-router'
 import debounce from 'lodash/debounce'
 import { PlusCircle } from 'lucide-react-native'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Cities = () => {
@@ -14,15 +14,12 @@ const Cities = () => {
 	const { cities, loading, mutate } = useCities({ search: searchTerm })
 	const { colors } = useThemedColors()
 
-	const HeaderRight = useCallback(
-		() => (
-			<View>
-				<TouchableOpacity onPress={() => router.push('/admin/cities/add')} className="mx-2">
-					<PlusCircle size={24} color={colors.foreground} />
-				</TouchableOpacity>
-			</View>
-		),
-		[router, colors.foreground]
+	const HeaderRight = () => (
+		<View>
+			<TouchableOpacity onPress={() => router.push('/admin/cities/add')} className="mx-2">
+				<PlusCircle size={24} color={colors.foreground} />
+			</TouchableOpacity>
+		</View>
 	)
 
 	const debouncedSearch = debounce(async (term) => {

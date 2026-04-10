@@ -1,7 +1,8 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { CheckCircle, ChevronDown, Circle, RefreshCcw, X } from 'lucide-react-native'
-import React, { useMemo, useState } from 'react'
-import { ActivityIndicator, Dimensions, FlatList, Modal, Pressable, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { ActivityIndicator, Dimensions, FlatList, Modal, Pressable, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const { height } = Dimensions.get('window')
 
@@ -14,9 +15,20 @@ type Props = {
 	onValueChange: (value: any) => void
 	footerComponent?: React.ReactNode
 	onRefresh?: () => Promise<unknown>
+	TriggerComponent?: React.ReactNode
 }
 
-const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false, onValueChange, footerComponent, onRefresh }: Props) => {
+const Dropdown = ({
+	selectedValue,
+	options,
+	label,
+	placeholder,
+	disabled = false,
+	onValueChange,
+	footerComponent,
+	onRefresh,
+	TriggerComponent = null,
+}: Props) => {
 	const [open, setOpen] = useState(false)
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const { colors } = useThemedColors()
@@ -40,31 +52,32 @@ const Dropdown = ({ selectedValue, options, label, placeholder, disabled = false
 		setTimeout(toggle, 100)
 	}
 
-	const selectedLabel = useMemo(() => {
-		if (!selectedValue) return
-		if (!options) return
-		if (!options.length) return
-
-		const selected = options.find((o) => o.value === selectedValue)
-
-		if (!selected) return
-
-		return selected.label
-	}, [selectedValue, options])
+	const selectedLabel = selectedValue && options?.length ? options.find((o) => o.value === selectedValue)?.label : undefined
 
 	return (
 		<View className="mb-2.5">
 			{!!label && <Text className="mb-1 ml-1 font-medium text-sm text-foreground opacity-70">{label}</Text>}
-			<Pressable
-				onPress={toggle}
-				disabled={disabled}
-				accessibilityLabel={`${label || 'Dropdown'}: ${selectedLabel || placeholder}`}
-				accessibilityRole="button"
-				accessibilityState={{ selected: selectedValue !== undefined }}
-				className={`w-full flex-row items-center justify-between rounded-xl border border-border bg-card px-4 py-4 ${disabled ? 'opacity-50' : ''}`}>
-				<Text className="font-medium text-foreground">{selectedLabel || placeholder}</Text>
-				<ChevronDown size={16} color={colors.foreground + '80'} />
-			</Pressable>
+			{!!TriggerComponent ? (
+				<Pressable
+					onPress={toggle}
+					disabled={disabled}
+					accessibilityLabel={`${label || 'Dropdown'}: ${selectedLabel || placeholder}`}
+					accessibilityRole="button"
+					accessibilityState={{ selected: selectedValue !== undefined }}>
+					{TriggerComponent}
+				</Pressable>
+			) : (
+				<Pressable
+					onPress={toggle}
+					disabled={disabled}
+					accessibilityLabel={`${label || 'Dropdown'}: ${selectedLabel || placeholder}`}
+					accessibilityRole="button"
+					accessibilityState={{ selected: selectedValue !== undefined }}
+					className={`w-full flex-row items-center justify-between rounded-xl border border-border bg-card px-4 py-4 ${disabled ? 'opacity-50' : ''}`}>
+					<Text className="font-medium text-foreground">{selectedLabel || placeholder}</Text>
+					<ChevronDown size={16} color={colors.foreground + '80'} />
+				</Pressable>
+			)}
 
 			<Modal animationType="fade" transparent visible={open} onRequestClose={toggle}>
 				<View className="flex h-full w-full justify-end" style={{ backgroundColor: colors.background + '90' }}>

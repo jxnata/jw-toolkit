@@ -8,7 +8,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { MapGroup } from '@/utils/group-maps'
 import { Redirect, Stack, useRouter } from 'expo-router'
 import { Map, UserCircle2 } from 'lucide-react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
@@ -27,15 +27,12 @@ const PublisherHome = () => {
 		}
 	}, [router])
 
-	const HeaderRight = useCallback(
-		() => (
-			<View className="flex flex-row items-center justify-center gap-[15px]">
-				<Pressable onPress={() => router.push('/publisher/me')}>
-					<UserCircle2 size={24} color={colors.foreground} />
-				</Pressable>
-			</View>
-		),
-		[router, colors]
+	const HeaderRight = () => (
+		<View className="flex flex-row items-center justify-center gap-[15px]">
+			<Pressable onPress={() => router.push('/publisher/me')}>
+				<UserCircle2 size={24} color={colors.foreground} />
+			</Pressable>
+		</View>
 	)
 
 	if (!privacyAccepted) {

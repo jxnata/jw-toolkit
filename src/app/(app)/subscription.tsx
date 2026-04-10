@@ -5,7 +5,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { getOfferings } from '@/lib/revenuecat'
 import { router, Stack } from 'expo-router'
 import { ArrowRight, Bell, Check, ClipboardList, Gift, Map, Shield, Users } from 'lucide-react-native'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Purchases, { PurchasesPackage } from 'react-native-purchases'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -82,7 +82,7 @@ export default function Subscription() {
 		}
 	}
 
-	const monthlyPackage = useMemo(() => packages.find((pkg) => pkg.packageType === 'MONTHLY'), [packages])
+	const monthlyPackage = packages.find((pkg) => pkg.packageType === 'MONTHLY')
 
 	const getPackageTypeText = (packageType: string) => {
 		switch (packageType) {
