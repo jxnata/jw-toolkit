@@ -66,7 +66,7 @@
 			"id": 8,
 			"title": "Publisher view: grouped assignments and group detail screen",
 			"file": "tasks/8.json",
-			"status": "pending",
+			"status": "in_progress",
 			"commits": [],
 			"pull_request": null
 		}
