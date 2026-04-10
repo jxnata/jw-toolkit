@@ -2,6 +2,7 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import MapViewDetails from '@/components/map-view-details'
 import PersonalAnnotation from '@/components/personal-annotation'
+import useGroupMaps from '@/hooks/use-group-maps'
 import useMap from '@/hooks/use-map'
 import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -23,6 +24,7 @@ const ViewMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const { map } = useMap({ mapId: params.id })
+	const { maps: groupMaps } = useGroupMaps(map?.group_code || '')
 	const { publishers } = usePublishers()
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({
 		defaultValues: { assigned: typeof params.assigned === 'object' ? params.assigned!.id : params.assigned },
@@ -35,9 +37,15 @@ const ViewMap = () => {
 
 	const save: SubmitHandler<AddAssignmentReq> = async (data) => {
 		try {
-			await mapsService.assignMap(params.id, data.assigned)
+			if (map?.group_code && groupMaps.length > 0) {
+				const groupMapIds = groupMaps.map((m) => m.id)
+				await mapsService.assignMaps(groupMapIds, data.assigned!)
+				success(`${groupMapIds.length} mapas designados`)
+			} else {
+				await mapsService.assignMap(params.id, data.assigned)
+				success('designação')
+			}
 
-			success('designação')
 			router.back()
 		} catch (err) {
 			error('designação')

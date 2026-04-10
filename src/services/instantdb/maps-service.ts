@@ -59,6 +59,10 @@ class MapsService {
 		}
 	}
 
+	async assignMaps(mapIds: string[], publisherId: string): Promise<void> {
+		await db.transact(mapIds.map((mapId) => db.tx.maps[mapId].link({ assigned: publisherId })))
+	}
+
 	async unassignMap(mapId: string, publisherId: string): Promise<void> {
 		await db.transact(db.tx.maps[mapId].unlink({ assigned: publisherId }))
 	}
