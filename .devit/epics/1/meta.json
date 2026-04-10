@@ -50,7 +50,7 @@
 			"id": 6,
 			"title": "Admin group detail screen",
 			"file": "tasks/6.json",
-			"status": "pending",
+			"status": "in_progress",
 			"commits": [],
 			"pull_request": null
 		},
