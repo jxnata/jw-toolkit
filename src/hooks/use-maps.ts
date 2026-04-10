@@ -2,6 +2,7 @@ import { useSession } from '@/contexts/session-provider'
 import { MAP_TAGS } from '@/constants/content'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
+import { groupMaps } from '@/utils/group-maps'
 
 type Props = {
 	search?: string
@@ -76,11 +77,14 @@ const useMaps = (
 			: null
 	)
 
+	const maps = (data?.maps as Map[]) || []
+
 	return {
-		maps: (data?.maps as Map[]) || [],
+		maps,
+		grouped: groupMaps(maps),
 		loading: isLoading,
 		error,
-		total: data?.maps?.length || 0,
+		total: maps.length,
 		queryKey: ['maps', search, city, district, status, congregation],
 	}
 }
