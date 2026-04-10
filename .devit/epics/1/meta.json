@@ -58,8 +58,8 @@
 			"id": 7,
 			"title": "Update assignment to support grouped maps",
 			"file": "tasks/7.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["e46ba96"],
 			"pull_request": null
 		},
 		{
