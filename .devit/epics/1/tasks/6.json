@@ -1,0 +1,31 @@
+{
+	"id": 6,
+	"title": "Admin group detail screen",
+	"description": "Criar tela de detalhe de grupo de mapas para o admin. Exibe lista dos mapas do grupo, permite remover mapas (mínimo 2) e adicionar mapas individuais via modal.",
+	"steps": [
+		"Criar src/app/(app)/admin/maps/group/[group_code]/index.tsx",
+		"Buscar mapas do grupo via db.useQuery filtrando por group_code e congregation",
+		"Renderizar FlatList com MapItem para cada mapa; tapping navega para /admin/maps/[id]",
+		"Botão de remover em cada item: chama mapsService.removeFromGroup(mapId); se restar 1 mapa, chamar mapsService.dissolveGroup(group_code) e router.back()",
+		"Botão 'Adicionar mapa' no header: abre SheetModal listando mapas com group_code=null filtrados pela cidade atual",
+		"Modal exibe apenas nome e endereço; ao selecionar, chama mapsService.setGroupCode([mapId], group_code)",
+		"Stack.Screen title dinâmico: '{N} mapas'",
+		"Criar hook useGroupMaps(groupCode: string) em src/hooks/use-group-maps.ts que encapsula a query"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Tela exibe todos os mapas do grupo",
+		"Remover mapa funciona; dissolve o grupo automaticamente se restar apenas 1",
+		"Modal de adicionar lista apenas mapas individuais (sem group_code) da mesma cidade",
+		"Tapping em mapa da lista abre detalhe do mapa",
+		"Título mostra count correto",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": [],
+		"create": [
+			"src/app/(app)/admin/maps/group/[group_code]/index.tsx",
+			"src/hooks/use-group-maps.ts"
+		]
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"id": 1,
+	"title": "Add group operations to MapsService",
+	"description": "Adicionar métodos ao MapsService para definir e remover group_code em múltiplos mapas. Esses métodos serão a base para toda a lógica de agrupamento.",
+	"steps": [
+		"Abrir src/services/instantdb/maps-service.ts",
+		"Adicionar método setGroupCode(mapIds: string[], groupCode: string): Promise<void> — itera os ids e faz db.transact com update({ group_code: groupCode }) em cada um",
+		"Adicionar método removeFromGroup(mapId: string): Promise<void> — faz update({ group_code: null }) no mapa",
+		"Adicionar método dissolveGroup(groupCode: string): Promise<void> — busca todos os mapas com esse group_code e remove (usar queryOnce + transact em batch)",
+		"Exportar os novos métodos via src/services/instantdb/index.ts se necessário"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"setGroupCode atualiza group_code de múltiplos mapas em uma transação",
+		"removeFromGroup define group_code como null em um mapa",
+		"dissolveGroup remove group_code de todos os mapas do grupo",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": ["src/services/instantdb/maps-service.ts"],
+		"create": []
+	}
+}

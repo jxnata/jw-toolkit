@@ -1,0 +1,24 @@
+{
+	"id": 3,
+	"title": "Create MapGroupItem component",
+	"description": "Criar componente MapGroupItem que representa visualmente um grupo de mapas na lista. Exibe o count 'X mapas', thumbnail do primeiro mapa e status do grupo.",
+	"steps": [
+		"Criar src/components/map-group-item.tsx",
+		"Props: group: MapGroup, location: LocationObjectCoords | null, onPress: () => void",
+		"Importar MapGroup de src/utils/group-maps.ts",
+		"Renderizar card com: thumbnail do maps[0] (usar mapImage), texto '{group.maps.length} mapas', cidade e nome do primeiro mapa, badge de status se todos designados / nenhum designado",
+		"Estilizar com NativeWind className, mesma estrutura visual de MapItem",
+		"Exibir ícone de grupo (ex: layers do lucide-react-native) para indicar que é agrupado"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Componente renderiza sem erros para grupos de 2+ mapas",
+		"Exibe contagem correta de mapas",
+		"Badge de status reflete estado do grupo",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": [],
+		"create": ["src/components/map-group-item.tsx"]
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"id": 4,
+	"title": "Admin maps list: selection mode UI",
+	"description": "Adicionar modo de seleção na tela de lista de mapas do admin. Botão 'Selecionar' no header ativa checkboxes nos mapas sem group_code. Header dinâmico mostra 'Cancelar' e 'Agrupar'.",
+	"steps": [
+		"Abrir src/app/(app)/admin/maps/index.tsx",
+		"Adicionar estado: selectionMode: boolean, selectedIds: string[]",
+		"Adicionar botão 'Selecionar' ao HeaderRight existente (ao lado de + e funil)",
+		"Quando selectionMode=true: HeaderRight mostra 'Cancelar' (esquerda) e 'Agrupar' (direita, desabilitado se <2 selecionados)",
+		"Usar Stack.Screen options={{ headerLeft, headerRight }} dinâmicos via useCallback que dependem de selectionMode e selectedIds.length",
+		"Passar selectionMode e selectedIds para MapItem/MapGroupItem via props",
+		"Em MapItem: se selectionMode=true e map.group_code=null, exibir Checkbox (usar useCheckbox hook ou React Native Checkbox) à esquerda",
+		"Ao confirmar 'Agrupar': chamar mapsService.setGroupCode(selectedIds, toHex(Date.now() + '' + Math.random())), sair do selectionMode, limpar selectedIds"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Botão 'Selecionar' aparece no header da lista de mapas",
+		"Ao ativar, mapas sem group_code exibem checkbox; mapas com group_code não exibem",
+		"Header muda para 'Cancelar' / 'Agrupar' no modo seleção",
+		"'Agrupar' só habilitado com ≥ 2 mapas selecionados",
+		"Ao confirmar, group_code é atribuído e modo de seleção é desativado",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": [
+			"src/app/(app)/admin/maps/index.tsx",
+			"src/components/map-item.tsx"
+		],
+		"create": []
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"id": 5,
+	"title": "Admin maps list: render grouped maps",
+	"description": "Substituir a renderização flat da lista de mapas por renderização agrupada. Usar grouped do useMaps e renderizar MapGroupItem para grupos e MapItem para individuais.",
+	"steps": [
+		"Abrir src/app/(app)/admin/maps/index.tsx",
+		"Substituir maps por grouped no retorno de useMaps()",
+		"Atualizar FlatList data para usar grouped (array de MapGroup)",
+		"Atualizar keyExtractor para usar group.group_code",
+		"No renderItem: se group.maps.length > 1, renderizar MapGroupItem; senão, renderizar MapItem com group.maps[0]",
+		"MapGroupItem.onPress navega para /admin/maps/group/[group_code]",
+		"MapItem individual onPress continua navegando para /admin/maps/[id]"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Mapas com mesmo group_code aparecem como um único card de grupo",
+		"Mapas sem group_code aparecem como items individuais (comportamento anterior)",
+		"Tapping em grupo navega para tela de detalhe do grupo",
+		"Tapping em item individual navega para tela de detalhe do mapa",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": ["src/app/(app)/admin/maps/index.tsx"],
+		"create": []
+	}
+}

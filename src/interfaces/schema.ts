@@ -29,6 +29,7 @@ const _schema = i.schema({
 			district: i.string().indexed().optional(),
 			found: i.boolean().optional(),
 			found_info: i.string().optional(),
+			group_code: i.string().indexed().optional(),
 			lat: i.number(),
 			lng: i.number(),
 			name: i.string().indexed(),

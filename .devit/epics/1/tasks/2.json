@@ -1,0 +1,23 @@
+{
+	"id": 2,
+	"title": "Add groupMaps util and useMaps grouped output",
+	"description": "Criar utilitário puro groupMaps() que agrupa um array de Map por group_code (fallback: id). Atualizar useMaps para expor grouped além de maps.",
+	"steps": [
+		"Criar src/utils/group-maps.ts",
+		"Definir tipo MapGroup: { group_code: string; maps: Map[] }",
+		"Implementar groupMaps(maps: Map[]): MapGroup[] — usar Map<string, Map[]>, chave = item.group_code ?? item.id",
+		"Ordenar grupos: grupos reais (group_code não null) primeiro, depois individuais",
+		"Em src/hooks/use-maps.ts, importar groupMaps e adicionar grouped: groupMaps(data?.maps) ao retorno"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"groupMaps retorna grupos corretos para mapas com e sem group_code",
+		"Mapas com group_code = null aparecem como grupos individuais",
+		"useMaps expõe grouped sem quebrar o campo maps existente",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": ["src/hooks/use-maps.ts"],
+		"create": ["src/utils/group-maps.ts"]
+	}
+}

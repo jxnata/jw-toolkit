@@ -1,0 +1,30 @@
+{
+	"id": 8,
+	"title": "Publisher view: grouped assignments and group detail screen",
+	"description": "Atualizar a home do publicador para exibir designações agrupadas por group_code. Adicionar tela de detalhe do grupo para o publicador.",
+	"steps": [
+		"Abrir src/hooks/use-my-assignments.ts (ou equivalente) e adicionar grouped ao retorno usando groupMaps()",
+		"Abrir src/app/(app)/publisher/index.tsx: substituir FlatList data de assignments por grouped",
+		"No renderItem: se group.maps.length > 1, renderizar MapGroupItem; senão, renderizar AssignmentItem com group.maps[0]",
+		"MapGroupItem.onPress do publicador navega para /publisher/assignment/group/[group_code]",
+		"Criar src/app/(app)/publisher/assignment/group/[group_code]/index.tsx",
+		"Tela de grupo do publicador: FlatList dos mapas do grupo, tapping em cada mapa navega para /publisher/assignment/[id]",
+		"Exibir título '{N} mapas' e nenhuma opção de edição (somente visualização)"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Home do publicador exibe grupos como cards únicos quando há group_code",
+		"Tapping em grupo navega para tela de detalhe do grupo",
+		"Tela de grupo lista todos os mapas; tapping abre detalhe individual",
+		"Mapas individuais continuam funcionando como antes",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": [
+			"src/app/(app)/publisher/index.tsx"
+		],
+		"create": [
+			"src/app/(app)/publisher/assignment/group/[group_code]/index.tsx"
+		]
+	}
+}

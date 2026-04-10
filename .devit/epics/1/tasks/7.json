@@ -1,0 +1,27 @@
+{
+	"id": 7,
+	"title": "Update assignment to support grouped maps",
+	"description": "Atualizar a lógica de designação para aceitar um array de mapas. Ao designar um grupo, todos os mapas do grupo são atribuídos ao publicador simultaneamente.",
+	"steps": [
+		"Abrir src/services/instantdb/maps-service.ts",
+		"Adicionar método assignMaps(mapIds: string[], publisherId: string): Promise<void> — chama db.transact com array de db.tx.maps[id].link({ assigned: publisherId }) para cada id",
+		"Abrir src/app/(app)/admin/maps/[id]/index.tsx",
+		"Detectar se o mapa tem group_code: se sim, buscar todos os mapas do grupo via useGroupMaps(map.group_code)",
+		"Ao salvar designação, se group_code existe: chamar mapsService.assignMaps(groupMapIds, publisherId); senão, manter assignMap existente",
+		"Atualizar mensagem de sucesso: se grupo, mostrar 'X mapas designados'"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Designar um mapa individual continua funcionando como antes",
+		"Designar via tela de grupo atribui todos os mapas do grupo ao mesmo publicador",
+		"assignMaps executa em uma única transação",
+		"Nenhum erro de TypeScript"
+	],
+	"files": {
+		"modify": [
+			"src/services/instantdb/maps-service.ts",
+			"src/app/(app)/admin/maps/[id]/index.tsx"
+		],
+		"create": []
+	}
+}

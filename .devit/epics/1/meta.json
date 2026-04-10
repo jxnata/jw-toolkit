@@ -1,0 +1,74 @@
+{
+	"epic": "E01",
+	"title": "Agrupamento de Mapas",
+	"objective": "Permitir que mapas sejam agrupados opcionalmente usando um group_code compartilhado, tratando o grupo como unidade única de designação e navegação.",
+	"branch": "feature/map-groups",
+	"pull_request": null,
+	"pr_per_task": false,
+	"tasks": [
+		{
+			"id": 1,
+			"title": "Add group operations to MapsService",
+			"file": "tasks/1.json",
+			"status": "completed",
+			"commits": ["17c6134"],
+			"pull_request": null
+		},
+		{
+			"id": 2,
+			"title": "Add groupMaps util and useMaps grouped output",
+			"file": "tasks/2.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 3,
+			"title": "Create MapGroupItem component",
+			"file": "tasks/3.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 4,
+			"title": "Admin maps list: selection mode UI",
+			"file": "tasks/4.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 5,
+			"title": "Admin maps list: render grouped maps",
+			"file": "tasks/5.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 6,
+			"title": "Admin group detail screen",
+			"file": "tasks/6.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 7,
+			"title": "Update assignment to support grouped maps",
+			"file": "tasks/7.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 8,
+			"title": "Publisher view: grouped assignments and group detail screen",
+			"file": "tasks/8.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		}
+	]
+}
