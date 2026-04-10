@@ -18,23 +18,23 @@
 			"id": 2,
 			"title": "Add groupMaps util and useMaps grouped output",
 			"file": "tasks/2.json",
-			"status": "pending",
-			"commits": [],
+			"status": "completed",
+			"commits": ["7e35813"],
 			"pull_request": null
 		},
 		{
 			"id": 3,
 			"title": "Create MapGroupItem component",
 			"file": "tasks/3.json",
-			"status": "pending",
-			"commits": [],
+			"status": "completed",
+			"commits": ["4b61a8d"],
 			"pull_request": null
 		},
 		{
 			"id": 4,
 			"title": "Admin maps list: selection mode UI",
 			"file": "tasks/4.json",
-			"status": "pending",
+			"status": "in_progress",
 			"commits": [],
 			"pull_request": null
 		},
