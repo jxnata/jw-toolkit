@@ -66,8 +66,8 @@
 			"id": 8,
 			"title": "Publisher view: grouped assignments and group detail screen",
 			"file": "tasks/8.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["8ee17db"],
 			"pull_request": null
 		}
 	]
