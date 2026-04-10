@@ -18,7 +18,6 @@ const useAssignment = (assignmentId: string) => {
 						},
 						city: {},
 						assigned: {},
-						extra_maps: {},
 					},
 				}
 			: null

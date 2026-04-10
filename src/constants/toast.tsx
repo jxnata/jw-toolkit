@@ -1,7 +1,7 @@
 import { colors } from '@/utils/color-theme'
 import { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message'
 
-export const configToast = (scheme: 'light' | 'dark'): ToastConfig => {
+export const configToast = (): ToastConfig => {
 	return {
 		success: (props) => (
 			<BaseToast

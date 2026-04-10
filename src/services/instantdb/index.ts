@@ -1,13 +1,11 @@
 export { citiesService } from './cities-service'
 export { congregationsService } from './congregations-service'
 export { districtsService } from './districts-service'
-export { extraMapsService } from './extra-maps-service'
 export { mapsService } from './maps-service'
 export { publishersService } from './publishers-service'
 
 export type { CreateCityInput } from './cities-service'
 export type { CreateCongregationInput } from './congregations-service'
 export type { CreateDistrictInput } from './districts-service'
-export type { CreateExtraMapInput } from './extra-maps-service'
 export type { CreateMapInput } from './maps-service'
 export type { CreatePublisherInput } from './publishers-service'

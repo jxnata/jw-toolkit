@@ -68,20 +68,6 @@ const rules = {
 			"auth.id in data.ref('congregation.publishers.user.id') && (data.ref('congregation.publishers')[auth.id in data.ref('congregation.publishers.user.id')].level == 1 || auth.id in data.ref('assigned.user.id'))",
 		],
 	},
-	extra_maps: {
-		allow: {
-			view: 'isInCongregation',
-			create: 'isAdmin',
-			update: 'isAdmin',
-			delete: 'isAdmin',
-		},
-		bind: [
-			'isAdmin',
-			"auth.id in data.ref('map.congregation.publishers.user.id') && data.ref('map.congregation.publishers')[auth.id in data.ref('map.congregation.publishers.user.id')].level == 1",
-			'isInCongregation',
-			"auth.id in data.ref('map.congregation.publishers.user.id')",
-		],
-	},
 	publishers: {
 		allow: {
 			view: 'isInSameCongregationOrSelf',

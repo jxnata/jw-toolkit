@@ -7,7 +7,7 @@ import { Stack } from 'expo-router'
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient'
 
 export default function Layout() {
-	const { congregation, current } = useSession()
+	const { congregation, current, type } = useSession()
 	const [status] = useForegroundPermissions()
 	const { colors } = useThemedColors()
 
@@ -29,26 +29,21 @@ export default function Layout() {
 		}
 	}
 
-	if (!congregation)
-		return (
-			<Stack screenOptions={screenOptions}>
-				<Stack.Screen name="select-congregation" options={{ presentation: 'modal' }} />
-				<Stack.Screen name="add-congregation" options={{ presentation: 'modal' }} />
-			</Stack>
-		)
-
 	return (
 		<Stack screenOptions={screenOptions}>
-			<Stack.Screen name="index" />
-			<Stack.Screen name="admin/me" options={{ presentation: 'modal' }} />
-			<Stack.Screen name="publisher/me" options={{ presentation: 'modal' }} />
-			<Stack.Screen name="publisher/assignment/[id]" options={{ presentation: 'modal', headerShown: false }} />
-			<Stack.Screen name="publisher/assignment/finish" options={{ presentation: 'modal', headerShown: false }} />
-			<Stack.Screen name="admin/my-assignments/[id]" options={{ presentation: 'modal', headerShown: false }} />
-			<Stack.Screen name="select-congregation" options={{ presentation: 'modal' }} />
-			<Stack.Screen name="limit-alert" options={{ presentation: 'modal' }} />
-			<Stack.Screen name="privacy-policy" options={{ presentation: 'modal' }} />
-			<Stack.Screen name="privacy-blocked" options={{ presentation: 'modal' }} />
+			<Stack.Protected guard={!!congregation && type === 'publisher'}>
+				<Stack.Screen options={{ headerShown: false }} name="publisher" />
+			</Stack.Protected>
+
+			<Stack.Protected guard={!!congregation && type === 'admin'}>
+				<Stack.Screen options={{ headerShown: false }} name="admin" />
+			</Stack.Protected>
+
+			<Stack.Screen name="select-congregation" options={{ ...screenOptions, presentation: 'modal' }} />
+			<Stack.Screen name="limit-alert" options={{ ...screenOptions, presentation: 'modal' }} />
+			<Stack.Screen name="privacy-policy" options={{ ...screenOptions, presentation: 'modal' }} />
+			<Stack.Screen name="privacy-blocked" options={{ ...screenOptions, presentation: 'modal' }} />
+			<Stack.Screen name="subscription" options={{ ...screenOptions, presentation: 'modal' }} />
 		</Stack>
 	)
 }

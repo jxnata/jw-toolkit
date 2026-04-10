@@ -1,10 +1,7 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
-import ExtraMapItem from '@/components/extra-map-item'
-import ExtraMapViewModal from '@/components/extra-map-view-modal'
 import MapViewDetails from '@/components/map-view-details'
 import PersonalAnnotation from '@/components/personal-annotation'
-import useExtraMaps from '@/hooks/use-extra-maps'
 import useMap from '@/hooks/use-map'
 import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -17,7 +14,7 @@ import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { Pencil, Trash } from 'lucide-react-native'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
@@ -26,13 +23,11 @@ const ViewMap = () => {
 	const { data } = useLocalSearchParams()
 	const params = JSON.parse((data as string) || '{}') as Map
 	const { map } = useMap({ mapId: params.id })
-	const { extraMaps } = useExtraMaps(params.id)
 	const { publishers } = usePublishers()
 	const { control, formState, handleSubmit } = useForm<AddAssignmentReq>({
 		defaultValues: { assigned: typeof params.assigned === 'object' ? params.assigned!.id : params.assigned },
 	})
 	const { colors } = useThemedColors()
-	const [selectedExtraMap, setSelectedExtraMap] = useState<{ id: string; address: string; details?: string; lat: number; lng: number } | null>(null)
 
 	const publisherList = useMemo(() => publishers.map((p) => ({ label: p.name, value: p.id })), [publishers])
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
@@ -158,23 +153,10 @@ const ViewMap = () => {
 							</>
 						)}
 					</View>
-
-					{!!map && extraMaps.length > 0 && (
-						<View className="px-4">
-							<Text className="mb-2 font-semibold text-foreground opacity-75">Localizações</Text>
-							<ExtraMapItem
-								extraMap={{ id: map.id, address: map.address, details: map.details, lat: map.lat, lng: map.lng }}
-								onPress={() => setSelectedExtraMap({ id: map.id, address: map.address, details: map.details, lat: map.lat, lng: map.lng })}
-							/>
-							{extraMaps.map((em) => (
-								<ExtraMapItem key={em.id} extraMap={em} onPress={() => setSelectedExtraMap(em)} />
-							))}
-						</View>
-					)}
 				</ScrollView>
 
 				{!!map && (
-					<View className="m-2.5 h-64 overflow-hidden rounded-lg">
+					<View className="m-2.5 flex-1 overflow-hidden rounded-lg">
 						<MapView
 							style={{ width: '100%', height: '100%' }}
 							initialRegion={{
@@ -194,13 +176,6 @@ const ViewMap = () => {
 					</View>
 				)}
 			</View>
-
-			<ExtraMapViewModal
-				visible={!!selectedExtraMap}
-				onClose={() => setSelectedExtraMap(null)}
-				extraMap={selectedExtraMap}
-				showNavigation={false}
-			/>
 		</View>
 	)
 }

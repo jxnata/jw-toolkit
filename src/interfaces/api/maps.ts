@@ -32,16 +32,3 @@ export type RemoveMapRes = {
 	map: string
 }
 
-export type AddExtraMapReq = {
-	address: string
-	details?: string
-	coordinates: string
-}
-
-export type ExtraMapLocal = {
-	id: string
-	address: string
-	details?: string
-	lat: number
-	lng: number
-}

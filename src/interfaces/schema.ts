@@ -23,12 +23,6 @@ const _schema = i.schema({
 		districts: i.entity({
 			name: i.string(),
 		}),
-		extra_maps: i.entity({
-			address: i.string(),
-			details: i.string().optional(),
-			lat: i.number(),
-			lng: i.number(),
-		}),
 		maps: i.entity({
 			address: i.string(),
 			details: i.string().optional(),
@@ -131,19 +125,6 @@ const _schema = i.schema({
 				on: "congregations",
 				has: "many",
 				label: "maps"
-			}
-		},
-		mapsExtra_maps: {
-			forward: {
-				on: "maps",
-				has: "many",
-				label: "extra_maps"
-			},
-			reverse: {
-				on: "extra_maps",
-				has: "one",
-				label: "map",
-				onDelete: "cascade"
 			}
 		},
 		publishersCongregation: {

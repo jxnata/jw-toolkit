@@ -71,7 +71,6 @@ const useMaps = (
 					},
 					city: {},
 					assigned: {},
-					extra_maps: {},
 				},
 			}
 			: null

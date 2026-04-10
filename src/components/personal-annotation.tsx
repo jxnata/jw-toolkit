@@ -1,9 +1,10 @@
 import { useSession } from '@/contexts/session-provider'
 import { usePersonalAnnotations } from '@/hooks/use-personal-annotations'
+import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
-import { MessageCirclePlus } from 'lucide-react-native'
+import { MessageCirclePlus, Save, Trash } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Button from './button'
 import Input from './input'
 import SheetModal from './sheet-modal'
@@ -14,6 +15,7 @@ type PersonalAnnotationProps = {
 
 const PersonalAnnotation = ({ map }: PersonalAnnotationProps) => {
 	const { current: user } = useSession()
+	const { colors } = useThemedColors()
 	const [showModal, setShowModal] = useState(false)
 	const [annotationText, setAnnotationText] = useState('')
 
@@ -32,6 +34,13 @@ const PersonalAnnotation = ({ map }: PersonalAnnotationProps) => {
 		}
 	}
 
+	const showDeleteAlert = () => {
+		Alert.alert('Excluir', 'Deseja excluir a anotação pessoal? Essa opção não pode ser revertida.', [
+			{ text: 'Cancelar', style: 'cancel' },
+			{ text: 'Sim, excluir', onPress: handleDeleteAnnotation, style: 'destructive' },
+		])
+	}
+
 	const handleDeleteAnnotation = () => {
 		saveAnnotation('')
 		setAnnotationText('')
@@ -45,22 +54,22 @@ const PersonalAnnotation = ({ map }: PersonalAnnotationProps) => {
 	return (
 		<>
 			{hasAnnotation ? (
-				<View className="m-4 rounded-xl border border-border bg-card p-4">
+				<View className="my-4 rounded-xl border border-dashed border-border bg-card p-4">
 					<View className="mb-2 flex-row items-start justify-between">
 						<Text className="mb-2 font-semibold text-foreground">Anotação Pessoal</Text>
 						<TouchableOpacity onPress={() => setShowModal(true)}>
 							<Text className="font-medium text-sm text-primary">Editar</Text>
 						</TouchableOpacity>
 					</View>
-					<Text className="leading-relaxed text-foreground">{annotation}</Text>
+					<Text className="font-regular leading-relaxed text-foreground">{annotation}</Text>
 				</View>
 			) : (
-				<View className="m-4">
+				<View className="my-4">
 					<TouchableOpacity
 						onPress={() => setShowModal(true)}
 						className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-card p-4">
-						<MessageCirclePlus size={20} className="text-muted-foreground" />
-						<Text className="text-muted-foreground font-medium">Adicionar anotação pessoal</Text>
+						<MessageCirclePlus size={20} color={colors.foreground} />
+						<Text className="font-medium text-foreground">Adicionar anotação pessoal</Text>
 					</TouchableOpacity>
 				</View>
 			)}
@@ -69,27 +78,44 @@ const PersonalAnnotation = ({ map }: PersonalAnnotationProps) => {
 				visible={showModal}
 				onClose={() => setShowModal(false)}
 				title={hasAnnotation ? 'Editar Anotação' : 'Adicionar Anotação'}>
-				<View className="flex-1 p-6">
-					<Text className="text-muted-foreground mb-4">
-						Adicione notas pessoais sobre este mapa que possam ajudá-lo no trabalho de campo.
-					</Text>
+				<KeyboardAvoidingView
+					keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
+					className="flex-1"
+					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+					<ScrollView className="flex-1" contentContainerClassName="flex-1">
+						<View className="flex-1 p-6">
+							<Text className="mb-6 font-regular text-foreground">
+								Adicione notas pessoais sobre este mapa que possam ajudá-lo no trabalho de campo.
+							</Text>
 
-					<Input
-						label="Sua anotação"
-						multiline
-						numberOfLines={8}
-						textAlignVertical="top"
-						value={annotationText}
-						onChangeText={setAnnotationText}
-						placeholder="Ex: Rua muito movimentada de manhã, melhor visitar à tarde. Cachorro no portão da casa verde."
-						className="min-h-[200px]"
-					/>
-				</View>
+							<Input
+								label="Sua anotação"
+								multiline
+								numberOfLines={4}
+								textAlignVertical="top"
+								value={annotationText}
+								onChangeText={setAnnotationText}
+								placeholder="Ex: Rua muito movimentada de manhã, melhor visitar à tarde. Cachorro no portão da casa verde."
+								className="min-h-[100px]"
+							/>
+						</View>
 
-				<View className="flex-row gap-3 border-t border-border p-6">
-					{hasAnnotation && <Button title="Excluir" variant="outline" className="flex-1" onPress={handleDeleteAnnotation} />}
-					<Button title={hasAnnotation ? 'Salvar' : 'Adicionar'} className="flex-1" onPress={handleSaveAnnotation} />
-				</View>
+						<View className="flex-row gap-3 border-t border-card p-6">
+							{hasAnnotation && (
+								<Button
+									variant="danger"
+									className="flex-1"
+									onPress={showDeleteAlert}
+									left={<Trash size={20} color={colors.danger[600]} />}>
+									Excluir
+								</Button>
+							)}
+							<Button className="flex-1" onPress={handleSaveAnnotation} left={<Save size={20} color="white" />}>
+								{hasAnnotation ? 'Salvar' : 'Adicionar'}
+							</Button>
+						</View>
+					</ScrollView>
+				</KeyboardAvoidingView>
 			</SheetModal>
 		</>
 	)

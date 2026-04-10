@@ -1,10 +1,13 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { Map } from '@/interfaces'
 import { useNavigation } from 'expo-router'
 import { MapPin } from 'lucide-react-native'
 import React from 'react'
 import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native'
+import PersonalAnnotation from './personal-annotation'
 
 interface AssignmentMap {
+	id: string
 	name: string
 	lat: number
 	lng: number
@@ -46,6 +49,9 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 					{assignment.address} - {assignment.city?.name}
 				</Text>
 				{!!assignment.details && <Text className="font-medium text-base text-foreground">{assignment.details}</Text>}
+
+				<PersonalAnnotation map={assignment as Map} />
+
 				<View className="mt-2 flex-row gap-2">
 					<TouchableOpacity
 						onPress={navigate}

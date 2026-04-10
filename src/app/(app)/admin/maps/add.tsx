@@ -1,7 +1,5 @@
 import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
-import ExtraMapFormModal from '@/components/extra-map-form-modal'
-import ExtraMapItem from '@/components/extra-map-item'
 import Input from '@/components/input'
 import SelectLocation from '@/components/select-location'
 import { STATUS_LIST } from '@/constants/content'
@@ -9,24 +7,20 @@ import { useSession } from '@/contexts/session-provider'
 import useCities from '@/hooks/use-cities'
 import { useLimitCheck } from '@/hooks/use-limit-check'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { AddMapReq, ExtraMapLocal } from '@/interfaces/api/maps'
+import { AddMapReq } from '@/interfaces/api/maps'
 import { error, success } from '@/messages/add'
-import { extraMapsService, mapsService } from '@/services/instantdb'
+import { mapsService } from '@/services/instantdb'
 import { getCoordinates } from '@/utils/get-coordinates'
 import { getMapRegion } from '@/utils/get-map-region'
 import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router } from 'expo-router'
-import { MapPinPlus, Plus, Save } from 'lucide-react-native'
+import { MapPinPlus, Save } from 'lucide-react-native'
 import { useMemo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { KeyboardAvoidingView, Modal, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-
-const MAX_EXTRA_MAPS = 5
+import { KeyboardAvoidingView, Modal, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
 const AddMap = () => {
 	const [modalVisible, setModalVisible] = useState(false)
-	const [extraMapModalVisible, setExtraMapModalVisible] = useState(false)
-	const [extraMaps, setExtraMaps] = useState<ExtraMapLocal[]>([])
 	const { cities } = useCities()
 	const { congregation } = useSession()
 	const { checkMapLimit } = useLimitCheck()
@@ -39,14 +33,6 @@ const AddMap = () => {
 
 	const toggleMap = () => {
 		setModalVisible((old) => !old)
-	}
-
-	const handleAddExtraMap = (data: ExtraMapLocal) => {
-		setExtraMaps((prev) => [...prev, data])
-	}
-
-	const handleRemoveExtraMap = (id: string) => {
-		setExtraMaps((prev) => prev.filter((em) => em.id !== id))
 	}
 
 	const save: SubmitHandler<AddMapReq> = async (data) => {
@@ -75,16 +61,6 @@ const AddMap = () => {
 				cityId: data.city,
 				congregationId: congregation.id,
 			})
-
-			for (const extraMap of extraMaps) {
-				await extraMapsService.createExtraMap({
-					address: extraMap.address,
-					details: extraMap.details,
-					lat: extraMap.lat,
-					lng: extraMap.lng,
-					mapId,
-				})
-			}
 
 			success('mapa')
 			router.back()
@@ -207,30 +183,6 @@ const AddMap = () => {
 								onValueChange={onChange}
 							/>
 						)}
-					/>
-
-					{extraMaps.length > 0 && (
-						<View className="mt-4">
-							<Text className="mb-2 font-semibold text-foreground opacity-75">Mapas Adicionais</Text>
-							{extraMaps.map((em) => (
-								<ExtraMapItem key={em.id} extraMap={em} onRemove={() => handleRemoveExtraMap(em.id)} />
-							))}
-						</View>
-					)}
-
-					<Button
-						variant="outline"
-						disabled={extraMaps.length >= MAX_EXTRA_MAPS}
-						onPress={() => setExtraMapModalVisible(true)}
-						className="mt-4"
-						left={<Plus size={16} color={colors.foreground} />}>
-						Mapa Adicional
-					</Button>
-
-					<ExtraMapFormModal
-						visible={extraMapModalVisible}
-						onClose={() => setExtraMapModalVisible(false)}
-						onSave={handleAddExtraMap}
 					/>
 
 					<Modal animationType="slide" transparent visible={modalVisible} onRequestClose={toggleMap}>

@@ -12,6 +12,7 @@ import { ThemeProvider } from '@/contexts/theme-provider'
 import { storage } from '@/database'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
@@ -31,7 +32,7 @@ const queryClient = new QueryClient()
 export default function Layout() {
 	const scheme = useColorScheme()
 	const [isLoaded] = useFonts(fonts)
-	const config = configToast(scheme || 'light')
+	const config = configToast()
 
 	const handleOnLayout = useCallback(async () => {
 		if (isLoaded) await SplashScreen.hideAsync()
@@ -64,7 +65,9 @@ export default function Layout() {
 							<ThemeProvider>
 								<LocationProvider>
 									<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-									<RootNavigator />
+									<NavigationThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+										<RootNavigator />
+									</NavigationThemeProvider>
 								</LocationProvider>
 							</ThemeProvider>
 						</LimitGuard>
