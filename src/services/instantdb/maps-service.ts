@@ -110,6 +110,29 @@ class MapsService {
 	async deleteMap(mapId: string): Promise<void> {
 		await db.transact(db.tx.maps[mapId].delete())
 	}
+
+	async setGroupCode(mapIds: string[], groupCode: string): Promise<void> {
+		await db.transact(mapIds.map((mapId) => db.tx.maps[mapId].update({ group_code: groupCode })))
+	}
+
+	async removeFromGroup(mapId: string): Promise<void> {
+		await db.transact(db.tx.maps[mapId].update({ group_code: undefined }))
+	}
+
+	async dissolveGroup(groupCode: string): Promise<void> {
+		const { data } = await db.queryOnce({
+			maps: {
+				$: {
+					where: { group_code: groupCode },
+				},
+			},
+		})
+
+		const maps = data.maps || []
+		if (maps.length === 0) return
+
+		await db.transact(maps.map((map) => db.tx.maps[map.id].update({ group_code: undefined })))
+	}
 }
 
 export const mapsService = new MapsService()
