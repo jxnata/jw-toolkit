@@ -42,8 +42,8 @@
 			"id": 5,
 			"title": "Admin maps list: render grouped maps",
 			"file": "tasks/5.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["f34fc81"],
 			"pull_request": null
 		},
 		{
