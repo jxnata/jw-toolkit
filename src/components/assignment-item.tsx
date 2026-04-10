@@ -1,15 +1,15 @@
+import { MAP_STATUS_LABELS } from '@/constants/content'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { getLocationDistance } from '@/utils/get-location-distance'
-import { mapImage } from '@/utils/map-image'
-import { useQuery } from '@tanstack/react-query'
-import { LocationObjectCoords } from 'expo-location'
-import { Dimensions, Image, Pressable, Text, View } from 'react-native'
-
 import { Map } from '@/interfaces'
 import { formatDate } from '@/utils/date-format'
 import { firstName } from '@/utils/first-name'
+import { getLocationDistance } from '@/utils/get-location-distance'
+import { useQuery } from '@tanstack/react-query'
+import { LocationObjectCoords } from 'expo-location'
+import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
 
 const screenWidth = Dimensions.get('screen').width
+const TEXT_MAX_WIDTH = screenWidth - 130
 
 interface AssignmentProps {
 	map: Map
@@ -20,7 +20,6 @@ interface AssignmentProps {
 
 const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentProps) => {
 	const { colors } = useThemedColors()
-	const coordinates: [number, number] = [map.lat, map.lng]
 
 	const found = !!(map?.visited && map.found)
 
@@ -29,54 +28,67 @@ const AssignmentItem = ({ map, location, hidePublisher, onPress }: AssignmentPro
 			'distance',
 			location?.latitude.toFixed(4),
 			location?.longitude.toFixed(4),
-			coordinates[0].toFixed(4),
-			coordinates[1].toFixed(4),
+			map.lat.toFixed(4),
+			map.lng.toFixed(4),
 		],
-		queryFn: () => getLocationDistance(location, coordinates),
+		queryFn: () => getLocationDistance(location, [map.lat, map.lng]),
 		enabled: !!location,
 	})
 
 	return (
-		<Pressable onPress={onPress} className="mb-[5px] flex w-full flex-row gap-2.5 rounded-[10px] bg-card p-2.5">
-			<View className="flex">
-				<Image resizeMode="contain" source={{ uri: mapImage(coordinates) }} className="h-20 w-20 rounded-[10px]" />
-			</View>
-
-			<View className="flex">
-				{map.assigned && !hidePublisher && <Text className="font-medium text-foreground">{map.assigned.name}</Text>}
-				<Text className="font-medium text-foreground" style={{ width: screenWidth - 10 - 10 - 10 - 80 - 20 }}>
-					{map.name} - {map.address}, {map.city.name}
-				</Text>
-				{!!map.visited ? (
-					<View className="flex">
-						<Text className="pt-[5px] font-regular text-xs" style={{ color: colors.foreground + '80' }}>
-							Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
+		<TouchableOpacity activeOpacity={0.8} onPress={onPress} className="mb-2">
+			<View className="flex w-full flex-row gap-3 border-b border-dashed border-border px-4 py-3">
+				<View className="flex-1 flex-col gap-1">
+					<View className="flex-row items-center justify-between">
+						<Text className="flex-wrap font-medium text-foreground" style={{ maxWidth: TEXT_MAX_WIDTH }}>
+							{map.city.name} - {map.name}
 						</Text>
-						{found ? (
-							<Text className="pt-0 font-semibold text-xs" style={{ color: colors.success.DEFAULT }}>
-								Encontrado
-							</Text>
-						) : (
-							<Text className="pt-0 font-semibold text-xs" style={{ color: colors.primary[600] }}>
-								Não encontrado
-							</Text>
-						)}
+						<View className="flex-row items-center gap-2">
+							<Text className="font-bold text-xs text-foreground opacity-90">{distance}</Text>
+							{map.assigned ? (
+								<View className="rounded bg-primary-600 px-1 py-0.5">
+									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.ASSIGNED}</Text>
+								</View>
+							) : (
+								<View className="rounded bg-success px-1 py-0.5">
+									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.FREE}</Text>
+								</View>
+							)}
+						</View>
 					</View>
-				) : (
-					<Text className="pt-[5px] font-regular text-xs" style={{ color: colors.foreground + '80' }}>
-						Ainda não visitado
-					</Text>
-				)}
-			</View>
 
-			<View
-				className="absolute bottom-[5px] right-[5px] rounded-[5px] px-[5px] py-0.5"
-				style={{ backgroundColor: colors.background }}>
-				<Text className="font-bold text-[10px]" style={{ color: colors.foreground + '80' }}>
-					{distance}
-				</Text>
+					<Text
+						numberOfLines={2}
+						ellipsizeMode="tail"
+						className="flex-wrap font-medium text-foreground"
+						style={{ maxWidth: TEXT_MAX_WIDTH }}>
+						{map.address}
+					</Text>
+
+					{map.assigned && !hidePublisher && (
+						<View className="flex-row items-center gap-1">
+							<Text className="font-semibold text-sm text-foreground opacity-70">Designado para:</Text>
+							<Text className="font-bold text-sm text-primary">{map.assigned.name}</Text>
+						</View>
+					)}
+
+					{!!map.visited ? (
+						<View>
+							<Text className="font-regular text-xs text-foreground opacity-80">
+								Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
+							</Text>
+							{found ? (
+								<Text className="font-semibold text-xs text-success">Encontrado</Text>
+							) : (
+								<Text className="font-semibold text-xs text-primary-600">Não encontrado</Text>
+							)}
+						</View>
+					) : (
+						<Text className="font-regular text-xs text-foreground opacity-80">Ainda não visitado</Text>
+					)}
+				</View>
 			</View>
-		</Pressable>
+		</TouchableOpacity>
 	)
 }
 

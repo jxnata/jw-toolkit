@@ -48,7 +48,7 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 
 	return (
 		<TouchableOpacity activeOpacity={0.8} onPress={handlePress} className="mb-2">
-			<View className="flex w-full flex-row gap-2.5 rounded-xl border-b border-dashed border-border px-4 py-3">
+			<View className="flex w-full flex-row gap-3 border-b border-dashed border-border px-4 py-3">
 				{selectionMode && !map.group_code && (
 					<View className="justify-center pr-1">
 						<View
@@ -59,9 +59,23 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 				)}
 
 				<View className="flex-1 flex-col gap-1">
-					<Text className="flex-wrap font-medium text-foreground" style={{ maxWidth: TEXT_MAX_WIDTH }}>
-						{map.city.name} - {map.name}
-					</Text>
+					<View className="flex-row items-center justify-between">
+						<Text className="flex-wrap font-medium text-foreground" style={{ maxWidth: TEXT_MAX_WIDTH }}>
+							{map.city.name} - {map.name}
+						</Text>
+						<View className="flex-row items-center gap-2">
+							<Text className="font-bold text-xs text-foreground opacity-90">{distance}</Text>
+							{map.assigned ? (
+								<View className="rounded bg-primary-600 px-1 py-0.5">
+									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.ASSIGNED}</Text>
+								</View>
+							) : (
+								<View className="rounded bg-success px-1 py-0.5">
+									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.FREE}</Text>
+								</View>
+							)}
+						</View>
+					</View>
 					<Text
 						numberOfLines={2}
 						ellipsizeMode="tail"
@@ -72,44 +86,32 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 
 					{hasAnnotation && <Text className="font-medium text-sm text-sky-500">{annotation}</Text>}
 
-					{!!map.visited ? (
-						<View className="flex">
-							<Text className="font-regular text-xs" style={{ color: colors.foreground + '80' }}>
-								Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
-							</Text>
-							{found ? (
-								<Text className="pt-0 font-semibold text-xs" style={{ color: colors.success.DEFAULT }}>
-									Encontrado
-								</Text>
-							) : (
-								<Text className="pt-0 font-semibold text-xs" style={{ color: colors.primary[600] }}>
-									Não encontrado
-								</Text>
-							)}
+					{map.assigned ? (
+						<View className="flex-row items-center gap-1">
+							<Text className="font-semibold text-sm text-foreground opacity-70">Designado para:</Text>
+							<Text className="font-bold text-sm text-primary">{map.assigned.name}</Text>
 						</View>
 					) : (
-						<Text className="pt-[5px] font-regular text-xs" style={{ color: colors.foreground + '80' }}>
-							Ainda não visitado
-						</Text>
+						<>
+							{!!map.visited ? (
+								<View className="flex">
+									<Text className="font-regular text-xs text-foreground opacity-80">
+										Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
+									</Text>
+									{found ? (
+										<Text className="pt-0 font-semibold text-xs text-success">Encontrado</Text>
+									) : (
+										<Text className="pt-0 font-semibold text-xs text-primary-600">Não encontrado</Text>
+									)}
+								</View>
+							) : (
+								<Text className="pt-[5px] font-regular text-xs text-foreground opacity-80">Ainda não visitado</Text>
+							)}
+						</>
 					)}
 					{map.tag && (
 						<View className={`${getBadgeColor(map.tag)} absolute -right-1 -top-1 rounded-xl px-2 py-1`}>
 							<Text className="font-medium text-xs text-white">{STATUS_NAME[map.tag as keyof typeof STATUS_NAME]}</Text>
-						</View>
-					)}
-				</View>
-
-				<View
-					className="absolute bottom-2 right-2 flex-row items-center gap-2 rounded-[5px] px-2 py-0.5"
-					style={{ backgroundColor: colors.background }}>
-					<Text className="font-bold text-xs text-foreground opacity-90">{distance}</Text>
-					{map.assigned ? (
-						<View className="rounded-[5px] px-[5px] py-0.5" style={{ backgroundColor: colors.primary[600] }}>
-							<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.ASSIGNED}</Text>
-						</View>
-					) : (
-						<View className="rounded-[5px] px-[5px] py-0.5" style={{ backgroundColor: colors.success.DEFAULT }}>
-							<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.FREE}</Text>
 						</View>
 					)}
 				</View>
