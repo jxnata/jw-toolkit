@@ -10,7 +10,7 @@
 			"id": 1,
 			"title": "Test groupMaps and pure utils (get-map-region, get-assignment-message)",
 			"file": "tasks/1.json",
-			"status": "pending",
+			"status": "in_progress",
 			"commits": [],
 			"pull_request": null
 		},
