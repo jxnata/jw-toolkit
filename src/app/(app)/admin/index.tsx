@@ -106,7 +106,7 @@ const Admin = () => {
 					className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
 					<View className="flex flex-row items-center gap-3">
 						<Text className="font-icons text-4xl text-primary"></Text>
-						<Text className="font-semibold text-base text-foreground">Exportar mapas</Text>
+						<Text className="font-semibold text-base text-foreground">Exportar/Backup</Text>
 					</View>
 				</TouchableOpacity>
 

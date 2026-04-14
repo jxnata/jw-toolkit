@@ -50,6 +50,35 @@ const ViewMap = () => {
 
 	const found = !!(map?.visited && map.found)
 
+	const removeAssignment = async () => {
+		try {
+			const assignedId = typeof map?.assigned === 'object' ? map?.assigned?.id : map?.assigned
+			if (!assignedId) return
+
+			if (map?.group_code && groupMaps.length > 0) {
+				const groupMapsList = groupMaps
+					.filter((m) => m.assigned)
+					.map((m) => ({ id: m.id, assigned: typeof m.assigned === 'object' ? m.assigned!.id! : m.assigned! }))
+				await mapsService.unassignMaps(groupMapsList)
+				removeSuccess(`${groupMapsList.length} designações removidas`)
+			} else {
+				await mapsService.unassignMap(params.id, assignedId)
+				removeSuccess('designação')
+			}
+
+			router.back()
+		} catch (err) {
+			removeError('designação')
+			console.error('Failed to remove assignment:', err)
+		}
+	}
+
+	const showRemoveAlert = () =>
+		Alert.alert('Remover designação', 'Deseja remover a designação deste mapa?', [
+			{ text: 'Cancelar', style: 'cancel' },
+			{ text: 'Sim, remover', onPress: () => removeAssignment(), style: 'destructive' },
+		])
+
 	const save: SubmitHandler<AddAssignmentReq> = async (data) => {
 		try {
 			if (map?.group_code && groupMaps.length > 0) {
@@ -205,30 +234,44 @@ const ViewMap = () => {
 
 							{/* Assignment */}
 							<View className="mt-1">
-								<Text className="py-2 font-medium text-foreground">Designar para:</Text>
-								<Controller
-									control={control}
-									name="assigned"
-									render={({ field: { onChange, value } }) => (
-										<Dropdown
-											placeholder="Selecione um publicador..."
-											options={publisherList}
-											selectedValue={value}
-											onValueChange={onChange}
-											disabled={map.tag === 'nao-visitar'}
+								{map.assigned ? (
+									<>
+										<Text className="py-2 font-medium text-foreground">Designado para:</Text>
+										<View className="mb-3 rounded-xl bg-background px-4 py-3">
+											<Text className="font-semibold text-foreground">{map.assigned.name}</Text>
+										</View>
+										<Button variant="danger" onPress={showRemoveAlert}>
+											Remover Designação
+										</Button>
+									</>
+								) : (
+									<>
+										<Text className="py-2 font-medium text-foreground">Designar para:</Text>
+										<Controller
+											control={control}
+											name="assigned"
+											render={({ field: { onChange, value } }) => (
+												<Dropdown
+													placeholder="Selecione um publicador..."
+													options={publisherList}
+													selectedValue={value}
+													onValueChange={onChange}
+													disabled={map.tag === 'nao-visitar'}
+												/>
+											)}
 										/>
-									)}
-								/>
-								{map.tag === 'nao-visitar' && (
-									<Text className="py-2 font-medium text-danger-500">
-										Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
-									</Text>
+										{map.tag === 'nao-visitar' && (
+											<Text className="py-2 font-medium text-danger-500">
+												Não é possível designar esse mapa pois está marcado como &quot;não visitar&quot;.
+											</Text>
+										)}
+										<View className="mt-2">
+											<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
+												Salvar designação
+											</Button>
+										</View>
+									</>
 								)}
-								<View className="mt-2">
-									<Button disabled={!formState.isValid} loading={formState.isSubmitting} onPress={handleSubmit(save)}>
-										Salvar designação
-									</Button>
-								</View>
 							</View>
 						</>
 					)}

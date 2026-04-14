@@ -1,8 +1,8 @@
 import Button from '@/components/button'
 import { FEATURES } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
-import { useBackupRestore } from '@/hooks/use-backup-restore'
 import useAllMaps from '@/hooks/use-all-maps'
+import { useBackupRestore } from '@/hooks/use-backup-restore'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'
@@ -154,13 +154,13 @@ const ExportMaps = () => {
 				{/* Card 1 - Export PDF */}
 				<View className="mb-4 rounded-xl border border-border bg-card p-4">
 					<Text className="mb-1 font-semibold text-foreground">Exportar PDF</Text>
-					<Text className="mb-4 text-sm text-foreground opacity-60">
+					<Text className="mb-4 font-regular text-sm text-foreground opacity-60">
 						Exporta todos os mapas da congregação em formato PDF
 					</Text>
 					{loading && (
 						<View className="items-center py-2">
 							<ActivityIndicator size="small" color={colors.primary[600]} />
-							<Text className="mt-1 text-sm font-medium text-foreground">Carregando mapas...</Text>
+							<Text className="mt-1 font-medium text-sm text-foreground">Carregando mapas...</Text>
 						</View>
 					)}
 					{!loading && maps.length === 0 && (
@@ -176,7 +176,7 @@ const ExportMaps = () => {
 					)}
 				</View>
 
-			{FEATURES.backup && (
+				{FEATURES.backup && (
 					<>
 						{/* Card 2 - Backup */}
 						<View className="mb-4 rounded-xl border border-border bg-card p-4">
@@ -197,9 +197,7 @@ const ExportMaps = () => {
 								left={!backupLoading ? <Save size={20} color="white" /> : undefined}>
 								Fazer Backup
 							</Button>
-							{error && !progress && (
-								<Text className="mt-2 text-sm text-danger-500">{error}</Text>
-							)}
+							{error && !progress && <Text className="mt-2 text-sm text-danger-500">{error}</Text>}
 						</View>
 
 						{/* Card 3 - Restore */}
@@ -222,9 +220,7 @@ const ExportMaps = () => {
 								left={!backupLoading ? <RotateCcw size={20} color={colors.danger[500]} /> : undefined}>
 								Restaurar
 							</Button>
-							{error && progress === null && (
-								<Text className="mt-2 text-sm text-danger-500">{error}</Text>
-							)}
+							{error && progress === null && <Text className="mt-2 text-sm text-danger-500">{error}</Text>}
 						</View>
 					</>
 				)}
