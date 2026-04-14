@@ -12,3 +12,7 @@ export const FREE_LIMITS = {
 	maps: process.env.EXPO_PUBLIC_LIMIT_MAPS,
 	publishers: process.env.EXPO_PUBLIC_LIMIT_PUBLISHERS,
 }
+
+export const FEATURES = {
+	backup: process.env.EXPO_PUBLIC_FEATURE_BACKUP === 'true',
+}
