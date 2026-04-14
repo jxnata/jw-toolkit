@@ -13,7 +13,10 @@ interface AssignmentMap {
 	lng: number
 	address: string
 	details?: string
+	district?: string
 	city?: { name: string }
+	found?: boolean | null
+	found_info?: string | null
 }
 
 interface AssignmentProps {
@@ -43,12 +46,17 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 
 	return (
 		<View className="absolute bottom-10 w-full px-2">
-			<View className="gap-2 rounded-[10px] bg-background px-4 py-2">
+			<View className="gap-1 rounded-3xl bg-background px-4 py-2">
 				<Text className="pt-2 font-bold text-base text-foreground">Endereço</Text>
-				<Text className="font-medium text-base text-foreground">
-					{assignment.address} - {assignment.city?.name}
-				</Text>
+				<Text className="font-medium text-base text-foreground">{assignment.address}</Text>
+				{!!assignment.district && <Text className="font-medium text-base text-foreground">{assignment.district}</Text>}
+				<Text className="font-medium text-base text-foreground">{assignment.city?.name}</Text>
 				{!!assignment.details && <Text className="font-medium text-base text-foreground">{assignment.details}</Text>}
+				{!!assignment.found && (
+					<Text className="font-semibold text-xs text-success">
+						Encontrado {!!assignment.found_info && '- ' + assignment.found_info}
+					</Text>
+				)}
 
 				<PersonalAnnotation map={assignment as Map} />
 
