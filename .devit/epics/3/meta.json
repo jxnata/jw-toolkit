@@ -18,7 +18,7 @@
 			"id": 2,
 			"title": "Test identifierToSubscription utility",
 			"file": "tasks/2.json",
-			"status": "pending",
+			"status": "in_progress",
 			"commits": [],
 			"pull_request": null
 		},
