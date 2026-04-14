@@ -26,6 +26,7 @@ export default function AdminLayout() {
 			<Stack.Screen name="publishers/review" />
 			<Stack.Screen name="publishers/edit/[id]" />
 			<Stack.Screen name="my-assignments/index" />
+			<Stack.Screen name="my-assignments/group/[group_code]/index" />
 			<Stack.Screen
 				name="my-assignments/[id]"
 				options={{ presentation: 'modal', headerTransparent: true, headerStyle: { backgroundColor: 'transparent' } }}
@@ -35,7 +36,7 @@ export default function AdminLayout() {
 			<Stack.Screen name="maps/add" />
 			<Stack.Screen name="maps/options" options={{ presentation: 'modal' }} />
 			<Stack.Screen name="maps/group/[group_code]/index" />
-			<Stack.Screen name="maps/[id]/index" />
+			<Stack.Screen name="maps/[id]/index" options={{ headerTransparent: true, headerStyle: { backgroundColor: 'transparent' } }} />
 			<Stack.Screen name="maps/[id]/edit/index" />
 			<Stack.Screen name="export/index" />
 		</Stack>
