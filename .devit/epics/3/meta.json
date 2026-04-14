@@ -34,8 +34,8 @@
 			"id": 4,
 			"title": "Test BackupService batch operations",
 			"file": "tasks/4.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["1c67f03"],
 			"pull_request": null
 		},
 		{
