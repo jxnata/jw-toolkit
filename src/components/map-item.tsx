@@ -1,4 +1,3 @@
-import { useThemedColors } from '@/hooks/use-themed-colors'
 import { formatDate } from '@/utils/date-format'
 import { getLocationDistance } from '@/utils/get-location-distance'
 import { useQuery } from '@tanstack/react-query'
@@ -26,7 +25,6 @@ interface MapProps {
 }
 
 const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSelect }: MapProps) => {
-	const { colors } = useThemedColors()
 	const { current } = useSession()
 	const { hasAnnotation, annotation } = usePersonalAnnotations(map.id, current!.id)
 
@@ -76,11 +74,7 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 							)}
 						</View>
 					</View>
-					<Text
-						numberOfLines={2}
-						ellipsizeMode="tail"
-						className="flex-wrap font-medium text-foreground"
-						style={{ maxWidth: TEXT_MAX_WIDTH }}>
+					<Text numberOfLines={2} ellipsizeMode="tail" className="flex-wrap font-medium text-foreground">
 						{map.address}
 					</Text>
 

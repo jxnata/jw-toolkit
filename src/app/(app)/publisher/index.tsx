@@ -42,7 +42,7 @@ const PublisherHome = () => {
 	return (
 		<Animated.View className="flex" entering={FadeInDown}>
 			<Stack.Screen options={{ title: 'Minhas designações', headerRight: HeaderRight }} />
-			<View className="flex h-full w-full bg-background p-3">
+			<View className="flex h-full w-full bg-background py-3">
 				{loading && !grouped.length ? (
 					<FlatList
 						data={Array.from({ length: 8 }, (_, index) => index + 1)}

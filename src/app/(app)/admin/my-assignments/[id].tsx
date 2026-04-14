@@ -19,7 +19,7 @@ const AssigmentDetails = () => {
 	const onFinish = () => {
 		router.push({
 			pathname: '/admin/my-assignments/finish',
-			params: { assignmentId: assignment!.id, assignmentName: assignment!.assigned?.name },
+			params: { assignmentId: assignment?.id, assignmentName: assignment?.assigned?.name },
 		})
 	}
 
@@ -47,13 +47,13 @@ const AssigmentDetails = () => {
 
 	return (
 		<View className="flex">
-			<Stack.Screen options={{ title: assignment.name, headerLeft: HeaderLeft }} />
+			<Stack.Screen options={{ title: assignment.name || 'Designação', headerLeft: HeaderLeft }} />
 			{assignment && (
 				<View className="flex h-full w-full">
 					<MapView
 						style={{ width: '100%', height: '100%' }}
 						initialRegion={{
-							latitude: region.latitude,
+							latitude: region.latitude - 0.003,
 							longitude: region.longitude,
 							latitudeDelta: 0.01,
 							longitudeDelta: 0.01,

@@ -19,13 +19,13 @@ const PublisherGroupDetail = () => {
 					data={Array.from({ length: 4 }, (_, index) => index + 1)}
 					keyExtractor={(item) => String(item)}
 					renderItem={() => <SkeletonItem height={100} />}
-					contentContainerClassName="p-3"
+					contentContainerClassName="py-3"
 				/>
 			) : (
 				<FlatList
 					data={maps}
 					keyExtractor={(item) => item.id}
-					contentContainerClassName="p-3"
+					contentContainerClassName="py-3"
 					renderItem={({ item: map }) => (
 						<AssignmentItem
 							map={map}

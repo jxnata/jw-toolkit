@@ -66,6 +66,7 @@ const PersonalAnnotation = ({ map }: PersonalAnnotationProps) => {
 			) : (
 				<View className="my-4">
 					<TouchableOpacity
+						activeOpacity={0.8}
 						onPress={() => setShowModal(true)}
 						className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-card p-4">
 						<MessageCirclePlus size={20} color={colors.foreground} />
