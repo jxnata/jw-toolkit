@@ -19,6 +19,7 @@
         "expo-build-properties": "~55.0.13",
         "expo-constants": "~55.0.13",
         "expo-dev-client": "~55.0.24",
+        "expo-document-picker": "^55.0.13",
         "expo-file-system": "~55.0.16",
         "expo-font": "~55.0.6",
         "expo-linking": "~55.0.12",
@@ -1030,6 +1031,8 @@
     "expo-dev-menu": ["expo-dev-menu@55.0.21", "", { "dependencies": { "expo-dev-menu-interface": "55.0.2" }, "peerDependencies": { "expo": "*" } }, "sha512-LpxEtgdnlyM5B9M3ve0fch0qlBbViTQmeS3ina54AE0SiCFoSP7k4UwxratzT7pBOuNnJ+wauhW98gmivMkdZg=="],
 
     "expo-dev-menu-interface": ["expo-dev-menu-interface@55.0.2", "", { "peerDependencies": { "expo": "*" } }, "sha512-DomUNvGzY/xliwnMdbAYY780sCv19N7zIbifc0ClcoCzJZpNSCkvJ2qGIFRPyM/7DmqmlHGCKi8di7kYYLKNEg=="],
+
+    "expo-document-picker": ["expo-document-picker@55.0.13", "", { "peerDependencies": { "expo": "*" } }, "sha512-IhswJElhdzs3fKDEKW8KXYRoFkWGEsXRMYAZT46Yo56zqqy8yQXrczo33RSwD2hFzNQBdLT97SJL9N311UyS3g=="],
 
     "expo-eas-client": ["expo-eas-client@55.0.5", "", {}, "sha512-wRagCeSbSnSGVXgP7V+qiGfXzZ9hTVKWvKIOP7lwrX3MIEenNmNlO4D3RVC3aNU2GhmO3ZCZIIEre80KZoUUHA=="],
 

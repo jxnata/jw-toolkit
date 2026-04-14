@@ -1,0 +1,28 @@
+{
+	"id": 1,
+	"title": "Create BackupService",
+	"description": "Service layer for serializing all congregation cities+maps into a BackupData object and restoring them. Handles batched deletes and creates to avoid rate limits. No UI concerns here — pure data operations.",
+	"steps": [
+		"Define BackupData type in src/interfaces/index.ts: { version: string, congregation_id: string, created_at: string, cities: { id: string, name: string }[], maps: { id: string, name: string, address: string, details: string | null, district: string, lat: number | null, lng: number | null, tag: string | null, group_code: string | null, city_id: string }[] }",
+		"Create src/services/instantdb/backup-service.ts",
+		"Implement fetchBackupData(congregationId: string): Promise<BackupData> — use db.queryOnce() to fetch cities.$where.congregation + maps.$where.congregation with city relation included; map results to BackupData shape; each map entry must include city_id: map.city.id",
+		"Implement deleteAllMaps(congregationId: string, onProgress?: (done: number, total: number) => void): Promise<void> — query all map IDs, delete in batches of 25 using db.transact(batch.map(id => db.tx.maps[id].delete()))",
+		"Implement deleteAllCities(congregationId: string): Promise<void> — query all city IDs, delete in batches of 25 similarly",
+		"Implement restoreCities(cities: BackupData['cities'], congregationId: string): Promise<Record<string, string>> — create each city in batches of 25 using id() for new IDs; return oldId→newId map",
+		"Implement restoreMaps(maps: BackupData['maps'], cityIdMap: Record<string, string>, congregationId: string, onProgress?: (done: number, total: number) => void): Promise<void> — create each map in batches of 25; link congregation and city using cityIdMap[map.city_id]; skip maps whose city_id has no mapping",
+		"Export a default backupService instance (singleton pattern matching other services)"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"fetchBackupData returns all cities and maps for the congregation with city_id on every map",
+		"deleteAllMaps removes every map in batches of 25, calling onProgress after each batch",
+		"restoreCities creates all cities and returns a populated oldId→newId map",
+		"restoreMaps creates all maps linked to the correct new city IDs",
+		"Maps whose city_id is not in cityIdMap are skipped without throwing",
+		"No TypeScript errors"
+	],
+	"files": {
+		"modify": ["src/interfaces/index.ts"],
+		"create": ["src/services/instantdb/backup-service.ts"]
+	}
+}

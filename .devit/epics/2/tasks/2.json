@@ -1,0 +1,29 @@
+{
+	"id": 2,
+	"title": "Create useBackupRestore hook",
+	"description": "React hook that orchestrates backup file creation (serialize → write → share) and restore (pick file → validate → confirm → execute). Exposes loading state and progress messages to the UI.",
+	"steps": [
+		"Install expo-document-picker: bun add expo-document-picker",
+		"Create src/hooks/use-backup-restore.ts",
+		"Import backupService, useSession, expo-file-system (FileSystem), expo-document-picker (DocumentPicker), Share from react-native",
+		"Define hook state: { loading: boolean, progress: string | null, error: string | null }",
+		"Implement createBackup(): Promise<void> — guard: return early if !congregation or type !== 'admin'; call backupService.fetchBackupData(congregation.id); serialize to JSON string; write to FileSystem.cacheDirectory + 'backup_<congregation.id>_<timestamp>.json' using FileSystem.writeAsStringAsync; call Share.share({ url: filePath, title: 'Backup', message: 'Backup da congregação' }); handle errors by setting error state",
+		"Implement validateBackupFile(data: unknown): data is BackupData — check it is an object with string congregation_id, string version, array cities (each {id, name}), array maps (each {id, city_id, name, address})",
+		"Implement restoreBackup(): Promise<void> — call DocumentPicker.getDocumentAsync({ type: 'application/json' }); return if cancelled; read file with FileSystem.readAsStringAsync; JSON.parse; call validateBackupFile; if congregation_id !== congregation.id throw validation error; guard type === 'admin'; set progress messages while calling backupService.deleteAllMaps, deleteAllCities, restoreCities, restoreMaps; clear progress on completion",
+		"Return { loading, progress, error, createBackup, restoreBackup } from hook"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"createBackup writes a valid JSON file and opens the native Share sheet",
+		"restoreBackup aborts and sets error if file congregation_id does not match session congregation",
+		"restoreBackup aborts if user is not admin",
+		"restoreBackup aborts if picked file fails validateBackupFile",
+		"progress string updates during restore (delete phase, cities phase, maps phase)",
+		"loading is true during async operations and false otherwise",
+		"No TypeScript errors"
+	],
+	"files": {
+		"modify": [],
+		"create": ["src/hooks/use-backup-restore.ts"]
+	}
+}

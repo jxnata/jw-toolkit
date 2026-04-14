@@ -1,0 +1,34 @@
+{
+	"epic": "E02",
+	"title": "Backup / Restore",
+	"objective": "Allow congregation admins to export all cities and maps to a versioned JSON file and restore them later, replacing all current data in a safe, batched operation.",
+	"branch": "feature/backup-restore",
+	"pull_request": null,
+	"pr_per_task": false,
+	"tasks": [
+		{
+			"id": 1,
+			"title": "Create BackupService",
+			"file": "tasks/1.json",
+			"status": "completed",
+			"commits": ["460e307"],
+			"pull_request": null
+		},
+		{
+			"id": 2,
+			"title": "Create useBackupRestore hook",
+			"file": "tasks/2.json",
+			"status": "in_progress",
+			"commits": [],
+			"pull_request": null
+		},
+		{
+			"id": 3,
+			"title": "Update Export screen with Backup/Restore UI",
+			"file": "tasks/3.json",
+			"status": "pending",
+			"commits": [],
+			"pull_request": null
+		}
+	]
+}

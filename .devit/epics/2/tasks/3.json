@@ -1,0 +1,29 @@
+{
+	"id": 3,
+	"title": "Update Export screen with Backup/Restore UI",
+	"description": "Refactor the Export screen to present three distinct action cards: Export PDF (existing), Backup, and Restore Backup. The Restore card shows an irreversibility warning and requires an Alert confirmation before executing.",
+	"steps": [
+		"Open src/app/(app)/admin/export/index.tsx",
+		"Import useBackupRestore from '@/hooks/use-backup-restore' and Alert from react-native",
+		"Replace the single centered layout with a ScrollView containing three section cards (use View with className='mb-4 rounded-xl bg-card p-4 border border-border')",
+		"Card 1 — 'Exportar PDF': move existing createPDF logic and button here; add a short description text above the button ('Exporta todos os mapas da congregação em formato PDF')",
+		"Card 2 — 'Backup': description text ('Salva todas as cidades e mapas em um arquivo .json que pode ser restaurado posteriormente'); Backup button calls createBackup(); show ActivityIndicator + progress text while loading",
+		"Card 3 — 'Restaurar Backup': warning text in danger color ('Atenção: esta ação não pode ser desfeita. Todos os dados atuais serão substituídos pelo backup.'); Restore button calls Alert.alert with title 'Confirmar restauração', message 'Todos os mapas e cidades serão apagados e substituídos pelos dados do backup. Deseja continuar?', buttons Cancel and Confirmar (calls restoreBackup()); show ActivityIndicator + progress text while loading",
+		"If error from useBackupRestore is set, show a Text in danger color below the relevant card",
+		"Keep Stack.Screen title as 'Exportar Mapas'"
+	],
+	"tests": [],
+	"acceptanceCriteria": [
+		"Export PDF card works exactly as before",
+		"Backup button generates and shares a .json file",
+		"Restore button shows Alert confirmation before proceeding",
+		"Restore card displays irreversibility warning in danger color",
+		"Loading indicator and progress text are visible during backup and restore operations",
+		"Error messages are displayed when backup or restore fails",
+		"No TypeScript errors"
+	],
+	"files": {
+		"modify": ["src/app/(app)/admin/export/index.tsx"],
+		"create": []
+	}
+}
