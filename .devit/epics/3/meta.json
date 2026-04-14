@@ -26,7 +26,7 @@
 			"id": 3,
 			"title": "Extract and test validateBackupFile utility",
 			"file": "tasks/3.json",
-			"status": "pending",
+			"status": "in_progress",
 			"commits": [],
 			"pull_request": null
 		},
