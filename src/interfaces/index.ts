@@ -21,3 +21,22 @@ type User = InstaQLEntity<AppSchema, '$users'> & {
 }
 
 export type { City, Congregation, District, Map, Publisher, User }
+
+export interface BackupData {
+	version: string
+	congregation_id: string
+	created_at: string
+	cities: { id: string; name: string }[]
+	maps: {
+		id: string
+		name: string
+		address: string
+		details: string | null
+		district: string
+		lat: number | null
+		lng: number | null
+		tag: string | null
+		group_code: string | null
+		city_id: string
+	}[]
+}
