@@ -26,8 +26,8 @@
 			"id": 3,
 			"title": "Update Export screen with Backup/Restore UI",
 			"file": "tasks/3.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["8352658"],
 			"pull_request": null
 		}
 	]
