@@ -1,12 +1,13 @@
 import Button from '@/components/button'
 import { useSession } from '@/contexts/session-provider'
+import { useBackupRestore } from '@/hooks/use-backup-restore'
 import useAllMaps from '@/hooks/use-all-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { Stack } from 'expo-router'
-import { Download } from 'lucide-react-native'
+import { Download, RotateCcw, Save } from 'lucide-react-native'
 import { useState } from 'react'
-import { ActivityIndicator, Platform, Share, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Platform, ScrollView, Share, Text, View } from 'react-native'
 import { generatePDF } from 'react-native-html-to-pdf'
 
 const ExportMaps = () => {
@@ -14,6 +15,7 @@ const ExportMaps = () => {
 	const { maps, loading } = useAllMaps()
 	const { congregation } = useSession()
 	const { colors } = useThemedColors()
+	const { loading: backupLoading, progress, error, createBackup, restoreBackup } = useBackupRestore()
 
 	const createPDF = async () => {
 		if (!congregation) return
@@ -133,36 +135,95 @@ const ExportMaps = () => {
 		}
 	}
 
+	const confirmRestore = () => {
+		Alert.alert(
+			'Confirmar restauração',
+			'Todos os mapas e cidades serão apagados e substituídos pelos dados do backup. Deseja continuar?',
+			[
+				{ text: 'Cancelar', style: 'cancel' },
+				{ text: 'Confirmar', style: 'destructive', onPress: restoreBackup },
+			]
+		)
+	}
+
 	return (
-		<View className="flex">
+		<View className="flex-1 bg-background">
 			<Stack.Screen options={{ title: 'Exportar Mapas' }} />
-			<View className="flex h-full w-full bg-background p-4">
-				{loading && (
-					<View className="flex-1 items-center justify-center">
-						<View className="items-center">
-							<ActivityIndicator size="large" color={colors.primary[600]} />
-							<Text className="py-2.5 font-medium text-foreground">Carregando mapas...</Text>
+			<ScrollView contentContainerStyle={{ padding: 16 }}>
+				{/* Card 1 - Export PDF */}
+				<View className="mb-4 rounded-xl border border-border bg-card p-4">
+					<Text className="mb-1 font-semibold text-foreground">Exportar PDF</Text>
+					<Text className="mb-4 text-sm text-foreground opacity-60">
+						Exporta todos os mapas da congregação em formato PDF
+					</Text>
+					{loading && (
+						<View className="items-center py-2">
+							<ActivityIndicator size="small" color={colors.primary[600]} />
+							<Text className="mt-1 text-sm font-medium text-foreground">Carregando mapas...</Text>
 						</View>
-					</View>
-				)}
-				{!loading && maps.length === 0 && (
-					<View className="flex-1 items-center justify-center py-8">
-						<Text className="font-light text-foreground opacity-80">Não há mapas para exportar.</Text>
-					</View>
-				)}
-				{!loading && maps.length > 0 && (
-					<View className="flex-1 items-center justify-center">
-						<Text className="mb-5 py-2.5 text-center font-medium text-foreground">
-							{maps.length} mapas encontrados. Pressione o botão abaixo para exportar em PDF.
-						</Text>
-						<View className="w-full">
-							<Button loading={loading || generating} onPress={createPDF} left={<Download size={20} color="white" />}>
-								Exportar
-							</Button>
+					)}
+					{!loading && maps.length === 0 && (
+						<Text className="text-sm text-foreground opacity-60">Não há mapas para exportar.</Text>
+					)}
+					{!loading && maps.length > 0 && (
+						<Button
+							loading={generating}
+							onPress={createPDF}
+							left={!generating ? <Download size={20} color="white" /> : undefined}>
+							Exportar
+						</Button>
+					)}
+				</View>
+
+				{/* Card 2 - Backup */}
+				<View className="mb-4 rounded-xl border border-border bg-card p-4">
+					<Text className="mb-1 font-semibold text-foreground">Backup</Text>
+					<Text className="mb-4 text-sm text-foreground opacity-60">
+						Salva todas as cidades e mapas em um arquivo .json que pode ser restaurado posteriormente
+					</Text>
+					{backupLoading && progress && (
+						<View className="mb-3 flex-row items-center gap-2">
+							<ActivityIndicator size="small" color={colors.primary[600]} />
+							<Text className="text-sm text-foreground">{progress}</Text>
 						</View>
-					</View>
-				)}
-			</View>
+					)}
+					<Button
+						loading={backupLoading && !progress}
+						disabled={backupLoading}
+						onPress={createBackup}
+						left={!backupLoading ? <Save size={20} color="white" /> : undefined}>
+						Fazer Backup
+					</Button>
+					{error && !progress && (
+						<Text className="mt-2 text-sm text-danger-500">{error}</Text>
+					)}
+				</View>
+
+				{/* Card 3 - Restore */}
+				<View className="mb-4 rounded-xl border border-border bg-card p-4">
+					<Text className="mb-1 font-semibold text-foreground">Restaurar Backup</Text>
+					<Text className="mb-3 text-sm text-danger-500">
+						Atenção: esta ação não pode ser desfeita. Todos os dados atuais serão substituídos pelo backup.
+					</Text>
+					{backupLoading && progress && (
+						<View className="mb-3 flex-row items-center gap-2">
+							<ActivityIndicator size="small" color={colors.primary[600]} />
+							<Text className="text-sm text-foreground">{progress}</Text>
+						</View>
+					)}
+					<Button
+						variant="danger"
+						loading={backupLoading && !progress}
+						disabled={backupLoading}
+						onPress={confirmRestore}
+						left={!backupLoading ? <RotateCcw size={20} color={colors.danger[500]} /> : undefined}>
+						Restaurar
+					</Button>
+					{error && progress === null && (
+						<Text className="mt-2 text-sm text-danger-500">{error}</Text>
+					)}
+				</View>
+			</ScrollView>
 		</View>
 	)
 }
