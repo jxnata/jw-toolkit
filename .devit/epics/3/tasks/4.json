@@ -1,0 +1,44 @@
+{
+	"id": 4,
+	"title": "Test BackupService batch operations",
+	"description": "Unit-test BackupService (src/services/instantdb/backup-service.ts) by mocking the InstantDB client at the module level. The critical paths are: batch-delete respects the 25-item limit, city ID remapping produces the correct old→new map, and restoreMaps skips maps whose city_id has no entry in cityIdMap.",
+	"steps": [
+		"Add '__mocks__/db.js' or configure jest moduleNameMapper to stub '@/lib/db' if not already done",
+		"Create src/services/instantdb/backup-service.test.ts",
+		"Mock '@/lib/db' with jest.mock: stub queryOnce and transact; stub db.tx.maps and db.tx.cities with chainable .delete()/.update()/.link() spies",
+		"Mock '@instantdb/react-native' id() to return predictable values (counter or fixed UUIDs)",
+		"Write tests for fetchBackupData: maps raw DB rows to BackupData shape; sets version '1.0'",
+		"Write tests for deleteAllMaps: empty result → no transact call; 30 maps → transact called twice (batches of 25 + 5); progress callback receives correct (done, total) values",
+		"Write tests for deleteAllCities: same batch logic without progress callback",
+		"Write tests for restoreCities: returns cityIdMap with old→new entries; calls transact with correct city name and congregation link",
+		"Write tests for restoreMaps: maps with valid city_id are included; maps with unknown city_id are skipped; progress callback fires per batch",
+		"Run bun test"
+	],
+	"tests": [
+		"fetchBackupData maps cities to { id, name }",
+		"fetchBackupData maps maps to correct shape including null fallbacks",
+		"fetchBackupData sets version = '1.0' and congregation_id",
+		"deleteAllMaps: no transact call when maps array is empty",
+		"deleteAllMaps: 30 items → 2 batches (25 + 5)",
+		"deleteAllMaps: progress callback called with (25, 30) then (30, 30)",
+		"deleteAllCities: batch limit respected",
+		"restoreCities: returned map has one entry per city (oldId → newId)",
+		"restoreCities: each city transaction links to congregationId",
+		"restoreMaps: maps without a matching cityIdMap entry are skipped",
+		"restoreMaps: progress callback fires per batch",
+		"restoreMaps: new IDs are generated for every restored map"
+	],
+	"acceptanceCriteria": [
+		"All tests pass with bun test",
+		"No production code modified",
+		"No TypeScript errors",
+		"db module mock does not bleed into other test files (scoped or reset in afterEach)"
+	],
+	"files": {
+		"modify": [],
+		"create": [
+			"src/__mocks__/db.js",
+			"src/services/instantdb/backup-service.test.ts"
+		]
+	}
+}

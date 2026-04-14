@@ -1,0 +1,46 @@
+{
+	"id": 3,
+	"title": "Extract and test validateBackupFile utility",
+	"description": "The validateBackupFile function lives inside use-backup-restore.ts as a private closure and cannot be tested in isolation. Extract it to src/utils/validate-backup-file.ts, import it back in the hook, then write exhaustive tests. This function is the gatekeeper for the restore flow and incorrect validation could silently corrupt congregation data.",
+	"steps": [
+		"Create src/utils/validate-backup-file.ts",
+		"Move the validateBackupFile function body verbatim from src/hooks/use-backup-restore.ts into the new file",
+		"Export the function and the BackupData type reference",
+		"In src/hooks/use-backup-restore.ts, replace the inline definition with: import { validateBackupFile } from '@/utils/validate-backup-file'",
+		"Create src/utils/validate-backup-file.test.ts",
+		"Import validateBackupFile from './validate-backup-file'",
+		"Write tests covering all validation branches",
+		"Run bun test to confirm all pass and no regressions"
+	],
+	"tests": [
+		"Valid BackupData object returns true",
+		"null input returns false",
+		"Non-object (string, number) returns false",
+		"Missing congregation_id field returns false",
+		"congregation_id as non-string returns false",
+		"Missing version field returns false",
+		"Missing cities array returns false",
+		"cities containing a non-object entry returns false",
+		"City with missing id returns false",
+		"City with missing name returns false",
+		"Missing maps array returns false",
+		"Map with missing id returns false",
+		"Map with missing city_id returns false",
+		"Map with missing name returns false",
+		"Map with missing address returns false",
+		"Empty cities and maps arrays returns true (valid empty backup)"
+	],
+	"acceptanceCriteria": [
+		"validateBackupFile is exported from src/utils/validate-backup-file.ts",
+		"src/hooks/use-backup-restore.ts imports from the new utility (no duplicate definition)",
+		"All 16 tests pass with bun test",
+		"No TypeScript errors"
+	],
+	"files": {
+		"modify": ["src/hooks/use-backup-restore.ts"],
+		"create": [
+			"src/utils/validate-backup-file.ts",
+			"src/utils/validate-backup-file.test.ts"
+		]
+	}
+}

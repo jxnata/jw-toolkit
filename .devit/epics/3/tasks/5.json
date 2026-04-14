@@ -1,0 +1,41 @@
+{
+	"id": 5,
+	"title": "Test useLimits hook",
+	"description": "Unit-test the useLimits hook (src/hooks/use-limits.ts) which enforces freemium caps on maps and publishers. Mock the InstantDB query hook and the two React contexts it consumes. This is the highest-risk piece of product logic: a regression here could silently disable the paywall or falsely block paying users.",
+	"steps": [
+		"Add 'jest-environment-jsdom' or configure a per-file @jest-environment docblock for this test (hooks need a DOM environment)",
+		"Install @testing-library/react-hooks if not present: bun add -d @testing-library/react-hooks react-test-renderer",
+		"Create src/hooks/use-limits.test.tsx",
+		"Mock '@/contexts/session-provider' to expose a controllable useSession stub",
+		"Mock '@/hooks/use-subscription' to expose a controllable useSubscription stub",
+		"Mock '@/lib/db' so db.useQuery returns controllable mapsData / publishersData",
+		"Mock '@/constants/env' to set FREE_LIMITS = { maps: '3', publishers: '2' }",
+		"Write tests: subscribed user → all limits false regardless of counts",
+		"Write tests: free user with 0 maps and 0 publishers → no limits reached",
+		"Write tests: free user at exact limit (mapsCount === FREE_LIMITS.maps) → mapsReached true",
+		"Write tests: free user with one publisher over limit → publishersReached true, anyLimitReached true",
+		"Write tests: no congregation → counts default to 0, no limits reached",
+		"Run bun test"
+	],
+	"tests": [
+		"Subscribed user: mapsReached = false even when mapsCount > FREE_LIMITS.maps",
+		"Subscribed user: publishersReached = false even when publishersCount > FREE_LIMITS.publishers",
+		"Subscribed user: anyLimitReached = false",
+		"Free user, 0 maps, 0 publishers: all reached flags false",
+		"Free user, mapsCount === FREE_LIMITS.maps: mapsReached = true",
+		"Free user, mapsCount < FREE_LIMITS.maps: mapsReached = false",
+		"Free user, publishersCount > FREE_LIMITS.publishers: publishersReached = true, anyLimitReached = true",
+		"No congregation: mapsCount = 0, publishersCount = 0, no limits reached",
+		"Counts are correctly returned in both subscribed and free cases"
+	],
+	"acceptanceCriteria": [
+		"All 9 tests pass with bun test",
+		"No production code modified",
+		"No TypeScript errors",
+		"Mocks are fully reset between tests (no cross-test pollution)"
+	],
+	"files": {
+		"modify": [],
+		"create": ["src/hooks/use-limits.test.tsx"]
+	}
+}

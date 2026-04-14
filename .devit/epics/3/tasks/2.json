@@ -1,0 +1,31 @@
+{
+	"id": 2,
+	"title": "Test identifierToSubscription utility",
+	"description": "Add tests for the subscription identifier parser in src/utils/subscriptions.ts. This function maps RevenueCat product identifiers to 'monthly' | 'yearly' | null and is critical for determining subscription type.",
+	"steps": [
+		"Create src/utils/subscriptions.test.ts",
+		"Import identifierToSubscription from './subscriptions'",
+		"Write tests for all four known identifiers (two monthly, two yearly)",
+		"Write tests for unknown identifier returning null",
+		"Write tests for case normalization (uppercase input should still match)",
+		"Run bun test to verify all pass"
+	],
+	"tests": [
+		"'dev.jxnata.jwtoolkit.monthly' returns 'monthly'",
+		"'pro:monthly' returns 'monthly'",
+		"'dev.jxnata.jwtoolkit.yearly' returns 'yearly'",
+		"'pro:yearly' returns 'yearly'",
+		"Unknown identifier returns null",
+		"Empty string returns null",
+		"Uppercase 'PRO:MONTHLY' returns 'monthly' (case-insensitive normalization)"
+	],
+	"acceptanceCriteria": [
+		"All 7 tests pass with bun test",
+		"No changes to production code",
+		"No TypeScript errors"
+	],
+	"files": {
+		"modify": [],
+		"create": ["src/utils/subscriptions.test.ts"]
+	}
+}

@@ -1,0 +1,42 @@
+{
+	"id": 1,
+	"title": "Test groupMaps and pure utils (get-map-region, get-assignment-message)",
+	"description": "Add missing test files for three pure utility functions that currently have no coverage. groupMaps is central to the map-list display; the other two are simpler but untested.",
+	"steps": [
+		"Create src/utils/group-maps.test.ts",
+		"Import groupMaps from './group-maps'",
+		"Write tests for groupMaps: empty array, all singles (no group_code), all same group_code, mixed groups and singles, sorting (multi-map groups before singles)",
+		"Create src/utils/get-map-region.test.ts",
+		"Import getMapRegion from './get-map-region'",
+		"Write tests for getMapRegion: valid [lat, lng], null input, array shorter than 2",
+		"Create src/utils/get-assignment-message.test.ts",
+		"Import getAssignmentMessage from './get-assignment-message'",
+		"Write tests: happy path with map/user/expiration, empty strings",
+		"Run bun test to verify all pass"
+	],
+	"tests": [
+		"groupMaps([]) returns []",
+		"groupMaps with no group_code: each map becomes its own group keyed by id",
+		"groupMaps with shared group_code: maps are merged into one entry",
+		"groupMaps sorts multi-map groups before single-map groups",
+		"groupMaps handles mixed: some with group_code, some without",
+		"getMapRegion([lat, lng]) returns { latitude, longitude }",
+		"getMapRegion(null) returns { latitude: 0, longitude: 0 }",
+		"getMapRegion([1]) returns { latitude: 0, longitude: 0 }",
+		"getAssignmentMessage returns 'map-user-expiration' format",
+		"getAssignmentMessage with empty strings returns '--'"
+	],
+	"acceptanceCriteria": [
+		"All new tests pass with bun test",
+		"No changes to production code",
+		"No TypeScript errors"
+	],
+	"files": {
+		"modify": [],
+		"create": [
+			"src/utils/group-maps.test.ts",
+			"src/utils/get-map-region.test.ts",
+			"src/utils/get-assignment-message.test.ts"
+		]
+	}
+}
