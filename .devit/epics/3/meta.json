@@ -42,8 +42,8 @@
 			"id": 5,
 			"title": "Test useLimits hook",
 			"file": "tasks/5.json",
-			"status": "in_progress",
-			"commits": [],
+			"status": "completed",
+			"commits": ["0e56533"],
 			"pull_request": null
 		}
 	]
