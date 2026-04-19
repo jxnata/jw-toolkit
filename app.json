@@ -59,6 +59,7 @@
 			"expo-font",
 			"expo-apple-authentication",
 			"expo-notifications",
+			"expo-build-properties",
 			[
 				"react-native-maps",
 				{
@@ -69,14 +70,6 @@
 				"@react-native-google-signin/google-signin",
 				{
 					"iosUrlScheme": "com.googleusercontent.apps.561014260561-au4cn876vvjtjqhugoakvbiebsmpnlj1"
-				}
-			],
-			[
-				"expo-build-properties",
-				{
-					"ios": {
-						"useFrameworks": "static"
-					}
 				}
 			]
 		],
