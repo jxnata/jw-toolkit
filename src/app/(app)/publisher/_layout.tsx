@@ -23,10 +23,7 @@ export default function PublisherLayout() {
 				name="assignment/[id]"
 				options={{ presentation: 'modal', headerTransparent: true, headerStyle: { backgroundColor: 'transparent' } }}
 			/>
-			<Stack.Screen
-				name="assignment/finish"
-				options={{ presentation: 'modal', headerTransparent: true, headerStyle: { backgroundColor: 'transparent' } }}
-			/>
+			<Stack.Screen name="assignment/finish" options={{ presentation: 'modal' }} />
 		</Stack>
 	)
 }

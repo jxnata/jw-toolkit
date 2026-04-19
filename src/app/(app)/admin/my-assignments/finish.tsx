@@ -142,7 +142,7 @@ const FinishAssignment = () => {
 	return (
 		<View className="flex-1 bg-background" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
 			<Stack.Screen options={{ title: 'Finalizar designação' }} />
-			<View className="flex-1 justify-between px-6 py-8">
+			<View className="flex-1 justify-between px-6 py-4">
 				<View className="gap-6">
 					<Text className="font-bold text-2xl text-foreground">{title}</Text>
 
