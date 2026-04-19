@@ -3,8 +3,8 @@ import { backupService } from '@/services/instantdb/backup-service'
 import { validateBackupFile } from '@/utils/validate-backup-file'
 import * as DocumentPicker from 'expo-document-picker'
 import * as FileSystem from 'expo-file-system/legacy'
+import * as Sharing from 'expo-sharing'
 import { useState } from 'react'
-import { Share } from 'react-native'
 
 interface BackupRestoreState {
 	loading: boolean
@@ -44,7 +44,11 @@ export function useBackupRestore() {
 			const timestamp = Date.now()
 			const filePath = `${FileSystem.cacheDirectory}backup_${congregation.id}_${timestamp}.json`
 			await FileSystem.writeAsStringAsync(filePath, json, { encoding: 'utf8' })
-			await Share.share({ url: filePath, title: 'Backup', message: 'Backup da congregação' })
+			await Sharing.shareAsync(filePath, {
+				mimeType: 'application/json',
+				dialogTitle: 'Backup',
+				UTI: 'public.json',
+			})
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Erro ao criar backup')
 		} finally {

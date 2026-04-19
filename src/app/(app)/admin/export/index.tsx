@@ -5,10 +5,11 @@ import useAllMaps from '@/hooks/use-all-maps'
 import { useBackupRestore } from '@/hooks/use-backup-restore'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
+import * as Sharing from 'expo-sharing'
 import { Stack } from 'expo-router'
 import { Download, RotateCcw, Save } from 'lucide-react-native'
 import { useState } from 'react'
-import { ActivityIndicator, Alert, Platform, ScrollView, Share, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native'
 import { generatePDF } from 'react-native-html-to-pdf'
 
 const ExportMaps = () => {
@@ -124,10 +125,10 @@ const ExportMaps = () => {
 				base64: true,
 			})
 
-			await Share.share({
-				url: Platform.OS === 'ios' ? file.filePath : `file://${file.filePath}`,
-				title: 'Compartilhar PDF',
-				message: `Mapas da congregação ${congregation.name}`,
+			await Sharing.shareAsync(`file://${file.filePath}`, {
+				mimeType: 'application/pdf',
+				dialogTitle: 'Compartilhar PDF',
+				UTI: 'com.adobe.pdf',
 			})
 		} catch (error) {
 			console.error('Erro ao gerar PDF:', error)

@@ -59,7 +59,12 @@
 			"expo-font",
 			"expo-apple-authentication",
 			"expo-notifications",
-			"react-native-maps",
+			[
+				"react-native-maps",
+				{
+					"androidGoogleMapsApiKey": "AIzaSyBJJ6XnME22X2XA14CeyigGChZpijG15b0"
+				}
+			],
 			[
 				"@react-native-google-signin/google-signin",
 				{
