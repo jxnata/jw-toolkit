@@ -5,7 +5,7 @@
     "": {
       "name": "jw-toolkit",
       "dependencies": {
-        "@instantdb/react-native": "^0.22.106",
+        "@instantdb/react-native": "^1.0.49",
         "@react-native-async-storage/async-storage": "2.2.0",
         "@react-native-community/netinfo": "12.0.1",
         "@react-native-google-signin/google-signin": "^16.1.1",
@@ -357,13 +357,13 @@
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
-    "@instantdb/core": ["@instantdb/core@0.22.185", "", { "dependencies": { "@instantdb/version": "0.22.185", "mutative": "^1.0.10", "uuid": "^11.1.0" } }, "sha512-mSXN7Efz2SXvz3zVWTtgwcb/NFzgpvcan+pzv21EKGNRcR3zV6WEq04MPxpT+aTji+x4NNG9Xy427YHi8jVlnA=="],
+    "@instantdb/core": ["@instantdb/core@1.0.49", "", { "dependencies": { "@instantdb/version": "1.0.49", "mutative": "^1.0.10", "uuid": "^11.1.0" } }, "sha512-DigxsPBZIpn5cjadM7A3o9u1Tb7akZmJqEhaFsnOLxcW7Ewgu4em2CxJnV7A2tE7NoC/lkDE4RAOz7GlkXvbiA=="],
 
-    "@instantdb/react-common": ["@instantdb/react-common@0.22.185", "", { "dependencies": { "@instantdb/core": "0.22.185", "@instantdb/version": "0.22.185" }, "peerDependencies": { "react": ">=16" } }, "sha512-ed6r8WlIZmonJ5Hyt0teszcRZ5+ZmuNE2YPzzHOo1pPV/QA+eB0rjTtzHJ5Oqam1D4Vc5CHadXHN906UFVAPtg=="],
+    "@instantdb/react-common": ["@instantdb/react-common@1.0.49", "", { "dependencies": { "@instantdb/core": "1.0.49", "@instantdb/version": "1.0.49" }, "peerDependencies": { "react": ">=16" } }, "sha512-f5r8KIKdyrZMZKAvU1svh2KMcA3fclaSuksKMRmBqLFCi024IWX1c63V7anWfcwOARBnAcZSvzgTgkK0MzEq6g=="],
 
-    "@instantdb/react-native": ["@instantdb/react-native@0.22.185", "", { "dependencies": { "@instantdb/core": "0.22.185", "@instantdb/react-common": "0.22.185", "@instantdb/version": "0.22.185", "web-streams-polyfill": "^4.2.0" }, "peerDependencies": { "@react-native-async-storage/async-storage": ">=1.15", "@react-native-community/netinfo": ">=7.1", "react": ">=16", "react-native": ">=0.56", "react-native-get-random-values": ">=1.5" } }, "sha512-4n14GJV0+7CLcN/EjcBBZdKJ6Gr20ZS46nTeXktf4eqV8B9MRZsradKnqZvnSgUJ1AeyhsXG/+J92sMmx5ZhYw=="],
+    "@instantdb/react-native": ["@instantdb/react-native@1.0.49", "", { "dependencies": { "@instantdb/core": "1.0.49", "@instantdb/react-common": "1.0.49", "@instantdb/version": "1.0.49", "web-streams-polyfill": "^4.2.0" }, "peerDependencies": { "@react-native-async-storage/async-storage": ">=1.15", "@react-native-community/netinfo": ">=7.1", "react": ">=16", "react-native": ">=0.56", "react-native-get-random-values": ">=1.5" } }, "sha512-n8FeoQA5ArPCq/ChVXhrC1pkdGGTrvVah70Qu0m/CWP2HKcPc8pl0/SOZP5fkPlotnTvsSmDKnCATkqZCgTOJQ=="],
 
-    "@instantdb/version": ["@instantdb/version@0.22.185", "", {}, "sha512-5sRInnIpxyeeyV7JOFLlLpQC+qPqtDijmHjKH4dlzh/qEado5gJWHSpn6/Xz4YmVJLm3FGtWcxsfef9Jj9ANAA=="],
+    "@instantdb/version": ["@instantdb/version@1.0.49", "", {}, "sha512-yP3qhO2U0TWyceY23uM5+t93gDYG58q2nRj5nOb5GertRkk3Yc90+xdSZl9Uw62eYctV3y7gvf5743bZK47fJQ=="],
 
     "@isaacs/ttlcache": ["@isaacs/ttlcache@1.4.1", "", {}, "sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA=="],
 

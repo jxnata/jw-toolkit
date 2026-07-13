@@ -1,4 +1,9 @@
 // All dependencies are mocked to plain functions, so useLimits() can be called directly
+import { useSession } from '@/contexts/session-provider'
+import { useSubscription } from '@/hooks/use-subscription'
+import db from '@/lib/db'
+import { useLimits } from './use-limits'
+
 jest.mock('@/constants/env', () => ({
 	FREE_LIMITS: { maps: '3', publishers: '2' },
 }))
@@ -17,11 +22,6 @@ jest.mock('@/lib/db', () => ({
 		useQuery: jest.fn(),
 	},
 }))
-
-import { useSession } from '@/contexts/session-provider'
-import { useSubscription } from '@/hooks/use-subscription'
-import db from '@/lib/db'
-import { useLimits } from './use-limits'
 
 const mockUseSession = useSession as jest.Mock
 const mockUseSubscription = useSubscription as jest.Mock

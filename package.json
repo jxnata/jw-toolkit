@@ -1,6 +1,6 @@
 {
 	"name": "jw-toolkit",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"main": "expo-router/entry",
 	"scripts": {
 		"ts:check": "tsc",
@@ -16,7 +16,7 @@
 		"test:coverage": "jest --coverage"
 	},
 	"dependencies": {
-		"@instantdb/react-native": "^0.22.106",
+		"@instantdb/react-native": "^1.0.49",
 		"@react-native-async-storage/async-storage": "2.2.0",
 		"@react-native-community/netinfo": "12.0.1",
 		"@react-native-google-signin/google-signin": "^16.1.1",

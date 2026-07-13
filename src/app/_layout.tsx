@@ -62,12 +62,12 @@ export default function Layout() {
 				<SessionProvider>
 					<SubscriptionProvider>
 						<LimitGuard checkMaps={false} checkPublishers={false}>
-							<ThemeProvider>
-								<LocationProvider>
+							<LocationProvider>
+								<ThemeProvider>
 									<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
 									<RootNavigator />
-								</LocationProvider>
-							</ThemeProvider>
+								</ThemeProvider>
+							</LocationProvider>
 						</LimitGuard>
 					</SubscriptionProvider>
 				</SessionProvider>

@@ -1,4 +1,8 @@
 // Mock must be self-contained — no external variable references allowed in factory
+import db from '@/lib/db'
+import { id } from '@instantdb/react-native'
+import { backupService } from './backup-service'
+
 jest.mock('@/lib/db', () => {
 	const makeChain = () => {
 		const chain: Record<string, jest.Mock> = {}
@@ -34,10 +38,6 @@ jest.mock('@/lib/db', () => {
 jest.mock('@instantdb/react-native', () => ({
 	id: jest.fn(),
 }))
-
-import db from '@/lib/db'
-import { id } from '@instantdb/react-native'
-import { backupService } from './backup-service'
 
 const mockDb = db as unknown as { queryOnce: jest.Mock; transact: jest.Mock }
 const mockId = id as jest.Mock
