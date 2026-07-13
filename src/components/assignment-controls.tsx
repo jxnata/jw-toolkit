@@ -17,6 +17,7 @@ interface AssignmentMap {
 	city?: { name: string }
 	found?: boolean | null
 	found_info?: string | null
+	assigned?: unknown
 }
 
 interface AssignmentProps {
@@ -68,14 +69,16 @@ const AssignmentControls = ({ assignment, onFinish }: AssignmentProps) => {
 						<Text className="font-bold text-[15px] text-white">Ir para</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity
-						onPress={onFinish}
-						className="mb-2 flex flex-1 flex-row items-center justify-center gap-[5px] rounded-xl px-5 py-[15px] text-[15px]"
-						style={{ backgroundColor: colors.card }}>
-						<Text className="font-bold text-[15px]" style={{ color: colors.primary[600] }}>
-							Finalizar
-						</Text>
-					</TouchableOpacity>
+					{!!assignment.assigned && (
+						<TouchableOpacity
+							onPress={onFinish}
+							className="mb-2 flex flex-1 flex-row items-center justify-center gap-[5px] rounded-xl px-5 py-[15px] text-[15px]"
+							style={{ backgroundColor: colors.card }}>
+							<Text className="font-bold text-[15px]" style={{ color: colors.primary[600] }}>
+								Finalizar
+							</Text>
+						</TouchableOpacity>
+					)}
 				</View>
 			</View>
 		</View>

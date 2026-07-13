@@ -62,11 +62,11 @@ const MapGroupItem = ({ group, location, onPress }: MapGroupItemProps) => {
 						<View className="flex-row items-center gap-2">
 							<Text className="font-bold text-xs text-foreground opacity-90">≈{distance}</Text>
 							{someAssigned ? (
-								<View className="rounded bg-primary-600 px-1 py-0.5">
+								<View className="rounded-xl bg-primary-600 px-2 py-1">
 									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.ASSIGNED}</Text>
 								</View>
 							) : noneAssigned ? (
-								<View className="rounded bg-success px-1 py-0.5">
+								<View className="rounded-xl bg-success px-2 py-1">
 									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.FREE}</Text>
 								</View>
 							) : null}

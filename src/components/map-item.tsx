@@ -64,12 +64,17 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 						<View className="flex-row items-center gap-2">
 							<Text className="font-bold text-xs text-foreground opacity-90">{distance}</Text>
 							{map.assigned ? (
-								<View className="rounded bg-primary-600 px-1 py-0.5">
+								<View className="rounded-xl bg-primary-600 px-2 py-1">
 									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.ASSIGNED}</Text>
 								</View>
 							) : (
-								<View className="rounded bg-success px-1 py-0.5">
+								<View className="rounded-xl bg-success px-2 py-1">
 									<Text className="font-semibold text-xs text-white">{MAP_STATUS_LABELS.FREE}</Text>
+								</View>
+							)}
+							{map.tag && (
+								<View className={`${getBadgeColor(map.tag)} rounded-xl px-2 py-1`}>
+									<Text className="font-medium text-xs text-white">{STATUS_NAME[map.tag as keyof typeof STATUS_NAME]}</Text>
 								</View>
 							)}
 						</View>
@@ -78,7 +83,7 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 						{map.address}
 					</Text>
 					{!!map.district && (
-						<Text className="font-regular text-sm text-foreground opacity-70">{map.district}</Text>
+						<Text className="font-medium text-sm text-foreground opacity-90">Bairro: {map.district}</Text>
 					)}
 
 					{hasAnnotation && <Text className="font-medium text-sm text-sky-500">{annotation}</Text>}
@@ -105,11 +110,6 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 								<Text className="pt-[5px] font-regular text-xs text-foreground opacity-80">Ainda não visitado</Text>
 							)}
 						</>
-					)}
-					{map.tag && (
-						<View className={`${getBadgeColor(map.tag)} absolute -right-1 -top-1 rounded-xl px-2 py-1`}>
-							<Text className="font-medium text-xs text-white">{STATUS_NAME[map.tag as keyof typeof STATUS_NAME]}</Text>
-						</View>
 					)}
 				</View>
 			</View>

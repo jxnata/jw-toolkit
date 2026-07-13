@@ -52,6 +52,7 @@ const Cities = () => {
 						<ListItem
 							id={item.id}
 							name={item.name}
+							count={item.mapsCount}
 							onPress={() =>
 								router.push({
 									pathname: `/admin/cities/edit/${item.id}`,

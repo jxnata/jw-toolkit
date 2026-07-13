@@ -39,7 +39,7 @@ const Maps = () => {
 	const { cities } = useCities()
 	const { location } = useLocation()
 
-	const citiesList = cities.map((c) => ({ label: c.name, value: c.id }))
+	const citiesList = cities.map((c) => ({ label: `${c.name} (${c.mapsCount})`, value: c.id }))
 	const selectedCity = citiesList.find((c) => c.value === searchCity)?.label
 
 	const statusList = [
@@ -183,7 +183,7 @@ const Maps = () => {
 					</View>
 				)}
 				{showFilter && !selectionMode && (
-					<Animated.View entering={FadeIn} exiting={FadeOut} className="flex-row items-center gap-2 px-4">
+					<Animated.View entering={FadeIn} exiting={FadeOut} className="flex-row items-center gap-3 px-4">
 						<View className="flex-1">
 							<Input
 								autoCorrect={false}
@@ -194,7 +194,7 @@ const Maps = () => {
 								returnKeyType="search"
 							/>
 						</View>
-						{searching && <ActivityIndicator size="small" color={colors.primary[600]} />}
+						{searching && <ActivityIndicator size="small" className='mb-3' color={colors.primary[600]} />}
 					</Animated.View>
 				)}
 
