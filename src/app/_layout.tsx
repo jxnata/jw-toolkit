@@ -14,7 +14,7 @@ import { useThemedColors } from '@/hooks/use-themed-colors'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
-import { Stack } from 'expo-router'
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider as NavigationThemeProvider } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useState } from 'react'
@@ -23,12 +23,19 @@ import { useMMKVListener } from 'react-native-mmkv'
 import Purchases from 'react-native-purchases'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+	dsn: 'https://b3f1252c3b65e3b3b3d1117702468e2b@o4511332744953856.ingest.us.sentry.io/4511726084161536',
+	sendDefaultPii: true,
+	enabled: !__DEV__,
+});
 
 SplashScreen.preventAutoHideAsync()
 
 const queryClient = new QueryClient()
 
-export default function Layout() {
+function Layout() {
 	const scheme = useColorScheme()
 	const [isLoaded] = useFonts(fonts)
 	const config = configToast()
@@ -77,10 +84,13 @@ export default function Layout() {
 	)
 }
 
+export default Sentry.wrap(Layout)
+
 function RootNavigator() {
 	const { loading, current } = useSession()
 	const [, setInitialized] = useState(storage.getBoolean('initialized'))
 	const { colors } = useThemedColors()
+	const scheme = useColorScheme()
 
 	useMMKVListener((key) => {
 		if (key === 'initialized') {
@@ -92,17 +102,31 @@ function RootNavigator() {
 		return <Loading />
 	}
 
+	const navigationTheme = {
+		...(scheme === 'dark' ? DarkTheme : DefaultTheme),
+		colors: {
+			...(scheme === 'dark' ? DarkTheme.colors : DefaultTheme.colors),
+			primary: colors.primary[600],
+			background: colors.background,
+			card: colors.card,
+			text: colors.foreground,
+			border: colors.border,
+		},
+	}
+
 	return (
-		<Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
-			{/* <Stack.Protected guard={!initialized}>
-				<Stack.Screen name="onboarding" />
-			</Stack.Protected> */}
+		<NavigationThemeProvider value={navigationTheme}>
+			<Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
+				{/* <Stack.Protected guard={!initialized}>
+					<Stack.Screen name="onboarding" />
+				</Stack.Protected> */}
 
-			<Stack.Protected guard={!!current}>
-				<Stack.Screen name="(app)" />
-			</Stack.Protected>
+				<Stack.Protected guard={!!current}>
+					<Stack.Screen name="(app)" />
+				</Stack.Protected>
 
-			<Stack.Screen name="sign-in" />
-		</Stack>
+				<Stack.Screen name="sign-in" />
+			</Stack>
+		</NavigationThemeProvider>
 	)
 }
