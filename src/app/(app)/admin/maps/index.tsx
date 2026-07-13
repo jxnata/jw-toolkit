@@ -11,7 +11,7 @@ import { toHex } from '@/utils/to-hex'
 import { Stack, useRouter } from 'expo-router'
 import { FilterIcon, ListChecks, PinIcon, PlusCircle, Search, SearchX, Settings2 } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
-import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { useDebounce } from 'use-debounce'
 
@@ -27,12 +27,14 @@ const Maps = () => {
 
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
 
-	const { grouped } = useMaps({
+	const { grouped, loading } = useMaps({
 		search: debouncedSearchTerm,
 		city: searchCity,
 		status,
 		enabled: !!searchCity,
 	})
+
+	const searching = searchInput !== debouncedSearchTerm || (loading && !!debouncedSearchTerm)
 
 	const { cities } = useCities()
 	const { location } = useLocation()
@@ -181,15 +183,18 @@ const Maps = () => {
 					</View>
 				)}
 				{showFilter && !selectionMode && (
-					<Animated.View entering={FadeIn} exiting={FadeOut} className={`px-4`}>
-						<Input
-							autoCorrect={false}
-							placeholder="Buscar por nome ou bairro"
-							onChangeText={setSearchInput}
-							value={searchInput}
-							clearButtonMode="always"
-							returnKeyType="search"
-						/>
+					<Animated.View entering={FadeIn} exiting={FadeOut} className="flex-row items-center gap-2 px-4">
+						<View className="flex-1">
+							<Input
+								autoCorrect={false}
+								placeholder="Buscar por nome ou bairro"
+								onChangeText={setSearchInput}
+								value={searchInput}
+								clearButtonMode="always"
+								returnKeyType="search"
+							/>
+						</View>
+						{searching && <ActivityIndicator size="small" color={colors.primary[600]} />}
 					</Animated.View>
 				)}
 

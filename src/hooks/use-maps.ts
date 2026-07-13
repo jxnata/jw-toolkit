@@ -33,16 +33,11 @@ const useMaps = (
 
 	const whereConditions: any = {
 		congregation: congregation!.id,
-		tag: { $not: MAP_TAGS.NO_VISIT },
+		tag: { $ne: MAP_TAGS.NO_VISIT },
 	}
 
 	if (search) {
-		whereConditions.or = [
-			{ name: { $ilike: `%${search}%` } },
-			{ district: { $ilike: `%${search}%` } },
-			{ address: { $ilike: `%${search}%` } },
-			{ 'assigned.name': { $ilike: `%${search}%` } },
-		]
+		whereConditions.or = [{ name: { $ilike: `%${search}%` } }, { district: { $ilike: `%${search}%` } }]
 	}
 
 	if (city) {

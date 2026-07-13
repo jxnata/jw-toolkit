@@ -77,6 +77,9 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 					<Text numberOfLines={2} ellipsizeMode="tail" className="flex-wrap font-medium text-foreground">
 						{map.address}
 					</Text>
+					{!!map.district && (
+						<Text className="font-regular text-sm text-foreground opacity-70">{map.district}</Text>
+					)}
 
 					{hasAnnotation && <Text className="font-medium text-sm text-sky-500">{annotation}</Text>}
 
