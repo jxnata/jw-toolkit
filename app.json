@@ -55,22 +55,22 @@
 			"expo-apple-authentication",
 			"expo-notifications",
 			"expo-sharing",
-		    "expo-status-bar",
+			"expo-status-bar",
 			[
-        		"expo-build-properties",
-		        {
-		          "ios": {
-		            "useFrameworks": "static"
-		          }
-		        }
-		     ],
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
+				}
+			],
 			[
-			    "expo-splash-screen",
-			    {
+				"expo-splash-screen",
+				{
 					"image": "./src/assets/icon.png",
 					"resizeMode": "contain",
 					"backgroundColor": "#D08129"
-			    }
+				}
 			],
 			[
 				"react-native-maps",
@@ -82,6 +82,14 @@
 				"@react-native-google-signin/google-signin",
 				{
 					"iosUrlScheme": "com.googleusercontent.apps.561014260561-au4cn876vvjtjqhugoakvbiebsmpnlj1"
+				}
+			],
+			[
+				"@sentry/react-native/expo",
+				{
+					"url": "https://sentry.io/",
+					"project": "ls-mapas",
+					"organization": "jonata-oliveira-0u"
 				}
 			]
 		],

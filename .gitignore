@@ -47,3 +47,4 @@ ios/
 !.env.example
 
 jw-toolkit-6006743b08d0.json
+.env.local
