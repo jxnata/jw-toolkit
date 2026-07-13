@@ -40,6 +40,7 @@ const useMaps = (
 		whereConditions.or = [
 			{ name: { $ilike: `%${search}%` } },
 			{ district: { $ilike: `%${search}%` } },
+			{ address: { $ilike: `%${search}%` } },
 			{ 'assigned.name': { $ilike: `%${search}%` } },
 		]
 	}
