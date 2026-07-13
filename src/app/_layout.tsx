@@ -1,5 +1,5 @@
-import { Loading } from '@/components/loading'
 import '../../global.css'
+import { Loading } from '@/components/loading'
 
 import { LimitGuard } from '@/components/limit-guard'
 import { REVENUECAT_APPLE_API_KEY, REVENUECAT_GOOGLE_API_KEY } from '@/constants/env'
@@ -12,7 +12,6 @@ import { ThemeProvider } from '@/contexts/theme-provider'
 import { storage } from '@/database'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
-import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
@@ -66,9 +65,7 @@ export default function Layout() {
 							<ThemeProvider>
 								<LocationProvider>
 									<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-									<NavigationThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-										<RootNavigator />
-									</NavigationThemeProvider>
+									<RootNavigator />
 								</LocationProvider>
 							</ThemeProvider>
 						</LimitGuard>

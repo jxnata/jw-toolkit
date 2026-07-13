@@ -7,11 +7,6 @@
 		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"userInterfaceStyle": "automatic",
-		"splash": {
-			"image": "./src/assets/splash.png",
-			"resizeMode": "cover",
-			"backgroundColor": "#D08129"
-		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": false,
@@ -59,7 +54,24 @@
 			"expo-font",
 			"expo-apple-authentication",
 			"expo-notifications",
-			"expo-build-properties",
+			"expo-sharing",
+		    "expo-status-bar",
+			[
+        		"expo-build-properties",
+		        {
+		          "ios": {
+		            "useFrameworks": "static"
+		          }
+		        }
+		     ],
+			[
+			    "expo-splash-screen",
+			    {
+					"image": "./src/assets/icon.png",
+					"resizeMode": "contain",
+					"backgroundColor": "#D08129"
+			    }
+			],
 			[
 				"react-native-maps",
 				{
