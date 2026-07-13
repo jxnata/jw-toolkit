@@ -17,15 +17,13 @@ const Admin = () => {
 	const { expired } = useSubscription()
 	const { congregation, logout } = useSession()
 	const { colors } = useThemedColors()
-	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
+	const [privacyAccepted] = useState<boolean>(() => storage.getBoolean('privacy.policy.accepted') ?? false)
 
 	useEffect(() => {
-		const accepted = storage.getBoolean('privacy.policy.accepted') ?? false
-		setPrivacyAccepted(accepted)
-		if (!accepted) {
+		if (!privacyAccepted) {
 			router.replace('/privacy-policy')
 		}
-	}, [router])
+	}, [privacyAccepted, router])
 
 	const HeaderRight = () => (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/admin/me')} className="p-2">

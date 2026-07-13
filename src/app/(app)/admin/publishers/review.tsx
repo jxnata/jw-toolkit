@@ -7,7 +7,7 @@ import { publishersService } from '@/services/instantdb'
 import { firstLetter } from '@/utils/first-letter'
 import { Stack, useRouter } from 'expo-router'
 import { CheckCircle, XCircle } from 'lucide-react-native'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
 
 const Publishers = () => {
@@ -15,9 +15,11 @@ const Publishers = () => {
 	const { requestPublishers: publishers, loading, mutate } = useRequestPublishers()
 	const { mutate: mutatePublishers } = usePublishers()
 	const { checkPublisherLimit } = useLimitCheck()
-	const [list, setList] = useState(publishers)
+	const [removedIds, setRemovedIds] = useState<string[]>([])
 	const { colors } = useThemedColors()
 	const { congregation } = useSession()
+
+	const list = useMemo(() => publishers.filter((p) => !removedIds.includes(p.id)), [publishers, removedIds])
 
 	const approve = async (publisherId: string) => {
 		// Check if publisher limit is reached
@@ -26,7 +28,7 @@ const Publishers = () => {
 		}
 
 		try {
-			setList(list.filter((p) => p.id !== publisherId))
+			setRemovedIds((prev) => [...prev, publisherId])
 
 			await publishersService.updatePublisher(publisherId, {
 				approved: true,
@@ -41,7 +43,7 @@ const Publishers = () => {
 		if (!congregation) return
 
 		try {
-			setList(list.filter((p) => p.id !== publisherId))
+			setRemovedIds((prev) => [...prev, publisherId])
 
 			await publishersService.updatePublisher(publisherId, {
 				approved: false,
@@ -53,10 +55,6 @@ const Publishers = () => {
 			mutate()
 		}
 	}
-
-	useEffect(() => {
-		setList(publishers)
-	}, [publishers])
 
 	useEffect(() => {
 		return () => {

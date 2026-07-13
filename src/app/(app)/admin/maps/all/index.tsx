@@ -13,15 +13,15 @@ const AllMaps = () => {
 	const { maps, loading } = useAllMaps()
 	const { colors } = useThemedColors()
 
-	const getLocation = async () => {
-		const { status } = await Location.requestForegroundPermissionsAsync()
-		if (status !== 'granted') return
-
-		const { coords } = await Location.getCurrentPositionAsync({})
-		setLocation(getMapRegion([coords.latitude, coords.longitude]))
-	}
-
 	useEffect(() => {
+		const getLocation = async () => {
+			const { status } = await Location.requestForegroundPermissionsAsync()
+			if (status !== 'granted') return
+
+			const { coords } = await Location.getCurrentPositionAsync({})
+			setLocation(getMapRegion([coords.latitude, coords.longitude]))
+		}
+
 		getLocation()
 	}, [])
 

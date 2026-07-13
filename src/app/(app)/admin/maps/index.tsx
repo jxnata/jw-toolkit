@@ -10,7 +10,7 @@ import { mapsService } from '@/services/instantdb/maps-service'
 import { toHex } from '@/utils/to-hex'
 import { Stack, useRouter } from 'expo-router'
 import { FilterIcon, ListChecks, PinIcon, PlusCircle, Search, SearchX, Settings2 } from 'lucide-react-native'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ActivityIndicator, Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { useDebounce } from 'use-debounce'
@@ -27,20 +27,22 @@ const Maps = () => {
 
 	const [debouncedSearchTerm] = useDebounce(searchInput, 500)
 
+	const { cities } = useCities()
+	const { location } = useLocation()
+
+	const effectiveSearchCity = searchCity || cities[cities.length - 1]?.id || ''
+
 	const { grouped, loading } = useMaps({
 		search: debouncedSearchTerm,
-		city: searchCity,
+		city: effectiveSearchCity,
 		status,
-		enabled: !!searchCity,
+		enabled: !!effectiveSearchCity,
 	})
 
 	const searching = searchInput !== debouncedSearchTerm || (loading && !!debouncedSearchTerm)
 
-	const { cities } = useCities()
-	const { location } = useLocation()
-
 	const citiesList = cities.map((c) => ({ label: `${c.name} (${c.mapsCount})`, value: c.id }))
-	const selectedCity = citiesList.find((c) => c.value === searchCity)?.label
+	const selectedCity = citiesList.find((c) => c.value === effectiveSearchCity)?.label
 
 	const statusList = [
 		{ label: 'Todos', value: '' },
@@ -50,12 +52,6 @@ const Maps = () => {
 		{ label: 'Estudante', value: 'student' },
 	]
 	const selectedStatus = statusList.find((s) => s.value === status)?.label
-
-	useEffect(() => {
-		if (cities.length > 0 && !searchCity) {
-			setSearchCity(cities[cities.length - 1].id)
-		}
-	}, [cities, searchCity])
 
 	const enterSelectionMode = () => {
 		setSelectionMode(true)
@@ -158,7 +154,7 @@ const Maps = () => {
 							<Dropdown
 								placeholder="Cidade"
 								options={citiesList}
-								selectedValue={searchCity}
+								selectedValue={effectiveSearchCity}
 								onValueChange={filterCity}
 								TriggerComponent={
 									<View className="flex-row items-center gap-1">

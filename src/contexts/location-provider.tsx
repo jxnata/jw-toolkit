@@ -50,7 +50,10 @@ export const LocationProvider = ({ children }: LocationProviderProps) => {
 	}
 
 	useEffect(() => {
-		getLocation()
+		const load = async () => {
+			await getLocation()
+		}
+		load()
 	}, [])
 
 	return (

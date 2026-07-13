@@ -16,7 +16,7 @@ import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router } from 'expo-router'
 import { MapPinPlus, Save } from 'lucide-react-native'
 import { useState } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
 const AddMap = () => {
@@ -24,10 +24,10 @@ const AddMap = () => {
 	const { cities } = useCities()
 	const { congregation } = useSession()
 	const { checkMapLimit } = useLimitCheck()
-	const { control, formState, handleSubmit, setValue, watch } = useForm<AddMapReq>()
+	const { control, formState, handleSubmit, setValue } = useForm<AddMapReq>()
 	const { colors } = useThemedColors()
 
-	const coordinates = watch('coordinates')
+	const coordinates = useWatch({ control, name: 'coordinates' })
 
 	const citiesList = cities.map((c) => ({ label: c.name, value: c.id }))
 

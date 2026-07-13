@@ -29,7 +29,7 @@ const mockUseQuery = db.useQuery as jest.Mock
 
 const congregation = { id: 'cong-1', name: 'Test Congregation' }
 
-function setup({
+function useSetup({
 	subscribed = false,
 	cong = congregation as typeof congregation | null,
 	maps = [] as unknown[],
@@ -51,22 +51,22 @@ beforeEach(() => {
 
 describe('subscribed user', () => {
 	it('mapsReached = false even when mapsCount > FREE_LIMITS.maps', () => {
-		const result = setup({ subscribed: true, maps: [{}, {}, {}, {}] })
+		const result = useSetup({ subscribed: true, maps: [{}, {}, {}, {}] })
 		expect(result.mapsReached).toBe(false)
 	})
 
 	it('publishersReached = false even when publishersCount > FREE_LIMITS.publishers', () => {
-		const result = setup({ subscribed: true, publishers: [{}, {}, {}] })
+		const result = useSetup({ subscribed: true, publishers: [{}, {}, {}] })
 		expect(result.publishersReached).toBe(false)
 	})
 
 	it('anyLimitReached = false', () => {
-		const result = setup({ subscribed: true, maps: [{}, {}, {}, {}], publishers: [{}, {}, {}] })
+		const result = useSetup({ subscribed: true, maps: [{}, {}, {}, {}], publishers: [{}, {}, {}] })
 		expect(result.anyLimitReached).toBe(false)
 	})
 
 	it('counts are still correctly returned', () => {
-		const result = setup({ subscribed: true, maps: [{}, {}], publishers: [{}] })
+		const result = useSetup({ subscribed: true, maps: [{}, {}], publishers: [{}] })
 		expect(result.mapsCount).toBe(2)
 		expect(result.publishersCount).toBe(1)
 	})
@@ -76,24 +76,24 @@ describe('subscribed user', () => {
 
 describe('free user', () => {
 	it('0 maps and 0 publishers: all reached flags false', () => {
-		const result = setup({ subscribed: false, maps: [], publishers: [] })
+		const result = useSetup({ subscribed: false, maps: [], publishers: [] })
 		expect(result.mapsReached).toBe(false)
 		expect(result.publishersReached).toBe(false)
 		expect(result.anyLimitReached).toBe(false)
 	})
 
 	it('mapsCount === FREE_LIMITS.maps (3): mapsReached = true', () => {
-		const result = setup({ subscribed: false, maps: [{}, {}, {}] })
+		const result = useSetup({ subscribed: false, maps: [{}, {}, {}] })
 		expect(result.mapsReached).toBe(true)
 	})
 
 	it('mapsCount < FREE_LIMITS.maps (2 < 3): mapsReached = false', () => {
-		const result = setup({ subscribed: false, maps: [{}, {}] })
+		const result = useSetup({ subscribed: false, maps: [{}, {}] })
 		expect(result.mapsReached).toBe(false)
 	})
 
 	it('publishersCount > FREE_LIMITS.publishers: publishersReached = true, anyLimitReached = true', () => {
-		const result = setup({ subscribed: false, publishers: [{}, {}, {}] })
+		const result = useSetup({ subscribed: false, publishers: [{}, {}, {}] })
 		expect(result.publishersReached).toBe(true)
 		expect(result.anyLimitReached).toBe(true)
 	})

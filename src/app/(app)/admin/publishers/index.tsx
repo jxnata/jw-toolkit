@@ -28,21 +28,6 @@ const Publishers = () => {
 		</View>
 	)
 
-	const ListHeaderComponent = () => {
-		return (
-			<>
-				<Input autoCorrect={false} placeholder="Buscar um publicador..." onChangeText={debouncedSearch} clearButtonMode="always" />
-				{requestPublishers?.length > 0 && (
-					<Pressable onPress={() => router.push('/admin/publishers/review')} className="my-2.5 rounded-lg bg-danger p-2.5">
-						<Text className="text-center font-medium text-sm text-white">
-							{requestPublishers.length} solicitação(ões) pendente(s) para aprovação
-						</Text>
-					</Pressable>
-				)}
-			</>
-		)
-	}
-
 	const debouncedSearch = debounce(async (term) => {
 		setSearch(term)
 	}, 500)
@@ -52,7 +37,23 @@ const Publishers = () => {
 			<Stack.Screen options={{ title: 'Publicadores', headerRight: HeaderRight }} />
 			<View className="flex h-full w-full bg-background p-2.5">
 				<FlatList
-					ListHeaderComponent={<ListHeaderComponent />}
+					ListHeaderComponent={
+						<>
+							<Input
+								autoCorrect={false}
+								placeholder="Buscar um publicador..."
+								onChangeText={debouncedSearch}
+								clearButtonMode="always"
+							/>
+							{requestPublishers?.length > 0 && (
+								<Pressable onPress={() => router.push('/admin/publishers/review')} className="my-2.5 rounded-lg bg-danger p-2.5">
+									<Text className="text-center font-medium text-sm text-white">
+										{requestPublishers.length} solicitação(ões) pendente(s) para aprovação
+									</Text>
+								</Pressable>
+							)}
+						</>
+					}
 					data={publishers}
 					keyExtractor={(item) => item.id}
 					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}

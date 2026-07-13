@@ -1,6 +1,6 @@
 import { checkSubscription } from '@/lib/revenuecat'
 import { patchSubscription } from '@/utils/subscriptions'
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { useSession } from './session-provider'
 
 export const SubscriptionContext = createContext<{
@@ -20,8 +20,17 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 	const [expired, setExpired] = useState<boolean>(false)
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(false)
 	const { type, current } = useSession()
+	const [prevCurrent, setPrevCurrent] = useState(current)
 
-	const fetchSubscription = async () => {
+	if (current !== prevCurrent) {
+		setPrevCurrent(current)
+		if (!current) {
+			setSubscribed(false)
+			setIsUserSubscribed(false)
+		}
+	}
+
+	const fetchSubscription = useCallback(async () => {
 		try {
 			if (!current) return
 
@@ -31,9 +40,9 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 		} catch (error) {
 			console.error(error)
 		}
-	}
+	}, [current])
 
-	const checkUserSubscription = async () => {
+	const checkUserSubscription = useCallback(async () => {
 		try {
 			if (!current) return
 			const isSubscribed = await checkSubscription()
@@ -41,19 +50,17 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 		} catch (error) {
 			console.error(error)
 		}
-	}
+	}, [current])
 
 	useEffect(() => {
-		if (!current) {
-			setSubscribed(false)
-			setIsUserSubscribed(false)
-			return
-		}
-		if (type === 'publisher') return
+		if (!current || type === 'publisher') return
 
-		fetchSubscription()
-		checkUserSubscription()
-	}, [current, type])
+		const load = async () => {
+			await fetchSubscription()
+			await checkUserSubscription()
+		}
+		load()
+	}, [current, type, fetchSubscription, checkUserSubscription])
 
 	return (
 		<SubscriptionContext.Provider value={{ subscribed, checkSubscription: fetchSubscription, isUserSubscribed, expired }}>

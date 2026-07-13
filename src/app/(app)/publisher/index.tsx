@@ -17,15 +17,13 @@ const PublisherHome = () => {
 	const { location } = useLocation()
 	const { grouped, loading, mutate } = useMyAssignments()
 	const { colors } = useThemedColors()
-	const [privacyAccepted, setPrivacyAccepted] = useState<boolean | null>(null)
+	const [privacyAccepted] = useState<boolean>(() => storage.getBoolean('privacy.policy.accepted') ?? false)
 
 	useEffect(() => {
-		const accepted = storage.getBoolean('privacy.policy.accepted') ?? false
-		setPrivacyAccepted(accepted)
-		if (!accepted) {
+		if (!privacyAccepted) {
 			router.replace('/privacy-policy')
 		}
-	}, [router])
+	}, [privacyAccepted, router])
 
 	const HeaderRight = () => (
 		<View className="flex flex-row items-center justify-center gap-[15px]">

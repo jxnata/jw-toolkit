@@ -3,7 +3,7 @@ import { usePersonalAnnotations } from '@/hooks/use-personal-annotations'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import { MessageCirclePlus, Save, Trash } from 'lucide-react-native'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Button from './button'
 import Input from './input'
@@ -18,14 +18,14 @@ const PersonalAnnotation = ({ map }: PersonalAnnotationProps) => {
 	const { colors } = useThemedColors()
 	const [showModal, setShowModal] = useState(false)
 	const [annotationText, setAnnotationText] = useState('')
+	const [syncedAnnotation, setSyncedAnnotation] = useState<string | undefined>(undefined)
 
 	const { annotation, isLoading, saveAnnotation, hasAnnotation } = usePersonalAnnotations(map.id, user?.id || '')
 
-	useEffect(() => {
-		if (annotation) {
-			setAnnotationText(annotation)
-		}
-	}, [annotation])
+	if (annotation && annotation !== syncedAnnotation) {
+		setSyncedAnnotation(annotation)
+		setAnnotationText(annotation)
+	}
 
 	const handleSaveAnnotation = () => {
 		const success = saveAnnotation(annotationText)

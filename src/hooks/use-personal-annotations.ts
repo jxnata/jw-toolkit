@@ -1,27 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { storage } from '@/database'
 import { STORAGE_KEYS } from '@/constants/storage-keys'
 
-export const usePersonalAnnotations = (mapId: string, userId: string) => {
-	const [annotation, setAnnotation] = useState<string | null>(null)
-	const [isLoading, setIsLoading] = useState(true)
+const loadAnnotation = (storageKey: string) => {
+	try {
+		return storage.getString(storageKey) || null
+	} catch (error) {
+		console.error('Error loading annotation:', error)
+		return null
+	}
+}
 
+export const usePersonalAnnotations = (mapId: string, userId: string) => {
 	const storageKey = STORAGE_KEYS.annotations(mapId, userId)
 
-	const loadAnnotation = () => {
-		try {
-			const savedAnnotation = storage.getString(storageKey)
-			setAnnotation(savedAnnotation || null)
-		} catch (error) {
-			console.error('Error loading annotation:', error)
-		} finally {
-			setIsLoading(false)
-		}
+	const [loadedKey, setLoadedKey] = useState(storageKey)
+	const [annotation, setAnnotation] = useState<string | null>(() => loadAnnotation(storageKey))
+
+	if (loadedKey !== storageKey) {
+		setLoadedKey(storageKey)
+		setAnnotation(loadAnnotation(storageKey))
 	}
 
-	useEffect(() => {
-		loadAnnotation()
-	}, [mapId, userId])
+	const isLoading = false
 
 	const saveAnnotation = (text: string) => {
 		try {

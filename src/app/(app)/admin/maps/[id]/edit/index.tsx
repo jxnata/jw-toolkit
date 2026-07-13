@@ -15,7 +15,7 @@ import { setCoordinates } from '@/utils/set-coordinates'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { MapPinPlus } from 'lucide-react-native'
 import { useState } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
 const EditMap = () => {
@@ -37,8 +37,8 @@ const EditMap = () => {
 			}
 		: undefined
 
-	const { control, formState, handleSubmit, setValue, watch } = useForm<EditMapReq>({ defaultValues })
-	const coordinates = watch('coordinates')
+	const { control, formState, handleSubmit, setValue } = useForm<EditMapReq>({ defaultValues })
+	const coordinates = useWatch({ control, name: 'coordinates' })
 
 	const toggleMap = () => {
 		setModalVisible((old) => !old)

@@ -26,23 +26,19 @@ const Cities = () => {
 		setSearchTerm(term)
 	}, 500)
 
-	const ListHeaderComponent = () => {
-		return (
-			<Input
-				autoCorrect={false}
-				placeholder="Buscar uma cidade/território..."
-				onChangeText={debouncedSearch}
-				clearButtonMode="always"
-			/>
-		)
-	}
-
 	return (
 		<View className="flex">
 			<Stack.Screen options={{ title: 'Cidades/Territórios', headerRight: HeaderRight }} />
 			<View className="flex h-full w-full bg-background p-4">
 				<FlatList
-					ListHeaderComponent={<ListHeaderComponent />}
+					ListHeaderComponent={
+						<Input
+							autoCorrect={false}
+							placeholder="Buscar uma cidade/território..."
+							onChangeText={debouncedSearch}
+							clearButtonMode="always"
+						/>
+					}
 					data={cities}
 					keyExtractor={(item) => item.id}
 					refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
