@@ -9,7 +9,9 @@ import usePublishers from '@/hooks/use-publishers'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import db from '@/lib/db'
+import { offline } from '@/messages/offline'
 import { mapsService } from '@/services/instantdb/maps-service'
+import { isOfflineError } from '@/utils/is-offline-error'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { Minus, PlusCircle } from 'lucide-react-native'
 import { useState } from 'react'
@@ -66,7 +68,8 @@ const GroupDetail = () => {
 			} else {
 				await mapsService.removeFromGroup(mapId)
 			}
-		} catch {
+		} catch (error) {
+			if (isOfflineError(error)) return offline()
 			Alert.alert('Erro', 'Não foi possível remover o mapa do grupo.')
 		}
 	}

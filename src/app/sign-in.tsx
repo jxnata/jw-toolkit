@@ -1,5 +1,6 @@
 import { APP_VERSION } from '@/constants/content'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { isOfflineError, OFFLINE_MESSAGE } from '@/utils/is-offline-error'
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import {
 	AppleAuthenticationButton,
@@ -32,7 +33,7 @@ const Login = () => {
 			if ((e as { code?: string }).code === 'ERR_REQUEST_CANCELED') {
 				// nothing to-do
 			} else {
-				Alert.alert('Erro', 'Ocorreu um erro ao fazer login...')
+				Alert.alert('Erro', isOfflineError(e) ? OFFLINE_MESSAGE : 'Ocorreu um erro ao fazer login...')
 			}
 		}
 	}
@@ -49,7 +50,7 @@ const Login = () => {
 			await googleAuthentication(userInfo.data)
 		} catch (e) {
 			console.log(e)
-			Alert.alert('Erro', 'Ocorreu um erro ao fazer login...')
+			Alert.alert('Erro', isOfflineError(e) ? OFFLINE_MESSAGE : 'Ocorreu um erro ao fazer login...')
 		}
 	}
 

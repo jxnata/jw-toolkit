@@ -2,7 +2,9 @@ import Button from '@/components/button'
 import { useSession } from '@/contexts/session-provider'
 import useMaps from '@/hooks/use-maps'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { offline } from '@/messages/offline'
 import { mapsService } from '@/services/instantdb/maps-service'
+import { isOfflineError } from '@/utils/is-offline-error'
 import { router, Stack } from 'expo-router'
 import { Trash2, X } from 'lucide-react-native'
 import { Alert, Text, TouchableOpacity, View } from 'react-native'
@@ -26,7 +28,8 @@ const MapsOptions = () => {
 				text1: 'Sucesso',
 				text2: 'Todas as designações foram removidas',
 			})
-		} catch {
+		} catch (error) {
+			if (isOfflineError(error)) return offline()
 			Toast.show({
 				type: 'error',
 				text1: 'Erro',
