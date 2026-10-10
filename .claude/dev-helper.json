@@ -1,0 +1,14 @@
+{
+	"repo": "jxnata/jw-toolkit",
+	"baseBranch": "develop",
+	"sentry": {
+		"org": "jonata-oliveira-0u",
+		"projects": {
+			"ls-mapas": { "area": "mobile", "path": "." }
+		}
+	},
+	"labels": ["sentry"],
+	"checks": {
+		"mobile": ["bun lint", "bun run ts:check", "bun run test"]
+	}
+}
