@@ -26,7 +26,6 @@ const AssigmentDetails = () => {
 	if (!assignment) {
 		return (
 			<View className="flex">
-				<Stack.Screen options={{ presentation: 'modal' }} />
 				<View className="flex-1 items-center justify-center">
 					<ActivityIndicator size="large" color={colors.primary[600]} />
 				</View>

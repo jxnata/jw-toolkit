@@ -21,4 +21,9 @@ describe('getMarkerCoordinate', () => {
 	it('handles zero coordinates', () => {
 		expect(getMarkerCoordinate([0, 0])).toEqual({ latitude: 0, longitude: 0 })
 	})
+
+	it('returns zero coordinates when a coordinate is missing or not finite', () => {
+		expect(getMarkerCoordinate([-23.5, undefined] as any)).toEqual({ latitude: 0, longitude: 0 })
+		expect(getMarkerCoordinate([NaN, -46.6])).toEqual({ latitude: 0, longitude: 0 })
+	})
 })
