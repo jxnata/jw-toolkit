@@ -16,3 +16,10 @@ export const FREE_LIMITS = {
 export const FEATURES = {
 	backup: process.env.EXPO_PUBLIC_FEATURE_BACKUP === 'true',
 }
+
+/**
+ * Serves the InstantDB connection details (appId/apiURI/websocketURI) the app
+ * should use, fetched at startup so backend migrations (e.g. selfhosted
+ * InstantDB) don't require a store review. See `@/lib/remote-config`.
+ */
+export const REMOTE_CONFIG_URL = `https://config.jxnata.dev/${__DEV__ ? 'dev' : 'prod'}/lsmaps.json`

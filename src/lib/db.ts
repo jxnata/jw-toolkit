@@ -1,10 +1,10 @@
-import { INSTANT_APP_ID } from '@/constants/env'
 import schema from '@/interfaces/schema'
 import { init } from '@instantdb/react-native'
 import InstantStore from './instant-store'
+import { resolveInstantConfig } from './remote-config'
 
 const db = init({
-	appId: INSTANT_APP_ID!,
+	...resolveInstantConfig(),
 	schema,
 	// Enable offline support
 	devtool: __DEV__,
