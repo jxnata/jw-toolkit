@@ -5,6 +5,7 @@ import { id } from '@instantdb/react-native'
 export interface CreateCongregationInput {
 	name: string
 	enabled?: boolean
+	creatorId: string
 }
 
 class CongregationsService {
@@ -15,8 +16,19 @@ class CongregationsService {
 			enabled: input.enabled,
 		}
 
-		await db.transact(db.tx.congregations[congregationId].update(congregationData))
+		// The creator is the only user allowed to become the first admin of the congregation (see instant.perms.ts)
+		await db.transact(db.tx.congregations[congregationId].update(congregationData).link({ creator: input.creatorId }))
 		return congregationId
+	}
+
+	async isCreator(congregationId: string, userId: string): Promise<boolean> {
+		const { data } = await db.queryOnce({
+			congregations: {
+				$: { where: { id: congregationId } },
+				creator: {},
+			},
+		})
+		return data.congregations[0]?.creator?.id === userId
 	}
 
 	async updateCongregation(congregationId: string, updates: Partial<Congregation>): Promise<void> {
