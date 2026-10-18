@@ -27,6 +27,8 @@ export interface BackupData {
 	congregation_id: string
 	created_at: string
 	cities: { id: string; name: string }[]
+	// Added in v1.1 — absent in v1.0 files
+	districts: { id: string; name: string; city_id: string }[]
 	maps: {
 		id: string
 		name: string
@@ -37,6 +39,18 @@ export interface BackupData {
 		lng: number | null
 		tag: string | null
 		group_code: string | null
+		// Added in v1.1 — absent in v1.0 files
+		found?: boolean | null
+		found_info?: string | null
+		visited?: string | number | null
+		visited_by?: string | null
 		city_id: string
 	}[]
+}
+
+export interface RestoreResult {
+	cities: number
+	districts: number
+	maps: number
+	skippedMaps: number
 }

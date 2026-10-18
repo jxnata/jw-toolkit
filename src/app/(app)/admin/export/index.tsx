@@ -17,7 +17,7 @@ const ExportMaps = () => {
 	const { maps, loading } = useAllMaps()
 	const { congregation } = useSession()
 	const { colors } = useThemedColors()
-	const { loading: backupLoading, progress, error, createBackup, restoreBackup } = useBackupRestore()
+	const { loading: backupLoading, operation, progress, error, createBackup, restoreBackup } = useBackupRestore()
 
 	const createPDF = async () => {
 		if (!congregation) return
@@ -140,7 +140,7 @@ const ExportMaps = () => {
 	const confirmRestore = () => {
 		Alert.alert(
 			'Confirmar restauração',
-			'Todos os mapas e cidades serão apagados e substituídos pelos dados do backup. Deseja continuar?',
+			'Todas as cidades, bairros e mapas serão substituídos pelos dados do backup. As designações atuais serão perdidas. Deseja continuar?',
 			[
 				{ text: 'Cancelar', style: 'cancel' },
 				{ text: 'Confirmar', style: 'destructive', onPress: restoreBackup },
@@ -183,22 +183,16 @@ const ExportMaps = () => {
 						<View className="mb-4 rounded-xl border border-border bg-card p-4">
 							<Text className="mb-1 font-semibold text-foreground">Backup</Text>
 							<Text className="mb-4 text-sm text-foreground opacity-60">
-								Salva todas as cidades e mapas em um arquivo .json que pode ser restaurado posteriormente
+								Salva todas as cidades, bairros e mapas em um arquivo .json que pode ser restaurado posteriormente
 							</Text>
-							{backupLoading && progress && (
-								<View className="mb-3 flex-row items-center gap-2">
-									<ActivityIndicator size="small" color={colors.primary[600]} />
-									<Text className="text-sm text-foreground">{progress}</Text>
-								</View>
-							)}
 							<Button
-								loading={backupLoading && !progress}
+								loading={operation === 'backup'}
 								disabled={backupLoading}
 								onPress={createBackup}
 								left={!backupLoading ? <Save size={20} color="white" /> : undefined}>
 								Fazer Backup
 							</Button>
-							{error && !progress && <Text className="mt-2 text-sm text-danger-500">{error}</Text>}
+							{error?.operation === 'backup' && <Text className="mt-2 text-sm text-danger-500">{error.message}</Text>}
 						</View>
 
 						{/* Card 3 - Restore */}
@@ -207,7 +201,7 @@ const ExportMaps = () => {
 							<Text className="mb-3 text-sm text-danger-500">
 								Atenção: esta ação não pode ser desfeita. Todos os dados atuais serão substituídos pelo backup.
 							</Text>
-							{backupLoading && progress && (
+							{operation === 'restore' && progress && (
 								<View className="mb-3 flex-row items-center gap-2">
 									<ActivityIndicator size="small" color={colors.primary[600]} />
 									<Text className="text-sm text-foreground">{progress}</Text>
@@ -215,13 +209,13 @@ const ExportMaps = () => {
 							)}
 							<Button
 								variant="danger"
-								loading={backupLoading && !progress}
+								loading={operation === 'restore' && !progress}
 								disabled={backupLoading}
 								onPress={confirmRestore}
 								left={!backupLoading ? <RotateCcw size={20} color={colors.danger[500]} /> : undefined}>
 								Restaurar
 							</Button>
-							{error && progress === null && <Text className="mt-2 text-sm text-danger-500">{error}</Text>}
+							{error?.operation === 'restore' && <Text className="mt-2 text-sm text-danger-500">{error.message}</Text>}
 						</View>
 					</>
 				)}

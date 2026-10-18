@@ -5,6 +5,7 @@ module.exports = {
 		'^.+\\.[jt]sx?$': ['babel-jest', { configFile: './babel.config.js' }],
 	},
 	testEnvironment: 'node',
+	setupFiles: ['<rootDir>/jest.setup.js'],
 	moduleNameMapper: {
 		'^@/(.*)$': '<rootDir>/src/$1',
 		// stub out packages that are not needed for util tests
@@ -12,5 +13,7 @@ module.exports = {
 		'^lodash/sum$': '<rootDir>/src/__mocks__/lodash-sum.js',
 	},
 	testMatch: ['**/*.test.[jt]s?(x)'],
+	// Integration tests hit a real database and run only through `bun run test:integration`
+	testPathIgnorePatterns: ['/node_modules/', '\\.integration\\.test\\.'],
 	moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 }
