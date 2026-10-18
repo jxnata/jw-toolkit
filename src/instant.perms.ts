@@ -19,7 +19,7 @@ const rules = {
 		},
 		bind: [
 			'isAdmin',
-			"auth.id in data.ref('congregation.publishers.user.id') && data.ref('congregation.publishers')[auth.id in data.ref('congregation.publishers.user.id')].level == 1",
+			"auth.id in data.ref('congregation.publishers.user.id') && 1 in auth.ref('$user.publisher.level')",
 			'isInCongregation',
 			"auth.id in data.ref('congregation.publishers.user.id')",
 		],
@@ -33,7 +33,7 @@ const rules = {
 		},
 		bind: [
 			'isAdmin',
-			"auth.id in data.ref('publishers.user.id') && data.ref('publishers')[auth.id in data.ref('publishers.user.id')].level == 1",
+			"auth.id in data.ref('publishers.user.id') && 1 in auth.ref('$user.publisher.level')",
 			'isInCongregation',
 			"auth.id in data.ref('publishers.user.id')",
 		],
@@ -47,7 +47,7 @@ const rules = {
 		},
 		bind: [
 			'isAdmin',
-			"auth.id in data.ref('city.congregation.publishers.user.id') && data.ref('city.congregation.publishers')[auth.id in data.ref('city.congregation.publishers.user.id')].level == 1",
+			"auth.id in data.ref('city.congregation.publishers.user.id') && 1 in auth.ref('$user.publisher.level')",
 			'isInCongregation',
 			"auth.id in data.ref('city.congregation.publishers.user.id')",
 		],
@@ -61,11 +61,11 @@ const rules = {
 		},
 		bind: [
 			'isAdmin',
-			"auth.id in data.ref('congregation.publishers.user.id') && data.ref('congregation.publishers')[auth.id in data.ref('congregation.publishers.user.id')].level == 1",
+			"auth.id in data.ref('congregation.publishers.user.id') && 1 in auth.ref('$user.publisher.level')",
 			'isInCongregation',
 			"auth.id in data.ref('congregation.publishers.user.id')",
 			'isAdminOrAssignedPublisher',
-			"auth.id in data.ref('congregation.publishers.user.id') && (data.ref('congregation.publishers')[auth.id in data.ref('congregation.publishers.user.id')].level == 1 || auth.id in data.ref('assigned.user.id'))",
+			"auth.id in data.ref('congregation.publishers.user.id') && (1 in auth.ref('$user.publisher.level') || auth.id in data.ref('assigned.user.id'))",
 		],
 	},
 	publishers: {
@@ -77,11 +77,11 @@ const rules = {
 		},
 		bind: [
 			'isAdmin',
-			"auth.id in data.ref('congregation.publishers.user.id') && data.ref('congregation.publishers')[auth.id in data.ref('congregation.publishers.user.id')].level == 1",
+			"auth.id in data.ref('congregation.publishers.user.id') && 1 in auth.ref('$user.publisher.level')",
 			'isInSameCongregationOrSelf',
 			"auth.id in data.ref('congregation.publishers.user.id') || auth.id in data.ref('user.id')",
 			'isAdminOrSelf',
-			"(auth.id in data.ref('congregation.publishers.user.id') && data.ref('congregation.publishers')[auth.id in data.ref('congregation.publishers.user.id')].level == 1) || auth.id in data.ref('user.id')",
+			"(auth.id in data.ref('congregation.publishers.user.id') && 1 in auth.ref('$user.publisher.level')) || auth.id in data.ref('user.id')",
 		],
 	},
 } satisfies InstantRules

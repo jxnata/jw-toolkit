@@ -1,4 +1,4 @@
-import { validateBackupFile } from './validate-backup-file'
+import { INVALID_BACKUP_MESSAGE, parseBackupFile, validateBackupFile } from './validate-backup-file'
 
 const validBackup = {
 	version: '1.0',
@@ -83,5 +83,91 @@ describe('validateBackupFile', () => {
 
 	it('empty cities and maps arrays returns true (valid empty backup)', () => {
 		expect(validateBackupFile({ ...validBackup, cities: [], maps: [] })).toBe(true)
+	})
+
+	it('accepts any 1.x version', () => {
+		expect(validateBackupFile({ ...validBackup, version: '1.1' })).toBe(true)
+		expect(validateBackupFile({ ...validBackup, version: '1.9' })).toBe(true)
+	})
+
+	it('rejects an unsupported major version', () => {
+		expect(validateBackupFile({ ...validBackup, version: '2.0' })).toBe(false)
+		expect(validateBackupFile({ ...validBackup, version: 'abc' })).toBe(false)
+	})
+
+	it('accepts v1.1 districts', () => {
+		const districts = [{ id: 'd1', name: 'Centro', city_id: 'city-1' }]
+		expect(validateBackupFile({ ...validBackup, version: '1.1', districts })).toBe(true)
+	})
+
+	it('districts that is not an array returns false', () => {
+		expect(validateBackupFile({ ...validBackup, districts: {} })).toBe(false)
+	})
+
+	it('district with missing city_id returns false', () => {
+		expect(validateBackupFile({ ...validBackup, districts: [{ id: 'd1', name: 'Centro' }] })).toBe(false)
+	})
+
+	it('accepts maps with every optional field filled or null', () => {
+		const full = {
+			...validBackup.maps[0],
+			details: 'x',
+			lat: -23.5,
+			lng: -46.6,
+			tag: 't',
+			group_code: 'g',
+			found: true,
+			found_info: 'fi',
+			visited: '2026-01-01T00:00:00.000Z',
+			visited_by: 'Ana',
+		}
+		const nulls = {
+			...validBackup.maps[0],
+			details: null,
+			lat: null,
+			lng: null,
+			tag: null,
+			group_code: null,
+			found: null,
+			found_info: null,
+			visited: null,
+			visited_by: null,
+		}
+		expect(validateBackupFile({ ...validBackup, maps: [full, nulls, { ...full, visited: 1700000000000 }] })).toBe(true)
+	})
+
+	it.each([
+		['lat', '10'],
+		['lng', true],
+		['details', 1],
+		['district', 1],
+		['tag', {}],
+		['group_code', []],
+		['found', 'yes'],
+		['found_info', 1],
+		['visited', true],
+		['visited_by', 1],
+	])('map with invalid %s type returns false', (field, value) => {
+		expect(validateBackupFile({ ...validBackup, maps: [{ ...validBackup.maps[0], [field]: value }] })).toBe(false)
+	})
+})
+
+describe('parseBackupFile', () => {
+	it('parses a valid backup and defaults districts to an empty array', () => {
+		const result = parseBackupFile(JSON.stringify(validBackup))
+		expect(result).toEqual({ ...validBackup, districts: [] })
+	})
+
+	it('keeps districts when present', () => {
+		const districts = [{ id: 'd1', name: 'Centro', city_id: 'city-1' }]
+		expect(parseBackupFile(JSON.stringify({ ...validBackup, districts })).districts).toEqual(districts)
+	})
+
+	it('throws a user-facing message for malformed JSON', () => {
+		expect(() => parseBackupFile('{not json')).toThrow(INVALID_BACKUP_MESSAGE)
+	})
+
+	it('throws a user-facing message for JSON that is not a backup', () => {
+		expect(() => parseBackupFile('{"foo": 1}')).toThrow(INVALID_BACKUP_MESSAGE)
 	})
 })
