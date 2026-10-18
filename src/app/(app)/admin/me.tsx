@@ -5,7 +5,7 @@ import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { api } from '@/lib/api'
 import { router, Stack } from 'expo-router'
-import { CreditCard, File, HelpCircle, LogOut, Shuffle, Trash } from 'lucide-react-native'
+import { CreditCard, File, HelpCircle, LogOut, Pencil, Shuffle, Trash } from 'lucide-react-native'
 import { useState } from 'react'
 import { Alert, Linking, Platform, Pressable, Text, View } from 'react-native'
 
@@ -88,12 +88,26 @@ const UserDetails = () => {
 			<Stack.Screen options={{ title: 'Meu Perfil', presentation: 'modal', headerLeft: HeaderLeft }} />
 			<View className="flex h-full w-full items-center bg-background p-3">
 				<Text className="py-2.5 font-icons text-5xl text-foreground"></Text>
-				<Text className="pt-5 font-bold text-lg text-foreground">{current.name}</Text>
+				<Pressable
+					disabled={loading || loadingDelete}
+					hitSlop={10}
+					onPress={() => router.push('/edit-profile')}
+					className="flex-row items-center gap-2 pt-5">
+					<Text className="font-bold text-lg text-foreground">{current.name}</Text>
+					<Pencil size={16} color={colors.primary[600]} />
+				</Pressable>
 				<Text className="pb-5 pt-2.5 font-medium text-primary">{current.email}</Text>
 				<View className="flex w-full flex-row items-center justify-between gap-2 rounded-xl bg-card py-2.5 pl-4">
-					<View className="flex-col gap-1.5">
+					<View className="flex-1 flex-col gap-1.5">
 						<Text className="font-medium text-sm text-foreground">Congregação</Text>
-						<Text className="font-medium text-foreground">{congregation.name}</Text>
+						<Pressable
+							disabled={loading || loadingDelete}
+							hitSlop={10}
+							onPress={() => router.push('/admin/congregation/edit')}
+							className="flex-row items-center gap-2">
+							<Text className="shrink font-medium text-foreground">{congregation.name}</Text>
+							<Pencil size={14} color={colors.primary[600]} />
+						</Pressable>
 					</View>
 					<Button
 						right={<Shuffle size={16} color={colors.primary[600]} />}

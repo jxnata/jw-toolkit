@@ -19,6 +19,7 @@ export default function AdminLayout() {
 		<Stack screenOptions={screenOptions}>
 			<Stack.Screen name="index" />
 			<Stack.Screen name="me" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="congregation/edit" options={{ presentation: 'modal' }} />
 			<Stack.Screen name="cities/index" />
 			<Stack.Screen name="cities/add" />
 			<Stack.Screen name="cities/edit/[id]" />

@@ -136,10 +136,12 @@ describe('legitimate flows', () => {
 	it('admin manages cities, districts and maps and assigns a map', async () => {
 		cityA = id()
 		as('ana')
-		await db.asUser({ email: emailOf('ana') }).transact([
-			db.tx.cities[cityA].update({ name: 'Cidade A' }).link({ congregation: congA }),
-			db.tx.districts[id()].update({ name: 'Centro' }).link({ city: cityA }),
-		])
+		await db
+			.asUser({ email: emailOf('ana') })
+			.transact([
+				db.tx.cities[cityA].update({ name: 'Cidade A' }).link({ congregation: congA }),
+				db.tx.districts[id()].update({ name: 'Centro' }).link({ city: cityA }),
+			])
 		mapA = await mapsService.createMap({
 			name: 'Mapa A',
 			address: 'Rua A, 1',
@@ -191,6 +193,12 @@ describe('legitimate flows', () => {
 		await congregationsService.updateCongregation(congA, { name: `[perms] A ${run} renamed` })
 	})
 
+	it('publisher renames themselves', async () => {
+		as('bruno')
+		await publishersService.updatePublisher(publisherIds.bruno!, { name: 'bruno renamed' })
+		expect(await publisherOf('bruno')).toMatchObject({ name: 'bruno renamed', level: 3, approved: true })
+	})
+
 	it('admin rejects a pending request', async () => {
 		as('ana')
 		await publishersService.updatePublisher(publisherIds.carla!, { approved: false })
@@ -214,9 +222,7 @@ describe('legitimate flows', () => {
 describe('attacks', () => {
 	describe('anonymous visitor', () => {
 		it('cannot list users or publishers', async () => {
-			expect(await visibleCount('guest', { $users: { $: { where: { id: { $in: Object.values(userIds) } } } } })).toBe(
-				0
-			)
+			expect(await visibleCount('guest', { $users: { $: { where: { id: { $in: Object.values(userIds) } } } } })).toBe(0)
 			expect(await visibleCount('guest', { publishers: { $: { where: { congregation: congA } } } })).toBe(0)
 		})
 
@@ -231,9 +237,7 @@ describe('attacks', () => {
 		it('cannot create an admin publisher inside a congregation', async () => {
 			await expect(
 				as('gil').transact(
-					db.tx.publishers[id()]
-						.update({ name: 'x', level: 1, approved: true })
-						.link({ user: userIds.gil, congregation: congA })
+					db.tx.publishers[id()].update({ name: 'x', level: 1, approved: true }).link({ user: userIds.gil, congregation: congA })
 				)
 			).rejects.toThrow(PERMISSION_DENIED)
 		})
@@ -251,30 +255,26 @@ describe('attacks', () => {
 		})
 
 		it('cannot claim to be the creator of an existing congregation', async () => {
-			await expect(as('davi').transact(db.tx.congregations[congA].link({ creator: userIds.davi }))).rejects.toThrow(
+			await expect(as('davi').transact(db.tx.congregations[congA].link({ creator: userIds.davi }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('davi').transact(db.tx.$users[userIds.davi].link({ created_congregations: congA }))).rejects.toThrow(
 				PERMISSION_DENIED
 			)
-			await expect(
-				as('davi').transact(db.tx.$users[userIds.davi].link({ created_congregations: congA }))
-			).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot create a congregation on behalf of someone else, or without a creator', async () => {
 			await expect(
 				as('davi').transact(db.tx.congregations[id()].update({ name: 'x' }).link({ creator: userIds.ana }))
 			).rejects.toThrow(PERMISSION_DENIED)
-			await expect(as('davi').transact(db.tx.congregations[id()].update({ name: 'x' }))).rejects.toThrow(
-				PERMISSION_DENIED
-			)
+			await expect(as('davi').transact(db.tx.congregations[id()].update({ name: 'x' }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot take over the publisher record of another user', async () => {
-			await expect(
-				as('davi').transact(db.tx.publishers[publisherIds.bruno!].link({ user: userIds.davi }))
-			).rejects.toThrow(PERMISSION_DENIED)
-			await expect(
-				as('davi').transact(db.tx.$users[userIds.davi].link({ publisher: publisherIds.bruno! }))
-			).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('davi').transact(db.tx.publishers[publisherIds.bruno!].link({ user: userIds.davi }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
+			await expect(as('davi').transact(db.tx.$users[userIds.davi].link({ publisher: publisherIds.bruno! }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 		})
 
 		it('is rate limited when creating congregations', async () => {
@@ -295,9 +295,9 @@ describe('attacks', () => {
 		})
 
 		it('cannot approve or promote themselves', async () => {
-			await expect(
-				as('carla').transact(db.tx.publishers[publisherIds.carla!].update({ approved: true }))
-			).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('carla').transact(db.tx.publishers[publisherIds.carla!].update({ approved: true }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 			await expect(as('carla').transact(db.tx.publishers[publisherIds.carla!].update({ level: 1 }))).rejects.toThrow(
 				PERMISSION_DENIED
 			)
@@ -311,36 +311,49 @@ describe('attacks', () => {
 			)
 		})
 
+		it('cannot rename the congregation', async () => {
+			await expect(as('bruno').transact(db.tx.congregations[congA].update({ name: 'hijacked' }))).rejects.toThrow(PERMISSION_DENIED)
+		})
+
+		it('cannot rename another publisher', async () => {
+			await expect(as('bruno').transact(db.tx.publishers[publisherIds.carla!].update({ name: 'hijacked' }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
+		})
+
 		it('cannot approve someone else', async () => {
-			await expect(
-				as('bruno').transact(db.tx.publishers[publisherIds.carla!].update({ approved: true }))
-			).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('bruno').transact(db.tx.publishers[publisherIds.carla!].update({ approved: true }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 		})
 
 		it('cannot edit the assigned map beyond the visit fields', async () => {
-			await expect(as('bruno').transact(db.tx.maps[mapA].update({ address: 'changed' }))).rejects.toThrow(
-				PERMISSION_DENIED
-			)
+			await expect(as('bruno').transact(db.tx.maps[mapA].update({ address: 'changed' }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot move the assigned map to another congregation or city', async () => {
-			await expect(as('bruno').transact(db.tx.maps[mapA].link({ congregation: congB }))).rejects.toThrow(
-				PERMISSION_DENIED
-			)
+			await expect(as('bruno').transact(db.tx.maps[mapA].link({ congregation: congB }))).rejects.toThrow(PERMISSION_DENIED)
 			await expect(as('bruno').transact(db.tx.maps[mapA].link({ city: cityB }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot reassign the map to someone else', async () => {
-			await expect(
-				as('bruno').transact(db.tx.maps[mapA].link({ assigned: publisherIds.carla! }))
-			).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('bruno').transact(db.tx.maps[mapA].link({ assigned: publisherIds.carla! }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot create or delete territory', async () => {
-			await expect(
-				as('bruno').transact(db.tx.cities[id()].update({ name: 'x' }).link({ congregation: congA }))
-			).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('bruno').transact(db.tx.cities[id()].update({ name: 'x' }).link({ congregation: congA }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 			await expect(as('bruno').transact(db.tx.maps[mapA].delete())).rejects.toThrow(PERMISSION_DENIED)
+		})
+	})
+
+	describe('admin', () => {
+		it('cannot toggle whether the congregation is enabled', async () => {
+			await expect(as('ana').transact(db.tx.congregations[congA].update({ enabled: false }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('ana').transact(db.tx.congregations[congA].update({ name: 'renamed', enabled: false }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 		})
 	})
 
@@ -350,24 +363,20 @@ describe('attacks', () => {
 		})
 
 		it('cannot change publishers of the other congregation', async () => {
-			await expect(
-				as('eva').transact(db.tx.publishers[publisherIds.carla!].update({ approved: true }))
-			).rejects.toThrow(PERMISSION_DENIED)
-			await expect(as('eva').transact(db.tx.publishers[publisherIds.bruno!].delete())).rejects.toThrow(
+			await expect(as('eva').transact(db.tx.publishers[publisherIds.carla!].update({ approved: true }))).rejects.toThrow(
 				PERMISSION_DENIED
 			)
+			await expect(as('eva').transact(db.tx.publishers[publisherIds.bruno!].delete())).rejects.toThrow(PERMISSION_DENIED)
+		})
+
+		it('cannot rename the other congregation', async () => {
+			await expect(as('eva').transact(db.tx.congregations[congA].update({ name: 'hijacked' }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot move territory between congregations', async () => {
-			await expect(as('eva').transact(db.tx.maps[mapA].link({ congregation: congB }))).rejects.toThrow(
-				PERMISSION_DENIED
-			)
-			await expect(as('eva').transact(db.tx.cities[cityA].link({ congregation: congB }))).rejects.toThrow(
-				PERMISSION_DENIED
-			)
-			await expect(as('eva').transact(db.tx.congregations[congB].link({ cities: cityA }))).rejects.toThrow(
-				PERMISSION_DENIED
-			)
+			await expect(as('eva').transact(db.tx.maps[mapA].link({ congregation: congB }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('eva').transact(db.tx.cities[cityA].link({ congregation: congB }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('eva').transact(db.tx.congregations[congB].link({ cities: cityA }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
 		it('cannot plant data inside the other congregation', async () => {
@@ -376,9 +385,9 @@ describe('attacks', () => {
 					db.tx.maps[id()].update({ name: 'x', address: 'x', lat: 0, lng: 0 }).link({ congregation: congB, city: cityA })
 				)
 			).rejects.toThrow(PERMISSION_DENIED)
-			await expect(
-				as('eva').transact(db.tx.districts[id()].update({ name: 'x' }).link({ city: cityA }))
-			).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('eva').transact(db.tx.districts[id()].update({ name: 'x' }).link({ city: cityA }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 		})
 	})
 

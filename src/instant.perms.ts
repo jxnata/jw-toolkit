@@ -33,12 +33,14 @@ const rules = {
 			isAdminOfCongregation: `auth.id != null && auth.id in data.ref('publishers.user.id') && ${IS_ADMIN}`,
 			// The creator is set once, when the congregation is created, and must be the current user
 			isSettingSelfAsCreator: 'auth.id != null && linkedData.id == auth.id && data.creator == auth.id',
+			// Admins may only rename the congregation; `enabled` is not theirs to toggle
+			changesOnlyName: "request.modifiedFields.all(field, field in ['name'])",
 		},
 		allow: {
 			// Public so users can search for a congregation to join; holds no personal data
 			view: 'true',
 			create: "auth.id != null && auth.id in data.ref('creator.id') && rateLimit.createCongregation.limit(auth.id)",
-			update: 'isAdminOfCongregation',
+			update: 'isAdminOfCongregation && changesOnlyName',
 			delete: 'false',
 			link: {
 				creator: 'isSettingSelfAsCreator',
@@ -119,8 +121,7 @@ const rules = {
 			isAdminOfCongregation: `auth.id != null && auth.id in data.ref('congregation.publishers.user.id') && ${IS_ADMIN}`,
 			isAssignedPublisher: "auth.id != null && auth.id in data.ref('assigned.user.id')",
 			// The assigned publisher may only record the visit result
-			changesOnlyVisitFields:
-				"request.modifiedFields.all(field, field in ['found', 'found_info', 'visited', 'visited_by'])",
+			changesOnlyVisitFields: "request.modifiedFields.all(field, field in ['found', 'found_info', 'visited', 'visited_by'])",
 			// The linked city / publisher belongs to the congregation of the map
 			isSameCongregation: "newData.congregation in linkedData.ref('congregation.id')",
 		},

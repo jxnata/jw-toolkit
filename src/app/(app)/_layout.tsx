@@ -44,6 +44,7 @@ export default function Layout() {
 				<Stack.Screen name="select-congregation" options={{ ...screenOptions, presentation: 'modal' }} />
 				<Stack.Screen name="limit-alert" options={{ ...screenOptions, presentation: 'modal' }} />
 				<Stack.Screen name="privacy-policy" options={{ ...screenOptions, presentation: 'modal' }} />
+				<Stack.Screen name="edit-profile" options={{ ...screenOptions, presentation: 'modal' }} />
 				<Stack.Screen name="privacy-blocked" options={{ ...screenOptions, presentation: 'modal' }} />
 				<Stack.Screen name="subscription" options={{ ...screenOptions, presentation: 'modal' }} />
 			</Stack>
