@@ -17,7 +17,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 const SelectCongregation = () => {
 	const { initial } = useLocalSearchParams()
-	const { current, logout } = useSession()
+	const { current } = useSession()
 	const [search, setSearch] = useState('')
 	const [debouncedSearch, setDebouncedSearch] = useState('')
 	const [selectedCongregation, setSelectedCongregation] = useState<string | null>((initial as string) || null)
@@ -90,13 +90,14 @@ const SelectCongregation = () => {
 			storage.set('user.publisher', publisherId)
 
 			const message = isCreator
-				? 'Você será um administrador da nova congregação após fazer login novamente.'
-				: 'Você precisará fazer login novamente e ser aprovado por um administrador da nova congregação.'
+				? 'Você é o administrador da nova congregação.'
+				: 'Um administrador da congregação precisa aprovar seu acesso.'
 
+			// The session updates in real time, so the home route redirects to the right area (or the pending screen)
 			Alert.alert('Sucesso', `Congregação alterada com sucesso! ${message}`, [
 				{
 					text: 'OK',
-					onPress: logout,
+					onPress: () => router.replace('/'),
 				},
 			])
 		} catch (error) {
