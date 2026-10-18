@@ -12,4 +12,9 @@ describe('getMapRegion', () => {
 	it('returns { latitude: 0, longitude: 0 } when array has fewer than 2 elements', () => {
 		expect(getMapRegion([1] as unknown as [number, number])).toEqual({ latitude: 0, longitude: 0 })
 	})
+
+	it('returns { latitude: 0, longitude: 0 } when a coordinate is missing or not finite', () => {
+		expect(getMapRegion([null, -46.6] as unknown as [number, number])).toEqual({ latitude: 0, longitude: 0 })
+		expect(getMapRegion([NaN, -46.6])).toEqual({ latitude: 0, longitude: 0 })
+	})
 })

@@ -1,14 +1,15 @@
 import { Loading } from '@/components/loading'
 import LocationRequest from '@/components/location-request'
 import { useSession } from '@/contexts/session-provider'
+import { useLocation } from '@/hooks/use-location'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { useForegroundPermissions } from 'expo-location'
 import { Stack } from 'expo-router'
+import { View } from 'react-native'
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient'
 
 export default function Layout() {
 	const { congregation, current, type } = useSession()
-	const [status] = useForegroundPermissions()
+	const { hasPermission, permissionChecked } = useLocation()
 	const { colors } = useThemedColors()
 
 	const screenOptions: ExtendedStackNavigationOptions = {
@@ -21,29 +22,33 @@ export default function Layout() {
 		contentStyle: { backgroundColor: colors.background },
 	}
 
-	if (!current) return <Loading />
+	if (!current || !permissionChecked) return <Loading />
 
-	if (status) {
-		if (!status.granted) {
-			return <LocationRequest />
-		}
-	}
-
+	// The Stack must stay mounted once rendered: swapping it for the permission screen and mounting it
+	// again crashes react-native-screens on Android ("The specified child already has a parent").
 	return (
-		<Stack screenOptions={screenOptions}>
-			<Stack.Protected guard={!!congregation && type === 'publisher'}>
-				<Stack.Screen options={{ headerShown: false }} name="publisher" />
-			</Stack.Protected>
+		<View className="flex-1">
+			<Stack screenOptions={screenOptions}>
+				<Stack.Protected guard={!!congregation && type === 'publisher'}>
+					<Stack.Screen options={{ headerShown: false }} name="publisher" />
+				</Stack.Protected>
 
-			<Stack.Protected guard={!!congregation && type === 'admin'}>
-				<Stack.Screen options={{ headerShown: false }} name="admin" />
-			</Stack.Protected>
+				<Stack.Protected guard={!!congregation && type === 'admin'}>
+					<Stack.Screen options={{ headerShown: false }} name="admin" />
+				</Stack.Protected>
 
-			<Stack.Screen name="select-congregation" options={{ ...screenOptions, presentation: 'modal' }} />
-			<Stack.Screen name="limit-alert" options={{ ...screenOptions, presentation: 'modal' }} />
-			<Stack.Screen name="privacy-policy" options={{ ...screenOptions, presentation: 'modal' }} />
-			<Stack.Screen name="privacy-blocked" options={{ ...screenOptions, presentation: 'modal' }} />
-			<Stack.Screen name="subscription" options={{ ...screenOptions, presentation: 'modal' }} />
-		</Stack>
+				<Stack.Screen name="select-congregation" options={{ ...screenOptions, presentation: 'modal' }} />
+				<Stack.Screen name="limit-alert" options={{ ...screenOptions, presentation: 'modal' }} />
+				<Stack.Screen name="privacy-policy" options={{ ...screenOptions, presentation: 'modal' }} />
+				<Stack.Screen name="privacy-blocked" options={{ ...screenOptions, presentation: 'modal' }} />
+				<Stack.Screen name="subscription" options={{ ...screenOptions, presentation: 'modal' }} />
+			</Stack>
+
+			{!hasPermission && (
+				<View className="absolute inset-0 bg-background">
+					<LocationRequest />
+				</View>
+			)}
+		</View>
 	)
 }
