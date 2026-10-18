@@ -17,3 +17,7 @@ export const cache = createMMKV({
 export const history = createMMKV({
 	id: 'history_storage',
 })
+
+export const instant = createMMKV({
+	id: 'instant_storage',
+})
