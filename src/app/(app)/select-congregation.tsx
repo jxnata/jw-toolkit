@@ -6,6 +6,7 @@ import useCongregations from '@/hooks/use-congregations'
 import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { publishersService } from '@/services/instantdb/publishers-service'
+import { isOfflineError, OFFLINE_MESSAGE } from '@/utils/is-offline-error'
 import { id } from '@instantdb/react-native'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { CheckCircle2, Circle } from 'lucide-react-native'
@@ -102,6 +103,10 @@ const SelectCongregation = () => {
 				},
 			])
 		} catch (error) {
+			if (isOfflineError(error)) {
+				Alert.alert('Sem conexão', OFFLINE_MESSAGE)
+				return
+			}
 			console.error('Error creating publisher profile:', error)
 			Alert.alert('Erro', 'Ocorreu um erro ao criar o perfil')
 		} finally {

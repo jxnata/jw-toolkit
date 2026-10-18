@@ -4,11 +4,14 @@ import usePublisher from '@/hooks/use-publisher'
 import { Congregation, Publisher } from '@/interfaces'
 import db from '@/lib/db'
 import { publishersService } from '@/services/instantdb/publishers-service'
+import { isOfflineError } from '@/utils/is-offline-error'
 import { User as InstantUser } from '@instantdb/react-native'
+import NetInfo from '@react-native-community/netinfo'
 import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 import { AppleAuthenticationCredential } from 'expo-apple-authentication'
+import * as Sentry from '@sentry/react-native'
 import { createContext, useContext, useEffect } from 'react'
-import { Platform } from 'react-native'
+import { AppState, Platform } from 'react-native'
 import Purchases from 'react-native-purchases'
 
 type LocalSession = {
@@ -127,24 +130,61 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 
 	// Initialize session data when user changes
 	useEffect(() => {
+		if (!user) return
+
+		let cancelled = false
+		let synced = false
+		let syncing = false
+
+		// Without connection the values already saved are kept and the sync runs again later
+		const report = (error: unknown) => {
+			if (isOfflineError(error)) return
+			Sentry.captureException(error)
+		}
+
 		const getPublisherInfo = async () => {
-			if (!user) return
+			if (cancelled || synced || syncing) return
+			syncing = true
 
-			await Purchases.logIn(user.id)
+			try {
+				await Purchases.logIn(user.id).catch(report)
 
-			const pub = await publishersService.searchByUserId(user.id)
+				const pub = await publishersService.searchByUserId(user.id)
 
-			if (!pub) return
+				if (cancelled) return
 
-			storage.set(STORAGE_KEYS.USER_PUBLISHER, pub.id)
+				synced = true
 
-			if (pub.congregation) {
-				storage.set(STORAGE_KEYS.CONGREGATION_ID, pub.congregation.id)
-				storage.set(STORAGE_KEYS.CONGREGATION_NAME, pub.congregation.name)
+				if (!pub) return
+
+				storage.set(STORAGE_KEYS.USER_PUBLISHER, pub.id)
+
+				if (pub.congregation) {
+					storage.set(STORAGE_KEYS.CONGREGATION_ID, pub.congregation.id)
+					storage.set(STORAGE_KEYS.CONGREGATION_NAME, pub.congregation.name)
+				}
+			} catch (error) {
+				report(error)
+			} finally {
+				syncing = false
 			}
 		}
 
-		if (user) getPublisherInfo()
+		getPublisherInfo()
+
+		const unsubscribeNetInfo = NetInfo.addEventListener((state) => {
+			if (state.isConnected) getPublisherInfo()
+		})
+
+		const appState = AppState.addEventListener('change', (status) => {
+			if (status === 'active') getPublisherInfo()
+		})
+
+		return () => {
+			cancelled = true
+			unsubscribeNetInfo()
+			appState.remove()
+		}
 	}, [user])
 
 	return (

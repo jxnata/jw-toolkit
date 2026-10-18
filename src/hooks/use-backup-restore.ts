@@ -1,5 +1,6 @@
 import { useSession } from '@/contexts/session-provider'
 import { backupService } from '@/services/instantdb/backup-service'
+import { isOfflineError, OFFLINE_MESSAGE } from '@/utils/is-offline-error'
 import { validateBackupFile } from '@/utils/validate-backup-file'
 import * as DocumentPicker from 'expo-document-picker'
 import * as FileSystem from 'expo-file-system/legacy'
@@ -50,7 +51,7 @@ export function useBackupRestore() {
 				UTI: 'public.json',
 			})
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Erro ao criar backup')
+			setError(isOfflineError(err) ? OFFLINE_MESSAGE : err instanceof Error ? err.message : 'Erro ao criar backup')
 		} finally {
 			setLoading(false)
 		}
@@ -99,7 +100,7 @@ export function useBackupRestore() {
 
 			setProgress(null)
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Erro ao restaurar backup')
+			setError(isOfflineError(err) ? OFFLINE_MESSAGE : err instanceof Error ? err.message : 'Erro ao restaurar backup')
 			setProgress(null)
 		} finally {
 			setLoading(false)
