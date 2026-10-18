@@ -32,6 +32,7 @@ const AddCongregation = () => {
 			await congregationsService.createCongregation({
 				name: data.name.trim(),
 				enabled: true,
+				creatorId: current.id,
 			})
 			success('congregação')
 

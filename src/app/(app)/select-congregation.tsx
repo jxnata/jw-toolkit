@@ -5,9 +5,9 @@ import { storage } from '@/database'
 import useCongregations from '@/hooks/use-congregations'
 import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
+import { congregationsService } from '@/services/instantdb/congregations-service'
 import { publishersService } from '@/services/instantdb/publishers-service'
 import { isOfflineError, OFFLINE_MESSAGE } from '@/utils/is-offline-error'
-import { id } from '@instantdb/react-native'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { CheckCircle2, Circle } from 'lucide-react-native'
 import { useState } from 'react'
@@ -17,7 +17,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 const SelectCongregation = () => {
 	const { initial } = useLocalSearchParams()
-	const { current, logout } = useSession()
+	const { current } = useSession()
 	const [search, setSearch] = useState('')
 	const [debouncedSearch, setDebouncedSearch] = useState('')
 	const [selectedCongregation, setSelectedCongregation] = useState<string | null>((initial as string) || null)
@@ -70,36 +70,34 @@ const SelectCongregation = () => {
 				return
 			}
 
-			const isFirstPublisher = await publishersService.checkIsFirstPublisher(selectedCongregation)
+			// Only the user who created the congregation becomes its admin; everyone else waits for approval
+			const isCreator = await congregationsService.isCreator(selectedCongregation, current.id)
 
-			const updates = {
-				level: isFirstPublisher ? 1 : 3,
-				approved: isFirstPublisher,
-			}
+			const publisherId =
+				publisher?.id ??
+				(await publishersService.createPublisher({
+					userId: current.id,
+					name: current.name || current.email || '',
+					level: 3,
+					approved: false,
+				}))
 
-			const links = {
-				user: current.id,
-				congregation: selectedCongregation,
-			}
-
-			// Create/update publisher profile and link to congregation
-			const publisherId = publisher ? publisher.id : id()
-
-			await publishersService.updatePublisher(publisherId, updates, links)
+			await publishersService.joinCongregation(publisherId, selectedCongregation, isCreator)
 
 			// Store congregation info
 			storage.set('congregation.id', selectedCongregation)
 			storage.set('congregation.name', congregation.name)
 			storage.set('user.publisher', publisherId)
 
-			const message = isFirstPublisher
-				? 'Você será um administrador da nova congregação após fazer login novamente.'
-				: 'Você precisará fazer login novamente e ser aprovado por um administrador da nova congregação.'
+			const message = isCreator
+				? 'Você é o administrador da nova congregação.'
+				: 'Um administrador da congregação precisa aprovar seu acesso.'
 
+			// The session updates in real time, so the home route redirects to the right area (or the pending screen)
 			Alert.alert('Sucesso', `Congregação alterada com sucesso! ${message}`, [
 				{
 					text: 'OK',
-					onPress: logout,
+					onPress: () => router.replace('/'),
 				},
 			])
 		} catch (error) {

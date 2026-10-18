@@ -5,6 +5,7 @@ import { Congregation, Publisher } from '@/interfaces'
 import db from '@/lib/db'
 import { publishersService } from '@/services/instantdb/publishers-service'
 import { isOfflineError } from '@/utils/is-offline-error'
+import { isPendingPublisher } from '@/utils/is-pending-publisher'
 import { User as InstantUser } from '@instantdb/react-native'
 import NetInfo from '@react-native-community/netinfo'
 import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
@@ -17,6 +18,8 @@ import Purchases from 'react-native-purchases'
 type LocalSession = {
 	current: (InstantUser & { name: string }) | null
 	type: 'publisher' | 'admin' | null
+	// Joined a congregation but was not approved by an admin yet
+	pending: boolean
 	congregation: Congregation | null
 	publisher: Publisher | null
 	appleAuthentication: (appleRequestResponse: AppleAuthenticationCredential) => Promise<void>
@@ -28,6 +31,7 @@ type LocalSession = {
 const initialState: LocalSession = {
 	current: null,
 	type: null,
+	pending: false,
 	congregation: null,
 	publisher: null,
 	loading: true,
@@ -52,6 +56,8 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 	const type = publisher ? (publisher.level === 1 ? 'admin' : 'publisher') : null
 
 	const congregation = publisher ? publisher.congregation : null
+
+	const pending = isPendingPublisher(publisher)
 
 	const isLoadingSession = !user ? isLoading : isLoading || publisherLoading
 
@@ -192,6 +198,7 @@ export function SessionProvider(props: { children: React.ReactNode }) {
 			value={{
 				current: user ? { ...user, name: publisher?.name || '' } : null,
 				type,
+				pending,
 				congregation: congregation || null,
 				publisher: publisher as Publisher,
 				loading: isLoadingSession,

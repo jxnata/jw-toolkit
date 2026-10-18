@@ -8,7 +8,7 @@ import { View } from 'react-native'
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient'
 
 export default function Layout() {
-	const { congregation, current, type } = useSession()
+	const { congregation, current, type, pending } = useSession()
 	const { hasPermission, permissionChecked } = useLocation()
 	const { colors } = useThemedColors()
 
@@ -29,8 +29,12 @@ export default function Layout() {
 	return (
 		<View className="flex-1">
 			<Stack screenOptions={screenOptions}>
-				<Stack.Protected guard={!!congregation && type === 'publisher'}>
+				<Stack.Protected guard={!!congregation && type === 'publisher' && !pending}>
 					<Stack.Screen options={{ headerShown: false }} name="publisher" />
+				</Stack.Protected>
+
+				<Stack.Protected guard={pending}>
+					<Stack.Screen options={{ headerShown: false }} name="pending" />
 				</Stack.Protected>
 
 				<Stack.Protected guard={!!congregation && type === 'admin'}>
