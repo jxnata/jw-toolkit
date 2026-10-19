@@ -59,7 +59,7 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 				<View className="flex-1 flex-col gap-1">
 					<View className="flex-row items-center justify-between">
 						<Text className="flex-wrap font-medium text-foreground" style={{ maxWidth: TEXT_MAX_WIDTH }}>
-							{map.city.name} - {map.name}
+							{map.city ? `${map.city.name} - ${map.name}` : map.name}
 						</Text>
 						<View className="flex-row items-center gap-2">
 							<Text className="font-bold text-xs text-foreground opacity-90">{distance}</Text>

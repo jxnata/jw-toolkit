@@ -243,7 +243,7 @@ const GroupDetail = () => {
 							onPress={() => handleAddMap(item.id)}
 							className="mb-2 rounded-xl border border-border bg-card p-3">
 							<Text className="font-medium text-foreground">
-								{item.city.name} - {item.name}
+								{item.city ? `${item.city.name} - ${item.name}` : item.name}
 							</Text>
 							<Text className="font-regular text-sm text-foreground opacity-60">{item.address}</Text>
 						</TouchableOpacity>

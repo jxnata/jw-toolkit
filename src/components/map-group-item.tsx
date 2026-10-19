@@ -84,7 +84,7 @@ const MapGroupItem = ({ group, location, onPress }: MapGroupItemProps) => {
 						ellipsizeMode="tail"
 						className="flex-wrap font-medium text-foreground"
 						style={{ maxWidth: TEXT_MAX_WIDTH }}>
-						{mapDistricts || first.city.name}
+						{mapDistricts || first.city?.name}
 					</Text>
 					{assignedMap ? (
 						<View className="flex-row items-center gap-1">
