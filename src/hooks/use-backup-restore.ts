@@ -1,4 +1,5 @@
 import { useSession } from '@/contexts/session-provider'
+import { BackupData } from '@/interfaces'
 import { restored } from '@/messages/backup'
 import { backupService, RestoreStep } from '@/services/instantdb/backup-service'
 import { isOfflineError, OFFLINE_MESSAGE } from '@/utils/is-offline-error'
@@ -29,6 +30,9 @@ const BACKUP_MIME_TYPES = ['application/json', 'text/plain', 'application/octet-
 export const BACKUP_ERROR_MESSAGE = 'Erro ao criar backup'
 export const RESTORE_ERROR_MESSAGE = 'Erro ao restaurar backup'
 export const WRONG_CONGREGATION_MESSAGE = 'Este backup pertence a outra congregação'
+
+// Asked after the picked file is validated; resolving false aborts the restore
+export type ConfirmRestore = (backup: BackupData) => Promise<boolean>
 
 function getErrorMessage(err: unknown, fallback: string) {
 	if (isOfflineError(err)) return OFFLINE_MESSAGE
@@ -80,7 +84,7 @@ export function useBackupRestore() {
 		}
 	}
 
-	async function restoreBackup(): Promise<void> {
+	async function restoreBackup(confirm: ConfirmRestore): Promise<void> {
 		if (!congregation || type !== 'admin' || state.operation) return
 
 		start('restore')
@@ -96,6 +100,11 @@ export function useBackupRestore() {
 
 			if (backup.congregation_id !== congregation.id) {
 				throw new Error(WRONG_CONGREGATION_MESSAGE)
+			}
+
+			if (!(await confirm(backup))) {
+				finish()
+				return
 			}
 
 			const summary = await backupService.restoreBackup(backup, congregation.id, (step, done, total) => {

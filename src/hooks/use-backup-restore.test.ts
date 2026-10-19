@@ -33,6 +33,7 @@ const mockWrite = FileSystem.writeAsStringAsync as jest.Mock
 const mockRead = FileSystem.readAsStringAsync as jest.Mock
 const mockShare = Sharing.shareAsync as jest.Mock
 const mockRestored = restored as jest.Mock
+const mockConfirm = jest.fn()
 
 const backup = {
 	version: '1.1',
@@ -64,6 +65,7 @@ function pickFile(content: string) {
 
 beforeEach(() => {
 	jest.clearAllMocks()
+	mockConfirm.mockResolvedValue(true)
 	mockUseSession.mockReturnValue({ congregation: { id: 'cong-1' }, type: 'admin' })
 })
 
@@ -143,9 +145,10 @@ describe('restoreBackup', () => {
 		mockService.restoreBackup.mockResolvedValue(summary)
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(mockRead).toHaveBeenCalledWith('file:///picked.json', { encoding: 'utf8' })
+		expect(mockConfirm).toHaveBeenCalledWith(backup)
 		expect(mockService.restoreBackup).toHaveBeenCalledWith(backup, 'cong-1', expect.any(Function))
 		expect(mockRestored).toHaveBeenCalledWith(summary)
 		expect(hook.current.loading).toBe(false)
@@ -156,7 +159,7 @@ describe('restoreBackup', () => {
 		mockGetDocument.mockResolvedValue({ canceled: true })
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(mockGetDocument.mock.calls[0][0].type).toEqual(
 			expect.arrayContaining(['application/json', 'text/plain', 'application/octet-stream'])
@@ -167,9 +170,22 @@ describe('restoreBackup', () => {
 		mockGetDocument.mockResolvedValue({ canceled: true })
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(mockRead).not.toHaveBeenCalled()
+		expect(mockService.restoreBackup).not.toHaveBeenCalled()
+		expect(hook.current.loading).toBe(false)
+		expect(hook.current.error).toBeNull()
+	})
+
+	it('does not restore when the user declines the confirmation', async () => {
+		pickFile(JSON.stringify(backup))
+		mockConfirm.mockResolvedValue(false)
+		const hook = renderBackupHook()
+
+		await act(() => hook.current.restoreBackup(mockConfirm))
+
+		expect(mockConfirm).toHaveBeenCalledWith(backup)
 		expect(mockService.restoreBackup).not.toHaveBeenCalled()
 		expect(hook.current.loading).toBe(false)
 		expect(hook.current.error).toBeNull()
@@ -179,9 +195,10 @@ describe('restoreBackup', () => {
 		pickFile('{oops')
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(hook.current.error).toEqual({ operation: 'restore', message: INVALID_BACKUP_MESSAGE })
+		expect(mockConfirm).not.toHaveBeenCalled()
 		expect(mockService.restoreBackup).not.toHaveBeenCalled()
 	})
 
@@ -189,9 +206,10 @@ describe('restoreBackup', () => {
 		pickFile(JSON.stringify({ ...backup, cities: 'nope' }))
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(hook.current.error?.message).toBe(INVALID_BACKUP_MESSAGE)
+		expect(mockConfirm).not.toHaveBeenCalled()
 		expect(mockService.restoreBackup).not.toHaveBeenCalled()
 	})
 
@@ -199,9 +217,10 @@ describe('restoreBackup', () => {
 		pickFile(JSON.stringify({ ...backup, congregation_id: 'other' }))
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(hook.current.error?.message).toBe(WRONG_CONGREGATION_MESSAGE)
+		expect(mockConfirm).not.toHaveBeenCalled()
 		expect(mockService.restoreBackup).not.toHaveBeenCalled()
 	})
 
@@ -209,7 +228,7 @@ describe('restoreBackup', () => {
 		mockUseSession.mockReturnValue({ congregation: { id: 'cong-1' }, type: 'publisher' })
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(mockGetDocument).not.toHaveBeenCalled()
 	})
@@ -222,7 +241,7 @@ describe('restoreBackup', () => {
 
 		let pending!: Promise<void>
 		await act(async () => {
-			pending = hook.current.restoreBackup()
+			pending = hook.current.restoreBackup(mockConfirm)
 			// let the picker and file read resolve until the service is called
 			await new Promise((r) => setTimeout(r, 0))
 		})
@@ -253,7 +272,7 @@ describe('restoreBackup', () => {
 		mockService.restoreBackup.mockRejectedValue(new Error('Query timed out'))
 		const hook = renderBackupHook()
 
-		await act(() => hook.current.restoreBackup())
+		await act(() => hook.current.restoreBackup(mockConfirm))
 
 		expect(hook.current.error).toEqual({ operation: 'restore', message: OFFLINE_MESSAGE })
 		expect(hook.current.progress).toBeNull()

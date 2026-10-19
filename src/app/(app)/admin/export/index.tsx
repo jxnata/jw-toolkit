@@ -2,7 +2,7 @@ import Button from '@/components/button'
 import { FEATURES } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
 import useAllMaps from '@/hooks/use-all-maps'
-import { useBackupRestore } from '@/hooks/use-backup-restore'
+import { ConfirmRestore, useBackupRestore } from '@/hooks/use-backup-restore'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
 import * as Sharing from 'expo-sharing'
@@ -137,16 +137,18 @@ const ExportMaps = () => {
 		}
 	}
 
-	const confirmRestore = () => {
-		Alert.alert(
-			'Confirmar restauração',
-			'Todas as cidades, bairros e mapas serão substituídos pelos dados do backup. As designações atuais serão perdidas. Deseja continuar?',
-			[
-				{ text: 'Cancelar', style: 'cancel' },
-				{ text: 'Confirmar', style: 'destructive', onPress: restoreBackup },
-			]
-		)
-	}
+	const confirmRestore: ConfirmRestore = (backup) =>
+		new Promise((resolve) => {
+			Alert.alert(
+				'Confirmar restauração',
+				`O backup contém ${backup.cities.length} cidade(s), ${backup.districts.length} bairro(s) e ${backup.maps.length} mapa(s). Todas as cidades, bairros e mapas atuais serão substituídos e as designações atuais serão perdidas. Esta ação não pode ser desfeita. Deseja continuar?`,
+				[
+					{ text: 'Cancelar', style: 'cancel', onPress: () => resolve(false) },
+					{ text: 'Restaurar', style: 'destructive', onPress: () => resolve(true) },
+				],
+				{ cancelable: true, onDismiss: () => resolve(false) }
+			)
+		})
 
 	return (
 		<View className="flex-1 bg-background">
@@ -211,7 +213,7 @@ const ExportMaps = () => {
 								variant="danger"
 								loading={operation === 'restore' && !progress}
 								disabled={backupLoading}
-								onPress={confirmRestore}
+								onPress={() => restoreBackup(confirmRestore)}
 								left={!backupLoading ? <RotateCcw size={20} color={colors.danger[500]} /> : undefined}>
 								Restaurar
 							</Button>
