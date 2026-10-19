@@ -1,5 +1,4 @@
 import Button from '@/components/button'
-import { FEATURES } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
 import useAllMaps from '@/hooks/use-all-maps'
 import { ConfirmRestore, useBackupRestore } from '@/hooks/use-backup-restore'
@@ -179,48 +178,44 @@ const ExportMaps = () => {
 					)}
 				</View>
 
-				{FEATURES.backup && (
-					<>
-						{/* Card 2 - Backup */}
-						<View className="mb-4 rounded-xl border border-border bg-card p-4">
-							<Text className="mb-1 font-semibold text-foreground">Backup</Text>
-							<Text className="mb-4 text-sm text-foreground opacity-60">
-								Salva todas as cidades, bairros e mapas em um arquivo .json que pode ser restaurado posteriormente
-							</Text>
-							<Button
-								loading={operation === 'backup'}
-								disabled={backupLoading}
-								onPress={createBackup}
-								left={!backupLoading ? <Save size={20} color="white" /> : undefined}>
-								Fazer Backup
-							</Button>
-							{error?.operation === 'backup' && <Text className="mt-2 text-sm text-danger-500">{error.message}</Text>}
-						</View>
+				{/* Card 2 - Backup */}
+				<View className="mb-4 rounded-xl border border-border bg-card p-4">
+					<Text className="mb-1 font-semibold text-foreground">Backup</Text>
+					<Text className="mb-4 text-sm text-foreground opacity-60">
+						Salva todas as cidades, bairros e mapas em um arquivo .json que pode ser restaurado posteriormente
+					</Text>
+					<Button
+						loading={operation === 'backup'}
+						disabled={backupLoading}
+						onPress={createBackup}
+						left={!backupLoading ? <Save size={20} color="white" /> : undefined}>
+						Fazer Backup
+					</Button>
+					{error?.operation === 'backup' && <Text className="mt-2 text-sm text-danger-500">{error.message}</Text>}
+				</View>
 
-						{/* Card 3 - Restore */}
-						<View className="mb-4 rounded-xl border border-border bg-card p-4">
-							<Text className="mb-1 font-semibold text-foreground">Restaurar Backup</Text>
-							<Text className="mb-3 text-sm text-danger-500">
-								Atenção: esta ação não pode ser desfeita. Todos os dados atuais serão substituídos pelo backup.
-							</Text>
-							{operation === 'restore' && progress && (
-								<View className="mb-3 flex-row items-center gap-2">
-									<ActivityIndicator size="small" color={colors.primary[600]} />
-									<Text className="text-sm text-foreground">{progress}</Text>
-								</View>
-							)}
-							<Button
-								variant="danger"
-								loading={operation === 'restore' && !progress}
-								disabled={backupLoading}
-								onPress={() => restoreBackup(confirmRestore)}
-								left={!backupLoading ? <RotateCcw size={20} color={colors.danger[500]} /> : undefined}>
-								Restaurar
-							</Button>
-							{error?.operation === 'restore' && <Text className="mt-2 text-sm text-danger-500">{error.message}</Text>}
+				{/* Card 3 - Restore */}
+				<View className="mb-4 rounded-xl border border-border bg-card p-4">
+					<Text className="mb-1 font-semibold text-foreground">Restaurar Backup</Text>
+					<Text className="mb-3 text-sm text-danger-500">
+						Atenção: esta ação não pode ser desfeita. Todos os dados atuais serão substituídos pelo backup.
+					</Text>
+					{operation === 'restore' && progress && (
+						<View className="mb-3 flex-row items-center gap-2">
+							<ActivityIndicator size="small" color={colors.primary[600]} />
+							<Text className="text-sm text-foreground">{progress}</Text>
 						</View>
-					</>
-				)}
+					)}
+					<Button
+						variant="danger"
+						loading={operation === 'restore' && !progress}
+						disabled={backupLoading}
+						onPress={() => restoreBackup(confirmRestore)}
+						left={!backupLoading ? <RotateCcw size={20} color={colors.danger[500]} /> : undefined}>
+						Restaurar
+					</Button>
+					{error?.operation === 'restore' && <Text className="mt-2 text-sm text-danger-500">{error.message}</Text>}
+				</View>
 			</ScrollView>
 		</View>
 	)

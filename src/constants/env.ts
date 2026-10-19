@@ -13,10 +13,6 @@ export const FREE_LIMITS = {
 	publishers: process.env.EXPO_PUBLIC_LIMIT_PUBLISHERS,
 }
 
-export const FEATURES = {
-	backup: process.env.EXPO_PUBLIC_FEATURE_BACKUP === 'true',
-}
-
 /**
  * Serves the InstantDB connection details (appId/apiURI/websocketURI) the app
  * should use, fetched at startup so backend migrations (e.g. selfhosted
