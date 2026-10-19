@@ -1,6 +1,13 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { forwardRef } from 'react'
-import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
+import {
+	ActivityIndicator,
+	Text,
+	TouchableOpacity,
+	TouchableOpacityInstance,
+	TouchableOpacityProps,
+	View,
+} from 'react-native'
 
 type ButtonProps = {
 	title?: string
@@ -10,9 +17,10 @@ type ButtonProps = {
 	variant?: 'primary' | 'outline' | 'danger' | 'link'
 	size?: 'sm' | 'md' | 'lg'
 	children?: React.ReactNode
-} & TouchableOpacityProps
+	onPress?: () => unknown
+} & Omit<TouchableOpacityProps, 'onPress'>
 
-const Button = forwardRef<View, ButtonProps>(
+const Button = forwardRef<TouchableOpacityInstance, ButtonProps>(
 	({ title, left, right, loading, variant = 'primary', size = 'md', children, ...touchableProps }, ref) => {
 		const { colors } = useThemedColors()
 

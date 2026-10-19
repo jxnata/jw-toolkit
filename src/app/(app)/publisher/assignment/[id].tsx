@@ -35,7 +35,7 @@ const AssigmentDetails = () => {
 
 	const HeaderLeft = () => (
 		<View className="flex-row">
-			<Pressable onPress={router.back} className="p-2">
+			<Pressable onPress={() => router.back()} className="p-2">
 				<ArrowLeft color={colors.foreground} />
 			</Pressable>
 		</View>

@@ -1,11 +1,10 @@
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { Stack } from 'expo-router'
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient'
+import { NativeStackNavigationOptions, Stack } from 'expo-router'
 
 export default function PublisherLayout() {
 	const { colors } = useThemedColors()
 
-	const screenOptions: ExtendedStackNavigationOptions = {
+	const screenOptions: NativeStackNavigationOptions = {
 		headerStyle: { backgroundColor: colors.background },
 		headerShadowVisible: false,
 		headerTintColor: colors.foreground,

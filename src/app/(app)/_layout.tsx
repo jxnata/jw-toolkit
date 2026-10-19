@@ -3,16 +3,15 @@ import LocationRequest from '@/components/location-request'
 import { useSession } from '@/contexts/session-provider'
 import { useLocation } from '@/hooks/use-location'
 import { useThemedColors } from '@/hooks/use-themed-colors'
-import { Stack } from 'expo-router'
+import { NativeStackNavigationOptions, Stack } from 'expo-router'
 import { View } from 'react-native'
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient'
 
 export default function Layout() {
 	const { congregation, current, type, pending } = useSession()
 	const { hasPermission, permissionChecked } = useLocation()
 	const { colors } = useThemedColors()
 
-	const screenOptions: ExtendedStackNavigationOptions = {
+	const screenOptions: NativeStackNavigationOptions = {
 		headerStyle: { backgroundColor: colors.background },
 		headerShadowVisible: false,
 		headerTintColor: colors.foreground,
