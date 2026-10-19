@@ -101,7 +101,9 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 										Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
 									</Text>
 									{found ? (
-										<Text className="pt-0 font-semibold text-xs text-success">Encontrado</Text>
+										<Text className="pt-0 font-semibold text-xs text-success">
+											Encontrado {!!map.found_info && '- ' + map.found_info}
+										</Text>
 									) : (
 										<Text className="pt-0 font-semibold text-xs text-primary-600">Não encontrado</Text>
 									)}
