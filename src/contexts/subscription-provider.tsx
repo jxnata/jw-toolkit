@@ -53,7 +53,7 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 	}, [current])
 
 	useEffect(() => {
-		if (!current || type === 'publisher') return
+		if (__DEV__ || !current || type === 'publisher') return
 
 		const load = async () => {
 			await fetchSubscription()
