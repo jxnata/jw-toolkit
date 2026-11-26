@@ -207,6 +207,24 @@ describe('legitimate flows', () => {
 		await phonesService.assignPhone(phoneA, publisherIds.bruno!)
 	})
 
+	it('admin adds many phones at once, skipping existing ones, and edits a number', async () => {
+		as('ana')
+		const numbers = ['11987654321', '1134567890', '1134567891']
+		const existing = await phonesService.findExistingNumbers(numbers, congA)
+		expect(existing).toEqual(['11987654321'])
+
+		await phonesService.createPhones(
+			numbers.filter((number) => !existing.includes(number)),
+			congA
+		)
+		expect(await phonesService.findExistingNumbers(numbers, congA)).toHaveLength(3)
+
+		const { phones } = await db.query({ phones: { $: { where: { number: '1134567891', congregation: congA } } } })
+		await phonesService.updatePhoneNumber(phones[0].id, '(11) 3456-7899')
+		expect(await phonesService.existsInCongregation('1134567899', congA)).toBe(true)
+		expect(await phonesService.existsInCongregation('1134567891', congA)).toBe(false)
+	})
+
 	it('admin updates the congregation', async () => {
 		as('ana')
 		await congregationsService.updateCongregation(congA, { name: `[perms] A ${run} renamed` })

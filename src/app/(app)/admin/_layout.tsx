@@ -37,6 +37,7 @@ export default function AdminLayout() {
 			<Stack.Screen name="phones/index" />
 			<Stack.Screen name="phones/add" />
 			<Stack.Screen name="phones/[id]" />
+			<Stack.Screen name="phones/edit/[id]" />
 			<Stack.Screen name="maps/index" />
 			<Stack.Screen name="maps/add" />
 			<Stack.Screen name="maps/options" options={{ presentation: 'modal' }} />

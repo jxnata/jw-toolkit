@@ -2,6 +2,9 @@ import db from '@/lib/db'
 import { normalizePhone } from '@/utils/phone-number'
 import { id } from '@instantdb/react-native'
 
+// Keeps each transaction and $in query small when a long list is pasted
+const BATCH_SIZE = 50
+
 export interface CreatePhoneInput {
 	number: string
 	congregationId: string
@@ -20,6 +23,36 @@ class PhonesService {
 			db.tx.phones[phoneId].update({ number: normalizePhone(input.number) }).link({ congregation: input.congregationId })
 		)
 		return phoneId
+	}
+
+	// Creates many phones at once; numbers must already be normalized and checked against the congregation
+	async createPhones(numbers: string[], congregationId: string): Promise<void> {
+		for (let i = 0; i < numbers.length; i += BATCH_SIZE) {
+			const chunk = numbers.slice(i, i + BATCH_SIZE)
+			await db.transact(chunk.map((number) => db.tx.phones[id()].update({ number }).link({ congregation: congregationId })))
+		}
+	}
+
+	// Returns which of the given numbers are already registered in the congregation (as digits only)
+	async findExistingNumbers(numbers: string[], congregationId: string): Promise<string[]> {
+		const digits = numbers.map(normalizePhone)
+		const existing: string[] = []
+		for (let i = 0; i < digits.length; i += BATCH_SIZE) {
+			const { data } = await db.queryOnce({
+				phones: {
+					$: {
+						where: { number: { $in: digits.slice(i, i + BATCH_SIZE) }, congregation: congregationId },
+						fields: ['number'],
+					},
+				},
+			})
+			existing.push(...(data.phones ?? []).map((phone) => phone.number))
+		}
+		return existing
+	}
+
+	async updatePhoneNumber(phoneId: string, number: string): Promise<void> {
+		await db.transact(db.tx.phones[phoneId].update({ number: normalizePhone(number) }))
 	}
 
 	async existsInCongregation(number: string, congregationId: string): Promise<boolean> {

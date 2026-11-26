@@ -32,6 +32,41 @@ export const formatPhone = (value: string): string => {
 	return digits
 }
 
+export interface ParsedPhoneList {
+	// Valid numbers (digits only), in the order typed, without repetitions
+	numbers: string[]
+	// Lines that are not a valid number, as typed
+	invalid: string[]
+	// How many valid lines repeated a number already in the list
+	repeated: number
+}
+
+// Splits a pasted list (one number per line; commas and semicolons also separate), ignoring blank lines
+export const parsePhoneList = (text: string): ParsedPhoneList => {
+	const numbers: string[] = []
+	const invalid: string[] = []
+	let repeated = 0
+
+	for (const raw of (text || '').split(/[\n\r,;]+/)) {
+		const line = raw.trim()
+		if (!line) continue
+
+		if (!isValidPhone(line)) {
+			invalid.push(line)
+			continue
+		}
+
+		const digits = normalizePhone(line)
+		if (numbers.includes(digits)) {
+			repeated++
+			continue
+		}
+		numbers.push(digits)
+	}
+
+	return { numbers, invalid, repeated }
+}
+
 export const getCallUrl = (value: string): string => `tel:${normalizePhone(value)}`
 
 // WhatsApp needs the country code: numbers with area code but without it are assumed to be Brazilian

@@ -10,7 +10,7 @@ import { error as removeError, success as removeSuccess } from '@/messages/delet
 import { phonesService } from '@/services/instantdb'
 import { formatPhone } from '@/utils/phone-number'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { Trash } from 'lucide-react-native'
+import { Pencil, Trash } from 'lucide-react-native'
 import { useState } from 'react'
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
@@ -75,9 +75,14 @@ const ViewPhone = () => {
 		])
 
 	const HeaderRight = () => (
-		<TouchableOpacity onPress={showDeleteAlert} disabled={!phone} className="mx-2">
-			<Trash size={24} color={colors.foreground} />
-		</TouchableOpacity>
+		<View className="flex-row">
+			<TouchableOpacity onPress={() => router.push(`/admin/phones/edit/${id}`)} disabled={!phone} className="mx-2">
+				<Pencil size={24} color={colors.foreground} />
+			</TouchableOpacity>
+			<TouchableOpacity onPress={showDeleteAlert} disabled={!phone} className="mx-2">
+				<Trash size={24} color={colors.foreground} />
+			</TouchableOpacity>
+		</View>
 	)
 
 	return (
