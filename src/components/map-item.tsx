@@ -1,4 +1,5 @@
 import { formatDate } from '@/utils/date-format'
+import { formatVisitResult } from '@/utils/format-visit-result'
 import { getLocationDistance } from '@/utils/get-location-distance'
 import { useQuery } from '@tanstack/react-query'
 import { LocationObjectCoords } from 'expo-location'
@@ -100,13 +101,9 @@ const MapItem = ({ map, location, onPress, selectionMode, selected, onToggleSele
 									<Text className="font-regular text-xs text-foreground opacity-80">
 										Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
 									</Text>
-									{found ? (
-										<Text className="pt-0 font-semibold text-xs text-success">
-											Encontrado {!!map.found_info && '- ' + map.found_info}
-										</Text>
-									) : (
-										<Text className="pt-0 font-semibold text-xs text-primary-600">Não encontrado</Text>
-									)}
+									<Text className={`pt-0 font-semibold text-xs ${found ? 'text-success' : 'text-primary-600'}`}>
+										{formatVisitResult(found, map.found_info)}
+									</Text>
 								</View>
 							) : (
 								<Text className="pt-[5px] font-regular text-xs text-foreground opacity-80">Ainda não visitado</Text>

@@ -1,3 +1,4 @@
+import { foundOptions, notFoundOptions, questionOptions } from '@/constants/visit-results'
 import { useSession } from '@/contexts/session-provider'
 import useMyAssignments from '@/hooks/use-my-assignments'
 import { useThemedColors } from '@/hooks/use-themed-colors'
@@ -8,69 +9,13 @@ import { useState } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-type Step = 'question' | 'details'
+type Step = 'question' | 'found' | 'not_found'
 
-const questionOptions = [
-	{
-		value: 'yes',
-		icon: '',
-		iconColor: '#719453',
-		bgColor: 'bg-success/10',
-		title: 'Sim',
-		description: 'Encontrei alguém em casa',
-	},
-	{
-		value: 'no',
-		icon: '',
-		iconColor: '#bf616a',
-		bgColor: 'bg-danger/10',
-		title: 'Não',
-		description: 'Ninguém atendeu',
-	},
-]
-
-const foundOptions = [
-	{
-		value: 'Encontrou o surdo',
-		icon: '',
-		iconColor: '#bb7424',
-		bgColor: 'bg-primary/10',
-		title: 'Encontrou o surdo',
-		description: 'A pessoa surda estava em casa',
-	},
-	{
-		value: 'Encontrou um familiar',
-		icon: '',
-		iconColor: '#bb7424',
-		bgColor: 'bg-primary/10',
-		title: 'Encontrou um familiar',
-		description: 'Um familiar estava presente',
-	},
-	{
-		value: 'Convidei para a Celebração',
-		icon: '',
-		iconColor: '#bb7424',
-		bgColor: 'bg-primary/10',
-		title: 'Convidei para a Celebração',
-		description: 'Entregou convite para a Celebração da Morte de Cristo',
-	},
-	{
-		value: 'Convidei para o Congresso',
-		icon: '',
-		iconColor: '#bb7424',
-		bgColor: 'bg-primary/10',
-		title: 'Convidei para o Congresso',
-		description: 'Entregou convite para o Congresso',
-	},
-	{
-		value: 'Outro',
-		icon: '',
-		iconColor: '#bb7424',
-		bgColor: 'bg-primary/10',
-		title: 'Outro',
-		description: 'Outra situação ocorreu',
-	},
-]
+const steps = {
+	question: { title: 'Encontrou alguém em casa?', options: questionOptions },
+	found: { title: 'O que aconteceu?', options: foundOptions },
+	not_found: { title: 'Por que não encontrou?', options: notFoundOptions },
+}
 
 const FinishAssignment = () => {
 	const { assignmentId, assignmentName } = useLocalSearchParams<{
@@ -86,7 +31,7 @@ const FinishAssignment = () => {
 	const [selected, setSelected] = useState<string | null>(null)
 	const [loading, setLoading] = useState(false)
 
-	const save = async (found: boolean, found_info: string | null) => {
+	const save = async (found: boolean, found_info: string) => {
 		setLoading(true)
 		try {
 			if (!publisher) return
@@ -94,7 +39,7 @@ const FinishAssignment = () => {
 
 			await mapsService.updateMap(assignmentId, {
 				found,
-				found_info: found_info ?? undefined,
+				found_info,
 				visited: new Date().toISOString(),
 				visited_by: assignmentName || '',
 			})
@@ -116,14 +61,10 @@ const FinishAssignment = () => {
 		if (!selected) return
 
 		if (step === 'question') {
-			if (selected === 'yes') {
-				setSelected(null)
-				setStep('details')
-			} else {
-				save(false, null)
-			}
+			setSelected(null)
+			setStep(selected === 'yes' ? 'found' : 'not_found')
 		} else {
-			save(true, selected)
+			save(step === 'found', selected)
 		}
 	}
 
@@ -136,8 +77,7 @@ const FinishAssignment = () => {
 		)
 	}
 
-	const options = step === 'question' ? questionOptions : foundOptions
-	const title = step === 'question' ? 'Encontrou alguém em casa?' : 'O que aconteceu?'
+	const { title, options } = steps[step]
 
 	return (
 		<View className="flex-1 bg-background" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -172,13 +112,26 @@ const FinishAssignment = () => {
 					</View>
 				</View>
 
-				<TouchableOpacity
-					activeOpacity={0.8}
-					onPress={handleFinish}
-					disabled={!selected}
-					className={`w-full items-center rounded-2xl py-4 ${selected ? 'bg-primary' : 'bg-border'}`}>
-					<Text className="font-bold text-[15px] text-white">Finalizar</Text>
-				</TouchableOpacity>
+				<View className="gap-3">
+					<TouchableOpacity
+						activeOpacity={0.8}
+						onPress={handleFinish}
+						disabled={!selected}
+						className={`w-full items-center rounded-2xl py-4 ${selected ? 'bg-primary' : 'bg-border'}`}>
+						<Text className="font-bold text-[15px] text-white">{step === 'question' ? 'Continuar' : 'Finalizar'}</Text>
+					</TouchableOpacity>
+					{step !== 'question' && (
+						<TouchableOpacity
+							activeOpacity={0.8}
+							onPress={() => {
+								setSelected(null)
+								setStep('question')
+							}}
+							className="w-full items-center py-2">
+							<Text className="font-semibold text-[15px] text-foreground opacity-60">Voltar</Text>
+						</TouchableOpacity>
+					)}
+				</View>
 			</View>
 		</View>
 	)
