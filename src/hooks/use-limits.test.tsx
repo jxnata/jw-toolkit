@@ -5,7 +5,7 @@ import db from '@/lib/db'
 import { useLimits } from './use-limits'
 
 jest.mock('@/constants/env', () => ({
-	FREE_LIMITS: { maps: '3', publishers: '2' },
+	FREE_LIMITS: { maps: '3', publishers: '2', phones: '4' },
 }))
 
 jest.mock('@/contexts/session-provider', () => ({
@@ -34,12 +34,14 @@ function useSetup({
 	cong = congregation as typeof congregation | null,
 	maps = [] as unknown[],
 	publishers = [] as unknown[],
+	phones = [] as unknown[],
 } = {}) {
 	mockUseSession.mockReturnValue({ congregation: cong })
 	mockUseSubscription.mockReturnValue({ subscribed })
 	mockUseQuery
 		.mockReturnValueOnce({ data: { maps } })
 		.mockReturnValueOnce({ data: { publishers } })
+		.mockReturnValueOnce({ data: { phones } })
 	return useLimits()
 }
 
@@ -66,9 +68,16 @@ describe('subscribed user', () => {
 	})
 
 	it('counts are still correctly returned', () => {
-		const result = useSetup({ subscribed: true, maps: [{}, {}], publishers: [{}] })
+		const result = useSetup({ subscribed: true, maps: [{}, {}], publishers: [{}], phones: [{}, {}, {}] })
 		expect(result.mapsCount).toBe(2)
 		expect(result.publishersCount).toBe(1)
+		expect(result.phonesCount).toBe(3)
+	})
+
+	it('phonesReached = false even when phonesCount > FREE_LIMITS.phones', () => {
+		const result = useSetup({ subscribed: true, phones: [{}, {}, {}, {}, {}] })
+		expect(result.phonesReached).toBe(false)
+		expect(result.anyLimitReached).toBe(false)
 	})
 })
 
@@ -97,6 +106,24 @@ describe('free user', () => {
 		expect(result.publishersReached).toBe(true)
 		expect(result.anyLimitReached).toBe(true)
 	})
+
+	it('phonesCount < FREE_LIMITS.phones (3 < 4): phonesReached = false', () => {
+		const result = useSetup({ subscribed: false, phones: [{}, {}, {}] })
+		expect(result.phonesReached).toBe(false)
+		expect(result.anyLimitReached).toBe(false)
+	})
+
+	it('phonesCount === FREE_LIMITS.phones (4): phonesReached = true, anyLimitReached = true', () => {
+		const result = useSetup({ subscribed: false, phones: [{}, {}, {}, {}] })
+		expect(result.phonesReached).toBe(true)
+		expect(result.anyLimitReached).toBe(true)
+	})
+
+	it('phones limit is independent from the maps limit', () => {
+		const result = useSetup({ subscribed: false, maps: [{}, {}], phones: [{}, {}, {}] })
+		expect(result.mapsReached).toBe(false)
+		expect(result.phonesReached).toBe(false)
+	})
 })
 
 // ── No congregation ──────────────────────────────────────────────────────────
@@ -108,11 +135,14 @@ describe('no congregation', () => {
 		mockUseQuery
 			.mockReturnValueOnce({ data: null })
 			.mockReturnValueOnce({ data: null })
+			.mockReturnValueOnce({ data: null })
 		const result = useLimits()
 		expect(result.mapsCount).toBe(0)
 		expect(result.publishersCount).toBe(0)
+		expect(result.phonesCount).toBe(0)
 		expect(result.mapsReached).toBe(false)
 		expect(result.publishersReached).toBe(false)
+		expect(result.phonesReached).toBe(false)
 		expect(result.anyLimitReached).toBe(false)
 	})
 })

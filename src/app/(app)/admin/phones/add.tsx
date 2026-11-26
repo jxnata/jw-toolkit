@@ -1,6 +1,7 @@
 import Button from '@/components/button'
 import Input from '@/components/input'
 import { useSession } from '@/contexts/session-provider'
+import { useLimitCheck } from '@/hooks/use-limit-check'
 import { error, success } from '@/messages/add'
 import { phonesService } from '@/services/instantdb'
 import { formatPhone, isValidPhone } from '@/utils/phone-number'
@@ -15,10 +16,15 @@ type AddPhoneForm = {
 
 const AddPhone = () => {
 	const { congregation } = useSession()
+	const { checkPhoneLimit } = useLimitCheck()
 	const { control, formState, handleSubmit } = useForm<AddPhoneForm>({ mode: 'onChange' })
 
 	const save: SubmitHandler<AddPhoneForm> = async (data) => {
 		if (!congregation) return
+
+		if (!checkPhoneLimit()) {
+			return
+		}
 
 		try {
 			if (await phonesService.existsInCongregation(data.number, congregation.id)) {
