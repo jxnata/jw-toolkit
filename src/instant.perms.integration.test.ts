@@ -7,6 +7,7 @@
 import 'dotenv/config'
 import { congregationsService } from '@/services/instantdb/congregations-service'
 import { mapsService } from '@/services/instantdb/maps-service'
+import { phonesService } from '@/services/instantdb/phones-service'
 import { publishersService } from '@/services/instantdb/publishers-service'
 import {
 	AdminDb,
@@ -53,6 +54,7 @@ let congB: string // created and administered by Eva
 let cityA: string
 let cityB: string
 let mapA: string // assigned to Bruno
+let phoneA: string // assigned to Bruno
 
 // Acts as the given user (or a guest) for both raw transactions and app services
 function as(actor: Actor | 'guest') {
@@ -186,6 +188,41 @@ describe('legitimate flows', () => {
 
 		as('ana')
 		await mapsService.assignMap(mapA, publisherIds.bruno!)
+	})
+
+	it('admin creates a phone territory and assigned publisher finishes it', async () => {
+		as('ana')
+		phoneA = await phonesService.createPhone({ number: '(11) 98765-4321', congregationId: congA })
+		await phonesService.assignPhone(phoneA, publisherIds.bruno!)
+		expect(await visibleCount('bruno', { phones: { $: { where: { congregation: congA } } } })).toBe(1)
+
+		as('bruno')
+		await phonesService.finishPhone(phoneA, publisherIds.bruno!, { answered: true, answered_info: 'Outro', called_by: 'Bruno' })
+
+		const { phones } = await db.query({ phones: { $: { where: { id: phoneA } }, assigned: {} } })
+		expect(phones[0]).toMatchObject({ number: '11987654321', answered: true, answered_info: 'Outro' })
+		expect(phones[0].assigned).toBeFalsy()
+
+		as('ana')
+		await phonesService.assignPhone(phoneA, publisherIds.bruno!)
+	})
+
+	it('admin adds many phones at once, skipping existing ones, and edits a number', async () => {
+		as('ana')
+		const numbers = ['11987654321', '1134567890', '1134567891']
+		const existing = await phonesService.findExistingNumbers(numbers, congA)
+		expect(existing).toEqual(['11987654321'])
+
+		await phonesService.createPhones(
+			numbers.filter((number) => !existing.includes(number)),
+			congA
+		)
+		expect(await phonesService.findExistingNumbers(numbers, congA)).toHaveLength(3)
+
+		const { phones } = await db.query({ phones: { $: { where: { number: '1134567891', congregation: congA } } } })
+		await phonesService.updatePhoneNumber(phones[0].id, '(11) 3456-7899')
+		expect(await phonesService.existsInCongregation('1134567899', congA)).toBe(true)
+		expect(await phonesService.existsInCongregation('1134567891', congA)).toBe(false)
 	})
 
 	it('admin updates the congregation', async () => {
@@ -340,6 +377,17 @@ describe('attacks', () => {
 			await expect(as('bruno').transact(db.tx.maps[mapA].link({ assigned: publisherIds.carla! }))).rejects.toThrow(PERMISSION_DENIED)
 		})
 
+		it('cannot change the number of the assigned phone, reassign or delete it', async () => {
+			await expect(as('bruno').transact(db.tx.phones[phoneA].update({ number: '0' }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('bruno').transact(db.tx.phones[phoneA].link({ assigned: publisherIds.carla! }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
+			await expect(as('bruno').transact(db.tx.phones[phoneA].delete())).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('bruno').transact(db.tx.phones[id()].update({ number: '1' }).link({ congregation: congA }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
+		})
+
 		it('cannot create or delete territory', async () => {
 			await expect(as('bruno').transact(db.tx.cities[id()].update({ name: 'x' }).link({ congregation: congA }))).rejects.toThrow(
 				PERMISSION_DENIED
@@ -360,6 +408,15 @@ describe('attacks', () => {
 	describe('admin of another congregation', () => {
 		it('cannot see the other congregation territory', async () => {
 			expect(await visibleCount('eva', { maps: { $: { where: { congregation: congA } } } })).toBe(0)
+			expect(await visibleCount('eva', { phones: { $: { where: { congregation: congA } } } })).toBe(0)
+		})
+
+		it('cannot move, assign or plant phones in the other congregation', async () => {
+			await expect(as('eva').transact(db.tx.phones[phoneA].link({ congregation: congB }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('eva').transact(db.tx.phones[phoneA].link({ assigned: publisherIds.eva! }))).rejects.toThrow(PERMISSION_DENIED)
+			await expect(as('eva').transact(db.tx.phones[id()].update({ number: '1' }).link({ congregation: congA }))).rejects.toThrow(
+				PERMISSION_DENIED
+			)
 		})
 
 		it('cannot change publishers of the other congregation', async () => {
