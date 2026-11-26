@@ -13,6 +13,10 @@ type Map = InstaQLEntity<AppSchema, 'maps'> & {
 	congregation: Congregation
 	city: City
 }
+type Phone = InstaQLEntity<AppSchema, 'phones'> & {
+	assigned: Publisher | null
+	congregation: Congregation
+}
 type Publisher = InstaQLEntity<AppSchema, 'publishers'> & {
 	congregation: Congregation
 }
@@ -20,7 +24,7 @@ type User = InstaQLEntity<AppSchema, '$users'> & {
 	congregation: Congregation
 }
 
-export type { City, Congregation, District, Map, Publisher, User }
+export type { City, Congregation, District, Map, Phone, Publisher, User }
 
 export interface BackupData {
 	version: string

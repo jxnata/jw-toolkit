@@ -32,6 +32,11 @@ export default function AdminLayout() {
 				options={{ presentation: 'modal', headerTransparent: true, headerStyle: { backgroundColor: 'transparent' } }}
 			/>
 			<Stack.Screen name="my-assignments/finish" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="my-assignments/phone/[id]" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="my-assignments/phone/finish" options={{ presentation: 'modal' }} />
+			<Stack.Screen name="phones/index" />
+			<Stack.Screen name="phones/add" />
+			<Stack.Screen name="phones/[id]" />
 			<Stack.Screen name="maps/index" />
 			<Stack.Screen name="maps/add" />
 			<Stack.Screen name="maps/options" options={{ presentation: 'modal' }} />

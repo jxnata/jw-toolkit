@@ -5,7 +5,7 @@ import { storage } from '@/database/index'
 import { useSubscription } from '@/hooks/use-subscription'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Link, Redirect, Stack, useRouter } from 'expo-router'
-import { CircleAlert, UserCircle2 } from 'lucide-react-native'
+import { CircleAlert, Phone, UserCircle2 } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
@@ -83,6 +83,19 @@ const Admin = () => {
 							<Text className="font-semibold text-base text-foreground">Mapas & Designações</Text>
 						</View>
 						<View className="flex flex-row items-center gap-3"></View>
+					</TouchableOpacity>
+				</Link>
+
+				<Link href="/admin/phones" asChild>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						className="flex w-full flex-row items-center justify-between gap-3 rounded-xl bg-card p-4">
+						<View className="flex flex-row items-center gap-3">
+							<View className="size-10 items-center justify-center">
+								<Phone size={28} color={colors.primary[600]} />
+							</View>
+							<Text className="font-semibold text-base text-foreground">Telefones & Designações</Text>
+						</View>
 					</TouchableOpacity>
 				</Link>
 
