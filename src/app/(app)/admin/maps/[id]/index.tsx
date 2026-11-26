@@ -12,6 +12,7 @@ import { error, success } from '@/messages/add'
 import { error as removeError, success as removeSuccess } from '@/messages/delete'
 import { mapsService } from '@/services/instantdb'
 import { formatDate } from '@/utils/date-format'
+import { formatVisitResult } from '@/utils/format-visit-result'
 import { firstName } from '@/utils/first-name'
 import { getBadgeColor } from '@/utils/get-badge-color'
 import { getMapRegion } from '@/utils/get-map-region'
@@ -207,13 +208,9 @@ const ViewMap = () => {
 									<Text className="font-regular text-sm text-foreground opacity-70">
 										Visitado {map.visited_by ? `por ${firstName(map.visited_by)} ` : ''}em {formatDate(map.visited)}
 									</Text>
-									{found ? (
-										<Text className="font-semibold text-xs text-success">
-											Encontrado {!!map.found_info && '- ' + map.found_info}
-										</Text>
-									) : (
-										<Text className="font-semibold text-xs text-primary-600">Não encontrado</Text>
-									)}
+									<Text className={`font-semibold text-xs ${found ? 'text-success' : 'text-primary-600'}`}>
+										{formatVisitResult(found, map.found_info)}
+									</Text>
 								</View>
 							) : (
 								<Text className="mb-3 font-regular text-sm text-foreground opacity-70">Ainda não visitado</Text>
