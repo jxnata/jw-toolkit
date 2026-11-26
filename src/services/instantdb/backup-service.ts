@@ -5,7 +5,7 @@ import { id } from '@instantdb/react-native'
 
 const BATCH_LIMIT = 25
 
-export type RestoreStep = 'cities' | 'districts' | 'maps' | 'cleanup'
+export type RestoreStep = 'cities' | 'districts' | 'maps' | 'phones' | 'cleanup'
 
 export type RestoreProgress = (step: RestoreStep, done: number, total: number) => void
 
@@ -25,6 +25,9 @@ class BackupService {
 			maps: {
 				$: { where: { congregation: congregationId } },
 				city: {},
+			},
+			phones: {
+				$: { where: { congregation: congregationId } },
 			},
 		})
 
@@ -56,6 +59,15 @@ class BackupService {
 			city_id: map.city?.id ?? '',
 		}))
 
+		const phones = (data.phones || []).map((phone) => ({
+			id: phone.id,
+			number: phone.number,
+			answered: phone.answered ?? null,
+			answered_info: phone.answered_info ?? null,
+			called: phone.called ?? null,
+			called_by: phone.called_by ?? null,
+		}))
+
 		return {
 			version: BACKUP_VERSION,
 			congregation_id: congregationId,
@@ -63,16 +75,20 @@ class BackupService {
 			cities,
 			districts,
 			maps,
+			phones,
 		}
 	}
 
-	// Replaces all cities, districts and maps of the congregation with the backup content.
+	// Replaces all cities, districts and maps (and phones, for v1.2+ files) of the congregation with the backup content.
+	// Files without a phones section (v1.0/v1.1) leave the current phones untouched.
 	// New data is created before the old data is removed, so a failure never leaves the congregation empty.
 	async restoreBackup(backup: BackupData, congregationId: string, onProgress?: RestoreProgress): Promise<RestoreResult> {
 		const previous = await this.fetchEntityIds(congregationId)
 
 		const createdCityIds: string[] = []
 		const createdMapIds: string[] = []
+		const createdPhoneIds: string[] = []
+		const replacePhones = backup.phones !== undefined
 		let result: RestoreResult
 
 		try {
@@ -85,23 +101,35 @@ class BackupService {
 			const maps = await this.restoreMaps(backup.maps, cityIdMap, congregationId, createdMapIds, (done, total) =>
 				onProgress?.('maps', done, total)
 			)
+			const phones = replacePhones
+				? await this.restorePhones(backup.phones ?? [], congregationId, createdPhoneIds, (done, total) =>
+						onProgress?.('phones', done, total)
+					)
+				: null
 
 			result = {
 				cities: createdCityIds.length,
 				districts,
 				maps,
 				skippedMaps: backup.maps.length - maps,
+				phones,
 			}
 		} catch (error) {
-			await this.rollback(createdMapIds, createdCityIds)
+			await this.rollback(createdMapIds, createdCityIds, createdPhoneIds)
 			throw error
 		}
 
 		try {
-			const total = previous.mapIds.length + previous.cityIds.length
-			await this.deleteEntities('maps', previous.mapIds, (done) => onProgress?.('cleanup', done, total))
+			const oldPhoneIds = replacePhones ? previous.phoneIds : []
+			const total = previous.mapIds.length + oldPhoneIds.length + previous.cityIds.length
+			let removed = 0
+			const progress = (done: number) => onProgress?.('cleanup', removed + done, total)
+			await this.deleteEntities('maps', previous.mapIds, progress)
+			removed += previous.mapIds.length
+			await this.deleteEntities('phones', oldPhoneIds, progress)
+			removed += oldPhoneIds.length
 			// Deleting a city cascades to its districts
-			await this.deleteEntities('cities', previous.cityIds, (done) => onProgress?.('cleanup', previous.mapIds.length + done, total))
+			await this.deleteEntities('cities', previous.cityIds, progress)
 		} catch {
 			throw new Error(CLEANUP_FAILED_MESSAGE)
 		}
@@ -109,7 +137,7 @@ class BackupService {
 		return result
 	}
 
-	async fetchEntityIds(congregationId: string): Promise<{ cityIds: string[]; mapIds: string[] }> {
+	async fetchEntityIds(congregationId: string): Promise<{ cityIds: string[]; mapIds: string[]; phoneIds: string[] }> {
 		const { data } = await db.queryOnce({
 			cities: {
 				$: { where: { congregation: congregationId }, fields: ['id'] },
@@ -117,15 +145,23 @@ class BackupService {
 			maps: {
 				$: { where: { congregation: congregationId }, fields: ['id'] },
 			},
+			phones: {
+				$: { where: { congregation: congregationId }, fields: ['id'] },
+			},
 		})
 
 		return {
 			cityIds: (data.cities || []).map((city) => city.id),
 			mapIds: (data.maps || []).map((map) => map.id),
+			phoneIds: (data.phones || []).map((phone) => phone.id),
 		}
 	}
 
-	async deleteEntities(entity: 'maps' | 'cities', ids: string[], onProgress?: (done: number, total: number) => void): Promise<void> {
+	async deleteEntities(
+		entity: 'maps' | 'cities' | 'phones',
+		ids: string[],
+		onProgress?: (done: number, total: number) => void
+	): Promise<void> {
 		let done = 0
 		for (let i = 0; i < ids.length; i += BATCH_LIMIT) {
 			const batch = ids.slice(i, i + BATCH_LIMIT).map((entityId) => db.tx[entity][entityId].delete())
@@ -219,10 +255,42 @@ class BackupService {
 		return done
 	}
 
+	// Assignments are not part of the backup, so restored phones come back unassigned
+	async restorePhones(
+		phones: NonNullable<BackupData['phones']>,
+		congregationId: string,
+		createdIds: string[] = [],
+		onProgress?: (done: number, total: number) => void
+	): Promise<number> {
+		let done = 0
+		for (let i = 0; i < phones.length; i += BATCH_LIMIT) {
+			const batch = phones.slice(i, i + BATCH_LIMIT).map((phone) => ({ ...phone, newId: id() }))
+			await db.transact(
+				batch.map((phone) =>
+					db.tx.phones[phone.newId]
+						.update({
+							number: phone.number,
+							answered: phone.answered ?? undefined,
+							answered_info: phone.answered_info ?? undefined,
+							called: phone.called ?? undefined,
+							called_by: phone.called_by ?? undefined,
+						})
+						.link({ congregation: congregationId })
+				)
+			)
+			createdIds.push(...batch.map((phone) => phone.newId))
+			done += batch.length
+			onProgress?.(done, phones.length)
+		}
+
+		return done
+	}
+
 	// Best effort: removes whatever a failed restore managed to create
-	private async rollback(mapIds: string[], cityIds: string[]): Promise<void> {
+	private async rollback(mapIds: string[], cityIds: string[], phoneIds: string[]): Promise<void> {
 		try {
 			await this.deleteEntities('maps', mapIds)
+			await this.deleteEntities('phones', phoneIds)
 			await this.deleteEntities('cities', cityIds)
 		} catch {
 			// The original error is more useful to the user than a rollback failure

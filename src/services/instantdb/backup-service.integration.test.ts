@@ -93,6 +93,16 @@ async function seedTerritory(congId: string, assignedTo?: string) {
 		adminDb.tx.maps[maps[3]]
 			.update({ name: 'Mapa 4', address: 'Rua 4, 400', lat: -23.58, lng: -46.66, district: 'Jardim', found: false })
 			.link({ congregation: congId, city: cityB }),
+		adminDb.tx.phones[id()]
+			.update({
+				number: '11987654321',
+				answered: false,
+				answered_info: 'Caixa postal',
+				called: '2026-03-02T12:00:00.000Z',
+				called_by: 'Ana',
+			})
+			.link({ congregation: congId, ...(assignedTo ? { assigned: assignedTo } : {}) }),
+		adminDb.tx.phones[id()].update({ number: '1134567890' }).link({ congregation: congId }),
 	])
 
 	return { cityIds: [cityA, cityB], mapIds: maps }
@@ -106,7 +116,21 @@ async function readTerritory(congId: string) {
 			districts: {},
 			maps: { assigned: {} },
 		},
+		phones: {
+			$: { where: { congregation: congId } },
+			assigned: {},
+		},
 	})
+
+	const phones = data.phones
+		.map((phone) => ({
+			number: phone.number,
+			answered: phone.answered ?? null,
+			answered_info: phone.answered_info ?? null,
+			called: phone.called ? new Date(phone.called).getTime() : null,
+			called_by: phone.called_by ?? null,
+		}))
+		.sort((a, b) => a.number.localeCompare(b.number))
 
 	const cities = data.cities
 		.map((city) => ({
@@ -136,6 +160,9 @@ async function readTerritory(congId: string) {
 		cityIds: data.cities.map((city) => city.id),
 		mapIds: data.cities.flatMap((city) => city.maps.map((map) => map.id)),
 		assigned: data.cities.flatMap((city) => city.maps.filter((map) => map.assigned)).length,
+		phones,
+		phoneIds: data.phones.map((phone) => phone.id),
+		assignedPhones: data.phones.filter((phone) => phone.assigned).length,
 	}
 }
 
@@ -184,8 +211,8 @@ beforeEach(() => actAs(adminEmail))
 // ── tests ────────────────────────────────────────────────────────────────────
 
 describe('BackupService (integration)', () => {
-	it('backs up every city, district and map of the congregation — and nothing else', async () => {
-		expect(originalBackup.version).toBe('1.1')
+	it('backs up every city, district, map and phone of the congregation — and nothing else', async () => {
+		expect(originalBackup.version).toBe('1.2')
 		expect(originalBackup.congregation_id).toBe(congregationId)
 		expect(originalBackup.cities.map((c) => c.name).sort()).toEqual(['Cidade A', 'Cidade B'])
 		expect(originalBackup.districts.map((d) => d.name).sort()).toEqual(['Centro', 'Jardim', 'Vila Nova'])
@@ -205,6 +232,11 @@ describe('BackupService (integration)', () => {
 			visited_by: 'Ana',
 		})
 		expect(new Date(map1!.visited!).toISOString()).toBe('2026-03-01T12:00:00.000Z')
+
+		expect(originalBackup.phones?.map((p) => p.number).sort()).toEqual(['11987654321', '1134567890'])
+		const phone1 = originalBackup.phones?.find((p) => p.number === '11987654321')
+		expect(phone1).toMatchObject({ answered: false, answered_info: 'Caixa postal', called_by: 'Ana' })
+		expect(new Date(phone1!.called!).toISOString()).toBe('2026-03-02T12:00:00.000Z')
 	})
 
 	it('produces a file that passes validation after serialization', () => {
@@ -216,10 +248,12 @@ describe('BackupService (integration)', () => {
 		const before = await readTerritory(congregationId)
 		const otherBefore = await readTerritory(otherCongregationId)
 		expect(before.assigned).toBe(1)
+		expect(before.assignedPhones).toBe(1)
 
-		// Diverge from the backup: remove a map, rename a city, add a new city with a map
+		// Diverge from the backup: remove a map, rename a city, add a new city with a map, add a phone
 		const extraCity = id()
 		await adminDb.transact([
+			adminDb.tx.phones[id()].update({ number: '11900000000' }).link({ congregation: congregationId }),
 			adminDb.tx.maps[before.mapIds[0]].delete(),
 			adminDb.tx.cities[before.cityIds[0]].update({ name: 'Renomeada' }),
 			adminDb.tx.cities[extraCity].update({ name: 'Cidade Extra' }).link({ congregation: congregationId }),
@@ -231,16 +265,20 @@ describe('BackupService (integration)', () => {
 		const progress = jest.fn()
 		const summary = await backupService.restoreBackup(originalBackup, congregationId, progress)
 
-		expect(summary).toEqual({ cities: 2, districts: 3, maps: 4, skippedMaps: 0 })
+		expect(summary).toEqual({ cities: 2, districts: 3, maps: 4, skippedMaps: 0, phones: 2 })
 		expect(progress).toHaveBeenCalledWith('maps', 4, 4)
+		expect(progress).toHaveBeenCalledWith('phones', 2, 2)
 
 		const after = await readTerritory(congregationId)
 		expect(after.cities).toEqual(before.cities)
+		expect(after.phones).toEqual(before.phones)
 		// Everything was recreated with new IDs and the old data is gone
 		expect(after.cityIds.some((cityId) => before.cityIds.includes(cityId) || cityId === extraCity)).toBe(false)
 		expect(after.mapIds.some((mapId) => before.mapIds.includes(mapId))).toBe(false)
+		expect(after.phoneIds.some((phoneId) => before.phoneIds.includes(phoneId))).toBe(false)
 		// Assignments are intentionally not part of the backup
 		expect(after.assigned).toBe(0)
+		expect(after.assignedPhones).toBe(0)
 
 		// Other congregations are never touched
 		expect(await readTerritory(otherCongregationId)).toEqual(otherBefore)
@@ -253,22 +291,26 @@ describe('BackupService (integration)', () => {
 		const twice = await readTerritory(congregationId)
 		expect(twice.cities).toEqual(once.cities)
 		expect(twice.mapIds).toHaveLength(4)
+		expect(twice.phoneIds).toHaveLength(2)
 	})
 
-	it('restores a v1.0 backup (no districts or history fields)', async () => {
+	it('restores a v1.0 backup (no districts, history fields or phones) and keeps the current phones', async () => {
+		const before = await readTerritory(congregationId)
 		const legacy = {
 			...originalBackup,
 			version: '1.0',
 			districts: undefined,
+			phones: undefined,
 			maps: originalBackup.maps.map(({ found, found_info, visited, visited_by, ...map }) => map),
 		}
 		const parsed = parseBackupFile(JSON.stringify(legacy))
 
 		const summary = await backupService.restoreBackup(parsed, congregationId)
-		expect(summary).toEqual({ cities: 2, districts: 0, maps: 4, skippedMaps: 0 })
+		expect(summary).toEqual({ cities: 2, districts: 0, maps: 4, skippedMaps: 0, phones: null })
 
 		const after = await readTerritory(congregationId)
 		expect(after.cities.flatMap((c) => c.maps.map((m) => m.name)).sort()).toEqual(['Mapa 1', 'Mapa 2', 'Mapa 3', 'Mapa 4'])
+		expect(after.phoneIds.sort()).toEqual(before.phoneIds.sort())
 
 		await backupService.restoreBackup(originalBackup, congregationId)
 	})
@@ -303,7 +345,7 @@ describe('BackupService (integration)', () => {
 
 		const summary = await backupService.restoreBackup(withMissingCoords, congregationId)
 
-		expect(summary).toEqual({ cities: 2, districts: 3, maps: 4, skippedMaps: 1 })
+		expect(summary).toEqual({ cities: 2, districts: 3, maps: 4, skippedMaps: 1, phones: 2 })
 		expect((await readTerritory(congregationId)).mapIds).toHaveLength(4)
 	})
 
@@ -339,5 +381,6 @@ describe('BackupService (integration)', () => {
 		const backup = await backupService.fetchBackupData(otherCongregationId)
 		expect(backup.cities).toHaveLength(0)
 		expect(backup.maps).toHaveLength(0)
+		expect(backup.phones).toHaveLength(0)
 	})
 })

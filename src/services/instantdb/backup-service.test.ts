@@ -111,16 +111,44 @@ describe('fetchBackupData', () => {
 		},
 	]
 
+	const rawPhones = [
+		{
+			id: 'p1',
+			number: '11987654321',
+			answered: false,
+			answered_info: 'caixa postal',
+			called: '2026-02-01T00:00:00.000Z',
+			called_by: 'Ana',
+		},
+		{ id: 'p2', number: '1134567890' },
+	]
+
 	beforeEach(() => {
-		mockDb.queryOnce.mockResolvedValue({ data: { cities: rawCities, districts: rawDistricts, maps: rawMaps } })
+		mockDb.queryOnce.mockResolvedValue({ data: { cities: rawCities, districts: rawDistricts, maps: rawMaps, phones: rawPhones } })
 	})
 
-	it('queries cities, districts and maps scoped to the congregation', async () => {
+	it('queries cities, districts, maps and phones scoped to the congregation', async () => {
 		await backupService.fetchBackupData('cong-1')
 		const query = mockDb.queryOnce.mock.calls[0][0]
 		expect(query.cities.$.where).toEqual({ congregation: 'cong-1' })
 		expect(query.districts.$.where).toEqual({ 'city.congregation': 'cong-1' })
 		expect(query.maps.$.where).toEqual({ congregation: 'cong-1' })
+		expect(query.phones.$.where).toEqual({ congregation: 'cong-1' })
+	})
+
+	it('includes every phone field, with null fallbacks', async () => {
+		const result = await backupService.fetchBackupData('cong-1')
+		expect(result.phones).toEqual([
+			{
+				id: 'p1',
+				number: '11987654321',
+				answered: false,
+				answered_info: 'caixa postal',
+				called: '2026-02-01T00:00:00.000Z',
+				called_by: 'Ana',
+			},
+			{ id: 'p2', number: '1134567890', answered: null, answered_info: null, called: null, called_by: null },
+		])
 	})
 
 	it('maps cities to { id, name }', async () => {
@@ -172,9 +200,9 @@ describe('fetchBackupData', () => {
 		})
 	})
 
-	it("sets version = '1.1', congregation_id and created_at", async () => {
+	it("sets version = '1.2', congregation_id and created_at", async () => {
 		const result = await backupService.fetchBackupData('cong-1')
-		expect(result.version).toBe('1.1')
+		expect(result.version).toBe('1.2')
 		expect(result.congregation_id).toBe('cong-1')
 		expect(Number.isNaN(Date.parse(result.created_at))).toBe(false)
 	})
@@ -182,7 +210,7 @@ describe('fetchBackupData', () => {
 	it('handles a congregation without data', async () => {
 		mockDb.queryOnce.mockResolvedValue({ data: {} })
 		const result = await backupService.fetchBackupData('cong-1')
-		expect(result).toMatchObject({ cities: [], districts: [], maps: [] })
+		expect(result).toMatchObject({ cities: [], districts: [], maps: [], phones: [] })
 	})
 })
 
@@ -347,6 +375,55 @@ describe('restoreMaps', () => {
 	})
 })
 
+// ── restorePhones ────────────────────────────────────────────────────────────
+
+describe('restorePhones', () => {
+	it('restores every field, links the congregation and leaves the phone unassigned', async () => {
+		const created: string[] = []
+		const restored = await backupService.restorePhones(
+			[
+				{ id: 'old-p1', number: '11987654321', answered: true, answered_info: 'ok', called: 1700000000000, called_by: 'Ana' },
+				{ id: 'old-p2', number: '1134567890', answered: null, answered_info: null, called: null, called_by: null },
+			],
+			'cong-1',
+			created
+		)
+		expect(restored).toBe(2)
+		expect(created).toEqual(['new-id-1', 'new-id-2'])
+		expect(sentOps()).toEqual([
+			{
+				entity: 'phones',
+				id: 'new-id-1',
+				action: 'update',
+				data: { number: '11987654321', answered: true, answered_info: 'ok', called: 1700000000000, called_by: 'Ana' },
+				links: { congregation: 'cong-1' },
+			},
+			{
+				entity: 'phones',
+				id: 'new-id-2',
+				action: 'update',
+				data: { number: '1134567890', answered: undefined, answered_info: undefined, called: undefined, called_by: undefined },
+				links: { congregation: 'cong-1' },
+			},
+		])
+	})
+
+	it('progress callback fires per batch', async () => {
+		const many = Array.from({ length: 30 }, (_, i) => ({
+			id: `old-p${i}`,
+			number: `1198765${String(i).padStart(4, '0')}`,
+			answered: null,
+			answered_info: null,
+			called: null,
+			called_by: null,
+		}))
+		const onProgress = jest.fn()
+		await backupService.restorePhones(many, 'cong-1', [], onProgress)
+		expect(onProgress).toHaveBeenNthCalledWith(1, 25, 30)
+		expect(onProgress).toHaveBeenNthCalledWith(2, 30, 30)
+	})
+})
+
 // ── restoreBackup ────────────────────────────────────────────────────────────
 
 describe('restoreBackup', () => {
@@ -379,7 +456,7 @@ describe('restoreBackup', () => {
 
 	it('returns a summary including skipped maps', async () => {
 		const result = await backupService.restoreBackup(backup, 'cong-1')
-		expect(result).toEqual({ cities: 1, districts: 1, maps: 1, skippedMaps: 1 })
+		expect(result).toEqual({ cities: 1, districts: 1, maps: 1, skippedMaps: 1, phones: null })
 	})
 
 	it('reports progress for every step', async () => {
@@ -398,6 +475,75 @@ describe('restoreBackup', () => {
 		const { districts: _, ...legacy } = backup
 		const result = await backupService.restoreBackup(legacy as BackupData, 'cong-1')
 		expect(result.districts).toBe(0)
+	})
+
+	it('keeps the current phones when the backup has no phones section (v1.0/v1.1)', async () => {
+		mockDb.queryOnce.mockResolvedValue({
+			data: { cities: [{ id: 'cur-c1' }], maps: [{ id: 'cur-m1' }], phones: [{ id: 'cur-p1' }] },
+		})
+		await backupService.restoreBackup(backup, 'cong-1')
+		expect(sentOps().some((op) => op.entity === 'phones')).toBe(false)
+	})
+
+	describe('v1.2 backup with phones', () => {
+		const withPhones: BackupData = {
+			...backup,
+			version: '1.2',
+			phones: [{ id: 'old-p1', number: '11987654321', answered: null, answered_info: null, called: null, called_by: null }],
+		}
+
+		beforeEach(() => {
+			mockDb.queryOnce.mockResolvedValue({
+				data: { cities: [{ id: 'cur-c1' }], maps: [{ id: 'cur-m1' }], phones: [{ id: 'cur-p1' }, { id: 'cur-p2' }] },
+			})
+		})
+
+		it('creates the new phones and then replaces the current ones', async () => {
+			const onProgress = jest.fn()
+			const result = await backupService.restoreBackup(withPhones, 'cong-1', onProgress)
+			expect(sentOps().map((op) => `${op.action}:${op.entity}:${op.id}`)).toEqual([
+				'update:cities:new-id-1',
+				'update:districts:new-id-2',
+				'update:maps:new-id-3',
+				'update:phones:new-id-4',
+				'delete:maps:cur-m1',
+				'delete:phones:cur-p1',
+				'delete:phones:cur-p2',
+				'delete:cities:cur-c1',
+			])
+			expect(result.phones).toBe(1)
+			expect(onProgress.mock.calls).toEqual([
+				['cities', 1, 1],
+				['districts', 1, 1],
+				['maps', 1, 1],
+				['phones', 1, 1],
+				['cleanup', 1, 4],
+				['cleanup', 3, 4],
+				['cleanup', 4, 4],
+			])
+		})
+
+		it('an empty phones section removes the current phones', async () => {
+			const result = await backupService.restoreBackup({ ...withPhones, phones: [] }, 'cong-1')
+			expect(result.phones).toBe(0)
+			expect(
+				sentOps()
+					.filter((op) => op.entity === 'phones')
+					.map((op) => op.id)
+			).toEqual(['cur-p1', 'cur-p2'])
+		})
+
+		it('rolls back the created phones when creation fails', async () => {
+			// cities, districts, maps ok; phones fail
+			mockDb.transact
+				.mockResolvedValueOnce({})
+				.mockResolvedValueOnce({})
+				.mockResolvedValueOnce({})
+				.mockRejectedValueOnce(new Error('network'))
+			await expect(backupService.restoreBackup(withPhones, 'cong-1')).rejects.toThrow('network')
+			const deletes = sentOps().filter((op) => op.action === 'delete')
+			expect(deletes.map((op) => `${op.entity}:${op.id}`)).toEqual(['maps:new-id-3', 'cities:new-id-1'])
+		})
 	})
 
 	it('rolls back created data and keeps old data when creation fails', async () => {
