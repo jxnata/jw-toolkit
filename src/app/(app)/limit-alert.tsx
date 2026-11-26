@@ -1,7 +1,7 @@
 import Button from '@/components/button'
 import { FREE_LIMITS } from '@/constants/env'
 import { router, Stack } from 'expo-router'
-import { AlertTriangle, ArrowRight, Crown, Map, Users } from 'lucide-react-native'
+import { AlertTriangle, ArrowRight, Crown, Map, Phone, Users } from 'lucide-react-native'
 import { ScrollView, Text, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
@@ -45,6 +45,12 @@ const LimitAlert = () => {
 									<Text className="font-semibold">{FREE_LIMITS.maps} mapas</Text> por congregação
 								</Text>
 							</View>
+							<View className="flex-row items-center">
+								<Phone size={20} color="#bf616a" />
+								<Text className="ml-3 flex-1 text-danger-700">
+									<Text className="font-semibold">{FREE_LIMITS.phones} telefones</Text> por congregação
+								</Text>
+							</View>
 						</View>
 					</View>
 
@@ -54,7 +60,7 @@ const LimitAlert = () => {
 							<Text className="ml-2 font-semibold text-lg text-primary-600">Versão Pro - Sem Limitações</Text>
 						</View>
 						<Text className="mb-3 font-regular leading-6 text-foreground">
-							Com a versão Pro, você pode adicionar quantos publicadores e mapas precisar, sem restrições. Além disso, você
+							Com a versão Pro, você pode adicionar quantos publicadores, mapas e telefones precisar, sem restrições. Além disso, você
 							ajuda a manter o aplicativo ativo para outras congregações.
 						</Text>
 						<Text className="font-medium text-foreground">✨ 1 mês grátis para testar</Text>

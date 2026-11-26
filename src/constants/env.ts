@@ -11,6 +11,7 @@ export const REVENUECAT_GOOGLE_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_GOOG
 export const FREE_LIMITS = {
 	maps: process.env.EXPO_PUBLIC_LIMIT_MAPS,
 	publishers: process.env.EXPO_PUBLIC_LIMIT_PUBLISHERS,
+	phones: process.env.EXPO_PUBLIC_LIMIT_PHONES || '1000',
 }
 
 export const FEATURES = {

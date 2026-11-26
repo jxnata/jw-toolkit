@@ -3,7 +3,7 @@ import { useLimits } from '@/hooks/use-limits'
 import { router } from 'expo-router'
 
 export const useLimitCheck = () => {
-	const { anyLimitReached, mapsReached, publishersReached } = useLimits()
+	const { anyLimitReached, mapsReached, publishersReached, phonesReached } = useLimits()
 	const { type } = useSession()
 
 	const checkMapLimit = () => {
@@ -24,6 +24,15 @@ export const useLimitCheck = () => {
 		return true
 	}
 
+	const checkPhoneLimit = () => {
+		if (type !== 'admin') return true
+		if (phonesReached) {
+			router.push('/(app)/limit-alert')
+			return false
+		}
+		return true
+	}
+
 	const checkAnyLimit = () => {
 		if (type !== 'admin') return true
 		if (anyLimitReached) {
@@ -36,9 +45,11 @@ export const useLimitCheck = () => {
 	return {
 		checkMapLimit,
 		checkPublisherLimit,
+		checkPhoneLimit,
 		checkAnyLimit,
 		mapsReached,
 		publishersReached,
+		phonesReached,
 		anyLimitReached,
 	}
 }

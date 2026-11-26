@@ -142,6 +142,31 @@ const rules = {
 			},
 		},
 	},
+	phones: {
+		bind: {
+			isApprovedMember: `auth.id != null && auth.id in data.ref('congregation.publishers.user.id') && ${IS_APPROVED}`,
+			isAdminOfCongregation: `auth.id != null && auth.id in data.ref('congregation.publishers.user.id') && ${IS_ADMIN}`,
+			isAssignedPublisher: "auth.id != null && auth.id in data.ref('assigned.user.id')",
+			// The assigned publisher may only record the call result
+			changesOnlyCallFields: "request.modifiedFields.all(field, field in ['answered', 'answered_info', 'called', 'called_by'])",
+			// The linked publisher belongs to the congregation of the phone
+			isSameCongregation: "newData.congregation in linkedData.ref('congregation.id')",
+		},
+		allow: {
+			view: 'isApprovedMember',
+			create: 'isAdminOfCongregation',
+			update: 'isAdminOfCongregation || (isApprovedMember && isAssignedPublisher && changesOnlyCallFields)',
+			delete: 'isAdminOfCongregation',
+			link: {
+				congregation: `auth.id != null && auth.id in linkedData.ref('publishers.user.id') && ${IS_ADMIN} && data.congregation == newData.congregation`,
+				assigned: `auth.id != null && auth.id in linkedData.ref('congregation.publishers.user.id') && ${IS_ADMIN} && isSameCongregation`,
+			},
+			unlink: {
+				congregation: 'false',
+				assigned: 'isAdminOfCongregation || isAssignedPublisher',
+			},
+		},
+	},
 	$users: {
 		bind: {
 			isSelf: 'auth.id != null && auth.id == data.id',
