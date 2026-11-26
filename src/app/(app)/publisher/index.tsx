@@ -1,9 +1,11 @@
 import AssignmentItem from '@/components/assignment-item'
 import MapGroupItem from '@/components/map-group-item'
+import MyPhonesSection from '@/components/my-phones-section'
 import SkeletonItem from '@/components/skeleton-item'
 import { storage } from '@/database/index'
 import { useLocation } from '@/hooks/use-location'
 import useMyAssignments from '@/hooks/use-my-assignments'
+import useMyPhones from '@/hooks/use-my-phones'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { MapGroup } from '@/utils/group-maps'
 import { Redirect, Stack, useRouter } from 'expo-router'
@@ -16,6 +18,7 @@ const PublisherHome = () => {
 	const router = useRouter()
 	const { location } = useLocation()
 	const { grouped, loading, mutate } = useMyAssignments()
+	const { phones } = useMyPhones()
 	const { colors } = useThemedColors()
 	const [privacyAccepted] = useState<boolean>(() => storage.getBoolean('privacy.policy.accepted') ?? false)
 
@@ -52,6 +55,13 @@ const PublisherHome = () => {
 						data={grouped}
 						keyExtractor={(item) => item.group_code}
 						refreshControl={<RefreshControl onRefresh={mutate} refreshing={loading} />}
+						ListHeaderComponent={
+							<MyPhonesSection
+								phones={phones}
+								hasMaps={grouped.length > 0}
+								onPress={(phone) => router.push(`/publisher/phone/${phone.id}`)}
+							/>
+						}
 						renderItem={({ item: group }: { item: MapGroup }) => {
 							if (group.maps.length > 1) {
 								return (
@@ -83,12 +93,15 @@ const PublisherHome = () => {
 							)
 						}}
 						ListEmptyComponent={
-							<View className="flex flex-col items-center justify-center gap-3 pt-8">
-								<Map size={48} color={colors.border} strokeWidth={1.5} />
-								<Text className="px-3 text-center font-regular text-foreground opacity-70">
-									Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você receber uma designação.
-								</Text>
-							</View>
+							phones.length ? undefined : (
+								<View className="flex flex-col items-center justify-center gap-3 pt-8">
+									<Map size={48} color={colors.border} strokeWidth={1.5} />
+									<Text className="px-3 text-center font-regular text-foreground opacity-70">
+										Nenhuma designação até agora.{'\n'}Seus mapas serão exibidos aqui quando você receber uma
+										designação.
+									</Text>
+								</View>
+							)
 						}
 					/>
 				)}

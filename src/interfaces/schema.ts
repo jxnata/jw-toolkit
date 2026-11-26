@@ -43,6 +43,14 @@ const _schema = i.schema({
 			visited: i.date().indexed().optional(),
 			visited_by: i.string().optional(),
 		}),
+		// Phone territories: only the number, no name. Assigned and finished like maps
+		phones: i.entity({
+			number: i.string().indexed(),
+			answered: i.boolean().optional(),
+			answered_info: i.string().optional(),
+			called: i.date().indexed().optional(),
+			called_by: i.string().optional(),
+		}),
 		publishers: i.entity({
 			approved: i.boolean().optional(),
 			level: i.number(),
@@ -144,6 +152,32 @@ const _schema = i.schema({
 				on: 'congregations',
 				has: 'many',
 				label: 'maps',
+			},
+		},
+		phonesAssigned: {
+			forward: {
+				on: 'phones',
+				has: 'one',
+				label: 'assigned',
+			},
+			reverse: {
+				on: 'publishers',
+				has: 'many',
+				label: 'phones',
+			},
+		},
+		phonesCongregation: {
+			forward: {
+				on: 'phones',
+				has: 'one',
+				label: 'congregation',
+				required: true,
+				onDelete: 'cascade',
+			},
+			reverse: {
+				on: 'congregations',
+				has: 'many',
+				label: 'phones',
 			},
 		},
 		publishersCongregation: {
