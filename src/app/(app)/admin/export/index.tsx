@@ -3,8 +3,10 @@ import { FEATURES } from '@/constants/env'
 import { useSession } from '@/contexts/session-provider'
 import useAllMaps from '@/hooks/use-all-maps'
 import { ConfirmRestore, useBackupRestore } from '@/hooks/use-backup-restore'
+import usePhones from '@/hooks/use-phones'
 import { useThemedColors } from '@/hooks/use-themed-colors'
 import { Map } from '@/interfaces'
+import { formatPhone } from '@/utils/phone-number'
 import * as Sharing from 'expo-sharing'
 import { Stack } from 'expo-router'
 import { Download, RotateCcw, Save } from 'lucide-react-native'
@@ -14,7 +16,10 @@ import { generatePDF } from 'react-native-html-to-pdf'
 
 const ExportMaps = () => {
 	const [generating, setGenerating] = useState(false)
-	const { maps, loading } = useAllMaps()
+	const { maps, loading: mapsLoading } = useAllMaps()
+	const { phones, loading: phonesLoading } = usePhones()
+	const loading = mapsLoading || phonesLoading
+	const hasData = maps.length > 0 || phones.length > 0
 	const { congregation } = useSession()
 	const { colors } = useThemedColors()
 	const { loading: backupLoading, operation, progress, error, createBackup, restoreBackup } = useBackupRestore()
@@ -114,6 +119,25 @@ const ExportMaps = () => {
 					`
 					)
 					.join('')}
+				${
+					phones.length > 0
+						? `
+						<div class="section">
+							<h2>Telefones</h2>
+							${phones
+								.map(
+									(phone, index) => `
+								<div class="card">
+									<span class="index">${index + 1}</span>
+									<h3>${formatPhone(phone.number)}</h3>
+								</div>
+							`
+								)
+								.join('')}
+						</div>
+					`
+						: ''
+				}
 			</body>
 			</html>
 		`
@@ -141,7 +165,9 @@ const ExportMaps = () => {
 		new Promise((resolve) => {
 			Alert.alert(
 				'Confirmar restauração',
-				`O backup contém ${backup.cities.length} cidade(s), ${backup.districts.length} bairro(s) e ${backup.maps.length} mapa(s). Todas as cidades, bairros e mapas atuais serão substituídos e as designações atuais serão perdidas. Esta ação não pode ser desfeita. Deseja continuar?`,
+				backup.phones
+					? `O backup contém ${backup.cities.length} cidade(s), ${backup.districts.length} bairro(s), ${backup.maps.length} mapa(s) e ${backup.phones.length} telefone(s). Todas as cidades, bairros, mapas e telefones atuais serão substituídos e as designações atuais serão perdidas. Esta ação não pode ser desfeita. Deseja continuar?`
+					: `O backup contém ${backup.cities.length} cidade(s), ${backup.districts.length} bairro(s) e ${backup.maps.length} mapa(s). Todas as cidades, bairros e mapas atuais serão substituídos e as designações atuais serão perdidas. Os telefones atuais serão mantidos, pois este backup não inclui telefones. Esta ação não pode ser desfeita. Deseja continuar?`,
 				[
 					{ text: 'Cancelar', style: 'cancel', onPress: () => resolve(false) },
 					{ text: 'Restaurar', style: 'destructive', onPress: () => resolve(true) },
@@ -158,18 +184,16 @@ const ExportMaps = () => {
 				<View className="mb-4 rounded-xl border border-border bg-card p-4">
 					<Text className="mb-1 font-semibold text-foreground">Exportar PDF</Text>
 					<Text className="mb-4 font-regular text-sm text-foreground opacity-60">
-						Exporta todos os mapas da congregação em formato PDF
+						Exporta todos os mapas e telefones da congregação em formato PDF
 					</Text>
 					{loading && (
 						<View className="items-center py-2">
 							<ActivityIndicator size="small" color={colors.primary[600]} />
-							<Text className="mt-1 font-medium text-sm text-foreground">Carregando mapas...</Text>
+							<Text className="mt-1 font-medium text-sm text-foreground">Carregando dados...</Text>
 						</View>
 					)}
-					{!loading && maps.length === 0 && (
-						<Text className="text-sm text-foreground opacity-60">Não há mapas para exportar.</Text>
-					)}
-					{!loading && maps.length > 0 && (
+					{!loading && !hasData && <Text className="text-sm text-foreground opacity-60">Não há mapas para exportar.</Text>}
+					{!loading && hasData && (
 						<Button
 							loading={generating}
 							onPress={createPDF}
@@ -185,7 +209,8 @@ const ExportMaps = () => {
 						<View className="mb-4 rounded-xl border border-border bg-card p-4">
 							<Text className="mb-1 font-semibold text-foreground">Backup</Text>
 							<Text className="mb-4 text-sm text-foreground opacity-60">
-								Salva todas as cidades, bairros e mapas em um arquivo .json que pode ser restaurado posteriormente
+								Salva todas as cidades, bairros, mapas e telefones em um arquivo .json que pode ser restaurado
+								posteriormente
 							</Text>
 							<Button
 								loading={operation === 'backup'}

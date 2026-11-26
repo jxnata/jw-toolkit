@@ -50,6 +50,15 @@ export interface BackupData {
 		visited_by?: string | null
 		city_id: string
 	}[]
+	// Added in v1.2 — absent in v1.0/v1.1 files, which leave the current phones untouched on restore
+	phones?: {
+		id: string
+		number: string
+		answered: boolean | null
+		answered_info: string | null
+		called: string | number | null
+		called_by: string | null
+	}[]
 }
 
 export interface RestoreResult {
@@ -57,4 +66,6 @@ export interface RestoreResult {
 	districts: number
 	maps: number
 	skippedMaps: number
+	// null when the backup has no phones section (v1.0/v1.1)
+	phones: number | null
 }

@@ -1,6 +1,7 @@
 import { BackupData } from '@/interfaces'
 
-export const BACKUP_VERSION = '1.1'
+// 1.1 added districts and map history; 1.2 added phones
+export const BACKUP_VERSION = '1.2'
 export const INVALID_BACKUP_MESSAGE = 'Arquivo de backup inválido'
 
 // Any 1.x file can be restored; a new major version means an incompatible format
@@ -17,6 +18,7 @@ export function validateBackupFile(data: unknown): data is BackupData {
 	if (!Array.isArray(data.cities)) return false
 	if (!Array.isArray(data.maps)) return false
 	if (data.districts !== undefined && !Array.isArray(data.districts)) return false
+	if (data.phones !== undefined && !Array.isArray(data.phones)) return false
 
 	for (const city of data.cities) {
 		if (!isObject(city)) return false
@@ -50,6 +52,14 @@ export function validateBackupFile(data: unknown): data is BackupData {
 		)
 			return false
 		if (!isOptional(map.visited, 'string') && typeof map.visited !== 'number') return false
+	}
+
+	for (const phone of data.phones ?? []) {
+		if (!isObject(phone)) return false
+		if (typeof phone.id !== 'string' || typeof phone.number !== 'string') return false
+		if (!isOptional(phone.answered, 'boolean') || !isOptional(phone.answered_info, 'string') || !isOptional(phone.called_by, 'string'))
+			return false
+		if (!isOptional(phone.called, 'string') && typeof phone.called !== 'number') return false
 	}
 
 	return true

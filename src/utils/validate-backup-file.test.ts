@@ -150,6 +150,31 @@ describe('validateBackupFile', () => {
 	])('map with invalid %s type returns false', (field, value) => {
 		expect(validateBackupFile({ ...validBackup, maps: [{ ...validBackup.maps[0], [field]: value }] })).toBe(false)
 	})
+
+	const phone = { id: 'p1', number: '11987654321' }
+
+	it('accepts v1.2 phones with optional fields filled, null or absent', () => {
+		const full = { ...phone, answered: true, answered_info: 'ok', called: '2026-01-01T00:00:00.000Z', called_by: 'Ana' }
+		const nulls = { ...phone, answered: null, answered_info: null, called: null, called_by: null }
+		const phones = [phone, full, nulls, { ...full, called: 1700000000000 }]
+		expect(validateBackupFile({ ...validBackup, version: '1.2', phones })).toBe(true)
+	})
+
+	it('phones that is not an array returns false', () => {
+		expect(validateBackupFile({ ...validBackup, phones: {} })).toBe(false)
+	})
+
+	it.each([
+		['id', undefined],
+		['number', undefined],
+		['number', 11987654321],
+		['answered', 'yes'],
+		['answered_info', 1],
+		['called', true],
+		['called_by', 1],
+	])('phone with invalid %s returns false', (field, value) => {
+		expect(validateBackupFile({ ...validBackup, phones: [{ ...phone, [field]: value }] })).toBe(false)
+	})
 })
 
 describe('parseBackupFile', () => {
@@ -161,6 +186,15 @@ describe('parseBackupFile', () => {
 	it('keeps districts when present', () => {
 		const districts = [{ id: 'd1', name: 'Centro', city_id: 'city-1' }]
 		expect(parseBackupFile(JSON.stringify({ ...validBackup, districts })).districts).toEqual(districts)
+	})
+
+	it('leaves phones absent for files older than v1.2, so restore keeps the current phones', () => {
+		expect(parseBackupFile(JSON.stringify(validBackup)).phones).toBeUndefined()
+	})
+
+	it('keeps phones when present', () => {
+		const phones = [{ id: 'p1', number: '11987654321' }]
+		expect(parseBackupFile(JSON.stringify({ ...validBackup, version: '1.2', phones })).phones).toEqual(phones)
 	})
 
 	it('throws a user-facing message for malformed JSON', () => {

@@ -21,6 +21,7 @@ const STEP_LABELS: Record<RestoreStep, string> = {
 	cities: 'Restaurando cidades...',
 	districts: 'Restaurando bairros...',
 	maps: 'Restaurando mapas...',
+	phones: 'Restaurando telefones...',
 	cleanup: 'Removendo dados antigos...',
 }
 
