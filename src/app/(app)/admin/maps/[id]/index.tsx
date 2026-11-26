@@ -2,6 +2,7 @@ import Button from '@/components/button'
 import Dropdown from '@/components/dropdown'
 import PersonalAnnotation from '@/components/personal-annotation'
 import { MAP_STATUS_LABELS, STATUS_NAME } from '@/constants/content'
+import { useSession } from '@/contexts/session-provider'
 import useGroupMaps from '@/hooks/use-group-maps'
 import useMap from '@/hooks/use-map'
 import usePublishers from '@/hooks/use-publishers'
@@ -16,12 +17,16 @@ import { firstName } from '@/utils/first-name'
 import { getBadgeColor } from '@/utils/get-badge-color'
 import { getMapRegion } from '@/utils/get-map-region'
 import { getMarkerCoordinate } from '@/utils/get-marker-coordinate'
+import { buildMapPdfHtml, mapPdfFileName } from '@/utils/map-pdf'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
-import { Pencil, Trash } from 'lucide-react-native'
-import { useEffect } from 'react'
+import * as Sharing from 'expo-sharing'
+import { FileDown, Pencil, Trash } from 'lucide-react-native'
+import { useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { generatePDF } from 'react-native-html-to-pdf'
 import MapView, { Marker } from 'react-native-maps'
+import Toast from 'react-native-toast-message'
 
 const screenHeight = Dimensions.get('window').height
 
@@ -32,6 +37,8 @@ const ViewMap = () => {
 	const { maps: groupMaps } = useGroupMaps(map?.group_code || '')
 	const { publishers } = usePublishers()
 	const { colors } = useThemedColors()
+	const { congregation } = useSession()
+	const [exporting, setExporting] = useState(false)
 
 	const publisherList = publishers.map((p) => ({ label: p.name, value: p.id }))
 	const region = getMapRegion(map ? [map.lat, map.lng] : [0, 0])
@@ -122,8 +129,41 @@ const ViewMap = () => {
 			},
 		])
 
+	const exportPDF = async () => {
+		if (!map || exporting) return
+
+		setExporting(true)
+
+		try {
+			const file = await generatePDF({
+				html: buildMapPdfHtml(map, congregation?.name),
+				fileName: mapPdfFileName(map),
+			})
+
+			if (!file.filePath) throw new Error('PDF file path is empty')
+
+			await Sharing.shareAsync(`file://${file.filePath}`, {
+				mimeType: 'application/pdf',
+				dialogTitle: 'Compartilhar PDF',
+				UTI: 'com.adobe.pdf',
+			})
+		} catch (err) {
+			Toast.show({ type: 'error', text1: 'Erro', text2: 'Erro ao exportar o mapa em PDF' })
+			console.error('Failed to export map PDF:', err)
+		} finally {
+			setExporting(false)
+		}
+	}
+
 	const HeaderRight = () => (
 		<View className="flex-row">
+			<TouchableOpacity onPress={exportPDF} disabled={!map || exporting} className="mx-2">
+				{exporting ? (
+					<ActivityIndicator size="small" color={colors.foreground} />
+				) : (
+					<FileDown size={24} color={colors.foreground} />
+				)}
+			</TouchableOpacity>
 			<TouchableOpacity
 				onPress={() =>
 					router.replace({
